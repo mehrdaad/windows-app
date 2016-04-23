@@ -8,6 +8,29 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto" MinHeight="48"/>
+        </Grid.RowDefinitions>
+        <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="UNREAD"/>
+            <AppBarButton Icon="Find" Grid.Column="1"/>
+        </Grid>
+        <GridView Grid.Row="1">
+            
+        </GridView>
+        <CommandBar Grid.Row="2">
+            <AppBarButton Icon="Add" Label="Add"/>
+            <AppBarButton Icon="Sync" Label="Sync"/>
+            <AppBarButton Icon="Bullets" Label="Select"/>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Settings"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
     </Grid>
 </Page>
