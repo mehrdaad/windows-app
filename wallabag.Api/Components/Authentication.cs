@@ -9,7 +9,7 @@ namespace wallabag.Api
     public partial class WallabagClient
     {
         public Uri InstanceUri { get; set; }
-        public Uri _AuthenticationUri { get { return new Uri($"{InstanceUri}/oauth/v2/token"); } }
+        public Uri _AuthenticationUri { get { return new Uri($"{InstanceUri}oauth/v2/token"); } }
 
         protected DateTime _LastRequestDateTime;
 
