@@ -14,7 +14,8 @@ namespace wallabag.Api
         string RefreshToken { get; set; }
 
         Task<string> GetAccessTokenAsync();
-        Task<string> RefreshAccessTokenAsync();
+        Task<bool> RefreshAccessTokenAsync();
+        Task<bool> RequestTokenAsync(string username, string password);
 
         Task<WallabagItem> AddAsync(Uri uri, string[] tags = null, string title = null);
 
