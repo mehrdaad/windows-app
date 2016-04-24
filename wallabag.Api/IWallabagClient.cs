@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using wallabag.Api.Models;
+using static wallabag.Api.WallabagClient;
 
 namespace wallabag.Api
 {
@@ -20,8 +21,13 @@ namespace wallabag.Api
         Task<WallabagItem> AddAsync(Uri uri, string[] tags = null, string title = null);
 
         Task<IEnumerable<WallabagItem>> GetItemsAsync(
-            // TODO: Add item properties.
-            );
+            bool? IsRead = null,
+            bool? IsStarred = null,
+            WallabagDateOrder? DateOrder = null,
+            WallabagSortOrder? SortOrder = null,
+            int? PageNumber = null,
+            int? ItemsPerPage = null,
+            string[] Tags = null);
         Task<WallabagItem> GetItemAsync(string itemId);
         Task<WallabagTag> GetTagsAsync();
 

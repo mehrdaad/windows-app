@@ -7,7 +7,14 @@ namespace wallabag.Api
 {
     public partial class WallabagClient
     {
-        public Task<IEnumerable<WallabagItem>> GetItemsAsync(/* TODO: Item properties */)
+        public Task<IEnumerable<WallabagItem>> GetItemsAsync(
+            bool? IsRead = null,
+            bool? IsStarred = null,
+            WallabagDateOrder? DateOrder = null,
+            WallabagSortOrder? SortOrder = null,
+            int? PageNumber = null,
+            int? ItemsPerPage = null,
+            string[] Tags = null)
         {
             throw new NotImplementedException();
         }
@@ -15,5 +22,8 @@ namespace wallabag.Api
         {
             throw new NotImplementedException();
         }
+
+        public enum WallabagDateOrder { ByCreationDate, ByLastModificationDate }
+        public enum WallabagSortOrder { Ascending, Descending }
     }
 }
