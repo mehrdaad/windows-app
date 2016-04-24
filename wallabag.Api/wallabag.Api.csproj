@@ -108,12 +108,18 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Add.cs" />
+    <Compile Include="Components\Authentication.cs" />
+    <Compile Include="Components\Get.cs" />
+    <Compile Include="Components\Modify.cs" />
+    <Compile Include="Components\Tags.cs" />
     <Compile Include="IWallabagClient.cs" />
     <Compile Include="Models\WallabagItem.cs" />
     <Compile Include="Models\WallabagTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WallabagClient.cs" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
