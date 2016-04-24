@@ -2,7 +2,7 @@
 
 namespace wallabag.Api.Models
 {
-    class WallabagTag
+    public class WallabagTag
     {
         [JsonProperty("id")]
         public int Id { get; set; }

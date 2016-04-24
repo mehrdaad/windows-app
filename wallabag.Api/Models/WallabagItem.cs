@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace wallabag.Api.Models
 {
-    class WallabagItem
+    public class WallabagItem
     {
         [JsonProperty("id")]
         public int Id { get; set; }
