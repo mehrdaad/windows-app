@@ -11,7 +11,14 @@ namespace wallabag.Api
     {
         private HttpClient _httpClient;
 
-        // TODO: Add initialization.
+        public WallabagClient(Uri Uri, string ClientId, string ClientSecret)
+        {
+            this.InstanceUri = Uri;
+            this.ClientId = ClientId;
+            this.ClientSecret = ClientSecret;
+
+            this._httpClient = new HttpClient();          
+        }
 
         protected async Task<HttpResponseMessage> ExecuteHttpRequestAsync(HttpRequestMethod httpRequestMethod, string RelativeUriString, Dictionary<string, object> parameters = default(Dictionary<string, object>))
         {
