@@ -20,14 +20,14 @@ namespace wallabag.Api
             this._httpClient = new HttpClient();          
         }
 
-        protected async Task<HttpResponseMessage> ExecuteHttpRequestAsync(HttpRequestMethod httpRequestMethod, string RelativeUriString, Dictionary<string, object> parameters = default(Dictionary<string, object>))
+        protected async Task<string> ExecuteHttpRequestAsync(HttpRequestMethod httpRequestMethod, string RelativeUriString, Dictionary<string, object> parameters = default(Dictionary<string, object>))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new HttpCredentialsHeaderValue("Bearer", await GetAccessTokenAsync());
 
             if (string.IsNullOrEmpty(AccessToken))
                 throw new Exception("Access token not available. Please create one using the GetAccessTokenAsync() method first.");
 
-            Uri requestUri = new Uri($"{InstanceUri.ToString()}/api{RelativeUriString}.json");
+            Uri requestUri = new Uri($"{InstanceUri}api{RelativeUriString}.json");
             var content = new HttpStringContent(JsonConvert.SerializeObject(parameters), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json");
 
             string httpMethodString = "GET";
@@ -45,7 +45,13 @@ namespace wallabag.Api
             if (parameters != null)
                 request.Content = content;
 
-            try { return await _httpClient.SendRequestAsync(request); }
+            try
+            {
+                var response = await _httpClient.SendRequestAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsStringAsync();
+            }
             catch (Exception ex) { throw ex; }
         }
         public enum HttpRequestMethod { Delete, Get, Patch, Post, Put }
