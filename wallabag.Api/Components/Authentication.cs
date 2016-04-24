@@ -7,6 +7,8 @@ namespace wallabag.Api
     {
         public Uri InstanceUri { get; set; }
 
+        protected DateTime _LastRequestDateTime;
+
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
         public string AccessToken { get; set; }
