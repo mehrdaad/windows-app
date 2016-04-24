@@ -7,6 +7,7 @@ namespace wallabag.Api
 {
     interface IWallabagClient
     {
+        Uri InstanceUri { get; set; }
         string ClientId { get; set; }
         string ClientSecret { get; set; }
         string AccessToken { get; set; }
@@ -15,7 +16,7 @@ namespace wallabag.Api
         Task<string> GetAccessTokenAsync();
         Task<string> RefreshAccessTokenAsync();
 
-        Task<WallabagItem> Add(Uri uri, string[] tags = null, string title = null);
+        Task<WallabagItem> AddAsync(Uri uri, string[] tags = null, string title = null);
 
         Task<IEnumerable<WallabagItem>> GetItemsAsync(
             // TODO: Add item properties.
