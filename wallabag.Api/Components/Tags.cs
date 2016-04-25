@@ -44,6 +44,11 @@ namespace wallabag.Api
 
             return true;
         }
+        public async Task<bool> RemoveTagFromAllItemsAsync(WallabagTag tag)
+        {
+            await ExecuteHttpRequestAsync(HttpRequestMethod.Delete, $"/tags/{tag.Id}");
+            return true;
+        }
 
         public Task<IEnumerable<WallabagTag>> AddTagsAsync(WallabagItem item, string[] tags) => AddTagsAsync(item.Id, tags);
         public Task<bool> RemoveTagsAsync(WallabagItem item, WallabagTag[] tags) => RemoveTagsAsync(item.Id, tags);
