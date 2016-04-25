@@ -51,13 +51,5 @@ namespace wallabag.Api.Tests
             Assert.IsTrue(firstItem.IsStarred = false);
             Assert.IsTrue(firstItem.IsRead = true);
         }
-
-        [TestMethod]
-        [TestCategory("Get")]
-        public async Task TagsAreRetrieved()
-        {
-            List<WallabagTag> tags = (await client.GetTagsAsync()).ToList();      
-            Assert.IsTrue(tags.Count > 0);
-        }
     }
 }
