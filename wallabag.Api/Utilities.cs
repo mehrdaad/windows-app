@@ -32,5 +32,7 @@ namespace wallabag.Api
 
             return result;
         }
+
+        public static int ToInt(this bool input) => input ? 1 : 0;
     }
 }
