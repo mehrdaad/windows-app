@@ -25,7 +25,7 @@
             
         </GridView>
         <CommandBar Grid.Row="2">
-            <AppBarButton Icon="Add" Label="Add"/>
+            <AppBarButton Icon="Add" Label="Add" Click="AppBarButton_Click"/>
             <AppBarButton Icon="Sync" Label="Sync"/>
             <AppBarButton Icon="Bullets" Label="Select"/>
             <CommandBar.SecondaryCommands>
