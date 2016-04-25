@@ -47,7 +47,7 @@ namespace wallabag.Api.Tests
         [TestCategory("Modify")]
         public async Task ItemIsDeleted()
         {
-            var item = SetupSampleItem();
+            var item = (await client.GetItemsAsync()).First();
 
             Assert.IsTrue(await client.DeleteAsync(item.Id));
 
