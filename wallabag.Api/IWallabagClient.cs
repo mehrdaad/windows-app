@@ -29,7 +29,7 @@ namespace wallabag.Api
             int? ItemsPerPage = null,
             string[] Tags = null);
         Task<WallabagItem> GetItemAsync(int itemId);
-        Task<WallabagTag> GetTagsAsync();
+        Task<IEnumerable<WallabagTag>> GetTagsAsync();
 
         Task<bool> ArchiveAsync(int itemId);
         Task<bool> ArchiveAsync(WallabagItem item);
