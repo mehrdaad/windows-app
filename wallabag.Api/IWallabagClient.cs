@@ -42,9 +42,9 @@ namespace wallabag.Api
         Task<bool> DeleteAsync(int itemId);
         Task<bool> DeleteAsync(WallabagItem item);
 
-        Task<bool> AddTagsAsync(int itemId, string[] tags);
-        Task<bool> AddTagsAsync(WallabagItem item, string[] tags);
-        Task<bool> RemoveTagsAsync(int itemId, string[] tags);
-        Task<bool> RemoveTagsAsync(WallabagItem item, string[] tags);
+        Task<IEnumerable<WallabagTag>> AddTagsAsync(int itemId, string[] tags);
+        Task<IEnumerable<WallabagTag>> AddTagsAsync(WallabagItem item, string[] tags);
+        Task<bool> RemoveTagsAsync(int itemId, WallabagTag[] tags);
+        Task<bool> RemoveTagsAsync(WallabagItem item, WallabagTag[] tags);
     }
 }
