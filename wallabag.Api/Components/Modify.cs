@@ -18,7 +18,6 @@ namespace wallabag.Api
 
             return item.IsRead == true;
         }
-        public Task<bool> ArchiveAsync(WallabagItem item) { return ArchiveAsync(item.Id); }
         public async Task<bool> UnarchiveAsync(int itemId)
         {
             if (itemId == 0)
@@ -29,7 +28,6 @@ namespace wallabag.Api
 
             return item.IsRead == false;
         }
-        public Task<bool> UnarchiveAsync(WallabagItem item) { return UnarchiveAsync(item.Id); }
         public async Task<bool> FavoriteAsync(int itemId)
         {
             if (itemId == 0)
@@ -40,7 +38,6 @@ namespace wallabag.Api
 
             return item.IsStarred == true;
         }
-        public Task<bool> FavoriteAsync(WallabagItem item) { return FavoriteAsync(item.Id); }
         public async Task<bool> UnfavoriteAsync(int itemId)
         {
             if (itemId == 0)
@@ -51,7 +48,6 @@ namespace wallabag.Api
 
             return item.IsStarred == false;
         }
-        public Task<bool> UnfavoriteAsync(WallabagItem item) { return UnfavoriteAsync(item.Id); }
         public async Task<bool> DeleteAsync(int itemId)
         {
             if (itemId == 0)
@@ -60,6 +56,11 @@ namespace wallabag.Api
             await ExecuteHttpRequestAsync(HttpRequestMethod.Delete, $"/entries/{itemId}");
             return true;
         }
-        public Task<bool> DeleteAsync(WallabagItem item) { return DeleteAsync(item.Id); }
+
+        public Task<bool> ArchiveAsync(WallabagItem item) => ArchiveAsync(item.Id);
+        public Task<bool> UnarchiveAsync(WallabagItem item) => UnarchiveAsync(item.Id);
+        public Task<bool> FavoriteAsync(WallabagItem item) => FavoriteAsync(item.Id);
+        public Task<bool> UnfavoriteAsync(WallabagItem item) => UnfavoriteAsync(item.Id);
+        public Task<bool> DeleteAsync(WallabagItem item) => DeleteAsync(item.Id);
     }
 }
