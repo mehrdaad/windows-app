@@ -45,10 +45,10 @@ namespace wallabag.Api.Tests
         [TestCategory("Tags")]
         public async Task TagsIsRemovedFromAllItems()
         {
-            var tag = (await client.GetTagsAsync()).Single(t => t.Label == "test");
+            var tag = (await client.GetTagsAsync()).First();
             Assert.IsTrue(await client.RemoveTagFromAllItemsAsync(tag));
 
-            var items = (await client.GetItemsAsync(Tags: new string[] { "test" })).ToList();
+            var items = (await client.GetItemsAsync(Tags: new string[] { tag.Label })).ToList();
             Assert.IsTrue(items.Count == 0);
         }
     }
