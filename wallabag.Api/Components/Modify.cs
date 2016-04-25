@@ -52,7 +52,14 @@ namespace wallabag.Api
             return item.IsStarred == false;
         }
         public Task<bool> UnfavoriteAsync(WallabagItem item) { return UnfavoriteAsync(item.Id); }
-        public Task<bool> DeleteAsync(int itemId) { throw new NotImplementedException(); }
-        public Task<bool> DeleteAsync(WallabagItem item) { throw new NotImplementedException(); }
+        public async Task<bool> DeleteAsync(int itemId)
+        {
+            if (itemId == 0)
+                throw new ArgumentNullException(nameof(itemId));
+
+            await ExecuteHttpRequestAsync(HttpRequestMethod.Delete, $"/entries/{itemId}");
+            return true;
+        }
+        public Task<bool> DeleteAsync(WallabagItem item) { return DeleteAsync(item.Id); }
     }
 }
