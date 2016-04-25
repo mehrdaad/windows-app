@@ -25,7 +25,7 @@ namespace wallabag.Api
             _httpClient.DefaultRequestHeaders.Authorization = new HttpCredentialsHeaderValue("Bearer", await GetAccessTokenAsync());
 
             if (string.IsNullOrEmpty(AccessToken))
-                throw new Exception("Access token not available. Please create one using the GetAccessTokenAsync() method first.");
+                throw new Exception("Access token not available. Please create one using the RequestTokenAsync() method first.");
 
             Uri requestUri = new Uri($"{InstanceUri}api{RelativeUriString}.json");
             var content = new HttpStringContent(JsonConvert.SerializeObject(parameters), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json");
