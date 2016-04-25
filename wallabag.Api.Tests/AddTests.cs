@@ -10,7 +10,7 @@ namespace wallabag.Api.Tests
         [TestCategory("Add")]
         public void AddArticleWithoutUriFails()
         {
-            Assert.ThrowsException<ArgumentNullException>(async () =>
+            AssertExtensions.ThrowsExceptionAsync<ArgumentNullException>(async () =>
             {
                 await client.AddAsync(null);
             });

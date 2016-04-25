@@ -37,9 +37,10 @@ namespace wallabag.Api.Tests
         [TestCategory("General")]
         public void InitializationFailsWithInvalidUri()
         {
-            Assert.ThrowsException<UriFormatException>(() =>
+            AssertExtensions.ThrowsExceptionAsync<UriFormatException>(() =>
             {
                 var test = new WallabagClient(new Uri(""), clientId, clientSecret);
+                return Task.CompletedTask;
             });
         }
     }

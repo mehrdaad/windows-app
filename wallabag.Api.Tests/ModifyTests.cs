@@ -12,16 +12,11 @@ namespace wallabag.Api.Tests
         [TestCategory("Modify")]
         public void ModifyingFailsWhenItemIdIsMissing()
         {
-            Assert.ThrowsException<ArgumentNullException>(async () => { await client.ArchiveAsync(null); });
-            Assert.ThrowsException<ArgumentNullException>(async () => { await client.ArchiveAsync(0); });
-            Assert.ThrowsException<ArgumentNullException>(async () => { await client.UnarchiveAsync(null); });
-            Assert.ThrowsException<ArgumentNullException>(async () => { await client.UnarchiveAsync(0); });
-            Assert.ThrowsException<ArgumentNullException>(async () => { await client.FavoriteAsync(null); });
-            Assert.ThrowsException<ArgumentNullException>(async () => { await client.FavoriteAsync(0); });
-            Assert.ThrowsException<ArgumentNullException>(async () => { await client.UnfavoriteAsync(null); });
-            Assert.ThrowsException<ArgumentNullException>(async () => { await client.UnfavoriteAsync(0); });
-            Assert.ThrowsException<ArgumentNullException>(async () => { await client.DeleteAsync(null); });
-            Assert.ThrowsException<ArgumentNullException>(async () => { await client.DeleteAsync(0); });
+            AssertExtensions.ThrowsExceptionAsync<ArgumentNullException>(async () => { await client.ArchiveAsync(0); });
+            AssertExtensions.ThrowsExceptionAsync<ArgumentNullException>(async () => { await client.UnarchiveAsync(0); });
+            AssertExtensions.ThrowsExceptionAsync<ArgumentNullException>(async () => { await client.FavoriteAsync(0); });
+            AssertExtensions.ThrowsExceptionAsync<ArgumentNullException>(async () => { await client.UnfavoriteAsync(0); });
+            AssertExtensions.ThrowsExceptionAsync<ArgumentNullException>(async () => { await client.DeleteAsync(0); });
         }
 
         [TestMethod]

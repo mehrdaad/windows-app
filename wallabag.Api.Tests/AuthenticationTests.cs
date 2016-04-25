@@ -12,7 +12,7 @@ namespace wallabag.Api.Tests
         public void RefreshingTokenFailsIfThereIsNoRefreshToken()
         {
             client.RefreshToken = string.Empty;
-            Assert.ThrowsException<Exception>(async () => await client.RefreshAccessTokenAsync());
+            AssertExtensions.ThrowsExceptionAsync<Exception>(async () => await client.RefreshAccessTokenAsync());
         }
 
         [TestMethod]
@@ -28,9 +28,9 @@ namespace wallabag.Api.Tests
         [TestCategory("Authentication")]
         public void RequestTokenFailsWithoutCredentials()
         {
-            Assert.ThrowsException<ArgumentNullException>(async () => await client.RequestTokenAsync(string.Empty, string.Empty));
-            Assert.ThrowsException<ArgumentNullException>(async () => await client.RequestTokenAsync("username", string.Empty));
-            Assert.ThrowsException<ArgumentNullException>(async () => await client.RequestTokenAsync(string.Empty, "password"));
+            AssertExtensions.ThrowsExceptionAsync<ArgumentNullException>(async () => await client.RequestTokenAsync(string.Empty, string.Empty));
+            AssertExtensions.ThrowsExceptionAsync<ArgumentNullException>(async () => await client.RequestTokenAsync("username", string.Empty));
+            AssertExtensions.ThrowsExceptionAsync<ArgumentNullException>(async () => await client.RequestTokenAsync(string.Empty, "password"));
         }
     }
 }
