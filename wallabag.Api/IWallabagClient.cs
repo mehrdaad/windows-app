@@ -28,23 +28,23 @@ namespace wallabag.Api
             int? PageNumber = null,
             int? ItemsPerPage = null,
             string[] Tags = null);
-        Task<WallabagItem> GetItemAsync(string itemId);
+        Task<WallabagItem> GetItemAsync(int itemId);
         Task<WallabagTag> GetTagsAsync();
 
-        Task<bool> ArchiveAsync(string itemId);
+        Task<bool> ArchiveAsync(int itemId);
         Task<bool> ArchiveAsync(WallabagItem item);
-        Task<bool> UnarchiveAsync(string itemId);
+        Task<bool> UnarchiveAsync(int itemId);
         Task<bool> UnarchiveAsync(WallabagItem item);
-        Task<bool> FavoriteAsync(string itemId);
+        Task<bool> FavoriteAsync(int itemId);
         Task<bool> FavoriteAsync(WallabagItem item);
-        Task<bool> UnfavoriteAsync(string itemId);
+        Task<bool> UnfavoriteAsync(int itemId);
         Task<bool> UnfavoriteAsync(WallabagItem item);
-        Task<bool> DeleteAsync(string itemId);
+        Task<bool> DeleteAsync(int itemId);
         Task<bool> DeleteAsync(WallabagItem item);
 
-        Task<bool> AddTagsAsync(string itemId, string[] tags);
+        Task<bool> AddTagsAsync(int itemId, string[] tags);
         Task<bool> AddTagsAsync(WallabagItem item, string[] tags);
-        Task<bool> RemoveTagsAsync(string itemId, string[] tags);
+        Task<bool> RemoveTagsAsync(int itemId, string[] tags);
         Task<bool> RemoveTagsAsync(WallabagItem item, string[] tags);
     }
 }

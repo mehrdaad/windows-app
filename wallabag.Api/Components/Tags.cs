@@ -8,9 +8,9 @@ namespace wallabag.Api
     {
         public Task<WallabagTag> GetTagsAsync() { throw new NotImplementedException(); }
 
-        public Task<bool> AddTagsAsync(string itemId, string[] tags) { throw new NotImplementedException(); }
+        public Task<bool> AddTagsAsync(int itemId, string[] tags) { throw new NotImplementedException(); }
         public Task<bool> AddTagsAsync(WallabagItem item, string[] tags) { throw new NotImplementedException(); }
-        public Task<bool> RemoveTagsAsync(string itemId, string[] tags) { throw new NotImplementedException(); }
+        public Task<bool> RemoveTagsAsync(int itemId, string[] tags) { throw new NotImplementedException(); }
         public Task<bool> RemoveTagsAsync(WallabagItem item, string[] tags) { throw new NotImplementedException(); }
     }
 }
