@@ -30,10 +30,28 @@ namespace wallabag.Api
             return item.IsRead == false;
         }
         public Task<bool> UnarchiveAsync(WallabagItem item) { return UnarchiveAsync(item.Id); }
-        public Task<bool> FavoriteAsync(int itemId) { throw new NotImplementedException(); }
-        public Task<bool> FavoriteAsync(WallabagItem item) { throw new NotImplementedException(); }
-        public Task<bool> UnfavoriteAsync(int itemId) { throw new NotImplementedException(); }
-        public Task<bool> UnfavoriteAsync(WallabagItem item) { throw new NotImplementedException(); }
+        public async Task<bool> FavoriteAsync(int itemId)
+        {
+            if (itemId == 0)
+                throw new ArgumentNullException(nameof(itemId));
+
+            var jsonString = await ExecuteHttpRequestAsync(HttpRequestMethod.Patch, $"/entries/{itemId}", new Dictionary<string, object>() { ["starred"] = true.ToInt() });
+            var item = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<WallabagItem>(jsonString));
+
+            return item.IsStarred == true;
+        }
+        public Task<bool> FavoriteAsync(WallabagItem item) { return FavoriteAsync(item.Id); }
+        public async Task<bool> UnfavoriteAsync(int itemId)
+        {
+            if (itemId == 0)
+                throw new ArgumentNullException(nameof(itemId));
+
+            var jsonString = await ExecuteHttpRequestAsync(HttpRequestMethod.Patch, $"/entries/{itemId}", new Dictionary<string, object>() { ["starred"] = false.ToInt() });
+            var item = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<WallabagItem>(jsonString));
+
+            return item.IsStarred == false;
+        }
+        public Task<bool> UnfavoriteAsync(WallabagItem item) { return UnfavoriteAsync(item.Id); }
         public Task<bool> DeleteAsync(int itemId) { throw new NotImplementedException(); }
         public Task<bool> DeleteAsync(WallabagItem item) { throw new NotImplementedException(); }
     }
