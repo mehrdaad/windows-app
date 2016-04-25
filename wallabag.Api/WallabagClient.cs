@@ -17,8 +17,15 @@ namespace wallabag.Api
             this.ClientId = ClientId;
             this.ClientSecret = ClientSecret;
 
-            this._httpClient = new HttpClient();          
+            this._httpClient = new HttpClient();
         }
+
+        public async Task<string> GetVersionNumberAsync()
+        {
+            var jsonString = await ExecuteHttpRequestAsync(HttpRequestMethod.Get, "/version");
+            return await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<string>(jsonString));
+        }
+
 
         protected async Task<string> ExecuteHttpRequestAsync(HttpRequestMethod httpRequestMethod, string RelativeUriString, Dictionary<string, object> parameters = default(Dictionary<string, object>))
         {

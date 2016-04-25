@@ -14,6 +14,8 @@ namespace wallabag.Api
         string AccessToken { get; set; }
         string RefreshToken { get; set; }
 
+        Task<string> GetVersionNumberAsync();
+
         Task<string> GetAccessTokenAsync();
         Task<bool> RefreshAccessTokenAsync();
         Task<bool> RequestTokenAsync(string username, string password);
