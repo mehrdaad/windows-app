@@ -16,15 +16,7 @@ namespace wallabag.Api.Tests
             client = new WallabagClient(new Uri(wallabagUrl), clientId, clientSecret);
             await client.RequestTokenAsync(username, password);
         }
-
-        [TestCleanup]
-        public async Task Cleanup()
-        {
-            var items = await client.GetItemsAsync();
-            foreach (var item in items)
-                await client.DeleteAsync(item);
-        }
-
+        
         [TestMethod]
         [TestCategory("General")]
         public async Task VersionNumberReturnsValidValue()
