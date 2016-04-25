@@ -50,9 +50,10 @@ namespace wallabag.Api
             var jsonString = await ExecuteHttpRequestAsync(HttpRequestMethod.Get, requestUriSubString);
             return (await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<ItemCollectionResponse>(jsonString))).Embedded.Items;
         }
-        public Task<WallabagItem> GetItemAsync(int itemId)
+        public async Task<WallabagItem> GetItemAsync(int itemId)
         {
-            throw new NotImplementedException();
+            var jsonString = await ExecuteHttpRequestAsync(HttpRequestMethod.Get, $"/entries/{itemId}");
+            return await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<WallabagItem>(jsonString));
         }
 
         public enum WallabagDateOrder { ByCreationDate, ByLastModificationDate }
