@@ -22,9 +22,9 @@ namespace wallabag.Api
             var requestUriSubString = "/entries";
 
             if (IsRead != null)
-                parameters.Add("archive", IsRead);
+                parameters.Add("archive", ((bool)IsRead).ToInt());
             if (IsStarred != null)
-                parameters.Add("starred", IsStarred);
+                parameters.Add("starred", ((bool)IsStarred).ToInt());
             if (DateOrder != null)
                 parameters.Add("sort", (DateOrder == WallabagDateOrder.ByCreationDate ? "created" : "updated"));
             if (SortOrder != null)
