@@ -38,6 +38,33 @@ namespace wallabag.Api.Tests
 
         [TestMethod]
         [TestCategory("Get")]
+        public async Task ItemsRetrievedWithSpecificTag()
+        {
+            List<WallabagItem> items = (await client.GetItemsAsync(Tags: new string[] { "politik" })).ToList();
+
+            foreach (var item in items)
+                StringAssert.Contains(item.Tags.ToCommaSeparatedString(), "politik");
+
+            Assert.IsTrue(items.Count > 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Get")]
+        public async Task ItemsRetrievedWithMultipleTags()
+        {
+            List<WallabagItem> items = (await client.GetItemsAsync(Tags: new string[] { "politik", "test" })).ToList();
+
+            foreach (var item in items)
+            {
+                StringAssert.Contains(item.Tags.ToCommaSeparatedString(), "politik");
+                StringAssert.Contains(item.Tags.ToCommaSeparatedString(), "test");
+            }
+
+            Assert.IsTrue(items.Count > 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Get")]
         public async Task ItemsRetrievedWithMultipleFilters()
         {
             List<WallabagItem> items = (await client.GetItemsAsync(IsRead: true,
@@ -48,8 +75,8 @@ namespace wallabag.Api.Tests
             var firstItem = items.First();
 
             Assert.IsTrue(items.Count == 1);
-            Assert.IsTrue(firstItem.IsStarred = false);
-            Assert.IsTrue(firstItem.IsRead = true);
+            Assert.IsTrue(firstItem.IsStarred == false);
+            Assert.IsTrue(firstItem.IsRead == true);
         }
     }
 }
