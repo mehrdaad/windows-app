@@ -33,6 +33,10 @@ namespace wallabag.Api.Tests
         public async Task ItemsRetrievedWithOneFilter()
         {
             List<WallabagItem> items = (await client.GetItemsAsync(IsRead: true)).ToList();
+
+            foreach (var item in items)
+                Assert.IsTrue(item.IsRead);
+
             Assert.IsTrue(items.Count > 0);
         }
 
