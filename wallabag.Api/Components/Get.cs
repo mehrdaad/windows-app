@@ -44,7 +44,7 @@ namespace wallabag.Api
                     requestUriSubString += $"{item.Key}={item.Value.ToString()}&";
 
                 // Remove the last ampersand (&).
-                requestUriSubString.Remove(requestUriSubString.Length - 1);
+                requestUriSubString = requestUriSubString.Remove(requestUriSubString.Length - 1);
             }
 
             var jsonString = await ExecuteHttpRequestAsync(HttpRequestMethod.Get, requestUriSubString);
