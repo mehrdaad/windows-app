@@ -2,35 +2,31 @@
     x:Class="wallabag.Views.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:wallabag.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:wallabag.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="48"/>
-            <RowDefinition/>
-            <RowDefinition Height="Auto" MinHeight="48"/>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="UNREAD"/>
-            <AppBarButton Icon="Find" Grid.Column="1"/>
-        </Grid>
-        <GridView Grid.Row="1">
-            
-        </GridView>
-        <CommandBar Grid.Row="2">
-            <AppBarButton Icon="Add" Label="Add" Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Sync" Label="Sync"/>
-            <AppBarButton Icon="Bullets" Label="Select"/>
+        <CommandBar Background="Transparent">
+            <AppBarButton Icon="Add" Label="Add" />
+            <AppBarButton Icon="Sync" Label="Sync" />
+            <AppBarButton Icon="Find" Label="Search" />
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="Settings"/>
+                <AppBarButton Label="Settings" />
             </CommandBar.SecondaryCommands>
+            <CommandBar.Content>
+                <TextBlock
+                    Margin="12"
+                    VerticalAlignment="Center"
+                    FontWeight="SemiBold"
+                    Text="UNREAD" />
+            </CommandBar.Content>
         </CommandBar>
+        <GridView Grid.Row="1" />
     </Grid>
 </Page>
