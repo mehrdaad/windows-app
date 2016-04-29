@@ -18,8 +18,12 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <CommandBar Background="Transparent">
-            <AppBarButton Icon="Add" Label="Add" />
-            <AppBarButton Icon="Sync" Label="Sync" />
+            <AppBarButton Icon="Add" Label="Add" 
+                Command="{x:Bind ViewModel.AddCommand}"/>
+            <AppBarButton
+                Command="{x:Bind ViewModel.SyncCommand}"
+                Icon="Sync"
+                Label="Sync" />
             <AppBarButton Icon="Find" Label="Search" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="Settings" />
