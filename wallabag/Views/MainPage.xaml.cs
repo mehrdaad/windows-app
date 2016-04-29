@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using wallabag.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,17 +23,11 @@ namespace wallabag.Views
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public MainViewModel ViewModel { get { return DataContext as MainViewModel; } }
+
         public MainPage()
         {
             this.InitializeComponent();
-        }
-
-        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            var client = new Api.WallabagClient(new Uri("https://wallabag.jlnostr.de"), "1_4xy4khl22uck0o8gcs4kw4cwg80s88os0kw0k4so4ssg804ogk", "5wakw2t7uxkwsww480swooow8gsgko8w40wso0w8c4gocsc4ws");
-            await client.RequestTokenAsync("jlnostr", "w8DDidGsT.");
-            var version = await client.GetVersionNumberAsync();
-            System.Diagnostics.Debug.WriteLine(version);
         }
     }
 }
