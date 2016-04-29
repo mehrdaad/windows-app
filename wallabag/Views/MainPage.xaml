@@ -32,6 +32,15 @@
                     Text="UNREAD" />
             </CommandBar.Content>
         </CommandBar>
-        <GridView Grid.Row="1" />
+        <SplitView Grid.Row="1" IsPaneOpen="True">
+            <SplitView.Content>
+                <GridView Grid.Row="1" />
+            </SplitView.Content>
+            <SplitView.Pane>
+                <RelativePanel>
+                    <!-- TODO -->
+                </RelativePanel>
+            </SplitView.Pane>
+        </SplitView>
     </Grid>
 </Page>
