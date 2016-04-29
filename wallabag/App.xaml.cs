@@ -20,8 +20,10 @@ namespace wallabag
     /// <summary>
     /// Stellt das anwendungsspezifische Verhalten bereit, um die Standardanwendungsklasse zu ergänzen.
     /// </summary>
-    sealed partial class App : Application
+    public sealed partial class App : Application
     {
+        public static Api.WallabagClient Client { get; private set; }
+
         /// <summary>
         /// Initialisiert das Singletonanwendungsobjekt. Dies ist die erste Zeile von erstelltem Code
         /// und daher das logische Äquivalent von main() bzw. WinMain().
@@ -30,6 +32,7 @@ namespace wallabag
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            // Client = new Api.WallabagClient(new Uri(""), "", "");
         }
 
         /// <summary>
