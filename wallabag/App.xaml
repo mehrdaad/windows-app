@@ -1,8 +1,9 @@
-﻿<Application
+﻿<t10:BootStrapper
     x:Class="wallabag.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:wallabag"
+    xmlns:t10="using:Template10.Common"
     RequestedTheme="Light">
 
-</Application>
+</t10:BootStrapper>
