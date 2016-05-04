@@ -17,6 +17,8 @@ namespace wallabag
         {
             if (startKind == StartKind.Launch)
             {
+                Client = new Api.WallabagClient(new Uri("https://wallabag.jlnostr.de"), "1_4xy4khl22uck0o8gcs4kw4cwg80s88os0kw0k4so4ssg804ogk", "5wakw2t7uxkwsww480swooow8gsgko8w40wso0w8c4gocsc4ws");
+
                 Database = new SQLite.SQLiteAsyncConnection("wallabag.db", true);
                 await Database.CreateTableAsync<WallabagItem>();
                 await Database.CreateTableAsync<WallabagTag>();

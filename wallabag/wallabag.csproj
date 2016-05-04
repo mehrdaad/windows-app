@@ -145,12 +145,6 @@
     <Folder Include="Models\" />
     <Folder Include="Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\wallabag.Api\wallabag.Api.csproj">
-      <Project>{35c0d205-6ddb-4a8b-a8d6-f6c163383849}</Project>
-      <Name>wallabag.Api</Name>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
