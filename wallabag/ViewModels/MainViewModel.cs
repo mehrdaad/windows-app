@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace wallabag.ViewModels
 {
@@ -15,11 +16,13 @@ namespace wallabag.ViewModels
 
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
+        public DelegateCommand NavigateToSettingsPageCommand { get; private set; }
 
         public MainViewModel()
         {
             AddCommand = new DelegateCommand(async () => await new Dialogs.AddItemDialog().ShowAsync());
             SyncCommand = new DelegateCommand(async () => await SyncAsync());
+            NavigateToSettingsPageCommand = new DelegateCommand(() => NavigationService.Navigate(typeof(Views.SettingsPage), infoOverride: new DrillInNavigationTransitionInfo()));
         }
 
         private async Task SyncAsync()

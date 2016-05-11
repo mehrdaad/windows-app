@@ -29,7 +29,7 @@
                 Label="Sync" />
             <AppBarButton Icon="Find" Label="Search" />
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="Settings" />
+                <AppBarButton Label="Settings" Command="{x:Bind ViewModel.NavigateToSettingsPageCommand}"/>
             </CommandBar.SecondaryCommands>
             <CommandBar.Content>
                 <TextBlock
