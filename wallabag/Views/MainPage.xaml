@@ -29,7 +29,7 @@
                 Label="Sync" />
             <AppBarButton Icon="Find" Label="Search" />
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="Settings" Command="{x:Bind ViewModel.NavigateToSettingsPageCommand}"/>
+                <AppBarButton Command="{x:Bind ViewModel.NavigateToSettingsPageCommand}" Label="Settings" />
             </CommandBar.SecondaryCommands>
             <CommandBar.Content>
                 <TextBlock
@@ -39,9 +39,57 @@
                     Text="UNREAD" />
             </CommandBar.Content>
         </CommandBar>
-        <SplitView Grid.Row="1" IsPaneOpen="True">
+        <SplitView Grid.Row="1">
             <SplitView.Content>
-                <controls:AdaptiveGridView Grid.Row="1" />
+                <controls:AdaptiveGridView
+                    Grid.Row="1"
+                    ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
+                    MinItemHeight="175"
+                    MinItemWidth="300">
+                    <controls:AdaptiveGridView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ItemViewModel">
+                            <RelativePanel x:Name="RootPanel">
+                                <Image
+                                    x:Name="image"
+                                    RelativePanel.AlignBottomWithPanel="True"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.AlignTopWithPanel="True"
+                                    Stretch="UniformToFill">
+                                    <Image.Source>
+                                        <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />
+                                    </Image.Source>
+                                </Image>
+                                <Border
+                                    Background="#4F000000"
+                                    RelativePanel.AlignBottomWithPanel="True"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.AlignTopWithPanel="True"
+                                    RequestedTheme="Dark">
+                                    <StackPanel
+                                        x:Name="ContentStackPanel"
+                                        Margin="12"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            x:Name="Title"
+                                            Margin="4,2"
+                                            MaxLines="2"
+                                            Text="{x:Bind Model.Title}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="Wrap" />
+                                        <TextBlock
+                                            x:Name="Hostname"
+                                            Margin="4,2"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            Opacity="0.7"
+                                            Text="{x:Bind Model.DomainName}" />
+                                    </StackPanel>
+                                </Border>
+                            </RelativePanel>
+                        </DataTemplate>
+                    </controls:AdaptiveGridView.ItemTemplate>
+                </controls:AdaptiveGridView>
             </SplitView.Content>
             <SplitView.Pane>
                 <RelativePanel>
