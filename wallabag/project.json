@@ -4,7 +4,7 @@
     "PropertyChanged.Fody": "1.51.0",
     "SQLite.Net-PCL": "3.1.1",
     "Template10": "1.1.10",
-    "wallabag.Api": "1.0.1.39483"
+    "wallabag.Api": "1.0.2"
   },
   "frameworks": {
     "uap10.0": {}
