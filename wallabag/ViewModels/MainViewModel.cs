@@ -1,12 +1,13 @@
 ﻿using PropertyChanged;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
+using wallabag.Api.Models;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Navigation;
 
 namespace wallabag.ViewModels
 {
@@ -38,11 +39,21 @@ namespace wallabag.ViewModels
             await App.Client.GetAccessTokenAsync();
             await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(items));
         }
-
         private void ItemClick(ItemClickEventArgs args)
         {
             var item = args.ClickedItem as ItemViewModel;
             NavigationService.Navigate(typeof(Views.ItemPage), item);
+        }
+
+        public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        {
+            if (mode != NavigationMode.Refresh)
+            {
+                var unreadItems = App.Database.Table<WallabagItem>().Where(i => i.IsRead == false);
+                foreach (var item in unreadItems)
+                    Items.Add(new ItemViewModel(item));
+            }
+            return base.OnNavigatedToAsync(parameter, mode, state);
         }
     }
 }
