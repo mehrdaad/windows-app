@@ -1,9 +1,11 @@
 ﻿using PropertyChanged;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
+using wallabag.Api.Models;
 
 namespace wallabag.ViewModels
 {
@@ -11,7 +13,7 @@ namespace wallabag.ViewModels
     public class AddItemViewModel : ViewModelBase
     {
         public string UriString { get; set; } = string.Empty;
-        public IEnumerable<string> Tags { get; set; } = new List<string>();
+        public IEnumerable<WallabagTag> Tags { get; set; } = new ObservableCollection<WallabagTag>();
         public string Title { get; set; } = string.Empty;
 
         public DelegateCommand AddCommand { get; private set; }
@@ -25,8 +27,13 @@ namespace wallabag.ViewModels
 
         private async Task<bool> AddAsync()
         {
-            var item = await App.Client.AddAsync(new Uri(UriString), Tags.ToArray(), Title);
-            return item != null;
+            var item = await App.Client.AddAsync(new Uri(UriString), string.Join(",", Tags).Split(","[0]));
+            if (item != null)
+            {
+                App.Database.Insert(item);
+                return true;
+            }
+            return false;
         }
     }
 }
