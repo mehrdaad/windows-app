@@ -25,7 +25,7 @@ namespace wallabag
                 Settings = SettingsService.Instance;
                 Client = new Api.WallabagClient(Settings.WallabagUrl, Settings.ClientId, Settings.ClientSecret);
 
-                var path = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", Windows.Storage.CreationCollisionOption.ReplaceExisting)).Path;
+                var path = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", Windows.Storage.CreationCollisionOption.OpenIfExists)).Path;
 
                 await Task.Factory.StartNew(() =>
                 {
