@@ -7,6 +7,7 @@ using Template10.Common;
 using wallabag.Api.Models;
 using wallabag.Services;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel;
 
 namespace wallabag
 {
@@ -23,7 +24,11 @@ namespace wallabag
             if (startKind == StartKind.Launch)
             {
                 Settings = SettingsService.Instance;
+
                 Client = new Api.WallabagClient(Settings.WallabagUrl, Settings.ClientId, Settings.ClientSecret);
+                Client.AccessToken = Settings.AccessToken;
+                Client.RefreshToken = Settings.RefreshToken;
+                Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
 
                 var path = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", Windows.Storage.CreationCollisionOption.OpenIfExists)).Path;
 
@@ -35,6 +40,30 @@ namespace wallabag
                 });
 
                 NavigationService.Navigate(typeof(Views.MainPage));
+            }
+        }
+
+        public override async Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
+        {
+            e.SuspendingOperation.GetDeferral();
+
+            Settings.AccessToken = Client.AccessToken;
+            Settings.RefreshToken = Client.RefreshToken;
+            Settings.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
+
+            await NavigationService.SaveNavigationAsync();
+            Database.Close();
+        }
+
+        public override void OnResuming(object s, object e, AppExecutionState previousExecutionState)
+        {
+            if (previousExecutionState == AppExecutionState.Suspended)
+            {
+                Client.AccessToken = Settings.AccessToken;
+                Client.RefreshToken = Settings.RefreshToken;
+                Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
+
+                NavigationService.RestoreSavedNavigationAsync();
             }
         }
 
