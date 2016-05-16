@@ -34,11 +34,7 @@
                 <AppBarButton Command="{x:Bind ViewModel.NavigateToSettingsPageCommand}" Label="Settings" />
             </CommandBar.SecondaryCommands>
             <CommandBar.Content>
-                <TextBlock
-                    Margin="12"
-                    VerticalAlignment="Center"
-                    FontWeight="SemiBold"
-                    Text="UNREAD" />
+                <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="UNREAD" />
             </CommandBar.Content>
         </CommandBar>
         <SplitView Grid.Row="1">
@@ -46,10 +42,10 @@
                 <controls:AdaptiveGridView
                     x:Name="GridView"
                     Grid.Row="1"
+                    IsItemClickEnabled="True"
                     ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
                     MinItemHeight="175"
-                    MinItemWidth="300"
-                    IsItemClickEnabled="True">
+                    MinItemWidth="300">
                     <controls:AdaptiveGridView.ItemTemplate>
                         <DataTemplate x:DataType="vm:ItemViewModel">
                             <RelativePanel x:Name="RootPanel">
