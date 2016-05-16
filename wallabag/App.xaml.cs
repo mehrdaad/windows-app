@@ -29,7 +29,7 @@ namespace wallabag
 
                 await Task.Factory.StartNew(() =>
                 {
-                    Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new JsonSerializer());
+                    Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
                     Database.CreateTable<WallabagItem>();
                     Database.CreateTable<WallabagTag>();
                 });
@@ -38,19 +38,32 @@ namespace wallabag
             }
         }
 
-        public class JsonSerializer : IBlobSerializer
+        public class CustomBlobSerializer : IBlobSerializer
         {
+            private JsonSerializerSettings _serializerSettings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.All,
+                TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full
+            };
+
             public bool CanDeserialize(Type type) => true;
 
             public object Deserialize(byte[] data, Type type)
             {
                 var str = System.Text.Encoding.UTF8.GetString(data);
-                return JsonConvert.DeserializeObject(str);
+
+                if (type == typeof(Uri))
+                    return new Uri(str.Replace("\"", string.Empty));
+                else
+                    return JsonConvert.DeserializeObject(str, _serializerSettings);
             }
 
             public byte[] Serialize<T>(T obj)
             {
-                return System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
+                if (typeof(T) == typeof(Uri))
+                    return System.Text.Encoding.UTF8.GetBytes(obj.ToString());
+                else
+                    return System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj, _serializerSettings));
             }
         }
     }
