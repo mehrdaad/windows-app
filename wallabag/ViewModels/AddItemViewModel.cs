@@ -20,7 +20,7 @@ namespace wallabag.ViewModels
         public AddItemViewModel()
         {
             AddCommand = new DelegateCommand(async () => await AddAsync());
-            CancelCommand = new DelegateCommand(() => { if (NavigationService.CanGoBack) NavigationService.GoBack(); });
+            CancelCommand = new DelegateCommand(() => Services.DialogService.HideCurrentDialog());
         }
 
         private async Task<bool> AddAsync()

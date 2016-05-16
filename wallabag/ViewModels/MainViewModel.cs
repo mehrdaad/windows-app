@@ -22,7 +22,7 @@ namespace wallabag.ViewModels
 
         public MainViewModel()
         {
-            AddCommand = new DelegateCommand(async () => await new Dialogs.AddItemDialog().ShowAsync());
+            AddCommand = new DelegateCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.AddItem));
             SyncCommand = new DelegateCommand(async () => await SyncAsync());
             NavigateToSettingsPageCommand = new DelegateCommand(() => NavigationService.Navigate(typeof(Views.SettingsPage), infoOverride: new DrillInNavigationTransitionInfo()));
             ItemClickCommand = new DelegateCommand<ItemClickEventArgs>(t => ItemClick(t));
