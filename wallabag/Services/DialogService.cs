@@ -8,7 +8,7 @@ namespace wallabag.Services
     {
         private static ContentDialog _dialog;
 
-        public static async Task ShowAsync(Dialog dialog)
+        public static async Task ShowAsync(Dialog dialog, object parameter = null)
         {
             switch (dialog)
             {
@@ -18,6 +18,10 @@ namespace wallabag.Services
                 case Dialog.EditTags:
                     break;
             }
+
+            if (parameter != null)
+                _dialog.DataContext = parameter;
+
             await _dialog?.ShowAsync();
         }
         public static void HideCurrentDialog() => _dialog?.Hide();
