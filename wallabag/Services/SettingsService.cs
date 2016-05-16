@@ -42,6 +42,11 @@ namespace wallabag.Services
             get { return _helper.Read(nameof(RefreshToken), string.Empty); }
             set { _helper.Write(nameof(RefreshToken), value); }
         }
+        public DateTime LastTokenRefreshDateTime
+        {
+            get { return _helper.Read(nameof(LastTokenRefreshDateTime), DateTime.UtcNow - TimeSpan.FromHours(1)); }
+            set { _helper.Write(nameof(LastTokenRefreshDateTime), value); }
+        }
 
         #endregion
     }
