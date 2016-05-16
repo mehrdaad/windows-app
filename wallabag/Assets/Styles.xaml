@@ -3,10 +3,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:wallabag.Assets">
 
+    <DataTemplate x:Key="ContentDialogTitleDataTemplate">
+        <TextBlock
+            Margin="0,0,0,16"
+            Style="{StaticResource PageTitleTextBlockStyle}"
+            FontSize="15"
+            Text="{Binding}" />
+    </DataTemplate>
+
     <Style x:Key="PageTitleTextBlockStyle" TargetType="TextBlock">
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Margin" Value="12" />
         <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CharacterSpacing" Value="10" />
     </Style>
 
 </ResourceDictionary>
