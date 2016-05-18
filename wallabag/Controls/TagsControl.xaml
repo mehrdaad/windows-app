@@ -23,6 +23,8 @@
             Text="No tags added, yet :(" />
         <ListView
             x:Name="tagsListView"
+            IsItemClickEnabled="True"
+            ItemClick="tagsListView_ItemClick"
             ItemsSource="{x:Bind ItemsSource, Mode=OneWay}"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             ScrollViewer.HorizontalScrollMode="Auto"

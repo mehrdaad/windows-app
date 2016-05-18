@@ -55,6 +55,12 @@ namespace wallabag.Controls
                 noTagsInfoTextBlock.Visibility = Visibility.Visible;
             else
                 noTagsInfoTextBlock.Visibility = Visibility.Collapsed;
-        }           
+        }
+
+        private void tagsListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            (ItemsSource as IList<WallabagTag>).Remove(e.ClickedItem as WallabagTag);
+            UpdateNoTagsInfoTextBlockVisibility();
+        }
     }
 }
