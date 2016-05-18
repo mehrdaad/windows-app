@@ -44,7 +44,17 @@ namespace wallabag.Controls
                         itemsSource.Add(newTag);
                 }
             }
+
+            UpdateNoTagsInfoTextBlockVisibility();
             sender.Text = string.Empty;
         }
+
+        private void UpdateNoTagsInfoTextBlockVisibility()
+        {
+            if (ItemsSource.Count() == 0)
+                noTagsInfoTextBlock.Visibility = Visibility.Visible;
+            else
+                noTagsInfoTextBlock.Visibility = Visibility.Collapsed;
+        }           
     }
 }

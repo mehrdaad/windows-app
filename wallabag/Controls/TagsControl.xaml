@@ -12,12 +12,17 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition MinHeight="52" />
             <RowDefinition />
         </Grid.RowDefinitions>
+        <TextBlock
+            x:Name="noTagsInfoTextBlock"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Opacity="0.8"
+            Text="No tags added, yet :(" />
         <ListView
             x:Name="tagsListView"
-            MinHeight="70"
             ItemsSource="{x:Bind ItemsSource, Mode=OneWay}"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             ScrollViewer.HorizontalScrollMode="Auto"
