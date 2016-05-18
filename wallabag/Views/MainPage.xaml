@@ -17,16 +17,48 @@
 
     <Page.Resources>
         <MenuFlyout x:Key="ItemContextMenuMenuFlyout">
-            <MenuFlyoutItem Command="{Binding MarkAsReadCommand}" Text="Mark as read" />
-            <MenuFlyoutItem Command="{Binding UnmarkAsReadCommand}" Text="Unmark as read" />
-            <MenuFlyoutItem Command="{Binding MarkAsStarredCommand}" Text="Mark as favorite" />
-            <MenuFlyoutItem Command="{Binding UnmarkAsStarredCommand}" Text="Unmark as favorite" />
+            <MenuFlyoutItem
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                Command="{Binding MarkAsReadCommand}"
+                Tag="&#xE001;"
+                Text="Mark as read" />
+            <MenuFlyoutItem
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                Command="{Binding UnmarkAsReadCommand}"
+                Tag="&#xE052;"
+                Text="Unmark as read" />
+            <MenuFlyoutItem
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                Command="{Binding MarkAsStarredCommand}"
+                Tag="&#xE006;"
+                Text="Mark as favorite" />
+            <MenuFlyoutItem
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                Command="{Binding UnmarkAsStarredCommand}"
+                Tag="&#xE007;"
+                Text="Unmark as favorite" />
             <MenuFlyoutSeparator />
-            <MenuFlyoutItem Command="{Binding EditTagsCommand}" Text="Edit tags" />
-            <MenuFlyoutItem Command="{Binding ShareCommand}" Text="Share" />
-            <MenuFlyoutItem Command="{Binding OpenInBrowserCommand}" Text="Open in browser" />
+            <MenuFlyoutItem
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                Command="{Binding EditTagsCommand}"
+                Tag="&#xE1CB;"
+                Text="Edit tags" />
+            <MenuFlyoutItem
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                Command="{Binding ShareCommand}"
+                Tag="&#xE72D;"
+                Text="Share" />
+            <MenuFlyoutItem
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                Command="{Binding OpenInBrowserCommand}"
+                Tag="&#xE12B;"
+                Text="Open in browser" />
             <MenuFlyoutSeparator />
-            <MenuFlyoutItem Command="{Binding DeleteCommand}" Text="Delete" />
+            <MenuFlyoutItem
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                Command="{Binding DeleteCommand}"
+                Tag="&#xE107;"
+                Text="Delete" />
         </MenuFlyout>
     </Page.Resources>
 
