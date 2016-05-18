@@ -21,22 +21,26 @@
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding MarkAsReadCommand}"
                 Tag="&#xE001;"
-                Text="Mark as read" />
+                Text="Mark as read"
+                Visibility="{Binding Model.IsRead, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=true}" />
             <MenuFlyoutItem
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding UnmarkAsReadCommand}"
                 Tag="&#xE052;"
-                Text="Unmark as read" />
+                Text="Unmark as read"
+                Visibility="{Binding Model.IsRead, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <MenuFlyoutItem
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding MarkAsStarredCommand}"
                 Tag="&#xE006;"
-                Text="Mark as favorite" />
+                Text="Mark as favorite"
+                Visibility="{Binding Model.IsStarred, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=true}" />
             <MenuFlyoutItem
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding UnmarkAsStarredCommand}"
                 Tag="&#xE007;"
-                Text="Unmark as favorite" />
+                Text="Unmark as favorite"
+                Visibility="{Binding Model.IsStarred, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <MenuFlyoutSeparator />
             <MenuFlyoutItem
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
