@@ -8,7 +8,7 @@ using Windows.System;
 namespace wallabag.ViewModels
 {
     [ImplementPropertyChanged]
-    public class ItemViewModel : ViewModelBase
+    public class ItemViewModel : ViewModelBase, IComparable
     {
         public WallabagItem Model { get; private set; }
 
@@ -44,5 +44,7 @@ namespace wallabag.ViewModels
             EditTagsCommand = new DelegateCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, Model));
             OpenInBrowserCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri(Model.Url)));
         }
+
+        public int CompareTo(object obj) => ((IComparable)Model).CompareTo((obj as ItemViewModel).Model);
     }
 }
