@@ -15,6 +15,21 @@
         <vm:MainViewModel />
     </Page.DataContext>
 
+    <Page.Resources>
+        <MenuFlyout x:Key="ItemContextMenuMenuFlyout">
+            <MenuFlyoutItem Command="{Binding MarkAsReadCommand}" Text="Mark as read" />
+            <MenuFlyoutItem Command="{Binding UnmarkAsReadCommand}" Text="Unmark as read" />
+            <MenuFlyoutItem Command="{Binding MarkAsStarredCommand}" Text="Mark as favorite" />
+            <MenuFlyoutItem Command="{Binding UnmarkAsStarredCommand}" Text="Unmark as favorite" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Command="{Binding EditTagsCommand}" Text="Edit tags" />
+            <MenuFlyoutItem Command="{Binding ShareCommand}" Text="Share" />
+            <MenuFlyoutItem Command="{Binding OpenInBrowserCommand}" Text="Open in browser" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Command="{Binding DeleteCommand}" Text="Delete" />
+        </MenuFlyout>
+    </Page.Resources>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -40,7 +55,7 @@
         <SplitView Grid.Row="1">
             <SplitView.Content>
                 <controls:AdaptiveGridView
-                    x:Name="GridView"
+                    x:Name="ItemGridView"
                     Grid.Row="1"
                     IsItemClickEnabled="True"
                     ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
