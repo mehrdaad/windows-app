@@ -16,6 +16,7 @@ namespace wallabag.Services
                     _dialog = new Dialogs.AddItemDialog();
                     break;
                 case Dialog.EditTags:
+                    _dialog = new Dialogs.EditTagsDialog();
                     break;
             }
 
