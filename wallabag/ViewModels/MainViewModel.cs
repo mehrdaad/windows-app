@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Api.Models;
+using wallabag.Common;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
@@ -14,7 +15,8 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class MainViewModel : ViewModelBase
     {
-        public ICollection<ItemViewModel> Items { get; set; } = new ObservableCollection<ItemViewModel>();
+        private List<WallabagItem> _items = new List<WallabagItem>();
+        public ObservableCollection<ItemViewModel> Items { get; set; } = new ObservableCollection<ItemViewModel>();
 
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
@@ -31,7 +33,7 @@ namespace wallabag.ViewModels
 
         private async Task SyncAsync()
         {
-            var items = (await App.Client.GetItemsAsync(DateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate)).ToList();
+            var items = (await App.Client.GetItemsAsync()).ToList();
 
             foreach (var item in items)
                 Items.Add(new ItemViewModel(item));
@@ -39,20 +41,32 @@ namespace wallabag.ViewModels
             await App.Client.GetAccessTokenAsync();
             await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(items));
         }
+        private void FetchFromDatabase()
+        {
+            var databaseItems = App.Database.Table<WallabagItem>().ToList();
+
+            var newItems = databaseItems.Except(_items);
+            var deletedItems = _items.Except(databaseItems);
+
+            _items = databaseItems;
+
+            foreach (var item in newItems)
+                Items.AddSorted(new ItemViewModel(item));
+
+            foreach (var item in deletedItems)
+                Items.Remove(new ItemViewModel(item));
+        }
         private void ItemClick(ItemClickEventArgs args)
         {
             var item = args.ClickedItem as ItemViewModel;
-            NavigationService.Navigate(typeof(Views.ItemPage), item);
+            NavigationService.Navigate(typeof(Views.ItemPage), item.Model);
         }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             if (mode != NavigationMode.Refresh)
-            {
-                var unreadItems = App.Database.Table<WallabagItem>().Where(i => i.IsRead == false);
-                foreach (var item in unreadItems)
-                    Items.Add(new ItemViewModel(item));
-            }
+                FetchFromDatabase();
+
             return base.OnNavigatedToAsync(parameter, mode, state);
         }
     }
