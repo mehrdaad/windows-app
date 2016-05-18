@@ -1,8 +1,8 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Messaging;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Api.Models;
@@ -31,6 +31,7 @@ namespace wallabag.ViewModels
             if (item != null)
             {
                 App.Database.Insert(item);
+                Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
                 return true;
             }
             return false;

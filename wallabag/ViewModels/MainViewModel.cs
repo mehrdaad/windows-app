@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Messaging;
+using PropertyChanged;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -67,6 +68,11 @@ namespace wallabag.ViewModels
             if (mode != NavigationMode.Refresh)
                 FetchFromDatabase();
 
+            Messenger.Default.Register<NotificationMessage>(this, message =>
+            {
+                if (message.Notification.Equals("FetchFromDatabase"))
+                    FetchFromDatabase();
+            });
             return base.OnNavigatedToAsync(parameter, mode, state);
         }
     }
