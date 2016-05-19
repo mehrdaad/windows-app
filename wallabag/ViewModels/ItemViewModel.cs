@@ -52,5 +52,7 @@ namespace wallabag.ViewModels
         }
 
         public int CompareTo(object obj) => ((IComparable)Model).CompareTo((obj as ItemViewModel).Model);
+        public override bool Equals(object obj) => Model.Equals((obj as ItemViewModel).Model);
+        public override int GetHashCode() => Model.GetHashCode();
     }
 }

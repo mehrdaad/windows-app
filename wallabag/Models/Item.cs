@@ -87,5 +87,16 @@ namespace wallabag.Models
             };
         }
         public int CompareTo(object obj) => LastModificationDate.CompareTo((obj as Item).LastModificationDate);
+        public override string ToString() => Title ?? string.Empty;
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj.GetType().Equals(typeof(Item)))
+            {
+                var comparedItem = obj as Item;
+                return Id.Equals(comparedItem.Id) && LastModificationDate.Equals(comparedItem.LastModificationDate);
+            }
+            return false;
+        }
+        public override int GetHashCode() => Id;
     }
 }
