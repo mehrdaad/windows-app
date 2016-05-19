@@ -37,7 +37,13 @@ namespace wallabag.ViewModels
             var items = (await App.Client.GetItemsAsync()).ToList();
 
             foreach (var item in items)
-                Items.Add(new ItemViewModel(item));
+            {
+                if (!_items.Contains(item))
+                {
+                    _items.Add(item);
+                    Items.Add(new ItemViewModel(item));
+                }
+            }
 
             await App.Client.GetAccessTokenAsync();
             await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(items));
@@ -47,12 +53,19 @@ namespace wallabag.ViewModels
             var databaseItems = App.Database.Table<WallabagItem>().ToList();
 
             var newItems = databaseItems.Except(_items);
+            var changedItems = databaseItems.Except(_items).Except(newItems);
             var deletedItems = _items.Except(databaseItems);
 
             _items = databaseItems;
 
             foreach (var item in newItems)
                 Items.AddSorted(new ItemViewModel(item));
+
+            foreach (var item in changedItems)
+            {
+                Items.Remove(Items.Where(i => i.Model.Id == item.Id).First());
+                Items.AddSorted(new ItemViewModel(item));           
+            }
 
             foreach (var item in deletedItems)
                 Items.Remove(new ItemViewModel(item));
