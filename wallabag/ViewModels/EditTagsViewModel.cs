@@ -21,6 +21,14 @@ namespace wallabag.ViewModels
             FinishCommand = new DelegateCommand(async () => await FinishAsync());
             CancelCommand = new DelegateCommand(() => Services.DialogService.HideCurrentDialog());
         }
+        public EditTagsViewModel(WallabagItem Item)
+        {
+            FinishCommand = new DelegateCommand(async () => await FinishAsync());
+            CancelCommand = new DelegateCommand(() => Services.DialogService.HideCurrentDialog());
+
+            Items.Add(Item);
+            Tags = new ObservableCollection<WallabagTag>(Item.Tags);
+        }
 
         private async Task FinishAsync()
         {
