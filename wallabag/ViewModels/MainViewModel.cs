@@ -5,8 +5,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
-using wallabag.Api.Models;
 using wallabag.Common;
+using wallabag.Models;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
@@ -16,7 +16,7 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class MainViewModel : ViewModelBase
     {
-        private List<WallabagItem> _items = new List<WallabagItem>();
+        private List<Item> _items = new List<Item>();
         public ObservableCollection<ItemViewModel> Items { get; set; } = new ObservableCollection<ItemViewModel>();
 
         public DelegateCommand SyncCommand { get; private set; }
@@ -34,23 +34,25 @@ namespace wallabag.ViewModels
 
         private async Task SyncAsync()
         {
-            var items = (await App.Client.GetItemsAsync()).ToList();
+            var items = await App.Client.GetItemsAsync();
 
-            foreach (var item in items)
+            if (items != null)
             {
-                if (!_items.Contains(item))
+                foreach (var item in items)
                 {
-                    _items.Add(item);
-                    Items.Add(new ItemViewModel(item));
+                    if (!_items.Contains(item))
+                    {
+                        _items.Add(item);
+                        Items.Add(new ItemViewModel(item));
+                    }
                 }
-            }
 
-            await App.Client.GetAccessTokenAsync();
-            await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(items));
+                await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(_items));
+            }
         }
         private void FetchFromDatabase()
         {
-            var databaseItems = App.Database.Table<WallabagItem>().ToList();
+            var databaseItems = App.Database.Table<Item>().ToList();
 
             var newItems = databaseItems.Except(_items);
             var changedItems = databaseItems.Except(_items).Except(newItems);
@@ -63,8 +65,8 @@ namespace wallabag.ViewModels
 
             foreach (var item in changedItems)
             {
-                Items.Remove(Items.Where(i => i.Model.Id == item.Id).First());
-                Items.AddSorted(new ItemViewModel(item));           
+                Items.Remove(Items.Where(i => i.Model.Id == item.Id).FirstOrDefault());
+                Items.AddSorted(new ItemViewModel(item));
             }
 
             foreach (var item in deletedItems)

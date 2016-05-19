@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using wallabag.Api.Models;
+using wallabag.Models;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -13,15 +13,15 @@ namespace wallabag.Controls
     {
         #region Dependency Properties
 
-        public IEnumerable<WallabagTag> ItemsSource
+        public IEnumerable<Tag> ItemsSource
         {
-            get { return (IEnumerable<WallabagTag>)GetValue(ItemsSourceProperty); }
+            get { return (IEnumerable<Tag>)GetValue(ItemsSourceProperty); }
             set { SetValue(ItemsSourceProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ItemsSource.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.Register("ItemsSource", typeof(IEnumerable<WallabagTag>), typeof(TagsControl), new PropertyMetadata(new ObservableCollection<WallabagTag>()));
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable<Tag>), typeof(TagsControl), new PropertyMetadata(new ObservableCollection<Tag>()));
 
         #endregion
 
@@ -34,13 +34,13 @@ namespace wallabag.Controls
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             var tags = args.QueryText.Split(","[0]).ToList();
-            var itemsSource = ItemsSource as ICollection<WallabagTag>;
+            var itemsSource = ItemsSource as ICollection<Tag>;
 
             foreach (var item in tags)
             {
                 if (!string.IsNullOrWhiteSpace(item))
                 {
-                    var newTag = new WallabagTag() { Label = item, Id = itemsSource.Count + 1 };
+                    var newTag = new Tag() { Label = item, Id = itemsSource.Count + 1 };
                     if (itemsSource.Contains(newTag) == false)
                         itemsSource.Add(newTag);
                 }
@@ -60,7 +60,7 @@ namespace wallabag.Controls
 
         private void tagsListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            (ItemsSource as IList<WallabagTag>).Remove(e.ClickedItem as WallabagTag);
+            (ItemsSource as IList<Tag>).Remove(e.ClickedItem as Tag);
             UpdateNoTagsInfoTextBlockVisibility();
         }
     }

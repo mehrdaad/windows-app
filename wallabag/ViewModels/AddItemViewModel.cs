@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Template10.Mvvm;
-using wallabag.Api.Models;
+using wallabag.Models;
 
 namespace wallabag.ViewModels
 {
@@ -13,7 +13,7 @@ namespace wallabag.ViewModels
     public class AddItemViewModel : ViewModelBase
     {
         public string UriString { get; set; } = string.Empty;
-        public IEnumerable<WallabagTag> Tags { get; set; } = new ObservableCollection<WallabagTag>();
+        public IEnumerable<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
         public string Title { get; set; } = string.Empty;
 
         public DelegateCommand AddCommand { get; private set; }

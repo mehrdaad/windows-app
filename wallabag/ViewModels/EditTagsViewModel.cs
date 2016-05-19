@@ -5,15 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Api.Models;
+using wallabag.Models;
 
 namespace wallabag.ViewModels
 {
     [ImplementPropertyChanged]
     public class EditTagsViewModel : ViewModelBase
     {
-        private IEnumerable<WallabagTag> _previousTags;
-        public IList<WallabagItem> Items { get; set; } = new List<WallabagItem>();
-        public IEnumerable<WallabagTag> Tags { get; set; } = new ObservableCollection<WallabagTag>();
+        private IEnumerable<Tag> _previousTags;
+        public IList<Item> Items { get; set; } = new List<Item>();
+        public IEnumerable<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
 
         public DelegateCommand FinishCommand { get; private set; }
         public DelegateCommand CancelCommand { get; private set; }
@@ -23,14 +24,14 @@ namespace wallabag.ViewModels
             FinishCommand = new DelegateCommand(async () => await FinishAsync());
             CancelCommand = new DelegateCommand(() => Services.DialogService.HideCurrentDialog());
         }
-        public EditTagsViewModel(WallabagItem Item)
+        public EditTagsViewModel(Item Item)
         {
             FinishCommand = new DelegateCommand(async () => await FinishAsync());
             CancelCommand = new DelegateCommand(() => Services.DialogService.HideCurrentDialog());
 
             Items.Add(Item);
             _previousTags = Item.Tags;
-            Tags = new ObservableCollection<WallabagTag>(Item.Tags);
+            Tags = new ObservableCollection<Tag>(Item.Tags);
         }
 
         private async Task FinishAsync()
@@ -40,7 +41,7 @@ namespace wallabag.ViewModels
                 foreach (var item in Items)
                 {
                     var results = await App.Client.AddTagsAsync(item.Id, string.Join(",", Tags).Split(","[0]));
-                    (item.Tags as List<WallabagTag>).AddRange(results);
+                    (item.Tags as List<Tag>).AddRange((IEnumerable<Tag>)results);
                 }
             }
             else
@@ -48,8 +49,8 @@ namespace wallabag.ViewModels
                 var newTags = Tags.Except(_previousTags);
                 var deletedTags = _previousTags.Except(Tags);
 
-                await App.Client.AddTagsAsync(Items.First().Id, string.Join(",", newTags).Split(","[0]));
-                await App.Client.RemoveTagsAsync(Items.First().Id, deletedTags.ToArray());
+                await App.Client.AddTagsAsync(Items.First(), string.Join(",", newTags).Split(","[0]));
+                await App.Client.RemoveTagsAsync(Items.First(), (IEnumerable<WallabagTag>)deletedTags);
             }
         }
     }

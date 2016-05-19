@@ -1,7 +1,8 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Messaging;
+using PropertyChanged;
 using System;
 using Template10.Mvvm;
-using wallabag.Api.Models;
+using wallabag.Models;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 
@@ -10,7 +11,7 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class ItemViewModel : ViewModelBase, IComparable
     {
-        public WallabagItem Model { get; private set; }
+        public Item Model { get; private set; }
 
         public DelegateCommand MarkAsReadCommand { get; private set; }
         public DelegateCommand UnmarkAsReadCommand { get; private set; }
@@ -21,11 +22,16 @@ namespace wallabag.ViewModels
         public DelegateCommand EditTagsCommand { get; private set; }
         public DelegateCommand OpenInBrowserCommand { get; private set; }
 
-        public ItemViewModel(WallabagItem Model)
+        public ItemViewModel(Item Model)
         {
             this.Model = Model;
 
-            MarkAsReadCommand = new DelegateCommand(async () => await App.Client.ArchiveAsync(Model));
+            MarkAsReadCommand = new DelegateCommand(async () =>
+            {
+                Model.IsRead = await App.Client.ArchiveAsync(Model);
+                App.Database.Update(Model);
+                Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
+            });
             UnmarkAsReadCommand = new DelegateCommand(async () => await App.Client.UnarchiveAsync(Model));
             MarkAsStarredCommand = new DelegateCommand(async () => await App.Client.FavoriteAsync(Model));
             UnmarkAsStarredCommand = new DelegateCommand(async () => await App.Client.UnfavoriteAsync(Model));

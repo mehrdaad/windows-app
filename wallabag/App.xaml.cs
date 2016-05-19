@@ -4,7 +4,7 @@ using SQLite.Net.Platform.WinRT;
 using System;
 using System.Threading.Tasks;
 using Template10.Common;
-using wallabag.Api.Models;
+using wallabag.Models;
 using wallabag.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
@@ -35,8 +35,8 @@ namespace wallabag
                 await Task.Factory.StartNew(() =>
                 {
                     Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
-                    Database.CreateTable<WallabagItem>();
-                    Database.CreateTable<WallabagTag>();
+                    Database.CreateTable<Item>();
+                    Database.CreateTable<Tag>();
                 });
 
                 NavigationService.Navigate(typeof(Views.MainPage));
