@@ -28,6 +28,7 @@ namespace wallabag.Controls
         public TagsControl()
         {
             this.InitializeComponent();
+            this.Loaded += (s, e) => UpdateNoTagsInfoTextBlockVisibility();
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
