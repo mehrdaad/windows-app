@@ -25,17 +25,47 @@ namespace wallabag.ViewModels
         public ItemViewModel(Item Model)
         {
             this.Model = Model;
-
+            
             MarkAsReadCommand = new DelegateCommand(async () =>
             {
-                Model.IsRead = await App.Client.ArchiveAsync(Model);
-                App.Database.Update(Model);
-                Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
+                if (await App.Client.ArchiveAsync(Model))
+                {
+                    Model.IsRead = true;
+                    UpdateItem();
+                }
             });
-            UnmarkAsReadCommand = new DelegateCommand(async () => await App.Client.UnarchiveAsync(Model));
-            MarkAsStarredCommand = new DelegateCommand(async () => await App.Client.FavoriteAsync(Model));
-            UnmarkAsStarredCommand = new DelegateCommand(async () => await App.Client.UnfavoriteAsync(Model));
-            DeleteCommand = new DelegateCommand(async () => await App.Client.DeleteAsync(Model));
+            UnmarkAsReadCommand = new DelegateCommand(async () =>
+            {
+                if (await App.Client.UnarchiveAsync(Model))
+                {
+                    Model.IsRead = false;
+                    UpdateItem();
+                }
+            });
+            MarkAsStarredCommand = new DelegateCommand(async () =>
+            {
+                if (await App.Client.FavoriteAsync(Model))
+                {
+                    Model.IsStarred = false;
+                    UpdateItem();
+                }
+            });
+            UnmarkAsStarredCommand = new DelegateCommand(async () =>
+            {
+                if (await App.Client.UnfavoriteAsync(Model))
+                {
+                    Model.IsStarred = false;
+                    UpdateItem();
+                }
+            });
+            DeleteCommand = new DelegateCommand(async () =>
+            {
+                if (await App.Client.DeleteAsync(Model))
+                {
+                    App.Database.Delete(Model);
+                    SendUpdateMessage();
+                }
+            });
             ShareCommand = new DelegateCommand(() =>
             {
                 DataTransferManager.GetForCurrentView().DataRequested += (s, args) =>
@@ -50,6 +80,13 @@ namespace wallabag.ViewModels
             EditTagsCommand = new DelegateCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, new EditTagsViewModel(this.Model)));
             OpenInBrowserCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri(Model.Url)));
         }
+
+        private void UpdateItem()
+        {
+            Model.LastModificationDate = DateTime.UtcNow;
+            App.Database.Update(Model);
+        }
+        private void SendUpdateMessage() => Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
 
         public int CompareTo(object obj) => ((IComparable)Model).CompareTo((obj as ItemViewModel).Model);
         public override bool Equals(object obj) => Model.Equals((obj as ItemViewModel).Model);
