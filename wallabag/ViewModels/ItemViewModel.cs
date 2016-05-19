@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
 using System;
+using System.ComponentModel;
 using Template10.Mvvm;
 using wallabag.Models;
 using Windows.ApplicationModel.DataTransfer;
@@ -26,6 +27,8 @@ namespace wallabag.ViewModels
         {
             this.Model = Model;
             
+            (Model as INotifyPropertyChanged).PropertyChanged += (s, e) => { RaisePropertyChanged(nameof(Model)); };
+
             MarkAsReadCommand = new DelegateCommand(async () =>
             {
                 if (await App.Client.ArchiveAsync(Model))
