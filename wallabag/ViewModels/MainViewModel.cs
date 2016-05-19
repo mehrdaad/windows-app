@@ -54,9 +54,12 @@ namespace wallabag.ViewModels
         {
             var databaseItems = App.Database.Table<Item>().ToList();
 
-            var newItems = databaseItems.Except(_items);
-            var changedItems = databaseItems.Except(_items).Except(newItems);
-            var deletedItems = _items.Except(databaseItems);
+            var idComparer = new ItemByIdEqualityComparer();
+            var modificationDateComparer = new ItemByModificationDateEqualityComparer();
+
+            var newItems = databaseItems.Except(_items, idComparer);
+            var changedItems = databaseItems.Except(_items, modificationDateComparer).Except(newItems);
+            var deletedItems = _items.Except(databaseItems, idComparer);
 
             _items = databaseItems;
 
