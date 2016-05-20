@@ -30,7 +30,7 @@ namespace wallabag.ViewModels
             var item = await App.Client.AddAsync(new Uri(UriString), string.Join(",", Tags).Split(","[0]));
             if (item != null)
             {
-                App.Database.Insert(item);
+                App.Database.Insert((Item)item);
                 Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
                 return true;
             }
