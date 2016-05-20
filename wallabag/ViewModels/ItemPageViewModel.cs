@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Template10.Mvvm;
+using wallabag.Models;
 using Windows.UI.Xaml.Navigation;
 
 namespace wallabag.ViewModels
@@ -13,7 +14,7 @@ namespace wallabag.ViewModels
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            Item = parameter as ItemViewModel;
+            Item = new ItemViewModel(parameter as Item);
             return base.OnNavigatedToAsync(parameter, mode, state);
         }
     }
