@@ -9,7 +9,7 @@ namespace wallabag.Common
 {
     class ItemByModificationDateEqualityComparer : IEqualityComparer<Item>
     {
-        public bool Equals(Item x, Item y) => x.LastModificationDate.Equals(y.LastModificationDate);
+        public bool Equals(Item x, Item y) => x.LastModificationDate.ToUniversalTime().Equals(y.LastModificationDate.ToUniversalTime());
         public int GetHashCode(Item obj) => obj.GetHashCode();
     }
 }

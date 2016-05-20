@@ -50,8 +50,8 @@ namespace wallabag.Models
 
                 IsRead = i.IsRead,
                 IsStarred = i.IsStarred,
-                CreationDate = i.CreationDate,
-                LastUpdated = i.LastModificationDate,
+                CreationDate = i.CreationDate.ToUniversalTime(),
+                LastUpdated = i.LastModificationDate.ToUniversalTime(),
                 EstimatedReadingTime = i.EstimatedReadingTime,
                 DomainName = i.Hostname,
                 Language = i.Language,
@@ -76,8 +76,8 @@ namespace wallabag.Models
 
                 IsRead = i.IsRead,
                 IsStarred = i.IsStarred,
-                CreationDate = i.CreationDate,
-                LastModificationDate = i.LastUpdated,
+                CreationDate = i.CreationDate.ToUniversalTime(),
+                LastModificationDate = i.LastUpdated.ToUniversalTime(),
                 EstimatedReadingTime = i.EstimatedReadingTime,
                 Hostname = i.DomainName,
                 Language = i.Language,
