@@ -8,6 +8,7 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:local="using:wallabag.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:t10b="using:Template10.Behaviors"
     xmlns:vm="using:wallabag.ViewModels"
     mc:Ignorable="d">
 
@@ -70,23 +71,18 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <CommandBar x:Name="MainCommandBar">
-            <AppBarButton
-                Command="{x:Bind ViewModel.AddCommand}"
-                Icon="Add"
-                Label="Add" />
-            <AppBarButton
-                Command="{x:Bind ViewModel.SyncCommand}"
-                Icon="Sync"
-                Label="Sync" />
+        <CommandBar>
             <AppBarButton Icon="Find" Label="Search" />
-            <CommandBar.SecondaryCommands>
-                <AppBarButton Command="{x:Bind ViewModel.NavigateToSettingsPageCommand}" Label="Settings" />
-            </CommandBar.SecondaryCommands>
             <CommandBar.Content>
                 <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="UNREAD" />
             </CommandBar.Content>
+            <interactivity:Interaction.Behaviors>
+                <interactivity:BehaviorCollection>
+                    <t10b:EllipsisBehavior Visibility="Collapsed" />
+                </interactivity:BehaviorCollection>
+            </interactivity:Interaction.Behaviors>
         </CommandBar>
         <SplitView Grid.Row="1">
             <SplitView.Content>
@@ -153,5 +149,19 @@
                 </RelativePanel>
             </SplitView.Pane>
         </SplitView>
+        <CommandBar x:Name="MainCommandBar" Grid.Row="2">
+            <AppBarButton
+                Command="{x:Bind ViewModel.AddCommand}"
+                Icon="Add"
+                Label="Add" />
+            <AppBarButton
+                Command="{x:Bind ViewModel.SyncCommand}"
+                Icon="Sync"
+                Label="Sync" />
+            <AppBarButton Icon="Bullets" Label="Select" />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Command="{x:Bind ViewModel.NavigateToSettingsPageCommand}" Label="Settings" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
     </Grid>
 </Page>
