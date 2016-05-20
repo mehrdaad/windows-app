@@ -13,6 +13,7 @@ namespace wallabag.Models
         public string Label { get; set; }
         public string Slug { get; set; }
 
+        public override string ToString() => Label;
         public static implicit operator WallabagTag(Tag t)
         {
             return new WallabagTag()
