@@ -158,10 +158,66 @@
                 Command="{x:Bind ViewModel.SyncCommand}"
                 Icon="Sync"
                 Label="Sync" />
-            <AppBarButton Icon="Bullets" Label="Select" />
+            <AppBarButton
+                Click="EnableMultipleSelectionButtonClick"
+                Icon="Bullets"
+                Label="Select" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton Command="{x:Bind ViewModel.NavigateToSettingsPageCommand}" Label="Settings" />
             </CommandBar.SecondaryCommands>
+        </CommandBar>
+        <CommandBar
+            x:Name="MultipleSelectionCommandBar"
+            Grid.Row="2"
+            Visibility="Collapsed">
+            <AppBarButton Icon="Edit" Label="Edit">
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                            Command="{x:Bind SelectionViewModel.MarkAsReadCommand}"
+                            Tag="&#xE001;"
+                            Text="Mark as read" />
+                        <MenuFlyoutItem
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                            Command="{x:Bind SelectionViewModel.UnmarkAsReadCommand}"
+                            Tag="&#xE052;"
+                            Text="Unmark as read" />
+                        <MenuFlyoutItem
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                            Command="{x:Bind SelectionViewModel.MarkAsFavoriteCommand}"
+                            Tag="&#xE006;"
+                            Text="Mark as favorite" />
+                        <MenuFlyoutItem
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                            Command="{x:Bind SelectionViewModel.UnmarkAsFavoriteCommand}"
+                            Tag="&#xE007;"
+                            Text="Unmark as favorite" />
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                            Command="{x:Bind SelectionViewModel.EditTagsCommand}"
+                            Tag="&#xE1CB;"
+                            Text="Edit tags" />
+                        <MenuFlyoutItem
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                            Command="{x:Bind SelectionViewModel.OpenInBrowserCommand}"
+                            Tag="&#xE12B;"
+                            Text="Open in browser" />
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
+                            Command="{x:Bind SelectionViewModel.DeleteCommand}"
+                            Tag="&#xE107;"
+                            Text="Delete" />
+                    </MenuFlyout>
+
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <AppBarButton
+                Click="DisableMultipleSelectionButtonClick"
+                Icon="Cancel"
+                Label="Cancel" />
         </CommandBar>
     </Grid>
 </Page>

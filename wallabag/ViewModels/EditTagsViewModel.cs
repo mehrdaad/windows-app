@@ -41,7 +41,10 @@ namespace wallabag.ViewModels
                 foreach (var item in Items)
                 {
                     var results = await App.Client.AddTagsAsync(item.Id, string.Join(",", Tags).Split(","[0]));
-                    (item.Tags as List<Tag>).AddRange((IEnumerable<Tag>)results);
+                    var tags = item.Tags as List<Tag>;
+
+                    foreach (var tag in results)
+                        tags.Add(tag);
                 }
             }
             else

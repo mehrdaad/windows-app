@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PropertyChanged;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace wallabag.Views
     /// <summary>
     /// Eine leere Seite, die eigenständig verwendet oder zu der innerhalb eines Rahmens navigiert werden kann.
     /// </summary>
+    [ImplementPropertyChanged]
     public sealed partial class MainPage : Page
     {
         public MainViewModel ViewModel { get { return DataContext as MainViewModel; } }
@@ -29,6 +31,15 @@ namespace wallabag.Views
         public MainPage()
         {
             this.InitializeComponent();
+            ItemGridView.SelectionChanged += (s, e) =>
+            {
+                foreach (ItemViewModel item in e.AddedItems)
+                    SelectionViewModel.Items.Add(item);
+                foreach (ItemViewModel item in e.RemovedItems)
+                    SelectionViewModel.Items.Remove(item);
+
+                if (ItemGridView.SelectedItems.Count == 0) DisableMultipleSelection();
+            };
         }
 
         #region Context menu
@@ -38,8 +49,8 @@ namespace wallabag.Views
 
         protected override void OnKeyDown(KeyRoutedEventArgs e)
         {
-            // Handle Shift+F10
-            // Handle MenuKey
+            if (e.Key == VirtualKey.Control)
+                EnableMultipleSelection();
 
             if (e.Key == VirtualKey.Shift)
                 _IsShiftPressed = true;
@@ -62,6 +73,8 @@ namespace wallabag.Views
         {
             if (e.Key == VirtualKey.Shift)
                 _IsShiftPressed = false;
+            else if (e.Key == VirtualKey.Control)
+                DisableMultipleSelection();
 
             base.OnKeyUp(e);
         }
@@ -102,7 +115,7 @@ namespace wallabag.Views
         }
         private void ShowContextMenu(UIElement target, Point offset)
         {
-            if (_LastFocusedItemViewModel != null /*&& (bool)ViewModel.IsItemClickEnabled*/)
+            if (_LastFocusedItemViewModel != null && !_IsMultipleSelectionEnabled)
             {
                 var myFlyout = Resources["ItemContextMenuMenuFlyout"] as MenuFlyout;
 
@@ -111,7 +124,36 @@ namespace wallabag.Views
 
                 myFlyout.ShowAt(target, offset);
             }
-        }        
+        }
+        #endregion
+
+        #region Multiple selection
+        private bool _IsMultipleSelectionEnabled = false;
+
+        public MultipleSelectionViewModel SelectionViewModel { get; set; } = new MultipleSelectionViewModel();
+
+        private void EnableMultipleSelection()
+        {
+            _IsMultipleSelectionEnabled = true;
+            ItemGridView.SelectionMode = ListViewSelectionMode.Multiple;
+            MultipleSelectionCommandBar.Visibility = Visibility.Visible;
+            ItemGridView.IsItemClickEnabled = false;
+            ItemGridView.IsMultiSelectCheckBoxEnabled = true;
+        }
+        private void DisableMultipleSelection(bool forceDisable = false)
+        {
+            if (ItemGridView.SelectedItems.Count == 0 || forceDisable)
+            {
+                _IsMultipleSelectionEnabled = false;
+                MultipleSelectionCommandBar.Visibility = Visibility.Collapsed;
+                ItemGridView.SelectionMode = ListViewSelectionMode.None;
+                ItemGridView.IsItemClickEnabled = true;
+                ItemGridView.IsMultiSelectCheckBoxEnabled = false;
+            }
+        }
+
+        private void EnableMultipleSelectionButtonClick(object sender, RoutedEventArgs e) => EnableMultipleSelection();
+        private void DisableMultipleSelectionButtonClick(object sender, RoutedEventArgs e) => DisableMultipleSelection(true);
         #endregion
     }
 }
