@@ -86,7 +86,7 @@ namespace wallabag.Models
                 Tags = convertedTags
             };
         }
-        public int CompareTo(object obj) => LastModificationDate.CompareTo((obj as Item).LastModificationDate);
+        public int CompareTo(object obj) => CreationDate.CompareTo((obj as Item).CreationDate);
         public override string ToString() => Title ?? string.Empty;
         public override bool Equals(object obj)
         {
