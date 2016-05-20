@@ -88,6 +88,7 @@ namespace wallabag.ViewModels
         {
             Model.LastModificationDate = DateTime.UtcNow;
             App.Database.Update(Model);
+            SendUpdateMessage();
         }
         private void SendUpdateMessage() => Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
 
