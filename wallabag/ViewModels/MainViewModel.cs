@@ -39,20 +39,16 @@ namespace wallabag.ViewModels
             if (items != null)
             {
                 foreach (var item in items)
-                {
                     if (!_items.Contains(item))
-                    {
                         _items.Add(item);
-                        Items.Add(new ItemViewModel(item));
-                    }
-                }
 
                 await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(_items));
+                FetchFromDatabase();
             }
         }
         private void FetchFromDatabase()
         {
-            var databaseItems = App.Database.Table<Item>().ToList();
+            var databaseItems = App.Database.Table<Item>().Where(i => i.IsRead == false).ToList();
 
             var idComparer = new ItemByIdEqualityComparer();
             var modificationDateComparer = new ItemByModificationDateEqualityComparer();
