@@ -2,6 +2,7 @@
     x:Class="wallabag.Views.ItemPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:wallabag.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:wallabag.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,12 +15,68 @@
     </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <FlipView>
-            <FlipViewItem x:Name="previousItem" />
-            <FlipViewItem x:Name="currentItem">
-                <was:HtmlViewer x:Name="HtmlViewer" Html="{x:Bind ViewModel.Item.Model.Content}" />
-            </FlipViewItem>
-            <FlipViewItem x:Name="nextItem" />
-        </FlipView>
+        <was:HtmlViewer
+            x:Name="HtmlViewer"
+            FontSize="16"
+            Html="{x:Bind ViewModel.FormattedHtml}">
+            <was:HtmlViewer.Header>
+                <StackPanel>
+                    <TextBlock
+                        Style="{StaticResource HeaderTextBlockStyle}"
+                        FontSize="27"
+                        Text="{x:Bind ViewModel.Item.Model.Title}"
+                        TextAlignment="Center" />
+                    <StackPanel
+                        Margin="0,8,0,0"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+                        <TextBlock Text="{x:Bind ViewModel.Item.Model.Hostname}" />
+                        <Rectangle
+                            Width="1"
+                            Margin="8,2"
+                            Fill="Black" />
+                        <TextBlock Text="{x:Bind ViewModel.Item.Model.CreationDate}" />
+                    </StackPanel>
+                    <ListView
+                        x:Name="tagsListView"
+                        HorizontalAlignment="Center"
+                        ItemsSource="{x:Bind ViewModel.Item.Model.Tags, Mode=OneWay}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                        ScrollViewer.HorizontalScrollMode="Auto"
+                        ScrollViewer.VerticalScrollMode="Disabled"
+                        SelectionMode="None">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsStackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+                                    <StackPanel
+                                        Margin="12,8"
+                                        Orientation="Horizontal"
+                                        RequestedTheme="Dark">
+                                        <TextBlock
+                                            Margin="0,0,8,0"
+                                            VerticalAlignment="Center"
+                                            FontFamily="Segoe MDL2 Assets"
+                                            Text="&#xE1CB;" />
+                                        <TextBlock Text="{Binding}" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Margin" Value="4,0" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="MinWidth" Value="0" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </StackPanel>
+            </was:HtmlViewer.Header>
+        </was:HtmlViewer>
     </Grid>
 </Page>
