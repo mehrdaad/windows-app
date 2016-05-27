@@ -35,10 +35,10 @@ namespace wallabag.ViewModels
             styleSheetBuilder.Append("<style>");
             styleSheetBuilder.Append("hr {border-color: " + accentColor + " !important}");
             styleSheetBuilder.Append("::selection,mark {background: " + accentColor + " !important}");
-            //styleSheetBuilder.Append("body {");
-            //styleSheetBuilder.Append($"font-size:{AppSettings.FontSize}px;");
-            //styleSheetBuilder.Append("text-align: " + AppSettings.TextAlignment + "}");
-            styleSheetBuilder.Append("</style>");
+            styleSheetBuilder.Append("body {");
+            styleSheetBuilder.Append($"font-size: 16px;");
+            styleSheetBuilder.Append("text-align: left;");
+            styleSheetBuilder.Append("}</style>");
 
             FormattedHtml = _template.FormatWith(new
             {
