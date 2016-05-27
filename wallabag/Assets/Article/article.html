@@ -10,10 +10,14 @@
     <script src="ms-appx-web:///Assets/Article/js/jquery-2.1.4.min.js" type="text/javascript"></script>
     <script src="ms-appx-web:///Assets/Article/js/jquery.fitvids.js" type="text/javascript"></script>
     <script src="ms-appx-web:///Assets/Article/js/scripts.js" type="text/javascript"></script>
-    {stylesheet}
+    {{stylesheet}}
 </head>
 
 <body onscroll="updateReadingProgress()">
+    <header class="wallabag-header">
+        <h1>{{title}}</h1>
+        <h2><a href="{{articleUrl}}">{{hostname}}</a>|<span>{{publishDate}}</span></h2>
+    </header>
     <article>{{content}}</article>
     <script>
         var root = document.getElementsByTagName("html")[0];
