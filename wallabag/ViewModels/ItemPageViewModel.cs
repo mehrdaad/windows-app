@@ -8,6 +8,8 @@ using wallabag.Common;
 using wallabag.Models;
 using Windows.Storage;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace wallabag.ViewModels
@@ -15,16 +17,33 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class ItemPageViewModel : ViewModelBase
     {
+        private FontFamily _iconFontFamily = new FontFamily("Segoe MDL2 Assets");
+        private const string _readGlyph = "\uE001";
+        private const string _unreadGlyph = "\uE18B";
+        private const string _starredGlyph = "\uE006";
+        private const string _unstarredGlyph = "\uE007";
+
         public ItemViewModel Item { get; set; }
 
         public string FormattedHtml { get; set; }
 
+        public FontIcon ChangeReadStatusButtonFontIcon { get; set; }
+        public FontIcon ChangeFavoriteStatusButtonFontIcon { get; set; }
+        public DelegateCommand ChangeReadStatusCommand { get; private set; }
+        public DelegateCommand ChangeFavoriteStatusCommand { get; private set; }
+
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             Item = new ItemViewModel(parameter as Item);
+
+            ChangeReadStatusCommand = new DelegateCommand(() => ChangeReadStatus());
+            ChangeFavoriteStatusCommand = new DelegateCommand(() => ChangeFavoriteStatus());
+
+            UpdateReadIcon();
+            UpdateFavoriteIcon();
+
             await GenerateFormattedHtmlAsync();
         }
-
         private async Task GenerateFormattedHtmlAsync()
         {
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Article/article.html"));
@@ -52,6 +71,40 @@ namespace wallabag.ViewModels
                 publishDate = string.Format("{0:d}", Item.Model.CreationDate),
                 stylesheet = styleSheetBuilder.ToString()
             });
-        }        
+        }
+
+        private void ChangeReadStatus()
+        {
+            if (Item.Model.IsRead)
+                Item.UnmarkAsReadCommand.Execute();
+            else
+                Item.MarkAsReadCommand.Execute();
+
+            UpdateReadIcon();
+        }
+        private void ChangeFavoriteStatus()
+        {
+            if (Item.Model.IsStarred)
+                Item.UnmarkAsStarredCommand.Execute();
+            else
+                Item.MarkAsStarredCommand.Execute();
+
+            UpdateFavoriteIcon();
+        }
+        private void UpdateReadIcon()
+        {
+            if (Item.Model.IsRead)
+                ChangeReadStatusButtonFontIcon = CreateFontIcon(_readGlyph);
+            else
+                ChangeReadStatusButtonFontIcon = CreateFontIcon(_unreadGlyph);
+        }
+        private void UpdateFavoriteIcon()
+        {
+            if (Item.Model.IsRead)
+                ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(_starredGlyph);
+            else
+                ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(_unstarredGlyph);
+        }
+        private FontIcon CreateFontIcon(string glyph) => new FontIcon() { Glyph = glyph, FontFamily = _iconFontFamily };
     }
 }
