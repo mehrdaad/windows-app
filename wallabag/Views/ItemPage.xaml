@@ -7,6 +7,9 @@
       xmlns:local="using:wallabag.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:vm="using:wallabag.ViewModels"
+      common:TitleBarExtensions.ButtonBackgroundColor="Transparent"
+      common:TitleBarExtensions.ButtonForegroundColor="{x:Bind ViewModel.ForegroundBrush.Color, Mode=OneWay}"
+      common:TitleBarExtensions.IsVisible="false"
       mc:Ignorable="d">
 
     <Page.DataContext>
@@ -19,7 +22,10 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <WebView x:Name="HtmlViewer" common:WebViewExtensions.Html="{x:Bind ViewModel.FormattedHtml}" />
-        <CommandBar Grid.Row="1" ClosedDisplayMode="Minimal">
+        <CommandBar Grid.Row="1"
+                    Background="{x:Bind ViewModel.BackgroundBrush, Mode=OneWay}"
+                    ClosedDisplayMode="Minimal"
+                    Foreground="{x:Bind ViewModel.ForegroundBrush, Mode=OneWay}">
             <AppBarButton Command="{x:Bind ViewModel.ChangeReadStatusCommand}"
                           Icon="{x:Bind ViewModel.ChangeReadStatusButtonFontIcon, Mode=OneWay}"
                           Label="Mark as read" />
