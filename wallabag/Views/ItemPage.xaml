@@ -1,20 +1,43 @@
-﻿<Page
-    x:Class="wallabag.Views.ItemPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:wallabag.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:wallabag.Views"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:wallabag.ViewModels"
-    xmlns:common="using:wallabag.Common"
-    mc:Ignorable="d">
+﻿<Page x:Class="wallabag.Views.ItemPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:common="using:wallabag.Common"
+      xmlns:controls="using:wallabag.Controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="using:wallabag.Views"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:vm="using:wallabag.ViewModels"
+      mc:Ignorable="d">
 
     <Page.DataContext>
         <vm:ItemPageViewModel />
     </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
         <WebView x:Name="HtmlViewer" common:WebViewExtensions.Html="{x:Bind ViewModel.FormattedHtml}" />
+        <CommandBar Grid.Row="1">
+            <AppBarButton Icon="Accept" Label="Mark as read" />
+            <AppBarButton Label="Mark as favorite">
+                <AppBarButton.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE006;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="Share">
+                <AppBarButton.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Icon="Tag" Label="Edit tags" />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Change appereance" />
+                <AppBarSeparator />
+                <AppBarButton Label="Download as…" />
+                <AppBarButton Label="Delete" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
     </Grid>
 </Page>
