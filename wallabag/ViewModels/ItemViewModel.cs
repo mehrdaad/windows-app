@@ -49,7 +49,7 @@ namespace wallabag.ViewModels
             {
                 if (await App.Client.FavoriteAsync(Model))
                 {
-                    Model.IsStarred = false;
+                    Model.IsStarred = true;
                     UpdateItem();
                 }
             });
