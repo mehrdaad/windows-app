@@ -4,8 +4,10 @@
       xmlns:common="using:wallabag.Common"
       xmlns:controls="using:wallabag.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
       xmlns:local="using:wallabag.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:t10b="using:Template10.Behaviors"
       xmlns:vm="using:wallabag.ViewModels"
       common:TitleBarExtensions.ButtonBackgroundColor="Transparent"
       common:TitleBarExtensions.ButtonForegroundColor="{x:Bind ViewModel.ForegroundBrush.Color, Mode=OneWay}"
@@ -22,6 +24,15 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <WebView x:Name="HtmlViewer" common:WebViewExtensions.Html="{x:Bind ViewModel.FormattedHtml}" />
+        <Button x:Name="backButton"
+                Width="48"
+                Height="32"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Background="{x:Bind ViewModel.BackgroundBrush, Mode=OneWay}"
+                Content="&#xEC52;"
+                FontFamily="Segoe MDL2 Assets"
+                Foreground="{x:Bind ViewModel.ForegroundBrush, Mode=OneWay}" />
         <CommandBar Grid.Row="1"
                     Background="{x:Bind ViewModel.BackgroundBrush, Mode=OneWay}"
                     ClosedDisplayMode="Minimal"
