@@ -1,5 +1,6 @@
 ﻿using System;
 using Template10.Services.SettingsService;
+using Windows.UI;
 
 namespace wallabag.Services
 {
@@ -46,6 +47,16 @@ namespace wallabag.Services
         {
             get { return _helper.Read(nameof(LastTokenRefreshDateTime), DateTime.UtcNow - TimeSpan.FromHours(1)); }
             set { _helper.Write(nameof(LastTokenRefreshDateTime), value); }
+        }
+
+        #endregion
+
+        #region Appereance
+
+        public string ColorScheme
+        {
+            get { return _helper.Read(nameof(ColorScheme), "sepia"); }
+            set { _helper.Write(nameof(ColorScheme), value); }
         }
 
         #endregion
