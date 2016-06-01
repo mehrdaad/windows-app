@@ -22,11 +22,11 @@
 
     <StackPanel>
         <TextBox
-            x:Name="UrlTextBox"
             x:Uid="UrlTextBox"
+            x:Name="UrlTextBox"
             InputScope="Url"
             PlaceholderText="https://"
             Text="{x:Bind ViewModel.UriString, Mode=TwoWay}" />
-        <controls:TagsControl ItemsSource="{x:Bind ViewModel.Tags, Mode=OneWay}"/>
+        <controls:TagsControl ItemsSource="{x:Bind ViewModel.Tags, Mode=OneWay}" />
     </StackPanel>
 </ContentDialog>

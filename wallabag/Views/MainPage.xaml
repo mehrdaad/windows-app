@@ -19,49 +19,55 @@
     <Page.Resources>
         <MenuFlyout x:Key="ItemContextMenuMenuFlyout">
             <MenuFlyoutItem
-                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding MarkAsReadCommand}"
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE001;"
                 Text="Mark as read"
-                Visibility="{Binding Model.IsRead, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=true}" />
+                Visibility="{Binding Model.IsRead,
+                                     Converter={StaticResource BooleanToVisibilityConverter},
+                                     ConverterParameter=true}" />
             <MenuFlyoutItem
-                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding UnmarkAsReadCommand}"
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE052;"
                 Text="Unmark as read"
-                Visibility="{Binding Model.IsRead, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                Visibility="{Binding Model.IsRead,
+                                     Converter={StaticResource BooleanToVisibilityConverter}}" />
             <MenuFlyoutItem
-                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding MarkAsStarredCommand}"
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE006;"
                 Text="Mark as favorite"
-                Visibility="{Binding Model.IsStarred, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=true}" />
+                Visibility="{Binding Model.IsStarred,
+                                     Converter={StaticResource BooleanToVisibilityConverter},
+                                     ConverterParameter=true}" />
             <MenuFlyoutItem
-                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding UnmarkAsStarredCommand}"
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE007;"
                 Text="Unmark as favorite"
-                Visibility="{Binding Model.IsStarred, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                Visibility="{Binding Model.IsStarred,
+                                     Converter={StaticResource BooleanToVisibilityConverter}}" />
             <MenuFlyoutSeparator />
             <MenuFlyoutItem
-                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding EditTagsCommand}"
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE1CB;"
                 Text="Edit tags" />
             <MenuFlyoutItem
-                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding ShareCommand}"
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE72D;"
                 Text="Share" />
             <MenuFlyoutItem
-                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding OpenInBrowserCommand}"
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE12B;"
                 Text="Open in browser" />
             <MenuFlyoutSeparator />
             <MenuFlyoutItem
-                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Command="{Binding DeleteCommand}"
+                Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE107;"
                 Text="Delete" />
         </MenuFlyout>
@@ -79,9 +85,7 @@
                 <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="UNREAD" />
             </CommandBar.Content>
             <interactivity:Interaction.Behaviors>
-                <interactivity:BehaviorCollection>
-                    <t10b:EllipsisBehavior Visibility="Collapsed" />
-                </interactivity:BehaviorCollection>
+                <t10b:EllipsisBehavior Visibility="Collapsed" />
             </interactivity:Interaction.Behaviors>
         </CommandBar>
         <SplitView Grid.Row="1">
@@ -128,8 +132,8 @@
                                         <TextBlock
                                             x:Name="Hostname"
                                             Margin="4,2"
-                                            Style="{StaticResource CaptionTextBlockStyle}"
                                             Opacity="0.7"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
                                             Text="{x:Bind Model.Hostname}" />
                                     </StackPanel>
                                 </Border>
@@ -145,7 +149,7 @@
             </SplitView.Content>
             <SplitView.Pane>
                 <RelativePanel>
-                    <!-- TODO -->
+                    <!--  TODO  -->
                 </RelativePanel>
             </SplitView.Pane>
         </SplitView>
@@ -174,40 +178,40 @@
                 <AppBarButton.Flyout>
                     <MenuFlyout>
                         <MenuFlyoutItem
-                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Command="{x:Bind SelectionViewModel.MarkAsReadCommand}"
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE001;"
                             Text="Mark as read" />
                         <MenuFlyoutItem
-                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Command="{x:Bind SelectionViewModel.UnmarkAsReadCommand}"
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE052;"
                             Text="Unmark as read" />
                         <MenuFlyoutItem
-                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Command="{x:Bind SelectionViewModel.MarkAsFavoriteCommand}"
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE006;"
                             Text="Mark as favorite" />
                         <MenuFlyoutItem
-                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Command="{x:Bind SelectionViewModel.UnmarkAsFavoriteCommand}"
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE007;"
                             Text="Unmark as favorite" />
                         <MenuFlyoutSeparator />
                         <MenuFlyoutItem
-                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Command="{x:Bind SelectionViewModel.EditTagsCommand}"
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE1CB;"
                             Text="Edit tags" />
                         <MenuFlyoutItem
-                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Command="{x:Bind SelectionViewModel.OpenInBrowserCommand}"
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE12B;"
                             Text="Open in browser" />
                         <MenuFlyoutSeparator />
                         <MenuFlyoutItem
-                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Command="{x:Bind SelectionViewModel.DeleteCommand}"
+                            Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE107;"
                             Text="Delete" />
                     </MenuFlyout>
