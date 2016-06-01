@@ -52,9 +52,9 @@
                           Icon="Tag"
                           Label="Edit tags" />
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="Change appereance" />
+                <AppBarButton IsEnabled="False" Label="Change appereance" />
                 <AppBarSeparator />
-                <AppBarButton Label="Download as…" />
+                <AppBarButton IsEnabled="False" Label="Download as…" />
                 <AppBarButton Label="Delete">
                     <AppBarButton.Flyout>
                         <Flyout>
