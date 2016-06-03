@@ -88,162 +88,162 @@
                 <t10b:EllipsisBehavior Visibility="Collapsed" />
             </interactivity:Interaction.Behaviors>
         </CommandBar>
-        <SplitView Grid.Row="1">
-            <SplitView.Content>
-                <controls:AdaptiveGridView
-                    x:Name="ItemGridView"
-                    Grid.Row="1"
-                    IsItemClickEnabled="True"
-                    ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
-                    MinItemHeight="175"
-                    MinItemWidth="300">
-                    <controls:AdaptiveGridView.ItemTemplate>
-                        <DataTemplate x:DataType="vm:ItemViewModel">
-                            <RelativePanel x:Name="RootPanel">
-                                <Image
-                                    x:Name="image"
-                                    RelativePanel.AlignBottomWithPanel="True"
-                                    RelativePanel.AlignLeftWithPanel="True"
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    RelativePanel.AlignTopWithPanel="True"
-                                    Stretch="UniformToFill">
-                                    <Image.Source>
-                                        <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />
-                                    </Image.Source>
-                                </Image>
-                                <Border
-                                    Background="#4F000000"
-                                    RelativePanel.AlignBottomWithPanel="True"
-                                    RelativePanel.AlignLeftWithPanel="True"
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    RelativePanel.AlignTopWithPanel="True"
-                                    RequestedTheme="Dark">
-                                    <StackPanel
-                                        x:Name="ContentStackPanel"
-                                        Margin="12"
-                                        VerticalAlignment="Center">
-                                        <TextBlock
-                                            x:Name="Title"
-                                            Margin="4,2"
-                                            MaxLines="2"
-                                            Text="{x:Bind Model.Title}"
-                                            TextTrimming="CharacterEllipsis"
-                                            TextWrapping="Wrap" />
-                                        <TextBlock
-                                            x:Name="Hostname"
-                                            Margin="4,2"
-                                            Opacity="0.7"
-                                            Style="{StaticResource CaptionTextBlockStyle}"
-                                            Text="{x:Bind Model.Hostname}" />
-                                    </StackPanel>
-                                </Border>
-                            </RelativePanel>
-                        </DataTemplate>
-                    </controls:AdaptiveGridView.ItemTemplate>
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="ItemClick">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickCommand}" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </controls:AdaptiveGridView>
-            </SplitView.Content>
-            <SplitView.Pane>
-                <StackPanel>
-                    <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="ITEM TYPE" />
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                        <RadioButton
-                            Background="#16a085"
-                            Content="&#xE138;"
-                            IsChecked="True"
-                            Style="{StaticResource IconRadioButtonStyle}" />
-                        <RadioButton
-                            Background="#2980b9"
-                            Content="&#xE052;"
-                            Style="{StaticResource IconRadioButtonStyle}" />
-                        <RadioButton
-                            Background="#f39c12"
-                            Content="&#xE006;"
-                            Style="{StaticResource IconRadioButtonStyle}" />
-                        <RadioButton
-                            Background="#c0392b"
-                            Content="&#xE1D3;"
-                            Style="{StaticResource IconRadioButtonStyle}" />
+        <controls:AdaptiveGridView
+            x:Name="ItemGridView"
+            Grid.Row="1"
+            IsItemClickEnabled="True"
+            ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
+            MinItemHeight="175"
+            MinItemWidth="300">
+            <controls:AdaptiveGridView.ItemTemplate>
+                <DataTemplate x:DataType="vm:ItemViewModel">
+                    <RelativePanel x:Name="RootPanel">
+                        <Image
+                            x:Name="image"
+                            RelativePanel.AlignBottomWithPanel="True"
+                            RelativePanel.AlignLeftWithPanel="True"
+                            RelativePanel.AlignRightWithPanel="True"
+                            RelativePanel.AlignTopWithPanel="True"
+                            Stretch="UniformToFill">
+                            <Image.Source>
+                                <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />
+                            </Image.Source>
+                        </Image>
+                        <Border
+                            Background="#4F000000"
+                            RelativePanel.AlignBottomWithPanel="True"
+                            RelativePanel.AlignLeftWithPanel="True"
+                            RelativePanel.AlignRightWithPanel="True"
+                            RelativePanel.AlignTopWithPanel="True"
+                            RequestedTheme="Dark">
+                            <StackPanel
+                                x:Name="ContentStackPanel"
+                                Margin="12"
+                                VerticalAlignment="Center">
+                                <TextBlock
+                                    x:Name="Title"
+                                    Margin="4,2"
+                                    MaxLines="2"
+                                    Text="{x:Bind Model.Title}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    x:Name="Hostname"
+                                    Margin="4,2"
+                                    Opacity="0.7"
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Text="{x:Bind Model.Hostname}" />
+                            </StackPanel>
+                        </Border>
+                    </RelativePanel>
+                </DataTemplate>
+            </controls:AdaptiveGridView.ItemTemplate>
+            <interactivity:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="ItemClick">
+                    <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickCommand}" />
+                </core:EventTriggerBehavior>
+            </interactivity:Interaction.Behaviors>
+        </controls:AdaptiveGridView>
+        <StackPanel
+            x:Name="filterStackPanel"
+            Grid.Row="1"
+            VerticalAlignment="Top"
+            x:DeferLoadStrategy="Lazy"
+            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+            Visibility="Collapsed">
+            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="ITEM TYPE" />
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <RadioButton
+                    Background="#16a085"
+                    Content="&#xE138;"
+                    IsChecked="True"
+                    Style="{StaticResource IconRadioButtonStyle}" />
+                <RadioButton
+                    Background="#2980b9"
+                    Content="&#xE052;"
+                    Style="{StaticResource IconRadioButtonStyle}" />
+                <RadioButton
+                    Background="#f39c12"
+                    Content="&#xE006;"
+                    Style="{StaticResource IconRadioButtonStyle}" />
+                <RadioButton
+                    Background="#c0392b"
+                    Content="&#xE1D3;"
+                    Style="{StaticResource IconRadioButtonStyle}" />
+            </StackPanel>
+            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="ESTIMATED READING TIME" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <RadioButton HorizontalAlignment="Stretch" Style="{StaticResource ToggleButtonRadioButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"
+                            Text="&#xE143;" />
+                        <TextBlock Text="shortest first" />
                     </StackPanel>
-                    <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="ESTIMATED READING TIME" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <RadioButton HorizontalAlignment="Stretch" Style="{StaticResource ToggleButtonRadioButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="0,0,8,0"
-                                    VerticalAlignment="Center"
-                                    FontFamily="Segoe MDL2 Assets"
-                                    Text="&#xE143;" />
-                                <TextBlock Text="shortest first" />
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton
-                            Grid.Column="1"
-                            HorizontalAlignment="Stretch"
-                            Style="{StaticResource ToggleButtonRadioButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="0,0,8,0"
-                                    VerticalAlignment="Center"
-                                    FontFamily="Segoe MDL2 Assets"
-                                    RenderTransformOrigin="0.5,0.5"
-                                    Text="&#xE143;">
-                                    <TextBlock.RenderTransform>
-                                        <CompositeTransform ScaleY="-1" />
-                                    </TextBlock.RenderTransform>
-                                </TextBlock>
-                                <TextBlock Text="longest first" />
-                            </StackPanel>
-                        </RadioButton>
-                    </Grid>
-                    <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="CREATION DATE" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <RadioButton HorizontalAlignment="Stretch" Style="{StaticResource ToggleButtonRadioButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="0,0,8,0"
-                                    VerticalAlignment="Center"
-                                    FontFamily="Segoe MDL2 Assets"
-                                    Text="&#xE143;" />
-                                <TextBlock Text="newest first" />
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton
-                            Grid.Column="1"
-                            HorizontalAlignment="Stretch"
-                            Style="{StaticResource ToggleButtonRadioButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="0,0,8,0"
-                                    VerticalAlignment="Center"
-                                    FontFamily="Segoe MDL2 Assets"
-                                    RenderTransformOrigin="0.5,0.5"
-                                    Text="&#xE143;">
-                                    <TextBlock.RenderTransform>
-                                        <CompositeTransform ScaleY="-1" />
-                                    </TextBlock.RenderTransform>
-                                </TextBlock>
-                                <TextBlock Text="oldest first" />
-                            </StackPanel>
-                        </RadioButton>
-                    </Grid>
-                    <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="LANGUAGE" />
-                    <AutoSuggestBox BorderThickness="0" PlaceholderText="enter language code…" />
-                </StackPanel>
-            </SplitView.Pane>
-        </SplitView>
+                </RadioButton>
+                <RadioButton
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Style="{StaticResource ToggleButtonRadioButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"
+                            RenderTransformOrigin="0.5,0.5"
+                            Text="&#xE143;">
+                            <TextBlock.RenderTransform>
+                                <CompositeTransform ScaleY="-1" />
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                        <TextBlock Text="longest first" />
+                    </StackPanel>
+                </RadioButton>
+            </Grid>
+            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="CREATION DATE" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <RadioButton HorizontalAlignment="Stretch" Style="{StaticResource ToggleButtonRadioButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"
+                            Text="&#xE143;" />
+                        <TextBlock Text="newest first" />
+                    </StackPanel>
+                </RadioButton>
+                <RadioButton
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Style="{StaticResource ToggleButtonRadioButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"
+                            RenderTransformOrigin="0.5,0.5"
+                            Text="&#xE143;">
+                            <TextBlock.RenderTransform>
+                                <CompositeTransform ScaleY="-1" />
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                        <TextBlock Text="oldest first" />
+                    </StackPanel>
+                </RadioButton>
+            </Grid>
+            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="LANGUAGE" />
+            <AutoSuggestBox BorderThickness="0" PlaceholderText="enter language code…" />
+        </StackPanel>
         <CommandBar x:Name="MainCommandBar" Grid.Row="2">
             <AppBarButton
                 Command="{x:Bind ViewModel.AddCommand}"
