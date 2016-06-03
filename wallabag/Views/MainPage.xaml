@@ -80,7 +80,10 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <CommandBar>
-            <AppBarButton Icon="Find" Label="Search" />
+            <AppBarButton
+                x:Name="searchButton"
+                Icon="Find"
+                Label="Search" />
             <CommandBar.Content>
                 <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="UNREAD" />
             </CommandBar.Content>
@@ -148,28 +151,51 @@
             x:Name="filterStackPanel"
             Grid.Row="1"
             VerticalAlignment="Top"
-            x:DeferLoadStrategy="Lazy"
             Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-            Visibility="Collapsed">
+            Visibility="Visible">
             <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="ITEM TYPE" />
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                 <RadioButton
                     Background="#16a085"
                     Content="&#xE138;"
                     IsChecked="True"
-                    Style="{StaticResource IconRadioButtonStyle}" />
+                    Style="{StaticResource IconRadioButtonStyle}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Checked">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="all" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </RadioButton>
                 <RadioButton
                     Background="#2980b9"
                     Content="&#xE052;"
-                    Style="{StaticResource IconRadioButtonStyle}" />
+                    Style="{StaticResource IconRadioButtonStyle}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Checked">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="unread" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </RadioButton>
                 <RadioButton
                     Background="#f39c12"
                     Content="&#xE006;"
-                    Style="{StaticResource IconRadioButtonStyle}" />
+                    Style="{StaticResource IconRadioButtonStyle}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Checked">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="starred" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </RadioButton>
                 <RadioButton
                     Background="#c0392b"
                     Content="&#xE1D3;"
-                    Style="{StaticResource IconRadioButtonStyle}" />
+                    Style="{StaticResource IconRadioButtonStyle}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Checked">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="archived" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </RadioButton>
             </StackPanel>
             <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="ESTIMATED READING TIME" />
             <Grid>
@@ -186,6 +212,11 @@
                             Text="&#xE143;" />
                         <TextBlock Text="shortest first" />
                     </StackPanel>
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Checked">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetEstimatedReadingTimeFilterCommand}" CommandParameter="asc" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
                 </RadioButton>
                 <RadioButton
                     Grid.Column="1"
@@ -204,6 +235,11 @@
                         </TextBlock>
                         <TextBlock Text="longest first" />
                     </StackPanel>
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Checked">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetEstimatedReadingTimeFilterCommand}" CommandParameter="desc" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
                 </RadioButton>
             </Grid>
             <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="CREATION DATE" />
@@ -221,6 +257,11 @@
                             Text="&#xE143;" />
                         <TextBlock Text="newest first" />
                     </StackPanel>
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Checked">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetCreationDateFilterCommand}" CommandParameter="asc" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
                 </RadioButton>
                 <RadioButton
                     Grid.Column="1"
@@ -239,6 +280,11 @@
                         </TextBlock>
                         <TextBlock Text="oldest first" />
                     </StackPanel>
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Checked">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetCreationDateFilterCommand}" CommandParameter="desc" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
                 </RadioButton>
             </Grid>
             <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="LANGUAGE" />

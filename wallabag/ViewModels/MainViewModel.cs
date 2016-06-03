@@ -24,12 +24,21 @@ namespace wallabag.ViewModels
         public DelegateCommand NavigateToSettingsPageCommand { get; private set; }
         public DelegateCommand<ItemClickEventArgs> ItemClickCommand { get; private set; }
 
+        public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties(); 
+        public DelegateCommand<string> SetItemTypeFilterCommand { get; private set; }
+        public DelegateCommand<string> SetEstimatedReadingTimeFilterCommand { get; private set; }
+        public DelegateCommand<string> SetCreationDateFilterCommand { get; private set; }
+
         public MainViewModel()
         {
             AddCommand = new DelegateCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.AddItem));
             SyncCommand = new DelegateCommand(async () => await SyncAsync());
             NavigateToSettingsPageCommand = new DelegateCommand(() => NavigationService.Navigate(typeof(Views.SettingsPage), infoOverride: new DrillInNavigationTransitionInfo()));
             ItemClickCommand = new DelegateCommand<ItemClickEventArgs>(t => ItemClick(t));
+
+            SetItemTypeFilterCommand = new DelegateCommand<string>(type => SetItemTypeFilter(type));
+            SetEstimatedReadingTimeFilterCommand = new DelegateCommand<string>(order => SetEstimatedReadingTimeFilter(order));
+            SetCreationDateFilterCommand = new DelegateCommand<string>(order => SetCreationDateFilter(order));
         }
 
         private async Task SyncAsync()
@@ -75,6 +84,39 @@ namespace wallabag.ViewModels
         {
             var item = args.ClickedItem as ItemViewModel;
             NavigationService.Navigate(typeof(Views.ItemPage), item.Model);
+        }
+
+        private void SetItemTypeFilter(string type)
+        {
+            switch (type)
+            {
+                case "all":
+                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.All;
+                    break;
+                case "unread":
+                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Unread;
+                    break;
+                case "starred":
+                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Favorites;
+                    break;
+                case "archived":
+                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Archived;
+                    break;
+            }
+        }
+        private void SetEstimatedReadingTimeFilter(string order)
+        {
+            if (order.Equals("asc"))
+                CurrentSearchProperties.ReadingTimeSortOrder = SearchProperties.SortOrder.Ascending;
+            else
+                CurrentSearchProperties.ReadingTimeSortOrder = SearchProperties.SortOrder.Descending;
+        }
+        private void SetCreationDateFilter(string order)
+        {
+            if (order.Equals("asc"))
+                CurrentSearchProperties.CreationDateSortOrder = SearchProperties.SortOrder.Ascending;
+            else
+                CurrentSearchProperties.CreationDateSortOrder = SearchProperties.SortOrder.Descending;
         }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
