@@ -79,18 +79,29 @@
             <RowDefinition />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <CommandBar>
-            <AppBarButton
-                x:Name="searchButton"
-                Icon="Find"
-                Label="Search" />
-            <CommandBar.Content>
-                <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="UNREAD" />
-            </CommandBar.Content>
-            <interactivity:Interaction.Behaviors>
-                <t10b:EllipsisBehavior Visibility="Collapsed" />
-            </interactivity:Interaction.Behaviors>
-        </CommandBar>
+        <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="UNREAD" />
+            <AutoSuggestBox
+                x:Name="searchBox"
+                Margin="8"
+                VerticalAlignment="Center"
+                x:DeferLoadStrategy="Lazy"
+                PlaceholderText="Search…"
+                QueryIcon="Find"
+                Visibility="Collapsed" />
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <AppBarButton
+                    x:Name="searchButton"
+                    Icon="Find"
+                    IsCompact="True" />
+                <AppBarButton
+                    x:Name="filterButton"
+                    x:DeferLoadStrategy="Lazy"
+                    Icon="Filter"
+                    IsCompact="True"
+                    Visibility="Collapsed" />
+            </StackPanel>
+        </Grid>
         <controls:AdaptiveGridView
             x:Name="ItemGridView"
             Grid.Row="1"
@@ -288,7 +299,7 @@
                 </RadioButton>
             </Grid>
             <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="LANGUAGE" />
-            <AutoSuggestBox BorderThickness="0" PlaceholderText="enter language code…" />
+            <AutoSuggestBox BorderThickness="0" PlaceholderText="enter language…" />
         </StackPanel>
         <CommandBar x:Name="MainCommandBar" Grid.Row="2">
             <AppBarButton
