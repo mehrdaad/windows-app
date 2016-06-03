@@ -24,10 +24,11 @@ namespace wallabag.ViewModels
         public DelegateCommand NavigateToSettingsPageCommand { get; private set; }
         public DelegateCommand<ItemClickEventArgs> ItemClickCommand { get; private set; }
 
-        public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties(); 
+        public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties();
         public DelegateCommand<string> SetItemTypeFilterCommand { get; private set; }
         public DelegateCommand<string> SetEstimatedReadingTimeFilterCommand { get; private set; }
         public DelegateCommand<string> SetCreationDateFilterCommand { get; private set; }
+        public DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs> SearchQuerySubmittedCommand { get; private set; }
 
         public MainViewModel()
         {
@@ -39,6 +40,7 @@ namespace wallabag.ViewModels
             SetItemTypeFilterCommand = new DelegateCommand<string>(type => SetItemTypeFilter(type));
             SetEstimatedReadingTimeFilterCommand = new DelegateCommand<string>(order => SetEstimatedReadingTimeFilter(order));
             SetCreationDateFilterCommand = new DelegateCommand<string>(order => SetCreationDateFilter(order));
+            SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
         }
 
         private async Task SyncAsync()
@@ -58,27 +60,7 @@ namespace wallabag.ViewModels
         private void FetchFromDatabase()
         {
             var databaseItems = App.Database.Table<Item>().Where(i => i.IsRead == false).ToList();
-
-            var idComparer = new ItemByIdEqualityComparer();
-            var modificationDateComparer = new ItemByModificationDateEqualityComparer();
-
-            var newItems = databaseItems.Except(_items, idComparer);
-            var changedItems = databaseItems.Except(_items, modificationDateComparer).Except(newItems);
-            var deletedItems = _items.Except(databaseItems, idComparer);
-
-            _items = databaseItems;
-
-            foreach (var item in newItems)
-                Items.AddSorted(new ItemViewModel(item));
-
-            foreach (var item in changedItems)
-            {
-                Items.Remove(Items.Where(i => i.Model.Id == item.Id).FirstOrDefault());
-                Items.AddSorted(new ItemViewModel(item));
-            }
-
-            foreach (var item in deletedItems)
-                Items.Remove(new ItemViewModel(item));
+            UpdateItemCollection(databaseItems);
         }
         private void ItemClick(ItemClickEventArgs args)
         {
@@ -118,6 +100,52 @@ namespace wallabag.ViewModels
             else
                 CurrentSearchProperties.CreationDateSortOrder = SearchProperties.SortOrder.Descending;
         }
+        private void SearchQuerySubmitted(AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            var searchItems = App.Database.Table<Item>().Where(i => i.Title.ToLower().Contains(args.QueryText));
+
+            if (CurrentSearchProperties.ReadingTimeSortOrder != null)
+            {
+                if (CurrentSearchProperties.ReadingTimeSortOrder == SearchProperties.SortOrder.Ascending)
+                    searchItems = searchItems.OrderBy(i => i.EstimatedReadingTime);
+                else
+                    searchItems = searchItems.OrderByDescending(i => i.EstimatedReadingTime);
+            }
+
+            if (CurrentSearchProperties.CreationDateSortOrder != null)
+            {
+                if (CurrentSearchProperties.CreationDateSortOrder == SearchProperties.SortOrder.Ascending)
+                    searchItems = searchItems.OrderBy(i => i.CreationDate);
+                else
+                    searchItems = searchItems.OrderByDescending(i => i.CreationDate);
+            }
+
+            UpdateItemCollection(searchItems.ToList());
+        }
+
+        private void UpdateItemCollection(List<Item> newItemList )
+        {
+            var idComparer = new ItemByIdEqualityComparer();
+            var modificationDateComparer = new ItemByModificationDateEqualityComparer();
+
+            var newItems = newItemList.Except(_items, idComparer);
+            var changedItems = newItemList.Except(_items, modificationDateComparer).Except(newItems);
+            var deletedItems = _items.Except(newItemList, idComparer);
+
+            _items = newItemList;
+
+            foreach (var item in newItems)
+                Items.AddSorted(new ItemViewModel(item));
+
+            foreach (var item in changedItems)
+            {
+                Items.Remove(Items.Where(i => i.Model.Id == item.Id).FirstOrDefault());
+                Items.AddSorted(new ItemViewModel(item));
+            }
+
+            foreach (var item in deletedItems)
+                Items.Remove(new ItemViewModel(item));
+        }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
@@ -130,6 +158,6 @@ namespace wallabag.ViewModels
                     FetchFromDatabase();
             });
             return base.OnNavigatedToAsync(parameter, mode, state);
-        }
+        }        
     }
 }

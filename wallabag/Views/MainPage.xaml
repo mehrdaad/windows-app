@@ -224,7 +224,13 @@
                 PlaceholderText="Search…"
                 QueryIcon="Find"
                 Text="{x:Bind ViewModel.CurrentSearchProperties.Query, Mode=TwoWay}"
-                Visibility="Collapsed" />
+                Visibility="Collapsed">
+                <interactivity:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="QuerySubmitted">
+                        <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQuerySubmittedCommand}" />
+                    </core:EventTriggerBehavior>
+                </interactivity:Interaction.Behaviors>
+            </AutoSuggestBox>
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <AppBarButton
                     x:Name="searchButton"
