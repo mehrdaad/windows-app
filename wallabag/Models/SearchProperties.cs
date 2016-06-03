@@ -16,17 +16,18 @@ namespace wallabag.Models
             get { return _query; }
             set
             {
-                if (string.IsNullOrWhiteSpace(value) && !string.IsNullOrWhiteSpace(_query))
-                    SearchCanceled?.Invoke(this);
-
-                if (!string.IsNullOrWhiteSpace(value) && string.IsNullOrWhiteSpace(_query))
-                    SearchStarted?.Invoke(this);
-
-                if (value != _query)
+                var oldValue = _query;
+                if (_query != value)
                 {
                     _query = value;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Query)));
                 }
+                
+                if (string.IsNullOrWhiteSpace(value) && !string.IsNullOrWhiteSpace(oldValue))
+                    SearchCanceled?.Invoke(this);
+
+                if (!string.IsNullOrWhiteSpace(value) && string.IsNullOrWhiteSpace(oldValue))
+                    SearchStarted?.Invoke(this);
             }
         }
 
