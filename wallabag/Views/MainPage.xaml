@@ -148,9 +148,28 @@
                 </controls:AdaptiveGridView>
             </SplitView.Content>
             <SplitView.Pane>
-                <RelativePanel>
-                    <!--  TODO  -->
-                </RelativePanel>
+                <StackPanel>
+                    <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="ITEM TYPE" />
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <RadioButton
+                            Background="#16a085"
+                            Content="&#xE138;"
+                            IsChecked="True"
+                            Style="{StaticResource IconRadioButtonStyle}" />
+                        <RadioButton
+                            Background="#2980b9"
+                            Content="&#xE052;"
+                            Style="{StaticResource IconRadioButtonStyle}" />
+                        <RadioButton
+                            Background="#f39c12"
+                            Content="&#xE006;"
+                            Style="{StaticResource IconRadioButtonStyle}" />
+                        <RadioButton
+                            Background="#c0392b"
+                            Content="&#xE1D3;"
+                            Style="{StaticResource IconRadioButtonStyle}" />
+                    </StackPanel>
+                </StackPanel>
             </SplitView.Pane>
         </SplitView>
         <CommandBar x:Name="MainCommandBar" Grid.Row="2">
