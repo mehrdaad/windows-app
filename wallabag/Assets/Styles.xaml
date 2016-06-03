@@ -120,7 +120,7 @@
     <Style x:Key="MenuHeaderTextBlockStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Margin" Value="12,8" />
+        <Setter Property="Margin" Value="12,12,12,6" />
         <Setter Property="Opacity" Value="0.8" />
     </Style>
 
