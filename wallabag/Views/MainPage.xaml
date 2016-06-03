@@ -220,6 +220,7 @@
                 VerticalAlignment="Center"
                 x:DeferLoadStrategy="Lazy"
                 GotFocus="searchBox_GotFocus"
+                ItemsSource="{x:Bind ViewModel.SearchQuerySuggestions, Mode=OneWay}"
                 LostFocus="searchBox_LostFocus"
                 PlaceholderText="Search…"
                 QueryIcon="Find"
@@ -228,6 +229,9 @@
                 <interactivity:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="QuerySubmitted">
                         <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQuerySubmittedCommand}" />
+                    </core:EventTriggerBehavior>
+                    <core:EventTriggerBehavior EventName="TextChanged">
+                        <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQueryChangedCommand}" />
                     </core:EventTriggerBehavior>
                 </interactivity:Interaction.Behaviors>
             </AutoSuggestBox>

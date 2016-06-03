@@ -25,9 +25,11 @@ namespace wallabag.ViewModels
         public DelegateCommand<ItemClickEventArgs> ItemClickCommand { get; private set; }
 
         public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties();
+        public ObservableCollection<Item> SearchQuerySuggestions { get; set; } = new ObservableCollection<Item>();
         public DelegateCommand<string> SetItemTypeFilterCommand { get; private set; }
         public DelegateCommand<string> SetEstimatedReadingTimeFilterCommand { get; private set; }
         public DelegateCommand<string> SetCreationDateFilterCommand { get; private set; }
+        public DelegateCommand<AutoSuggestBoxTextChangedEventArgs> SearchQueryChangedCommand { get; private set; }
         public DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs> SearchQuerySubmittedCommand { get; private set; }
 
         public MainViewModel()
@@ -40,6 +42,7 @@ namespace wallabag.ViewModels
             SetItemTypeFilterCommand = new DelegateCommand<string>(type => SetItemTypeFilter(type));
             SetEstimatedReadingTimeFilterCommand = new DelegateCommand<string>(order => SetEstimatedReadingTimeFilter(order));
             SetCreationDateFilterCommand = new DelegateCommand<string>(order => SetCreationDateFilter(order));
+            SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
             SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
         }
 
@@ -100,8 +103,22 @@ namespace wallabag.ViewModels
             else
                 CurrentSearchProperties.CreationDateSortOrder = SearchProperties.SortOrder.Descending;
         }
+        private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                var suggestions = App.Database.Table<Item>().Where(i => i.Title.ToLower().Contains(CurrentSearchProperties.Query)).Take(5);
+                SearchQuerySuggestions.Replace(suggestions.ToList());
+            }
+        }
         private void SearchQuerySubmitted(AutoSuggestBoxQuerySubmittedEventArgs args)
         {
+            if (args.ChosenSuggestion != null)
+            {
+                NavigationService.Navigate(typeof(Views.ItemPage), args.ChosenSuggestion as Item);
+                return;
+            }
+
             var searchItems = App.Database.Table<Item>().Where(i => i.Title.ToLower().Contains(args.QueryText));
 
             if (CurrentSearchProperties.ReadingTimeSortOrder != null)
@@ -123,7 +140,7 @@ namespace wallabag.ViewModels
             UpdateItemCollection(searchItems.ToList());
         }
 
-        private void UpdateItemCollection(List<Item> newItemList )
+        private void UpdateItemCollection(List<Item> newItemList)
         {
             var idComparer = new ItemByIdEqualityComparer();
             var modificationDateComparer = new ItemByModificationDateEqualityComparer();
@@ -158,6 +175,6 @@ namespace wallabag.ViewModels
                     FetchFromDatabase();
             });
             return base.OnNavigatedToAsync(parameter, mode, state);
-        }        
+        }
     }
 }
