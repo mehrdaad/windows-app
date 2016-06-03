@@ -105,6 +105,9 @@ namespace wallabag.ViewModels
         }
         private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
         {
+            if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+                return;
+
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
                 var suggestions = App.Database.Table<Item>().Where(i => i.Title.ToLower().Contains(CurrentSearchProperties.Query)).Take(5);
@@ -118,6 +121,9 @@ namespace wallabag.ViewModels
                 NavigationService.Navigate(typeof(Views.ItemPage), args.ChosenSuggestion as Item);
                 return;
             }
+
+            if (string.IsNullOrWhiteSpace(args.QueryText))
+                return;
 
             var searchItems = App.Database.Table<Item>().Where(i => i.Title.ToLower().Contains(args.QueryText));
 
