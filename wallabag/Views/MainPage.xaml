@@ -175,7 +175,7 @@
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Button HorizontalAlignment="Stretch">
+                        <RadioButton HorizontalAlignment="Stretch" Style="{StaticResource ToggleButtonRadioButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock
                                     Margin="0,0,8,0"
@@ -184,8 +184,11 @@
                                     Text="&#xE143;" />
                                 <TextBlock Text="shortest first" />
                             </StackPanel>
-                        </Button>
-                        <Button Grid.Column="1" HorizontalAlignment="Stretch">
+                        </RadioButton>
+                        <RadioButton
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            Style="{StaticResource ToggleButtonRadioButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock
                                     Margin="0,0,8,0"
@@ -199,7 +202,7 @@
                                 </TextBlock>
                                 <TextBlock Text="longest first" />
                             </StackPanel>
-                        </Button>
+                        </RadioButton>
                     </Grid>
                     <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="CREATION DATE" />
                     <Grid>
@@ -207,7 +210,7 @@
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Button HorizontalAlignment="Stretch">
+                        <RadioButton HorizontalAlignment="Stretch" Style="{StaticResource ToggleButtonRadioButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock
                                     Margin="0,0,8,0"
@@ -216,8 +219,11 @@
                                     Text="&#xE143;" />
                                 <TextBlock Text="newest first" />
                             </StackPanel>
-                        </Button>
-                        <Button Grid.Column="1" HorizontalAlignment="Stretch">
+                        </RadioButton>
+                        <RadioButton
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            Style="{StaticResource ToggleButtonRadioButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock
                                     Margin="0,0,8,0"
@@ -231,7 +237,7 @@
                                 </TextBlock>
                                 <TextBlock Text="oldest first" />
                             </StackPanel>
-                        </Button>
+                        </RadioButton>
                     </Grid>
                     <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="LANGUAGE" />
                     <AutoSuggestBox BorderThickness="0" PlaceholderText="enter language code…" />
