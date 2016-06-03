@@ -1,14 +1,15 @@
-﻿using PropertyChanged;
+﻿using System.ComponentModel;
 
 namespace wallabag.Models
 {
-    [ImplementPropertyChanged]
-    public class SearchProperties
+    public class SearchProperties : INotifyPropertyChanged
     {
         public event SearchChangedHandler SearchCanceled;
         public event SearchChangedHandler SearchStarted;
-        public delegate void SearchChangedHandler(SearchProperties p);
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        public delegate void SearchChangedHandler(SearchProperties p);
+   
         private string _query;
         public string Query
         {
@@ -22,7 +23,10 @@ namespace wallabag.Models
                     SearchStarted?.Invoke(this);
 
                 if (value != _query)
+                {
                     _query = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Query)));
+                }
             }
         }
 
