@@ -212,11 +212,30 @@
             <RowDefinition />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveStates">
+                <VisualState x:Name="Narrow" />
+                <VisualState x:Name="Wide">
+                    <VisualState.Setters>
+                        <Setter Target="searchBox.Visibility" Value="Visible" />
+                        <Setter Target="searchButton.Visibility" Value="Collapsed" />
+                        <Setter Target="filterButton.Visibility" Value="Visible" />
+                        <Setter Target="searchBox.HorizontalAlignment" Value="Right" />
+                        <Setter Target="searchBox.MinWidth" Value="300" />
+                        <Setter Target="filterStackPanel.HorizontalAlignment" Value="Right" />
+                        <Setter Target="filterStackPanel.MinWidth" Value="300" />
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="720" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="UNREAD" />
             <AutoSuggestBox
                 x:Name="searchBox"
-                Margin="8"
+                Margin="8,8,76,8"
                 VerticalAlignment="Center"
                 x:DeferLoadStrategy="Lazy"
                 GotFocus="searchBox_GotFocus"
