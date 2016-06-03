@@ -171,6 +171,27 @@ namespace wallabag.Views
             else
                 HideFilterStoryboard.Begin();
         }
+        
+        private void searchBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            SystemNavigationManager.GetForCurrentView().BackRequested += (s, args) => BackButtonPressedDuringSearch(args);
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+        }
+        private void searchBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => BackButtonPressedDuringSearch(args);
+        }
+        private void BackButtonPressedDuringSearch(BackRequestedEventArgs e)
+        {
+            e.Handled = true;
+
+            if (_isSearchVisible)
+            {
+                ViewModel.CurrentSearchProperties.Query = string.Empty;
+                HideSearchStoryboard.Begin();
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            }
+        }
 
         #endregion
     }
