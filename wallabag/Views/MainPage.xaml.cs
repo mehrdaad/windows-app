@@ -37,6 +37,9 @@ namespace wallabag.Views
             HideSearchStoryboard.Completed += (s, e) => _isSearchVisible = false;
             ShowFilterStoryboard.Completed += (s, e) => _isFilterVisible = true;
             HideFilterStoryboard.Completed += (s, e) => _isFilterVisible = false;
+
+            ViewModel.CurrentSearchProperties.SearchStarted += p => StartSearch();
+            ViewModel.CurrentSearchProperties.SearchCanceled += p => EndSearch(null, null);
         }
 
         #region Context menu
@@ -171,26 +174,25 @@ namespace wallabag.Views
             else
                 HideFilterStoryboard.Begin();
         }
-        
-        private void searchBox_GotFocus(object sender, RoutedEventArgs e)
+
+        private void StartSearch()
         {
-            SystemNavigationManager.GetForCurrentView().BackRequested += (s, args) => BackButtonPressedDuringSearch(args);
+            SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => EndSearch(s, e);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
         }
-        private void searchBox_LostFocus(object sender, RoutedEventArgs e)
+        private void EndSearch(object sender, BackRequestedEventArgs e)
         {
-            SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => BackButtonPressedDuringSearch(args);
-        }
-        private void BackButtonPressedDuringSearch(BackRequestedEventArgs e)
-        {
-            e.Handled = true;
+            SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearch(s, args);
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+
+            if (!string.IsNullOrWhiteSpace(ViewModel.CurrentSearchProperties.Query))
+                ViewModel.CurrentSearchProperties.Query = string.Empty;
+
+            if (e != null)
+                e.Handled = true;
 
             if (_isSearchVisible)
-            {
-                ViewModel.CurrentSearchProperties.Query = string.Empty;
                 HideSearchStoryboard.Begin();
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-            }
         }
 
         #endregion

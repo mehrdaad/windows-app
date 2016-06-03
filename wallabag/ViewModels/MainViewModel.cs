@@ -44,6 +44,7 @@ namespace wallabag.ViewModels
             SetCreationDateFilterCommand = new DelegateCommand<string>(order => SetCreationDateFilter(order));
             SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
             SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
+            CurrentSearchProperties.SearchCanceled += p => FetchFromDatabase();
         }
 
         private async Task SyncAsync()
