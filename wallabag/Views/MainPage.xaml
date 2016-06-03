@@ -169,6 +169,72 @@
                             Content="&#xE1D3;"
                             Style="{StaticResource IconRadioButtonStyle}" />
                     </StackPanel>
+                    <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="ESTIMATED READING TIME" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Button HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Text="&#xE143;" />
+                                <TextBlock Text="shortest first" />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Column="1" HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Text="&#xE143;">
+                                    <TextBlock.RenderTransform>
+                                        <CompositeTransform ScaleY="-1" />
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                                <TextBlock Text="longest first" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="CREATION DATE" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Button HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Text="&#xE143;" />
+                                <TextBlock Text="newest first" />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Column="1" HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Text="&#xE143;">
+                                    <TextBlock.RenderTransform>
+                                        <CompositeTransform ScaleY="-1" />
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                                <TextBlock Text="oldest first" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="LANGUAGE" />
+                    <AutoSuggestBox BorderThickness="0" PlaceholderText="enter language code…" />
                 </StackPanel>
             </SplitView.Pane>
         </SplitView>
