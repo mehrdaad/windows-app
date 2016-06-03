@@ -1,20 +1,12 @@
 ﻿using PropertyChanged;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using wallabag.ViewModels;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // Die Elementvorlage "Leere Seite" ist unter http://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
@@ -40,6 +32,11 @@ namespace wallabag.Views
 
                 if (ItemGridView.SelectedItems.Count == 0) DisableMultipleSelection();
             };
+
+            ShowSearchStoryboard.Completed += (s, e) => _isSearchVisible = true;
+            HideSearchStoryboard.Completed += (s, e) => _isSearchVisible = false;
+            ShowFilterStoryboard.Completed += (s, e) => _isFilterVisible = true;
+            HideFilterStoryboard.Completed += (s, e) => _isFilterVisible = false;
         }
 
         #region Context menu
@@ -154,6 +151,27 @@ namespace wallabag.Views
 
         private void EnableMultipleSelectionButtonClick(object sender, RoutedEventArgs e) => EnableMultipleSelection();
         private void DisableMultipleSelectionButtonClick(object sender, RoutedEventArgs e) => DisableMultipleSelection(true);
+        #endregion
+
+        #region Search & Filter
+
+        private bool _isSearchVisible;
+        private bool _isFilterVisible;
+        private void searchButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_isSearchVisible)
+                ShowSearchStoryboard.Begin();
+            else
+                HideSearchStoryboard.Begin();
+        }
+        private void filterButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_isFilterVisible)
+                ShowFilterStoryboard.Begin();
+            else
+                HideFilterStoryboard.Begin();
+        }
+
         #endregion
     }
 }

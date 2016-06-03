@@ -8,6 +8,8 @@ namespace wallabag.Models
 {
     public class SearchProperties
     {
+        public string Query { get; set; }
+
         public SearchPropertiesItemType? ItemType { get; set; }
         public SortOrder? ReadingTimeSortOrder { get; set; }
         public SortOrder? CreationDateSortOrder { get; set; }
@@ -27,6 +29,7 @@ namespace wallabag.Models
 
         public SearchProperties()
         {
+            Query = string.Empty;
             ItemType = SearchPropertiesItemType.Unread;
             ReadingTimeSortOrder = null;
             CreationDateSortOrder = null;        
