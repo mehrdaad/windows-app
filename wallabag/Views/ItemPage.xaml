@@ -40,68 +40,62 @@
             Margin="8,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Background="{x:Bind ViewModel.ForegroundBrush, Mode=OneWay}"
+            Background="{ThemeResource SystemControlBackgroundAccentBrush}"
             Content="&#xE10C;"
             FontFamily="Segoe MDL2 Assets"
             FontSize="16"
-            Foreground="{x:Bind ViewModel.BackgroundBrush, Mode=OneWay}"
-            Padding="12,2" />
+            Padding="12,2"
+            RequestedTheme="Dark" />
         <Grid
             x:Name="commandsGrid"
             Grid.Row="1"
-            Background="{x:Bind ViewModel.ForegroundBrush, Mode=OneWay}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid.Resources>
+            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <StackPanel.Resources>
                     <Style TargetType="AppBarButton">
-                        <Setter Property="HorizontalAlignment" Value="Stretch" />
                         <Setter Property="IsCompact" Value="True" />
                     </Style>
-                </Grid.Resources>
-                <AppBarButton
-                    Command="{x:Bind ViewModel.ChangeReadStatusCommand}"
-                    Icon="{x:Bind ViewModel.ChangeReadStatusButtonFontIcon, Mode=OneWay}"
-                    Label="Mark as read" />
-                <AppBarButton
-                    Grid.Column="1"
-                    Command="{x:Bind ViewModel.ChangeFavoriteStatusCommand}"
-                    Icon="{x:Bind ViewModel.ChangeFavoriteStatusButtonFontIcon, Mode=OneWay}"
-                    Label="Mark as favorite" />
-                <AppBarButton
-                    Grid.Column="2"
-                    Command="{x:Bind ViewModel.Item.ShareCommand}"
-                    Label="Share">
+                </StackPanel.Resources>
+                <AppBarButton Command="{x:Bind ViewModel.Item.ShareCommand}" Label="Share">
                     <AppBarButton.Icon>
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton
-                    Grid.Column="3"
+                    Command="{x:Bind ViewModel.ChangeFavoriteStatusCommand}"
+                    Icon="{x:Bind ViewModel.ChangeFavoriteStatusButtonFontIcon, Mode=OneWay}"
+                    Label="Mark as favorite" />
+                <AppBarButton
+                    Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                    Command="{x:Bind ViewModel.ChangeReadStatusCommand}"
+                    Icon="{x:Bind ViewModel.ChangeReadStatusButtonFontIcon, Mode=OneWay}"
+                    Label="Mark as read"
+                    RequestedTheme="Dark" />
+                <AppBarButton
                     Command="{x:Bind ViewModel.Item.EditTagsCommand}"
                     Icon="Tag"
                     Label="Edit tags" />
-            </Grid>
-            <AppBarButton Label="Delete" Visibility="Collapsed">
-                <AppBarButton.Flyout>
-                    <Flyout>
-                        <StackPanel>
-                            <TextBlock Text="This will delete the item permanently from your wallabag." TextWrapping="Wrap" />
-                            <Button
-                                Margin="0,8,0,0"
-                                HorizontalAlignment="Right"
-                                Background="Red"
-                                Command="{x:Bind ViewModel.Item.DeleteCommand}"
-                                Content="Delete permanently"
-                                RequestedTheme="Dark" />
-                        </StackPanel>
-                    </Flyout>
-                </AppBarButton.Flyout>
-            </AppBarButton>
+                <AppBarButton Icon="Delete" Label="Delete">
+                    <AppBarButton.Flyout>
+                        <Flyout>
+                            <StackPanel>
+                                <TextBlock Text="This will delete the item permanently from your wallabag." TextWrapping="Wrap" />
+                                <Button
+                                    Margin="0,8,0,0"
+                                    HorizontalAlignment="Right"
+                                    Background="Red"
+                                    Command="{x:Bind ViewModel.Item.DeleteCommand}"
+                                    Content="Delete permanently"
+                                    RequestedTheme="Dark" />
+                            </StackPanel>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>
