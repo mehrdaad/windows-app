@@ -96,6 +96,32 @@
                     </AppBarButton.Flyout>
                 </AppBarButton>
             </StackPanel>
+            <StackPanel
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                BorderBrush="{ThemeResource SystemControlBackgroundAccentBrush}"
+                BorderThickness="0,1,0,0"
+                Orientation="Horizontal"
+                Padding="0,4,0,0"
+                Visibility="Visible">
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+                        <Setter Property="FontSize" Value="18" />
+                        <Setter Property="Margin" Value="0,8" />
+                        <Setter Property="Padding" Value="12" />
+                    </Style>
+                </StackPanel.Resources>
+                <Button Content="&#xE109;" />
+                <Button Content="&#xE108;" />
+                <AppBarSeparator VerticalAlignment="Center" />
+                <Button Content="&#xE706;" />
+                <Button Content="&#xE708;" />
+                <AppBarSeparator VerticalAlignment="Center" />
+                <Button Content="&#xE185;" />
+                <Button Content="&#xE8E4;" />
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>
