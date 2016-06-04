@@ -17,6 +17,7 @@ namespace wallabag.Views
     {
         private const string _scriptName = "changeHtmlAttributes";
         private bool _isCommandBarVisible = false;
+        private bool _isCommandBarCompact = false;
 
         public ItemPageViewModel ViewModel { get { return DataContext as ItemPageViewModel; } }
 
@@ -27,6 +28,22 @@ namespace wallabag.Views
             CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.IsVisibleChanged += (s, e) => backButton.Visibility = s.IsVisible ? Visibility.Visible : Visibility.Collapsed;
             HtmlViewer.ScriptNotify += HtmlViewer_ScriptNotify;
+
+            ShowMinimalCommandBarStoryboard.Completed += (s, e) =>
+            {
+                _isCommandBarVisible = true;
+                _isCommandBarCompact = true;
+            };
+            ShowFullCommandBarStoryboard.Completed += (s, e) =>
+            {
+                _isCommandBarVisible = true;
+                _isCommandBarCompact = false;
+            };
+            HideCommandBarStoryboard.Completed += (s, e) =>
+            {
+                _isCommandBarVisible = false;
+                _isCommandBarCompact = false;
+            };
         }
 
         private void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
@@ -35,16 +52,10 @@ namespace wallabag.Views
             {
                 ViewModel.Item.Model.ReadingProgress = double.Parse(e.Value.Replace(".", ","));
                 if (_isCommandBarVisible && ViewModel.Item.Model.ReadingProgress < 99)
-                {
                     HideCommandBarStoryboard.Begin();
-                    _isCommandBarVisible = false;
-                }
             }
             else
-            {
                 ShowMinimalCommandBarStoryboard.Begin();
-                _isCommandBarVisible = true;
-            }
         }
 
         private async void IncreaseFontSize(object sender, RoutedEventArgs e)
@@ -107,16 +118,10 @@ namespace wallabag.Views
 
         private void openCommandsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!_isCommandBarVisible)
-            {
+            if (!_isCommandBarVisible || _isCommandBarCompact)
                 ShowFullCommandBarStoryboard.Begin();
-                _isCommandBarVisible = true;
-            }
             else
-            {
                 HideCommandBarStoryboard.Begin();
-                _isCommandBarVisible = false;
-            }
         }
     }
 }
