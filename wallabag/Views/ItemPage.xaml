@@ -49,7 +49,8 @@
         <Grid
             x:Name="commandsGrid"
             Grid.Row="1"
-            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+            RequestedTheme="{x:Bind ViewModel.ColorApplicationTheme, Mode=OneWay}">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -109,14 +110,14 @@
                         <Setter Property="FontSize" Value="18" />
                     </Style>
                 </StackPanel.Resources>
-                <Button Content="&#xE109;" />
-                <Button Content="&#xE108;" />
+                <Button Click="IncreaseFontSize" Content="&#xE109;" />
+                <Button Click="DecreaseFontSize" Content="&#xE108;" />
                 <AppBarSeparator VerticalAlignment="Center" />
-                <Button Content="&#xE706;" />
-                <Button Content="&#xE708;" />
+                <Button Click="ChangeColorSchemeToLight" Content="&#xE706;" />
+                <Button Click="ChangeColorSchemeToDark" Content="&#xE708;" />
                 <AppBarSeparator VerticalAlignment="Center" />
-                <Button Content="&#xE185;" />
-                <Button Content="&#xE8E4;" />
+                <Button Click="ChangeFontFamily" Content="&#xE185;" />
+                <Button Click="ChangeTextAlignment" Content="&#xE8E4;" />
             </StackPanel>
         </Grid>
     </Grid>

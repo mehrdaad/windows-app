@@ -35,7 +35,13 @@ namespace wallabag.ViewModels
 
         public SolidColorBrush ForegroundBrush { get; set; }
         public SolidColorBrush BackgroundBrush { get; set; }
+        public ElementTheme ColorApplicationTheme { get; set; }
 
+        public int FontSize { get; set; } = 16;
+        public string FontFamily { get; set; } = "sans";
+        public string ColorScheme { get; set; } = "light";
+        public string TextAlignment { get; set; } = "left";
+        
         private async Task GenerateFormattedHtmlAsync()
         {
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Article/article.html"));
@@ -47,8 +53,8 @@ namespace wallabag.ViewModels
             styleSheetBuilder.Append("hr {border-color: " + accentColor + " !important}");
             styleSheetBuilder.Append("::selection,mark {background: " + accentColor + " !important}");
             styleSheetBuilder.Append("body {");
-            styleSheetBuilder.Append($"font-size: 16px;");
-            styleSheetBuilder.Append("text-align: left;");
+            styleSheetBuilder.Append($"font-size: {FontSize}px;");
+            styleSheetBuilder.Append($"text-align: {TextAlignment};");
             styleSheetBuilder.Append("}</style>");
 
             FormattedHtml = _template.FormatWith(new
@@ -57,9 +63,9 @@ namespace wallabag.ViewModels
                 content = Item.Model.Content,
                 articleUrl = Item.Model.Url,
                 hostname = Item.Model.Hostname,
-                color = "sepia",
-                font = "serif",
-                progress = "50",
+                color = ColorScheme,
+                font = FontFamily,
+                progress = "0",
                 publishDate = string.Format("{0:d}", Item.Model.CreationDate),
                 stylesheet = styleSheetBuilder.ToString()
             });
@@ -97,29 +103,31 @@ namespace wallabag.ViewModels
             else
                 ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(_unstarredGlyph);
         }
-        private void UpdateBrushes()
+        public void UpdateBrushes()
         {
-            var colorScheme = SettingsService.Instance.ColorScheme;
-
-            if (colorScheme.Equals("light"))
+            if (ColorScheme.Equals("light"))
             {
                 ForegroundBrush = Color.FromArgb(0xFF, 0x44, 0x44, 0x44).ToSolidColorBrush();
                 BackgroundBrush = Colors.White.ToSolidColorBrush();
+                ColorApplicationTheme = ElementTheme.Light;
             }
-            else if (colorScheme.Equals("sepia"))
+            else if (ColorScheme.Equals("sepia"))
             {
                 ForegroundBrush = Colors.Maroon.ToSolidColorBrush();
                 BackgroundBrush = Colors.Beige.ToSolidColorBrush();
+                ColorApplicationTheme = ElementTheme.Light;
             }
-            else if (colorScheme.Equals("dark"))
+            else if (ColorScheme.Equals("dark"))
             {
                 ForegroundBrush = Color.FromArgb(0xFF, 0xCC, 0xCC, 0xCC).ToSolidColorBrush();
                 BackgroundBrush = Color.FromArgb(0xFF, 0x33, 0x33, 0x33).ToSolidColorBrush();
+                ColorApplicationTheme = ElementTheme.Dark;
             }
-            else if (colorScheme.Equals("black"))
+            else if (ColorScheme.Equals("black"))
             {
                 ForegroundBrush = Color.FromArgb(0xFF, 0xB3, 0xB3, 0xB3).ToSolidColorBrush();
                 BackgroundBrush = Colors.Black.ToSolidColorBrush();
+                ColorApplicationTheme = ElementTheme.Dark;
             }
         }
 
