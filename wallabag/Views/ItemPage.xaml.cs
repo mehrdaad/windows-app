@@ -51,8 +51,11 @@ namespace wallabag.Views
             if (e.Value != "finishedReading")
             {
                 ViewModel.Item.Model.ReadingProgress = double.Parse(e.Value.Replace(".", ","));
-                if (_isCommandBarVisible && ViewModel.Item.Model.ReadingProgress < 99)
+                if (_isCommandBarCompact && ViewModel.Item.Model.ReadingProgress < 99)
+                {
+                    _isCommandBarCompact = false;
                     HideCommandBarStoryboard.Begin();
+                }
             }
             else
                 ShowMinimalCommandBarStoryboard.Begin();
