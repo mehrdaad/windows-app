@@ -14,6 +14,86 @@
     common:TitleBarExtensions.ButtonForegroundColor="{x:Bind ViewModel.ForegroundBrush.Color, Mode=OneWay}"
     common:TitleBarExtensions.IsVisible="false"
     mc:Ignorable="d">
+    <Page.Resources>
+        <Storyboard x:Name="ShowMinimalCommandBarStoryboard">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="commandsGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="commandsGrid"
+                Storyboard.TargetProperty="(FrameworkElement.Height)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="48">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="ShowFullCommandBarStoryboard">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="commandsGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="commandsGrid"
+                Storyboard.TargetProperty="(FrameworkElement.Height)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="115">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="stackPanel" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="HideCommandBarStoryboard">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="commandsGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="commandsGrid"
+                Storyboard.TargetProperty="(FrameworkElement.Height)">
+                <SplineDoubleKeyFrame KeyTime="0" Value="115" />
+                <SplineDoubleKeyFrame KeyTime="0:0:0.5" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="stackPanel" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
 
     <Page.DataContext>
         <vm:ItemPageViewModel />
@@ -41,6 +121,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+            Click="openCommandsButton_Click"
             Content="&#xE10C;"
             FontFamily="Segoe MDL2 Assets"
             FontSize="16"
@@ -49,11 +130,14 @@
         <Grid
             x:Name="commandsGrid"
             Grid.Row="1"
+            Height="0"
+            x:DeferLoadStrategy="Lazy"
             Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-            RequestedTheme="{x:Bind ViewModel.ColorApplicationTheme, Mode=OneWay}">
+            RequestedTheme="{x:Bind ViewModel.ColorApplicationTheme, Mode=OneWay}"
+            Visibility="Collapsed">
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="48" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                 <StackPanel.Resources>
@@ -98,13 +182,15 @@
                 </AppBarButton>
             </StackPanel>
             <StackPanel
+                x:Name="stackPanel"
                 Grid.Row="1"
                 HorizontalAlignment="Center"
+                x:DeferLoadStrategy="Lazy"
                 BorderBrush="{ThemeResource SystemControlBackgroundAccentBrush}"
                 BorderThickness="0,1,0,0"
                 Orientation="Horizontal"
                 Padding="0,4,0,0"
-                Visibility="Visible">
+                Visibility="Collapsed">
                 <StackPanel.Resources>
                     <Style BasedOn="{StaticResource RoundIconButtonStyle}" TargetType="Button">
                         <Setter Property="FontSize" Value="18" />

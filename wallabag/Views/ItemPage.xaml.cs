@@ -16,6 +16,8 @@ namespace wallabag.Views
     public sealed partial class ItemPage : Page
     {
         private const string _scriptName = "changeHtmlAttributes";
+        private bool _isCommandBarVisible = false;
+
         public ItemPageViewModel ViewModel { get { return DataContext as ItemPageViewModel; } }
 
         public ItemPage()
@@ -82,6 +84,20 @@ namespace wallabag.Views
 
             ViewModel.UpdateBrushes();
             return HtmlViewer.InvokeScriptAsync(_scriptName, arguments);
+        }
+
+        private void openCommandsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_isCommandBarVisible)
+            {
+                ShowFullCommandBarStoryboard.Begin();
+                _isCommandBarVisible = true;
+            }
+            else
+            {
+                HideCommandBarStoryboard.Begin();
+                _isCommandBarVisible = false;                
+            }
         }
     }
 }
