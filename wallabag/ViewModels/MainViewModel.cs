@@ -89,6 +89,7 @@ namespace wallabag.ViewModels
                     CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Archived;
                     break;
             }
+            UpdateViewBySearchProperties();
         }
         private void SetEstimatedReadingTimeFilter(string order)
         {
@@ -96,6 +97,7 @@ namespace wallabag.ViewModels
                 CurrentSearchProperties.ReadingTimeSortOrder = SearchProperties.SortOrder.Ascending;
             else
                 CurrentSearchProperties.ReadingTimeSortOrder = SearchProperties.SortOrder.Descending;
+            UpdateViewBySearchProperties();
         }
         private void SetCreationDateFilter(string order)
         {
@@ -103,6 +105,7 @@ namespace wallabag.ViewModels
                 CurrentSearchProperties.CreationDateSortOrder = SearchProperties.SortOrder.Ascending;
             else
                 CurrentSearchProperties.CreationDateSortOrder = SearchProperties.SortOrder.Descending;
+            UpdateViewBySearchProperties();
         }
         private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -169,6 +172,45 @@ namespace wallabag.ViewModels
 
             foreach (var item in deletedItems)
                 Items.Remove(new ItemViewModel(item));
+        }
+        private void UpdateViewBySearchProperties()
+        {
+            var items = App.Database.Table<Item>();
+
+            switch (CurrentSearchProperties.ItemType)
+            {
+                case SearchProperties.SearchPropertiesItemType.Unread:
+                    items = items.Where(i => i.IsRead == false); break;
+                case SearchProperties.SearchPropertiesItemType.Favorites:
+                    items = items.Where(i => i.IsStarred == true); break;
+                case SearchProperties.SearchPropertiesItemType.Archived:
+                    items = items.Where(i => i.IsRead == true); break;
+                case SearchProperties.SearchPropertiesItemType.All:
+                default:
+                    break;
+            }
+            
+            switch (CurrentSearchProperties.CreationDateSortOrder)
+            {
+                case SearchProperties.SortOrder.Ascending:
+                    items = items.OrderBy(i => i.CreationDate); break;
+                case SearchProperties.SortOrder.Descending:
+                default:
+                    items = items.OrderByDescending(i => i.CreationDate);
+                    break;
+            }
+
+            switch (CurrentSearchProperties.ReadingTimeSortOrder)
+            {
+                case SearchProperties.SortOrder.Ascending:
+                    items = items.OrderBy(i => i.EstimatedReadingTime); break;
+                case SearchProperties.SortOrder.Descending:
+                    items = items.OrderByDescending(i => i.EstimatedReadingTime); break;
+                default:
+                    break;
+            }
+            var list = items.ToList();
+            UpdateItemCollection(list);
         }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
