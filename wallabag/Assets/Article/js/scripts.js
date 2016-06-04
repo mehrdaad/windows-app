@@ -3,7 +3,7 @@
     var top = document.body.scrollTop;
     var scrollPercentage = 100 * top / (root.scrollHeight - root.clientHeight);
 
-    if (root.scrollHeight - top === root.clientHeight)
+    if (root.scrollHeight - top === root.clientHeight || scrollPercentage > 100)
         window.external.notify("finishedReading");
     window.external.notify(scrollPercentage.toString());
 }
