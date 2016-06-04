@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace wallabag.Common
 {
@@ -29,6 +31,27 @@ namespace wallabag.Common
             oldList.Clear();
             foreach (var item in newList)
                 oldList.Add(item);
+        }
+    }
+    public static class DependencyObjectExtensions
+    {
+        public static IEnumerable<T> FindChildren<T>(this DependencyObject d)           where T : DependencyObject
+        {
+            List<T> children = new List<T>();
+            int childCount = VisualTreeHelper.GetChildrenCount(d);
+
+            for (int i = 0; i < childCount; i++)
+            {
+                DependencyObject o = VisualTreeHelper.GetChild(d, i);
+
+                if (o is T)
+                    children.Add(o as T);
+
+                foreach (T c in o.FindChildren<T>())
+                    children.Add(c);
+            }
+
+            return children;
         }
     }
 }

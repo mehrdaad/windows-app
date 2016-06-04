@@ -1,4 +1,5 @@
 ﻿using PropertyChanged;
+using wallabag.Common;
 using wallabag.ViewModels;
 using Windows.Foundation;
 using Windows.System;
@@ -193,6 +194,17 @@ namespace wallabag.Views
 
             if (_isSearchVisible)
                 HideSearchStoryboard.Begin();
+        }
+
+        private void ResetFilter(object sender, RoutedEventArgs e)
+        {
+            var radioButtons = filterStackPanel.FindChildren<RadioButton>();
+
+            foreach (var item in radioButtons)
+                if (item.Name != "unreadItemsFilterRadioButton")
+                    item.IsChecked = null;
+                else
+                    item.IsChecked = true;
         }
 
         #endregion
