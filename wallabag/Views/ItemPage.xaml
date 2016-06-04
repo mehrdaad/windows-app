@@ -100,10 +100,6 @@
     </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
         <WebView x:Name="HtmlViewer" common:WebViewExtensions.Html="{x:Bind ViewModel.FormattedHtml}" />
         <Button
             x:Name="backButton"
@@ -115,96 +111,96 @@
             Content="&#xEC52;"
             FontFamily="Segoe MDL2 Assets"
             Foreground="{x:Bind ViewModel.ForegroundBrush, Mode=OneWay}" />
-        <Button
-            x:Name="openCommandsButton"
-            Margin="8,0"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Background="{ThemeResource SystemControlBackgroundAccentBrush}"
-            Click="openCommandsButton_Click"
-            Content="&#xE10C;"
-            FontFamily="Segoe MDL2 Assets"
-            FontSize="16"
-            Padding="12,2"
-            RequestedTheme="Dark" />
-        <Grid
-            x:Name="commandsGrid"
-            Grid.Row="1"
-            Height="0"
-            x:DeferLoadStrategy="Lazy"
-            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-            RequestedTheme="{x:Bind ViewModel.ColorApplicationTheme, Mode=OneWay}"
-            Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="48" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                <StackPanel.Resources>
-                    <Style TargetType="AppBarButton">
-                        <Setter Property="IsCompact" Value="True" />
-                    </Style>
-                </StackPanel.Resources>
-                <AppBarButton Command="{x:Bind ViewModel.Item.ShareCommand}" Label="Share">
-                    <AppBarButton.Icon>
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton
-                    Command="{x:Bind ViewModel.ChangeFavoriteStatusCommand}"
-                    Icon="{x:Bind ViewModel.ChangeFavoriteStatusButtonFontIcon, Mode=OneWay}"
-                    Label="Mark as favorite" />
-                <AppBarButton
-                    Background="{ThemeResource SystemControlBackgroundAccentBrush}"
-                    Command="{x:Bind ViewModel.ChangeReadStatusCommand}"
-                    Icon="{x:Bind ViewModel.ChangeReadStatusButtonFontIcon, Mode=OneWay}"
-                    Label="Mark as read"
-                    RequestedTheme="Dark" />
-                <AppBarButton
-                    Command="{x:Bind ViewModel.Item.EditTagsCommand}"
-                    Icon="Tag"
-                    Label="Edit tags" />
-                <AppBarButton Icon="Delete" Label="Delete">
-                    <AppBarButton.Flyout>
-                        <Flyout>
-                            <StackPanel>
-                                <TextBlock Text="This will delete the item permanently from your wallabag." TextWrapping="Wrap" />
-                                <Button
-                                    Margin="0,8,0,0"
-                                    HorizontalAlignment="Right"
-                                    Background="Red"
-                                    Command="{x:Bind ViewModel.Item.DeleteCommand}"
-                                    Content="Delete permanently"
-                                    RequestedTheme="Dark" />
-                            </StackPanel>
-                        </Flyout>
-                    </AppBarButton.Flyout>
-                </AppBarButton>
-            </StackPanel>
-            <StackPanel
-                x:Name="stackPanel"
-                Grid.Row="1"
-                HorizontalAlignment="Center"
+        <StackPanel VerticalAlignment="Bottom">
+            <Button
+                x:Name="openCommandsButton"
+                Margin="8,0"
+                HorizontalAlignment="Right"
+                Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                Click="openCommandsButton_Click"
+                Content="&#xE10C;"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="16"
+                Padding="12,2"
+                RequestedTheme="Dark" />
+            <Grid
+                x:Name="commandsGrid"
+                Height="0"
                 x:DeferLoadStrategy="Lazy"
-                BorderBrush="{ThemeResource SystemControlBackgroundAccentBrush}"
-                BorderThickness="0,1,0,0"
-                Orientation="Horizontal"
-                Padding="0,4,0,0"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                RequestedTheme="{x:Bind ViewModel.ColorApplicationTheme, Mode=OneWay}"
                 Visibility="Collapsed">
-                <StackPanel.Resources>
-                    <Style BasedOn="{StaticResource RoundIconButtonStyle}" TargetType="Button">
-                        <Setter Property="FontSize" Value="18" />
-                    </Style>
-                </StackPanel.Resources>
-                <Button Click="IncreaseFontSize" Content="&#xE109;" />
-                <Button Click="DecreaseFontSize" Content="&#xE108;" />
-                <AppBarSeparator VerticalAlignment="Center" />
-                <Button Click="ChangeColorSchemeToLight" Content="&#xE706;" />
-                <Button Click="ChangeColorSchemeToDark" Content="&#xE708;" />
-                <AppBarSeparator VerticalAlignment="Center" />
-                <Button Click="ChangeFontFamily" Content="&#xE185;" />
-                <Button Click="ChangeTextAlignment" Content="&#xE8E4;" />
-            </StackPanel>
-        </Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="48" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="AppBarButton">
+                            <Setter Property="IsCompact" Value="True" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <AppBarButton Command="{x:Bind ViewModel.Item.ShareCommand}" Label="Share">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        Command="{x:Bind ViewModel.ChangeFavoriteStatusCommand}"
+                        Icon="{x:Bind ViewModel.ChangeFavoriteStatusButtonFontIcon, Mode=OneWay}"
+                        Label="Mark as favorite" />
+                    <AppBarButton
+                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                        Command="{x:Bind ViewModel.ChangeReadStatusCommand}"
+                        Icon="{x:Bind ViewModel.ChangeReadStatusButtonFontIcon, Mode=OneWay}"
+                        Label="Mark as read"
+                        RequestedTheme="Dark" />
+                    <AppBarButton
+                        Command="{x:Bind ViewModel.Item.EditTagsCommand}"
+                        Icon="Tag"
+                        Label="Edit tags" />
+                    <AppBarButton Icon="Delete" Label="Delete">
+                        <AppBarButton.Flyout>
+                            <Flyout>
+                                <StackPanel>
+                                    <TextBlock Text="This will delete the item permanently from your wallabag." TextWrapping="Wrap" />
+                                    <Button
+                                        Margin="0,8,0,0"
+                                        HorizontalAlignment="Right"
+                                        Background="Red"
+                                        Command="{x:Bind ViewModel.Item.DeleteCommand}"
+                                        Content="Delete permanently"
+                                        RequestedTheme="Dark" />
+                                </StackPanel>
+                            </Flyout>
+                        </AppBarButton.Flyout>
+                    </AppBarButton>
+                </StackPanel>
+                <StackPanel
+                    x:Name="stackPanel"
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    x:DeferLoadStrategy="Lazy"
+                    BorderBrush="{ThemeResource SystemControlBackgroundAccentBrush}"
+                    BorderThickness="0,1,0,0"
+                    Orientation="Horizontal"
+                    Padding="0,4,0,0"
+                    Visibility="Collapsed">
+                    <StackPanel.Resources>
+                        <Style BasedOn="{StaticResource RoundIconButtonStyle}" TargetType="Button">
+                            <Setter Property="FontSize" Value="18" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button Click="IncreaseFontSize" Content="&#xE109;" />
+                    <Button Click="DecreaseFontSize" Content="&#xE108;" />
+                    <AppBarSeparator VerticalAlignment="Center" />
+                    <Button Click="ChangeColorSchemeToLight" Content="&#xE706;" />
+                    <Button Click="ChangeColorSchemeToDark" Content="&#xE708;" />
+                    <AppBarSeparator VerticalAlignment="Center" />
+                    <Button Click="ChangeFontFamily" Content="&#xE185;" />
+                    <Button Click="ChangeTextAlignment" Content="&#xE8E4;" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
     </Grid>
 </Page>
