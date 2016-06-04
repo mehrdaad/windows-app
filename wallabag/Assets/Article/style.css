@@ -7,6 +7,9 @@ body {
     font-family: Georgia;
     line-height: 1.7;
     -ms-content-zooming: none;
+        
+    margin-top: 32px;
+    margin-bottom: 64px;
 }
 
 h1,
@@ -253,7 +256,6 @@ tbody {
 
 article {
     margin: 0 auto;
-    margin-bottom: 2em;
     max-width: 43.75em;
     padding: 0 1.25em;
 }
