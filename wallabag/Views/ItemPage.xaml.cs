@@ -26,6 +26,25 @@ namespace wallabag.Views
 
             CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.IsVisibleChanged += (s, e) => backButton.Visibility = s.IsVisible ? Visibility.Visible : Visibility.Collapsed;
+            HtmlViewer.ScriptNotify += HtmlViewer_ScriptNotify;
+        }
+
+        private void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
+        {
+            if (e.Value != "finishedReading")
+            {
+                ViewModel.Item.Model.ReadingProgress = double.Parse(e.Value.Replace(".", ","));
+                if (_isCommandBarVisible && ViewModel.Item.Model.ReadingProgress < 99)
+                {
+                    HideCommandBarStoryboard.Begin();
+                    _isCommandBarVisible = false;
+                }
+            }
+            else
+            {
+                ShowMinimalCommandBarStoryboard.Begin();
+                _isCommandBarVisible = true;
+            }
         }
 
         private async void IncreaseFontSize(object sender, RoutedEventArgs e)
@@ -96,7 +115,7 @@ namespace wallabag.Views
             else
             {
                 HideCommandBarStoryboard.Begin();
-                _isCommandBarVisible = false;                
+                _isCommandBarVisible = false;
             }
         }
     }

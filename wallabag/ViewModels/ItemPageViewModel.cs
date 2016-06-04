@@ -65,7 +65,7 @@ namespace wallabag.ViewModels
                 hostname = Item.Model.Hostname,
                 color = ColorScheme,
                 font = FontFamily,
-                progress = "0",
+                progress = Item.Model.ReadingProgress,
                 publishDate = string.Format("{0:d}", Item.Model.CreationDate),
                 stylesheet = styleSheetBuilder.ToString()
             });
