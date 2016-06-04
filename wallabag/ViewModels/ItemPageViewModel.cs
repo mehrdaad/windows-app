@@ -8,8 +8,10 @@ using Template10.Utils;
 using wallabag.Common;
 using wallabag.Models;
 using wallabag.Services;
+using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -154,6 +156,15 @@ namespace wallabag.ViewModels
             SettingsService.Instance.TextAlignment = TextAlignment;
 
             App.Database.Update(Item.Model);
+
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            titleBar.BackgroundColor = null;
+            titleBar.ButtonBackgroundColor = null;
+            titleBar.ButtonForegroundColor = null;
+            titleBar.ForegroundColor = null;
+
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            coreTitleBar.ExtendViewIntoTitleBar = false;
 
             return base.OnNavigatedFromAsync(pageState, suspending);
         }
