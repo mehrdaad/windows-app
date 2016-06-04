@@ -82,7 +82,6 @@
                 EnableDependentAnimation="True"
                 Storyboard.TargetName="commandsGrid"
                 Storyboard.TargetProperty="(FrameworkElement.Height)">
-                <SplineDoubleKeyFrame KeyTime="0" Value="115" />
                 <SplineDoubleKeyFrame KeyTime="0:0:0.5" Value="0" />
             </DoubleAnimationUsingKeyFrames>
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="stackPanel" Storyboard.TargetProperty="(UIElement.Visibility)">
