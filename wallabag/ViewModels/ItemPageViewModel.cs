@@ -37,11 +37,11 @@ namespace wallabag.ViewModels
         public SolidColorBrush BackgroundBrush { get; set; }
         public ElementTheme ColorApplicationTheme { get; set; }
 
-        public int FontSize { get; set; } = 16;
-        public string FontFamily { get; set; } = "sans";
-        public string ColorScheme { get; set; } = "light";
-        public string TextAlignment { get; set; } = "left";
-        
+        public int FontSize { get; set; } = SettingsService.Instance.FontSize;
+        public string FontFamily { get; set; } = SettingsService.Instance.FontFamily;
+        public string ColorScheme { get; set; } = SettingsService.Instance.ColorScheme;
+        public string TextAlignment { get; set; } = SettingsService.Instance.TextAlignment;
+
         private async Task GenerateFormattedHtmlAsync()
         {
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Article/article.html"));
@@ -145,6 +145,17 @@ namespace wallabag.ViewModels
             UpdateBrushes();
 
             await GenerateFormattedHtmlAsync();
+        }
+        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
+        {
+            SettingsService.Instance.FontSize = FontSize;
+            SettingsService.Instance.FontFamily = FontFamily;
+            SettingsService.Instance.ColorScheme = ColorScheme;
+            SettingsService.Instance.TextAlignment = TextAlignment;
+
+            App.Database.Update(Item.Model);
+
+            return base.OnNavigatedFromAsync(pageState, suspending);
         }
     }
 }

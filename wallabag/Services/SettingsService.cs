@@ -1,6 +1,5 @@
 ﻿using System;
 using Template10.Services.SettingsService;
-using Windows.UI;
 
 namespace wallabag.Services
 {
@@ -55,8 +54,23 @@ namespace wallabag.Services
 
         public string ColorScheme
         {
-            get { return _helper.Read(nameof(ColorScheme), "sepia"); }
+            get { return _helper.Read(nameof(ColorScheme), "light"); }
             set { _helper.Write(nameof(ColorScheme), value); }
+        }
+        public int FontSize
+        {
+            get { return _helper.Read(nameof(FontSize), 16); }
+            set { _helper.Write(nameof(FontSize), value); }
+        }
+        public string FontFamily
+        {
+            get { return _helper.Read(nameof(FontFamily), "sans"); }
+            set { _helper.Write(nameof(FontFamily), value); }
+        }
+        public string TextAlignment
+        {
+            get { return _helper.Read(nameof(FontFamily), "left"); }
+            set { _helper.Write(nameof(FontFamily), value); }
         }
 
         #endregion
