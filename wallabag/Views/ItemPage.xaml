@@ -105,12 +105,8 @@
                 Padding="0,4,0,0"
                 Visibility="Visible">
                 <StackPanel.Resources>
-                    <Style TargetType="Button">
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+                    <Style BasedOn="{StaticResource RoundIconButtonStyle}" TargetType="Button">
                         <Setter Property="FontSize" Value="18" />
-                        <Setter Property="Margin" Value="0,8" />
-                        <Setter Property="Padding" Value="12" />
                     </Style>
                 </StackPanel.Resources>
                 <Button Content="&#xE109;" />
