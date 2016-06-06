@@ -9,7 +9,7 @@ namespace wallabag.Models
         public event PropertyChangedEventHandler PropertyChanged;
 
         public delegate void SearchChangedHandler(SearchProperties p);
-   
+
         private string _query;
         public string Query
         {
@@ -22,7 +22,7 @@ namespace wallabag.Models
                     _query = value;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Query)));
                 }
-                
+
                 if (string.IsNullOrWhiteSpace(value) && !string.IsNullOrWhiteSpace(oldValue))
                     SearchCanceled?.Invoke(this);
 
@@ -34,6 +34,7 @@ namespace wallabag.Models
         public SearchPropertiesItemType? ItemType { get; set; }
         public SortOrder? ReadingTimeSortOrder { get; set; }
         public SortOrder? CreationDateSortOrder { get; set; }
+        public Language Language { get; set; }
 
         public enum SearchPropertiesItemType
         {

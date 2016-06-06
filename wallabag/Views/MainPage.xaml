@@ -463,7 +463,13 @@
                 </RadioButton>
             </Grid>
             <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="LANGUAGE" />
-            <AutoSuggestBox BorderThickness="0" PlaceholderText="enter language…" />
+            <AutoSuggestBox ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}" PlaceholderText="enter language…">
+                <interactivity:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="QuerySubmitted">
+                        <core:InvokeCommandAction Command="{x:Bind ViewModel.LanguageCodeSubmittedCommand}" />
+                    </core:EventTriggerBehavior>
+                </interactivity:Interaction.Behaviors>
+            </AutoSuggestBox>
             <Button
                 Margin="0,12,0,4"
                 HorizontalAlignment="Stretch"
