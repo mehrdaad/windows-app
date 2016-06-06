@@ -398,7 +398,7 @@
                     </StackPanel>
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetCreationDateFilterCommand}" CommandParameter="asc" />
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetCreationDateFilterCommand}" CommandParameter="desc" />
                         </core:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </RadioButton>
@@ -422,7 +422,7 @@
                     </StackPanel>
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetCreationDateFilterCommand}" CommandParameter="desc" />
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetCreationDateFilterCommand}" CommandParameter="asc" />
                         </core:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </RadioButton>
@@ -489,7 +489,7 @@
             <Button
                 Margin="0,12,0,4"
                 HorizontalAlignment="Stretch"
-                Click="ResetFilter"
+                Command="{x:Bind ViewModel.ResetFilterCommand}"
                 Content="Reset filter"
                 Style="{StaticResource TextBlockButtonStyle}" />
         </StackPanel>

@@ -197,12 +197,6 @@ namespace wallabag.Views
                 HideSearchStoryboard.Begin();
         }
 
-        private void ResetFilter(object sender, RoutedEventArgs e)
-        {
-            // TODO: Put in ViewModel.
-            ViewModel.CurrentSearchProperties.Reset();
-        }
-
         #endregion
     }
 }

@@ -2,7 +2,6 @@
 using PropertyChanged;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
@@ -34,6 +33,7 @@ namespace wallabag.ViewModels
         public DelegateCommand<AutoSuggestBoxTextChangedEventArgs> SearchQueryChangedCommand { get; private set; }
         public DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs> SearchQuerySubmittedCommand { get; private set; }
         public DelegateCommand<SelectionChangedEventArgs> LanguageCodeChangedCommand { get; private set; }
+        public DelegateCommand ResetFilterCommand { get; private set; }
 
         public MainViewModel()
         {
@@ -48,6 +48,7 @@ namespace wallabag.ViewModels
             SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
             SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
             LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
+            ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
             CurrentSearchProperties.SearchCanceled += p => FetchFromDatabase();
         }
