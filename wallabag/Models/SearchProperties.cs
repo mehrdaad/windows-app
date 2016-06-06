@@ -1,7 +1,9 @@
-﻿using System.ComponentModel;
+﻿using PropertyChanged;
+using System.ComponentModel;
 
 namespace wallabag.Models
 {
+    [ImplementPropertyChanged]
     public class SearchProperties : INotifyPropertyChanged
     {
         public event SearchChangedHandler SearchCanceled;

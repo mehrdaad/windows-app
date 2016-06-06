@@ -14,6 +14,7 @@ namespace wallabag.Models
         public string wallabagLanguageCode { get; set; }
         public string LanguageCode { get; set; }
         public string DisplayName { get; set; }
+        public bool IsUnknown { get { return wallabagLanguageCode == null; } }
 
         public Language(string languageCode)
         {
@@ -22,8 +23,27 @@ namespace wallabag.Models
             DisplayName = new CultureInfo(LanguageCode).DisplayName;
         }
 
+        public static Language Unknown
+        {
+            get
+            {
+                return new Language("en")
+                {
+                    wallabagLanguageCode = null,
+                    LanguageCode = null,
+                    DisplayName = "unknown" // TODO: Translate
+                };
+            }
+        }
+
         public override string ToString() => DisplayName;
-        public override bool Equals(object obj) => LanguageCode.Equals((obj as Language).LanguageCode);
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj is Language)
+                return LanguageCode == (obj as Language).LanguageCode;
+            else
+                return false;
+        }
         public override int GetHashCode() => LanguageCode.GetHashCode();
     }
 }

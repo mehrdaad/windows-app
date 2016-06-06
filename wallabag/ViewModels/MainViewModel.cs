@@ -33,7 +33,7 @@ namespace wallabag.ViewModels
         public DelegateCommand<string> SetCreationDateFilterCommand { get; private set; }
         public DelegateCommand<AutoSuggestBoxTextChangedEventArgs> SearchQueryChangedCommand { get; private set; }
         public DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs> SearchQuerySubmittedCommand { get; private set; }
-        public DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs> LanguageCodeSubmittedCommand { get; private set; }
+        public DelegateCommand<SelectionChangedEventArgs> LanguageCodeChangedCommand { get; private set; }
 
         public MainViewModel()
         {
@@ -47,7 +47,7 @@ namespace wallabag.ViewModels
             SetCreationDateFilterCommand = new DelegateCommand<string>(order => SetCreationDateFilter(order));
             SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
             SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
-            LanguageCodeSubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => LanguageCodeSubmitted(args));
+            LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
 
             CurrentSearchProperties.SearchCanceled += p => FetchFromDatabase();
         }
@@ -154,14 +154,14 @@ namespace wallabag.ViewModels
 
             UpdateItemCollection(searchItems.ToList());
         }
-        private void LanguageCodeSubmitted(AutoSuggestBoxQuerySubmittedEventArgs args)
+        private void LanguageCodeChanged(SelectionChangedEventArgs args)
         {
-            if (args.ChosenSuggestion != null)
-            {
-                CurrentSearchProperties.Language = args.ChosenSuggestion as Language;
-                UpdateViewBySearchProperties();
-            }
+            var selectedLanguage = args.AddedItems.FirstOrDefault() as Language;
+
+            CurrentSearchProperties.Language = selectedLanguage as Language;
+            UpdateViewBySearchProperties();
         }
+
         private void UpdateItemCollection(List<Item> newItemList)
         {
             var idComparer = new ItemByIdEqualityComparer();
@@ -181,6 +181,11 @@ namespace wallabag.ViewModels
 
                     if (!LanguageSuggestions.Contains(translatedLanguage))
                         LanguageSuggestions.Add(translatedLanguage);
+                }
+                else
+                {
+                    if (!LanguageSuggestions.Contains(Language.Unknown))
+                        LanguageSuggestions.Add(Language.Unknown);
                 }
             }
 
@@ -213,8 +218,10 @@ namespace wallabag.ViewModels
                     break;
             }
 
-            if (CurrentSearchProperties.Language != null)
+            if (CurrentSearchProperties.Language?.IsUnknown == false)
                 items = items.Where(i => i.Language.Equals(CurrentSearchProperties.Language.wallabagLanguageCode));
+            else if (CurrentSearchProperties.Language?.IsUnknown == true)
+                items = items.Where(i => i.Language == null);
 
             switch (CurrentSearchProperties.CreationDateSortOrder)
             {
