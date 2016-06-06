@@ -323,7 +323,7 @@
             x:DeferLoadStrategy="Lazy"
             Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
             RenderTransformOrigin="0.5,0.5"
-            Visibility="Collapsed">
+            Visibility="Visible">
             <StackPanel.RenderTransform>
                 <CompositeTransform />
             </StackPanel.RenderTransform>
@@ -372,57 +372,16 @@
                     </interactivity:Interaction.Behaviors>
                 </RadioButton>
             </StackPanel>
-            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="ESTIMATED READING TIME" />
+            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="SORT BY" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <RadioButton HorizontalAlignment="Stretch" Style="{StaticResource ToggleButtonRadioButtonStyle}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Margin="0,0,8,0"
-                            VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"
-                            Text="&#xE143;" />
-                        <TextBlock Text="shortest first" />
-                    </StackPanel>
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetEstimatedReadingTimeFilterCommand}" CommandParameter="asc" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-                <RadioButton
-                    Grid.Column="1"
-                    HorizontalAlignment="Stretch"
-                    Style="{StaticResource ToggleButtonRadioButtonStyle}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Margin="0,0,8,0"
-                            VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"
-                            RenderTransformOrigin="0.5,0.5"
-                            Text="&#xE143;">
-                            <TextBlock.RenderTransform>
-                                <CompositeTransform ScaleY="-1" />
-                            </TextBlock.RenderTransform>
-                        </TextBlock>
-                        <TextBlock Text="longest first" />
-                    </StackPanel>
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetEstimatedReadingTimeFilterCommand}" CommandParameter="desc" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-            </Grid>
-            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="CREATION DATE" />
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
                 <RadioButton HorizontalAlignment="Stretch" Style="{StaticResource ToggleButtonRadioButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
@@ -458,6 +417,50 @@
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
                             <core:InvokeCommandAction Command="{x:Bind ViewModel.SetCreationDateFilterCommand}" CommandParameter="desc" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </RadioButton>
+                <RadioButton
+                    Grid.Row="1"
+                    Margin="0,4,0,0"
+                    HorizontalAlignment="Stretch"
+                    Style="{StaticResource ToggleButtonRadioButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"
+                            Text="&#xE143;" />
+                        <TextBlock Text="shortest first" />
+                    </StackPanel>
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Checked">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetEstimatedReadingTimeFilterCommand}" CommandParameter="asc" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </RadioButton>
+                <RadioButton
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="0,4,0,0"
+                    HorizontalAlignment="Stretch"
+                    Style="{StaticResource ToggleButtonRadioButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"
+                            RenderTransformOrigin="0.5,0.5"
+                            Text="&#xE143;">
+                            <TextBlock.RenderTransform>
+                                <CompositeTransform ScaleY="-1" />
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                        <TextBlock Text="longest first" />
+                    </StackPanel>
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Checked">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetEstimatedReadingTimeFilterCommand}" CommandParameter="desc" />
                         </core:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </RadioButton>

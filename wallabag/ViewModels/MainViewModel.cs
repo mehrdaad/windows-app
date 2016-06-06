@@ -99,17 +99,17 @@ namespace wallabag.ViewModels
         private void SetEstimatedReadingTimeFilter(string order)
         {
             if (order.Equals("asc"))
-                CurrentSearchProperties.ReadingTimeSortOrder = SearchProperties.SortOrder.Ascending;
+                CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.AscendingByReadingTime;
             else
-                CurrentSearchProperties.ReadingTimeSortOrder = SearchProperties.SortOrder.Descending;
+                CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.DescendingByReadingTime;
             UpdateViewBySearchProperties();
         }
         private void SetCreationDateFilter(string order)
         {
             if (order.Equals("asc"))
-                CurrentSearchProperties.CreationDateSortOrder = SearchProperties.SortOrder.Ascending;
+                CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.AscendingByCreationDate;
             else
-                CurrentSearchProperties.CreationDateSortOrder = SearchProperties.SortOrder.Descending;
+                CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.DescendingByCreationDate;
             UpdateViewBySearchProperties();
         }
         private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
@@ -134,25 +134,8 @@ namespace wallabag.ViewModels
             if (string.IsNullOrWhiteSpace(args.QueryText))
                 return;
 
-            var searchItems = App.Database.Table<Item>().Where(i => i.Title.ToLower().Contains(args.QueryText));
-
-            if (CurrentSearchProperties.ReadingTimeSortOrder != null)
-            {
-                if (CurrentSearchProperties.ReadingTimeSortOrder == SearchProperties.SortOrder.Ascending)
-                    searchItems = searchItems.OrderBy(i => i.EstimatedReadingTime);
-                else
-                    searchItems = searchItems.OrderByDescending(i => i.EstimatedReadingTime);
-            }
-
-            if (CurrentSearchProperties.CreationDateSortOrder != null)
-            {
-                if (CurrentSearchProperties.CreationDateSortOrder == SearchProperties.SortOrder.Ascending)
-                    searchItems = searchItems.OrderBy(i => i.CreationDate);
-                else
-                    searchItems = searchItems.OrderByDescending(i => i.CreationDate);
-            }
-
-            UpdateItemCollection(searchItems.ToList());
+            CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.All;
+            UpdateViewBySearchProperties();
         }
         private void LanguageCodeChanged(SelectionChangedEventArgs args)
         {
@@ -218,32 +201,37 @@ namespace wallabag.ViewModels
                     break;
             }
 
+            if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+                items = items.Where(i => i.Title.ToLower().Contains(CurrentSearchProperties.Query));
+
             if (CurrentSearchProperties.Language?.IsUnknown == false)
                 items = items.Where(i => i.Language.Equals(CurrentSearchProperties.Language.wallabagLanguageCode));
             else if (CurrentSearchProperties.Language?.IsUnknown == true)
                 items = items.Where(i => i.Language == null);
 
-            switch (CurrentSearchProperties.CreationDateSortOrder)
+            var list = items.ToList();
+            UpdateItemCollection(list);
+
+            IOrderedEnumerable<ItemViewModel> sortedItems;
+
+            switch (CurrentSearchProperties.SortOrder)
             {
-                case SearchProperties.SortOrder.Ascending:
-                    items = items.OrderBy(i => i.CreationDate); break;
-                case SearchProperties.SortOrder.Descending:
+                case SearchProperties.SearchPropertiesSortOrder.AscendingByReadingTime:
+                    sortedItems = Items.OrderBy(i => i.Model.EstimatedReadingTime);
+                    break;
+                case SearchProperties.SearchPropertiesSortOrder.DescendingByReadingTime:
+                    sortedItems = Items.OrderByDescending(i => i.Model.EstimatedReadingTime);
+                    break;
+                case SearchProperties.SearchPropertiesSortOrder.AscendingByCreationDate:
+                    sortedItems = Items.OrderBy(i => i.Model.CreationDate);
+                    break;
+                case SearchProperties.SearchPropertiesSortOrder.DescendingByCreationDate:
                 default:
-                    items = items.OrderByDescending(i => i.CreationDate);
+                    sortedItems = Items.OrderByDescending(i => i.Model.CreationDate);
                     break;
             }
 
-            switch (CurrentSearchProperties.ReadingTimeSortOrder)
-            {
-                case SearchProperties.SortOrder.Ascending:
-                    items = items.OrderBy(i => i.EstimatedReadingTime); break;
-                case SearchProperties.SortOrder.Descending:
-                    items = items.OrderByDescending(i => i.EstimatedReadingTime); break;
-                default:
-                    break;
-            }
-            var list = items.ToList();
-            UpdateItemCollection(list);
+            Items = new ObservableCollection<ItemViewModel>(sortedItems);
         }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
