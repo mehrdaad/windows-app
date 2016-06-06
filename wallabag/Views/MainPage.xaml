@@ -323,7 +323,7 @@
             x:DeferLoadStrategy="Lazy"
             Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
             RenderTransformOrigin="0.5,0.5"
-            Visibility="Visible">
+            Visibility="Collapsed">
             <StackPanel.RenderTransform>
                 <CompositeTransform />
             </StackPanel.RenderTransform>
