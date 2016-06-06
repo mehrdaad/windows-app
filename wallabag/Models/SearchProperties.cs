@@ -31,7 +31,7 @@ namespace wallabag.Models
             }
         }
 
-        public SearchPropertiesItemType? ItemType { get; set; }
+        public SearchPropertiesItemType ItemType { get; set; }
         public SortOrder? ReadingTimeSortOrder { get; set; }
         public SortOrder? CreationDateSortOrder { get; set; }
         public Language Language { get; set; }
@@ -55,6 +55,15 @@ namespace wallabag.Models
             ItemType = SearchPropertiesItemType.Unread;
             ReadingTimeSortOrder = null;
             CreationDateSortOrder = null;
+        }
+
+        public void Reset()
+        {
+            Query = string.Empty;
+            ItemType = SearchPropertiesItemType.Unread;
+            ReadingTimeSortOrder = null;
+            CreationDateSortOrder = null;
+            Language = null;
         }
     }
 }

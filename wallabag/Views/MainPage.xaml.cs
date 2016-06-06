@@ -205,6 +205,8 @@ namespace wallabag.Views
                     item.IsChecked = null;
                 else
                     item.IsChecked = true;
+
+            ViewModel.CurrentSearchProperties.Reset();
         }
 
         #endregion
