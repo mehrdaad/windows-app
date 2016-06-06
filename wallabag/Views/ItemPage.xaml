@@ -112,7 +112,7 @@
         <StackPanel VerticalAlignment="Bottom">
             <Button
                 x:Name="openCommandsButton"
-                Margin="8,0"
+                Margin="12,0"
                 HorizontalAlignment="Right"
                 Background="{ThemeResource SystemControlBackgroundAccentBrush}"
                 Click="openCommandsButton_Click"
