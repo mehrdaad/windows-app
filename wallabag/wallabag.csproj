@@ -110,6 +110,7 @@
       <DependentUpon>AddItemDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\Language.cs" />
     <Compile Include="Models\SearchProperties.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MultipleSelectionViewModel.cs" />
+    <Compile Include="ViewModels\SearchPropertiesViewModel.cs" />
     <Compile Include="Views\ItemPage.xaml.cs">
       <DependentUpon>ItemPage.xaml</DependentUpon>
     </Compile>

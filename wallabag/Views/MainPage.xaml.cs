@@ -20,6 +20,7 @@ namespace wallabag.Views
     public sealed partial class MainPage : Page
     {
         public MainViewModel ViewModel { get { return DataContext as MainViewModel; } }
+        public SearchPropertiesViewModel SearchPropertiesViewModel { get { return new SearchPropertiesViewModel(ViewModel.CurrentSearchProperties); } }
 
         public MainPage()
         {
@@ -198,14 +199,7 @@ namespace wallabag.Views
 
         private void ResetFilter(object sender, RoutedEventArgs e)
         {
-            var radioButtons = filterStackPanel.FindChildren<RadioButton>();
-
-            foreach (var item in radioButtons)
-                if (item.Name != "unreadItemsFilterRadioButton")
-                    item.IsChecked = null;
-                else
-                    item.IsChecked = true;
-
+            // TODO: Put in ViewModel.
             ViewModel.CurrentSearchProperties.Reset();
         }
 

@@ -332,6 +332,7 @@
                 <RadioButton
                     Background="#16a085"
                     Content="&#xE138;"
+                    IsChecked="{x:Bind SearchPropertiesViewModel.IsAllItemsFilterActive, Mode=OneWay}"
                     Style="{StaticResource IconRadioButtonStyle}">
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
@@ -340,10 +341,9 @@
                     </interactivity:Interaction.Behaviors>
                 </RadioButton>
                 <RadioButton
-                    x:Name="unreadItemsFilterRadioButton"
                     Background="#2980b9"
                     Content="&#xE052;"
-                    IsChecked="True"
+                    IsChecked="{x:Bind SearchPropertiesViewModel.IsUnreadItemsFilterActive, Mode=OneWay}"
                     Style="{StaticResource IconRadioButtonStyle}">
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
@@ -354,6 +354,7 @@
                 <RadioButton
                     Background="#f39c12"
                     Content="&#xE006;"
+                    IsChecked="{x:Bind SearchPropertiesViewModel.IsStarredItemsFilterActive, Mode=OneWay}"
                     Style="{StaticResource IconRadioButtonStyle}">
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
@@ -364,6 +365,7 @@
                 <RadioButton
                     Background="#c0392b"
                     Content="&#xE1D3;"
+                    IsChecked="{x:Bind SearchPropertiesViewModel.IsArchivedItemsFilterActive, Mode=OneWay}"
                     Style="{StaticResource IconRadioButtonStyle}">
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
@@ -382,7 +384,10 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <RadioButton HorizontalAlignment="Stretch" Style="{StaticResource ToggleButtonRadioButtonStyle}">
+                <RadioButton
+                    HorizontalAlignment="Stretch"
+                    IsChecked="{x:Bind SearchPropertiesViewModel.SortDescendingByCreationDate, Mode=OneWay}"
+                    Style="{StaticResource ToggleButtonRadioButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
                             Margin="0,0,8,0"
@@ -400,6 +405,7 @@
                 <RadioButton
                     Grid.Column="1"
                     HorizontalAlignment="Stretch"
+                    IsChecked="{x:Bind SearchPropertiesViewModel.SortAscendingByCreationDate, Mode=OneWay}"
                     Style="{StaticResource ToggleButtonRadioButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
@@ -424,6 +430,7 @@
                     Grid.Row="1"
                     Margin="0,4,0,0"
                     HorizontalAlignment="Stretch"
+                    IsChecked="{x:Bind SearchPropertiesViewModel.SortAscendingByEstimatedReadingTime, Mode=OneWay}"
                     Style="{StaticResource ToggleButtonRadioButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
@@ -444,6 +451,7 @@
                     Grid.Column="1"
                     Margin="0,4,0,0"
                     HorizontalAlignment="Stretch"
+                    IsChecked="{x:Bind SearchPropertiesViewModel.SortDescendingByEstimatedReadingTime, Mode=OneWay}"
                     Style="{StaticResource ToggleButtonRadioButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
