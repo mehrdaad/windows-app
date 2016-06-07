@@ -72,10 +72,16 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button
-                    HorizontalAlignment="Stretch"
-                    Command="{x:Bind ViewModel.TestConfigurationCommand}"
-                    Content="Test configuration" />
+                <Button HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.TestConfigurationCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <ProgressRing
+                            Margin="0,0,8,0"
+                            Foreground="White"
+                            IsActive="{x:Bind ViewModel.IsTestRunning, Mode=OneWay}"
+                            Visibility="{x:Bind ViewModel.IsTestRunning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <TextBlock Text="Test configuration" />
+                    </StackPanel>
+                </Button>
                 <Button
                     Grid.Column="1"
                     HorizontalAlignment="Stretch"

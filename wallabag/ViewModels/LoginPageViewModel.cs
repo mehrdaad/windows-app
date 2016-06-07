@@ -14,6 +14,7 @@ namespace wallabag.ViewModels
         public string ClientId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
 
+        public bool IsTestRunning { get; set; }
         private bool _TestIsSuccessful = false;
 
         public DelegateCommand TestConfigurationCommand { get; private set; }
@@ -46,11 +47,12 @@ namespace wallabag.ViewModels
         }
         private Task<bool> TestConfigurationAsync()
         {
+            IsTestRunning = true;
             App.Client.ClientId = ClientId;
             App.Client.ClientSecret = ClientSecret;
             App.Client.InstanceUri = new Uri(Url);
 
-            return App.Client.RequestTokenAsync(Username, Password);
+            return (App.Client.RequestTokenAsync(Username, Password).ContinueWith(x => { IsTestRunning = false; return x.Result; }));
         }
         private async Task ContinueAsync()
         {
