@@ -74,7 +74,7 @@ namespace wallabag.ViewModels
         private void ItemClick(ItemClickEventArgs args)
         {
             var item = args.ClickedItem as ItemViewModel;
-            NavigationService.Navigate(typeof(Views.ItemPage), item.Model);
+            NavigationService.Navigate(typeof(Views.ItemPage), item.Model, new DrillInNavigationTransitionInfo());
         }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
