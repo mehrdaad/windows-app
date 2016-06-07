@@ -14,6 +14,9 @@ namespace wallabag.Models
         public string Slug { get; set; }
 
         public override string ToString() => Label;
+        public override int GetHashCode() => Id;
+        public override bool Equals(object obj) => Id == (obj as Tag).Id;
+
         public static implicit operator WallabagTag(Tag t)
         {
             return new WallabagTag()
