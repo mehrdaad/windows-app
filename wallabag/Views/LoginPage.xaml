@@ -51,23 +51,35 @@
             <TextBox
                 Header="Wallabag URL"
                 InputScope="Url"
-                PlaceholderText="https://" />
-            <TextBox Header="Username" IsSpellCheckEnabled="False" />
-            <PasswordBox Header="Password" />
+                PlaceholderText="https://"
+                Text="{x:Bind ViewModel.Url, Mode=TwoWay}" />
+            <TextBox
+                Header="Username"
+                IsSpellCheckEnabled="False"
+                Text="{x:Bind ViewModel.Username, Mode=TwoWay}" />
+            <PasswordBox Header="Password" Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
             <TextBox
                 Margin="8,48,8,4"
                 Header="Client Id"
-                IsSpellCheckEnabled="False" />
-            <TextBox Header="Client Secret" IsSpellCheckEnabled="False" />
+                IsSpellCheckEnabled="False"
+                Text="{x:Bind ViewModel.ClientId, Mode=TwoWay}" />
+            <TextBox
+                Header="Client Secret"
+                IsSpellCheckEnabled="False"
+                Text="{x:Bind ViewModel.ClientSecret, Mode=TwoWay}" />
             <Grid Margin="0,48,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button HorizontalAlignment="Stretch" Content="Test configuration" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Command="{x:Bind ViewModel.TestConfigurationCommand}"
+                    Content="Test configuration" />
                 <Button
                     Grid.Column="1"
                     HorizontalAlignment="Stretch"
+                    Command="{x:Bind ViewModel.ContinueCommand}"
                     Content="Continue" />
             </Grid>
         </StackPanel>
