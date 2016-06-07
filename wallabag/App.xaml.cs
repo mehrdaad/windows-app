@@ -39,7 +39,7 @@ namespace wallabag
                     Database.CreateTable<Tag>();
                 });
 
-                NavigationService.Navigate(typeof(Views.MainPage));
+                NavigationService.Navigate(typeof(Views.LoginPage));
             }
         }
 
