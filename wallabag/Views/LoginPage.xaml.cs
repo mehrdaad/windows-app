@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using wallabag.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,6 +23,8 @@ namespace wallabag.Views
     /// </summary>
     public sealed partial class LoginPage : Page
     {
+        public LoginPageViewModel ViewModel { get { return this.DataContext as LoginPageViewModel; } }
+
         public LoginPage()
         {
             this.InitializeComponent();
