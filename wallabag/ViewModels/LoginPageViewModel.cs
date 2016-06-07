@@ -72,6 +72,10 @@ namespace wallabag.ViewModels
         {
             ContinueStarted?.Invoke(this, new EventArgs());
 
+            Services.SettingsService.Instance.ClientId = ClientId;
+            Services.SettingsService.Instance.ClientSecret = ClientSecret;
+            Services.SettingsService.Instance.WallabagUrl = new Uri(Url);
+
             var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(ItemsPerPage: 1000);
             var items = itemResponse.Items as List<WallabagItem>;
 
