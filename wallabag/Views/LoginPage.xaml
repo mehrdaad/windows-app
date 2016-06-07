@@ -7,7 +7,64 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Image Opacity="0.3" Source="ms-appx:///Assets/books.jpg" Stretch="UniformToFill" />
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="4*" />
+        </Grid.RowDefinitions>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveStates">
+                <VisualState x:Name="Wide">
+                    <VisualState.Setters>
+                        <Setter Target="step1Grid.Width" Value="400" />
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="720" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Image
+            Grid.RowSpan="2"
+            Opacity="0.3"
+            Source="ms-appx:///Assets/books.jpg"
+            Stretch="UniformToFill" />
+        <TextBlock
+            VerticalAlignment="Center"
+            Style="{StaticResource HeaderTextBlockStyle}"
+            Text="Welcome!"
+            TextAlignment="Center" />
+        <StackPanel x:Name="step1Grid" Grid.Row="1">
+            <StackPanel.Resources>
+                <Style TargetType="TextBox">
+                    <Setter Property="Margin" Value="8,4" />
+                </Style>
+                <Style TargetType="PasswordBox">
+                    <Setter Property="Margin" Value="8,4" />
+                </Style>
+            </StackPanel.Resources>
+            <TextBox
+                Header="Wallabag URL"
+                InputScope="Url"
+                PlaceholderText="https://" />
+            <TextBox Header="Username" IsSpellCheckEnabled="False" />
+            <PasswordBox Header="Password" />
+            <TextBox
+                Margin="8,48,8,4"
+                Header="Client Id"
+                IsSpellCheckEnabled="False" />
+            <TextBox Header="Client Secret" IsSpellCheckEnabled="False" />
+            <Grid Margin="0,48,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button HorizontalAlignment="Stretch" Content="Test configuration" />
+                <Button
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Content="Continue" />
+            </Grid>
+        </StackPanel>
     </Grid>
 </Page>
