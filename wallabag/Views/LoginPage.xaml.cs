@@ -28,6 +28,8 @@ namespace wallabag.Views
         public LoginPage()
         {
             this.InitializeComponent();
+            this.Loaded += (s, e) => GoToStep1Storyboard.Begin();
+            ViewModel.ContinueStarted += (s, e) => GoToStep2Storyboard.Begin();
         }
     }
 }
