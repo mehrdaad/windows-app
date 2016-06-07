@@ -57,7 +57,7 @@ namespace wallabag.Views
                     HideCommandBarStoryboard.Begin();
                 }
             }
-            else
+            else if (!_isCommandBarVisible)
                 ShowMinimalCommandBarStoryboard.Begin();
         }
 
