@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Newtonsoft.Json;
 using PropertyChanged;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -235,7 +236,7 @@ namespace wallabag.ViewModels
             Items = new ObservableCollection<ItemViewModel>(sortedItems);
         }
 
-        public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             if (mode != NavigationMode.Refresh)
                 FetchFromDatabase();
@@ -245,7 +246,17 @@ namespace wallabag.ViewModels
                 if (message.Notification.Equals("FetchFromDatabase"))
                     FetchFromDatabase();
             });
-            return base.OnNavigatedToAsync(parameter, mode, state);
+
+            if (state.ContainsKey(nameof(CurrentSearchProperties)))
+            {
+                var stateValue = state[nameof(CurrentSearchProperties)] as string;
+                CurrentSearchProperties = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue));
+            }
+        }
+        public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
+        {
+            var serializedSearchProperties = await Task.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentSearchProperties));
+            pageState[nameof(CurrentSearchProperties)] = serializedSearchProperties;
         }
     }
 }
