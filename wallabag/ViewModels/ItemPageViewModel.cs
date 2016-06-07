@@ -34,6 +34,7 @@ namespace wallabag.ViewModels
         public FontIcon ChangeFavoriteStatusButtonFontIcon { get; set; }
         public DelegateCommand ChangeReadStatusCommand { get; private set; }
         public DelegateCommand ChangeFavoriteStatusCommand { get; private set; }
+        public DelegateCommand EditTagsCommand { get; private set; }
 
         public SolidColorBrush ForegroundBrush { get; set; }
         public SolidColorBrush BackgroundBrush { get; set; }
@@ -43,6 +44,15 @@ namespace wallabag.ViewModels
         public string FontFamily { get; set; } = SettingsService.Instance.FontFamily;
         public string ColorScheme { get; set; } = SettingsService.Instance.ColorScheme;
         public string TextAlignment { get; set; } = SettingsService.Instance.TextAlignment;
+
+        public ItemPageViewModel()
+        {
+            ChangeReadStatusCommand = new DelegateCommand(() => ChangeReadStatus());
+            ChangeFavoriteStatusCommand = new DelegateCommand(() => ChangeFavoriteStatus());
+            EditTagsCommand = new DelegateCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags,
+                new EditTagsViewModel(Item.Model),
+                ColorApplicationTheme));
+        }
 
         private async Task GenerateFormattedHtmlAsync()
         {
@@ -138,9 +148,6 @@ namespace wallabag.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             Item = new ItemViewModel(parameter as Item);
-
-            ChangeReadStatusCommand = new DelegateCommand(() => ChangeReadStatus());
-            ChangeFavoriteStatusCommand = new DelegateCommand(() => ChangeFavoriteStatus());
 
             UpdateReadIcon();
             UpdateFavoriteIcon();

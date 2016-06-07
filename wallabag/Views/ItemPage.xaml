@@ -154,7 +154,7 @@
                         Label="Mark as read"
                         RequestedTheme="Dark" />
                     <AppBarButton
-                        Command="{x:Bind ViewModel.Item.EditTagsCommand}"
+                        Command="{x:Bind ViewModel.EditTagsCommand}"
                         Icon="Tag"
                         Label="Edit tags" />
                     <AppBarButton Icon="Delete" Label="Delete">
