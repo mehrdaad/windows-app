@@ -104,16 +104,16 @@ namespace wallabag.ViewModels
         private void UpdateReadIcon()
         {
             if (Item.Model.IsRead)
-                ChangeReadStatusButtonFontIcon = CreateFontIcon(_readGlyph);
-            else
                 ChangeReadStatusButtonFontIcon = CreateFontIcon(_unreadGlyph);
+            else
+                ChangeReadStatusButtonFontIcon = CreateFontIcon(_readGlyph);
         }
         private void UpdateFavoriteIcon()
         {
-            if (Item.Model.IsRead)
-                ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(_starredGlyph);
-            else
+            if (Item.Model.IsStarred)
                 ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(_unstarredGlyph);
+            else
+                ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(_starredGlyph);
         }
         public void UpdateBrushes()
         {
