@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace wallabag.Services
@@ -8,7 +9,7 @@ namespace wallabag.Services
     {
         private static ContentDialog _dialog;
 
-        public static async Task ShowAsync(Dialog dialog, object parameter = null)
+        public static async Task ShowAsync(Dialog dialog, object parameter = null, ElementTheme theme = ElementTheme.Default)
         {
             switch (dialog)
             {
@@ -22,6 +23,8 @@ namespace wallabag.Services
 
             if (parameter != null)
                 _dialog.DataContext = parameter;
+
+            _dialog.RequestedTheme = theme;          
 
             await _dialog?.ShowAsync();
         }

@@ -2,24 +2,203 @@
     x:Class="wallabag.Views.ItemPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:common="using:wallabag.Common"
+    xmlns:controls="using:wallabag.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:local="using:wallabag.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:t10b="using:Template10.Behaviors"
     xmlns:vm="using:wallabag.ViewModels"
-    xmlns:was="using:AppStudio.Uwp.Controls"
+    common:TitleBarExtensions.ButtonBackgroundColor="Transparent"
+    common:TitleBarExtensions.ButtonForegroundColor="{x:Bind ViewModel.ForegroundBrush.Color, Mode=OneWay}"
+    common:TitleBarExtensions.IsVisible="false"
     mc:Ignorable="d">
+    <Page.Resources>
+        <Storyboard x:Name="ShowMinimalCommandBarStoryboard">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="commandsGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="commandsGrid"
+                Storyboard.TargetProperty="(FrameworkElement.Height)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="48">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="ShowFullCommandBarStoryboard">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="commandsGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="commandsGrid"
+                Storyboard.TargetProperty="(FrameworkElement.Height)">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="115">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="stackPanel" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="HideCommandBarStoryboard">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="commandsGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="commandsGrid"
+                Storyboard.TargetProperty="(FrameworkElement.Height)">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="stackPanel" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
 
     <Page.DataContext>
         <vm:ItemPageViewModel />
     </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <FlipView>
-            <FlipViewItem x:Name="previousItem" />
-            <FlipViewItem x:Name="currentItem">
-                <was:HtmlViewer x:Name="HtmlViewer" Html="{x:Bind ViewModel.Item.Model.Content}" />
-            </FlipViewItem>
-            <FlipViewItem x:Name="nextItem" />
-        </FlipView>
+        <WebView x:Name="HtmlViewer" common:WebViewExtensions.Html="{x:Bind ViewModel.FormattedHtml}" />
+        <Button
+            x:Name="backButton"
+            Width="48"
+            Height="32"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="{x:Bind ViewModel.BackgroundBrush, Mode=OneWay}"
+            Content="&#xEC52;"
+            FontFamily="Segoe MDL2 Assets"
+            Foreground="{x:Bind ViewModel.ForegroundBrush, Mode=OneWay}" />
+        <StackPanel VerticalAlignment="Bottom">
+            <Button
+                x:Name="openCommandsButton"
+                Margin="12,0"
+                HorizontalAlignment="Right"
+                Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                Click="openCommandsButton_Click"
+                Content="&#xE10C;"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="16"
+                Padding="12,2"
+                RequestedTheme="Dark" />
+            <Grid
+                x:Name="commandsGrid"
+                Height="0"
+                x:DeferLoadStrategy="Lazy"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                RequestedTheme="{x:Bind ViewModel.ColorApplicationTheme, Mode=OneWay}"
+                Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="48" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="AppBarButton">
+                            <Setter Property="IsCompact" Value="True" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <AppBarButton Command="{x:Bind ViewModel.Item.ShareCommand}" Label="Share">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        Command="{x:Bind ViewModel.ChangeFavoriteStatusCommand}"
+                        Icon="{x:Bind ViewModel.ChangeFavoriteStatusButtonFontIcon, Mode=OneWay}"
+                        Label="Mark as favorite" />
+                    <AppBarButton
+                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                        Command="{x:Bind ViewModel.ChangeReadStatusCommand}"
+                        Icon="{x:Bind ViewModel.ChangeReadStatusButtonFontIcon, Mode=OneWay}"
+                        Label="Mark as read"
+                        RequestedTheme="Dark" />
+                    <AppBarButton
+                        Command="{x:Bind ViewModel.EditTagsCommand}"
+                        Icon="Tag"
+                        Label="Edit tags" />
+                    <AppBarButton Icon="Delete" Label="Delete">
+                        <AppBarButton.Flyout>
+                            <Flyout>
+                                <StackPanel>
+                                    <TextBlock Text="This will delete the item permanently from your wallabag." TextWrapping="Wrap" />
+                                    <Button
+                                        Margin="0,8,0,0"
+                                        HorizontalAlignment="Right"
+                                        Background="Red"
+                                        Command="{x:Bind ViewModel.Item.DeleteCommand}"
+                                        Content="Delete permanently"
+                                        RequestedTheme="Dark" />
+                                </StackPanel>
+                            </Flyout>
+                        </AppBarButton.Flyout>
+                    </AppBarButton>
+                </StackPanel>
+                <StackPanel
+                    x:Name="stackPanel"
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    x:DeferLoadStrategy="Lazy"
+                    BorderBrush="{ThemeResource SystemControlBackgroundAccentBrush}"
+                    BorderThickness="0,1,0,0"
+                    Orientation="Horizontal"
+                    Padding="0,4,0,0"
+                    Visibility="Collapsed">
+                    <StackPanel.Resources>
+                        <Style BasedOn="{StaticResource RoundIconButtonStyle}" TargetType="Button">
+                            <Setter Property="FontSize" Value="18" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button Click="IncreaseFontSize" Content="&#xE109;" />
+                    <Button Click="DecreaseFontSize" Content="&#xE108;" />
+                    <AppBarSeparator VerticalAlignment="Center" />
+                    <Button Click="ChangeColorSchemeToLight" Content="&#xE706;" />
+                    <Button Click="ChangeColorSchemeToDark" Content="&#xE708;" />
+                    <AppBarSeparator VerticalAlignment="Center" />
+                    <Button Click="ChangeFontFamily" Content="&#xE185;" />
+                    <Button Click="ChangeTextAlignment" Content="&#xE8E4;" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
     </Grid>
 </Page>
