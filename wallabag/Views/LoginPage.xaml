@@ -39,6 +39,21 @@
             Style="{StaticResource HeaderTextBlockStyle}"
             Text="Welcome!"
             TextAlignment="Center" />
+        <StackPanel
+            x:Name="step2Grid"
+            Grid.RowSpan="2"
+            VerticalAlignment="Center"
+            Visibility="Collapsed">
+            <ProgressRing
+                Width="64"
+                Height="64"
+                Foreground="White"
+                IsActive="True" />
+            <TextBlock
+                Margin="0,16,0,0"
+                Text="Downloading items…"
+                TextAlignment="Center" />
+        </StackPanel>
         <StackPanel x:Name="step1Grid" Grid.Row="1">
             <StackPanel.Resources>
                 <Style TargetType="TextBox">

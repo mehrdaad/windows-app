@@ -20,6 +20,11 @@ namespace wallabag.ViewModels
         public bool IsTestRunning { get; set; }
         private bool _TestIsSuccessful = false;
 
+        public event EventHandler ConfigurationTestFailed;
+        public event EventHandler ConfigurationTestSucceeded;
+        public event EventHandler ContinueStarted;
+        public event EventHandler ContinueCompleted;
+
         public DelegateCommand TestConfigurationCommand { get; private set; }
         public DelegateCommand ContinueCommand { get; private set; }
 
@@ -28,6 +33,12 @@ namespace wallabag.ViewModels
             TestConfigurationCommand = new DelegateCommand(async () =>
             {
                 _TestIsSuccessful = await TestConfigurationAsync();
+
+                if (_TestIsSuccessful)
+                    ConfigurationTestSucceeded?.Invoke(this, new EventArgs());
+                else
+                    ConfigurationTestFailed?.Invoke(this, new EventArgs());
+
                 ContinueCommand.RaiseCanExecuteChanged();
             }, () => TestConfigurationCanExecute());
             ContinueCommand = new DelegateCommand(async () => await ContinueAsync(), () => _TestIsSuccessful);
@@ -59,6 +70,8 @@ namespace wallabag.ViewModels
         }
         private async Task ContinueAsync()
         {
+            ContinueStarted?.Invoke(this, new EventArgs());
+
             var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(ItemsPerPage: 1000);
             var items = itemResponse.Items as List<WallabagItem>;
 
@@ -78,6 +91,10 @@ namespace wallabag.ViewModels
                     App.Database.Insert((Tag)tag);
 
             }, TaskCreationOptions.LongRunning);
+
+            ContinueCompleted?.Invoke(this, new EventArgs());
+            NavigationService.Navigate(typeof(Views.MainPage));
+            NavigationService.ClearHistory();
         }
     }
 }
