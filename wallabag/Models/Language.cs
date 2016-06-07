@@ -18,9 +18,12 @@ namespace wallabag.Models
 
         public Language(string languageCode)
         {
-            this.wallabagLanguageCode = languageCode;
-            LanguageCode = new CultureInfo(languageCode).TwoLetterISOLanguageName;
-            DisplayName = new CultureInfo(LanguageCode).DisplayName;
+            if (!string.IsNullOrEmpty(languageCode))
+            {
+                this.wallabagLanguageCode = languageCode;
+                LanguageCode = new CultureInfo(languageCode).TwoLetterISOLanguageName;
+                DisplayName = new CultureInfo(LanguageCode).DisplayName;
+            }
         }
 
         public static Language Unknown
