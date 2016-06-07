@@ -1,7 +1,10 @@
 ﻿using PropertyChanged;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Template10.Mvvm;
+using wallabag.Api.Models;
+using wallabag.Models;
 
 namespace wallabag.ViewModels
 {
@@ -56,7 +59,25 @@ namespace wallabag.ViewModels
         }
         private async Task ContinueAsync()
         {
+            var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(ItemsPerPage: 1000);
+            var items = itemResponse.Items as List<WallabagItem>;
 
+            // For users with a lot of items
+            if (itemResponse.Pages > 1)
+                for (int i = 1; i < itemResponse.Pages; i++)
+                    items.AddRange(await App.Client.GetItemsAsync(ItemsPerPage: 1000));
+
+            var tags = await App.Client.GetTagsAsync();
+
+            await Task.Factory.StartNew(() =>
+            {
+                foreach (var item in items)
+                    App.Database.Insert((Item)item);
+
+                foreach (var tag in tags)
+                    App.Database.Insert((Tag)tag);
+
+            }, TaskCreationOptions.LongRunning);
         }
     }
 }
