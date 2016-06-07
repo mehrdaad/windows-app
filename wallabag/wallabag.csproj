@@ -120,11 +120,15 @@
     <Compile Include="ViewModels\EditTagsViewModel.cs" />
     <Compile Include="ViewModels\ItemPageViewModel.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
+    <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MultipleSelectionViewModel.cs" />
     <Compile Include="ViewModels\SearchPropertiesViewModel.cs" />
     <Compile Include="Views\ItemPage.xaml.cs">
       <DependentUpon>ItemPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -146,6 +150,7 @@
     <Content Include="Assets\Article\js\scripts.js" />
     <Content Include="Assets\Article\reset.css" />
     <Content Include="Assets\Article\style.css" />
+    <Content Include="Assets\books.jpg" />
     <Content Include="FodyWeavers.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
@@ -181,6 +186,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ItemPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

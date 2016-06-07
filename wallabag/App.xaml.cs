@@ -21,23 +21,26 @@ namespace wallabag
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
-            if (startKind == StartKind.Launch)
+            var path = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", Windows.Storage.CreationCollisionOption.OpenIfExists)).Path;
+            await Task.Factory.StartNew(() =>
             {
-                Settings = SettingsService.Instance;
+                Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
+                Database.CreateTable<Item>();
+                Database.CreateTable<Tag>();
+            });
 
+            Settings = SettingsService.Instance;
+            if (string.IsNullOrEmpty(Settings.ClientId) || string.IsNullOrEmpty(Settings.ClientSecret))
+            {
+                Client = new Api.WallabagClient(null,string.Empty,string.Empty);
+                NavigationService.Navigate(typeof(Views.LoginPage));
+            }
+            else
+            {
                 Client = new Api.WallabagClient(Settings.WallabagUrl, Settings.ClientId, Settings.ClientSecret);
                 Client.AccessToken = Settings.AccessToken;
                 Client.RefreshToken = Settings.RefreshToken;
                 Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
-
-                var path = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", Windows.Storage.CreationCollisionOption.OpenIfExists)).Path;
-
-                await Task.Factory.StartNew(() =>
-                {
-                    Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
-                    Database.CreateTable<Item>();
-                    Database.CreateTable<Tag>();
-                });
 
                 NavigationService.Navigate(typeof(Views.MainPage));
             }
@@ -57,14 +60,12 @@ namespace wallabag
 
         public override void OnResuming(object s, object e, AppExecutionState previousExecutionState)
         {
-            if (previousExecutionState == AppExecutionState.Suspended)
-            {
-                Client.AccessToken = Settings.AccessToken;
-                Client.RefreshToken = Settings.RefreshToken;
-                Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
+            Client.AccessToken = Settings.AccessToken;
+            Client.RefreshToken = Settings.RefreshToken;
+            Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
 
+            if (previousExecutionState == AppExecutionState.Suspended)
                 NavigationService.RestoreSavedNavigationAsync();
-            }
         }
 
         public class CustomBlobSerializer : IBlobSerializer
