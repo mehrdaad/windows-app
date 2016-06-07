@@ -478,7 +478,7 @@
                 HorizontalAlignment="Stretch"
                 BorderThickness="0"
                 ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}"
-                PlaceholderText="enter language…"
+                PlaceholderText="select language…"
                 SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=OneWay}">
                 <interactivity:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="SelectionChanged">
@@ -486,6 +486,20 @@
                     </core:EventTriggerBehavior>
                 </interactivity:Interaction.Behaviors>
             </ComboBox>
+            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="TAG" />
+            <ComboBox
+                HorizontalAlignment="Stretch"
+                BorderThickness="0"
+                ItemsSource="{x:Bind ViewModel.TagSuggestions, Mode=OneWay}"
+                PlaceholderText="select tag…"
+                SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=OneWay}">
+                <interactivity:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="SelectionChanged">
+                        <core:InvokeCommandAction Command="{x:Bind ViewModel.TagChangedCommand}" />
+                    </core:EventTriggerBehavior>
+                </interactivity:Interaction.Behaviors>
+            </ComboBox>
+
             <Button
                 Margin="0,12,0,4"
                 HorizontalAlignment="Stretch"

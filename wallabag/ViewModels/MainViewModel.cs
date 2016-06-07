@@ -28,12 +28,14 @@ namespace wallabag.ViewModels
         public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties();
         public ObservableCollection<Item> SearchQuerySuggestions { get; set; } = new ObservableCollection<Item>();
         public ObservableCollection<Language> LanguageSuggestions { get; set; } = new ObservableCollection<Language>();
+        public ObservableCollection<Tag> TagSuggestions { get; set; } = new ObservableCollection<Tag>();
         public DelegateCommand<string> SetItemTypeFilterCommand { get; private set; }
         public DelegateCommand<string> SetEstimatedReadingTimeFilterCommand { get; private set; }
         public DelegateCommand<string> SetCreationDateFilterCommand { get; private set; }
         public DelegateCommand<AutoSuggestBoxTextChangedEventArgs> SearchQueryChangedCommand { get; private set; }
         public DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs> SearchQuerySubmittedCommand { get; private set; }
         public DelegateCommand<SelectionChangedEventArgs> LanguageCodeChangedCommand { get; private set; }
+        public DelegateCommand<SelectionChangedEventArgs> TagChangedCommand { get; private set; }
         public DelegateCommand ResetFilterCommand { get; private set; }
 
         public MainViewModel()
@@ -49,6 +51,7 @@ namespace wallabag.ViewModels
             SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
             SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
             LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
+            TagChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => TagChanged(args));
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
             CurrentSearchProperties.SearchCanceled += p => FetchFromDatabase();
@@ -146,6 +149,13 @@ namespace wallabag.ViewModels
             CurrentSearchProperties.Language = selectedLanguage as Language;
             UpdateViewBySearchProperties();
         }
+        private void TagChanged(SelectionChangedEventArgs args)
+        {
+            var selectedTag = args.AddedItems.FirstOrDefault() as Tag;
+
+            CurrentSearchProperties.Tag = selectedTag as Tag;
+            UpdateViewBySearchProperties();
+        }
 
         private void UpdateItemCollection(List<Item> newItemList)
         {
@@ -172,6 +182,10 @@ namespace wallabag.ViewModels
                     if (!LanguageSuggestions.Contains(Language.Unknown))
                         LanguageSuggestions.Add(Language.Unknown);
                 }
+
+                foreach (var tag in item.Tags)
+                    if (!TagSuggestions.Contains(tag))
+                        TagSuggestions.Add(tag);
             }
 
             foreach (var item in newItems)
@@ -212,6 +226,10 @@ namespace wallabag.ViewModels
                 items = items.Where(i => i.Language == null);
 
             var list = items.ToList();
+
+            if (CurrentSearchProperties.Tag != null)
+                list = list.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag)).ToList();
+
             UpdateItemCollection(list);
 
             IOrderedEnumerable<ItemViewModel> sortedItems;

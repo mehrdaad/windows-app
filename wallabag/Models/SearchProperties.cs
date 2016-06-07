@@ -70,6 +70,7 @@ namespace wallabag.Models
             }
         }
         public Language Language { get; set; }
+        public Tag Tag { get; set; }
 
         public enum SearchPropertiesItemType
         {
@@ -97,6 +98,7 @@ namespace wallabag.Models
             ItemType = SearchPropertiesItemType.Unread;
             SortOrder = SearchPropertiesSortOrder.DescendingByCreationDate;
             Language = null;
+            Tag = null;
         }
     }
 }
