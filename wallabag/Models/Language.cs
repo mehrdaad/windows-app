@@ -21,7 +21,7 @@ namespace wallabag.Models
             if (!string.IsNullOrEmpty(languageCode))
             {
                 this.wallabagLanguageCode = languageCode;
-                LanguageCode = new CultureInfo(languageCode).TwoLetterISOLanguageName;
+                LanguageCode = languageCode.Substring(0, 2);
                 DisplayName = new CultureInfo(LanguageCode).DisplayName;
             }
         }
