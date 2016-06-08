@@ -30,9 +30,10 @@ namespace wallabag
             });
 
             Settings = SettingsService.Instance;
-            if (string.IsNullOrEmpty(Settings.ClientId) || string.IsNullOrEmpty(Settings.ClientSecret))
+
+            if (string.IsNullOrEmpty(Settings.AccessToken) || string.IsNullOrEmpty(Settings.RefreshToken))
             {
-                Client = new Api.WallabagClient(null,string.Empty,string.Empty);
+                Client = new Api.WallabagClient(null, string.Empty, string.Empty);
                 NavigationService.Navigate(typeof(Views.LoginPage));
             }
             else
