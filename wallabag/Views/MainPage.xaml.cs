@@ -196,7 +196,11 @@ namespace wallabag.Views
             if (_isSearchVisible)
                 HideSearchStoryboard.Begin();
         }
-
+        private void overlayRectangle_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            HideFilterStoryboard.Begin();
+        }
+       
         #endregion
     }
 }
