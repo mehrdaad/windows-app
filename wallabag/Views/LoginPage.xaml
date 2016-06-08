@@ -7,6 +7,9 @@
     xmlns:local="using:wallabag.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:wallabag.ViewModels"
+    common:TitleBarExtensions.ButtonBackgroundColor="Transparent"
+    common:TitleBarExtensions.ButtonForegroundColor="White"
+    common:TitleBarExtensions.IsVisible="false"
     mc:Ignorable="d">
     <Page.Resources>
         <Storyboard x:Name="GoToStep1Storyboard">
