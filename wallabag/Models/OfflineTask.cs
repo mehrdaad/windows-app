@@ -19,6 +19,7 @@ namespace wallabag.Models
             return Task.CompletedTask;
         }
 
+        public OfflineTask() { }
         public OfflineTask(int itemId, OfflineTaskAction action, IEnumerable<Tag> addTagsEnumerable = null, IEnumerable<Tag> removeTagsEnumerable = null)
         {
             ItemId = itemId;
