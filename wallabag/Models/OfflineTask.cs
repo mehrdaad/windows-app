@@ -18,6 +18,9 @@ namespace wallabag.Models
         public List<Tag> addTagsList { get; set; }
         public List<Tag> removeTagsList { get; set; }
 
+        public string Url { get; set; }
+        public List<string> Tags { get; set; }
+
         public OfflineTask() { }
 
         public async Task ExecuteAsync()
@@ -48,6 +51,14 @@ namespace wallabag.Models
 
                     executionIsSuccessful = await App.Client.RemoveTagsAsync(ItemId, removeTagsList.Convert<Tag, WallabagTag>());
                     break;
+                case OfflineTaskAction.AddItem:
+                    var newItem = await App.Client.AddAsync(new Uri(Url), Tags);
+
+                    if (newItem != null)
+                        App.Database.InsertOrReplace((Item)newItem);
+
+                    executionIsSuccessful = newItem != null;
+                    break;
                 case OfflineTaskAction.Delete:
                     executionIsSuccessful = await App.Client.DeleteAsync(ItemId);
                     break;
@@ -60,6 +71,17 @@ namespace wallabag.Models
                 App.Database.Delete(this);
                 App.OfflineTasksChanged?.Invoke(this, new EventArgs());
             }
+        }
+        public static void Add(string url, IEnumerable<string> newTags, string title = "")
+        {
+            var newTask = new OfflineTask();
+
+            newTask.Action = OfflineTaskAction.AddItem;
+            newTask.Url = url;
+            newTask.Tags = newTags.ToList();
+
+            App.Database.Insert(newTask);
+            App.OfflineTasksChanged?.Invoke(newTask, new EventArgs());
         }
         public static void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
@@ -81,6 +103,7 @@ namespace wallabag.Models
             MarkAsStarred = 2,
             UnmarkAsStarred = 3,
             EditTags = 4,
+            AddItem = 5,
             Delete = 10
         }
     }
