@@ -1,4 +1,5 @@
 ﻿using SQLite.Net.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -56,8 +57,8 @@ namespace wallabag.Models
 
             if (executionIsSuccessful)
             {
-                App.OfflineTasksChanged?.Invoke(this, new System.EventArgs());
                 App.Database.Delete(this);
+                App.OfflineTasksChanged?.Invoke(this, new EventArgs());
             }
         }
         public static void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
@@ -70,6 +71,7 @@ namespace wallabag.Models
             newTask.removeTagsList = removeTagsList;
 
             App.Database.Insert(newTask);
+            App.OfflineTasksChanged?.Invoke(newTask, new EventArgs());
         }
 
         public enum OfflineTaskAction

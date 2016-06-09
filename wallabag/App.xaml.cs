@@ -17,6 +17,8 @@ namespace wallabag
         public static SQLiteConnection Database { get; private set; }
         public static SettingsService Settings { get; private set; }
 
+        public static EventHandler OfflineTasksChanged;
+
         public App() { InitializeComponent(); }
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
