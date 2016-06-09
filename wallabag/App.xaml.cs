@@ -21,14 +21,7 @@ namespace wallabag
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
-            var path = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", Windows.Storage.CreationCollisionOption.OpenIfExists)).Path;
-            await Task.Factory.StartNew(() =>
-            {
-                Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
-                Database.CreateTable<Item>();
-                Database.CreateTable<Tag>();
-            });
-
+            await CreateClientAndDatabase();
             Settings = SettingsService.Instance;
 
             if (string.IsNullOrEmpty(Settings.AccessToken) || string.IsNullOrEmpty(Settings.RefreshToken))
@@ -59,14 +52,32 @@ namespace wallabag
             Database.Close();
         }
 
-        public override void OnResuming(object s, object e, AppExecutionState previousExecutionState)
+        public override async void OnResuming(object s, object e, AppExecutionState previousExecutionState)
         {
+            await CreateClientAndDatabase();
             Client.AccessToken = Settings.AccessToken;
             Client.RefreshToken = Settings.RefreshToken;
             Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
 
             if (previousExecutionState == AppExecutionState.Suspended)
-                NavigationService.RestoreSavedNavigationAsync();
+                await NavigationService.RestoreSavedNavigationAsync();
+        }
+
+        private async Task CreateClientAndDatabase()
+        {
+            if (Client == null)
+                Client = new Api.WallabagClient(Settings.WallabagUrl, Settings.ClientId, Settings.ClientSecret);
+
+            if (Database == null)
+            {
+                var path = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", Windows.Storage.CreationCollisionOption.OpenIfExists)).Path;
+                await Task.Factory.StartNew(() =>
+                {
+                    Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
+                    Database.CreateTable<Item>();
+                    Database.CreateTable<Tag>();
+                });
+            }
         }
 
         public class CustomBlobSerializer : IBlobSerializer
