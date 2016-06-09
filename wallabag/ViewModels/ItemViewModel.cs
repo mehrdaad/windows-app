@@ -33,31 +33,31 @@ namespace wallabag.ViewModels
             {
                 Model.IsRead = true;
                 UpdateItem();
-                App.Database.Insert(new OfflineTask(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead));
+                OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
             });
             UnmarkAsReadCommand = new DelegateCommand(() =>
             {
                 Model.IsRead = false;
                 UpdateItem();
-                App.Database.Insert(new OfflineTask(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead));
+                OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
             });
             MarkAsStarredCommand = new DelegateCommand(() =>
             {
                 Model.IsStarred = true;
                 UpdateItem();
-                App.Database.Insert(new OfflineTask(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred));
+                OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
             });
             UnmarkAsStarredCommand = new DelegateCommand(() =>
             {
                 Model.IsStarred = false;
                 UpdateItem();
-                App.Database.Insert(new OfflineTask(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred));
+                OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
             });
             DeleteCommand = new DelegateCommand(() =>
             {
                 App.Database.Delete(Model);
                 SendUpdateMessage();
-                App.Database.Insert(new OfflineTask(Model.Id, OfflineTask.OfflineTaskAction.Delete));
+                OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
             });
             ShareCommand = new DelegateCommand(() =>
             {

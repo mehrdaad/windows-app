@@ -17,6 +17,8 @@ namespace wallabag.Models
         public List<Tag> addTagsList { get; set; }
         public List<Tag> removeTagsList { get; set; }
 
+        public OfflineTask() { }
+
         public async Task ExecuteAsync()
         {
             bool executionIsSuccessful = false;
@@ -53,16 +55,21 @@ namespace wallabag.Models
             }
 
             if (executionIsSuccessful)
+            {
+                App.OfflineTasksChanged?.Invoke(this, new System.EventArgs());
                 App.Database.Delete(this);
+            }
         }
-
-        public OfflineTask() { }
-        public OfflineTask(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
+        public static void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
-            ItemId = itemId;
-            Action = action;
-            this.addTagsList = addTagsList;
-            this.removeTagsList = removeTagsList;
+            var newTask = new OfflineTask();
+
+            newTask.ItemId = itemId;
+            newTask.Action = action;
+            newTask.addTagsList = addTagsList;
+            newTask.removeTagsList = removeTagsList;
+
+            App.Database.Insert(newTask);
         }
 
         public enum OfflineTaskAction

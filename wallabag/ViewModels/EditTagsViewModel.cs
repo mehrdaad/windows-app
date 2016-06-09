@@ -40,7 +40,7 @@ namespace wallabag.ViewModels
             {
                 foreach (var item in Items)
                 {
-                    App.Database.Insert(new OfflineTask(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList()));
+                    OfflineTask.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
 
                     var itemTags = item.Tags as List<Tag>;
                     foreach (var tag in Tags)
@@ -52,7 +52,7 @@ namespace wallabag.ViewModels
                 var newTags = Tags.Except(_previousTags);
                 var deletedTags = _previousTags.Except(Tags);
 
-                App.Database.Insert(new OfflineTask(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags.ToList(), deletedTags.ToList()));
+                OfflineTask.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags.ToList(), deletedTags.ToList());
             }
         }
     }
