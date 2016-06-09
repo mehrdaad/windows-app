@@ -112,6 +112,7 @@
     </Compile>
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Language.cs" />
+    <Compile Include="Models\OfflineTask.cs" />
     <Compile Include="Models\SearchProperties.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

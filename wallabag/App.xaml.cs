@@ -80,6 +80,7 @@ namespace wallabag
                     Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
                     Database.CreateTable<Item>();
                     Database.CreateTable<Tag>();
+                    Database.CreateTable<OfflineTask>();
                 });
             }
         }
