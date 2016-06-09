@@ -5,19 +5,183 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:wallabag.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:wallabag.ViewModels"
     mc:Ignorable="d">
+
+    <Page.DataContext>
+        <vm:SettingsPageViewModel />
+    </Page.DataContext>
+
+    <Page.Resources>
+        <Style TargetType="Pivot">
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock
+                            FontSize="18"
+                            Text="{Binding}"
+                            TextWrapping="NoWrap" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="PivotItem">
+            <Setter Property="Margin" Value="12,4" />
+        </Style>
+    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="48" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <CommandBar>
-            <CommandBar.Content>
-                <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="SETTINGS" />
-            </CommandBar.Content>
-            <AppBarButton Icon="Undo" Label="Reset" />
-        </CommandBar>
-
+        <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            <TextBlock Style="{ThemeResource PageTitleTextBlockStyle}" Text="SETTINGS" />
+        </Grid>
+        <Rectangle
+            Grid.Row="1"
+            Height="48"
+            VerticalAlignment="Top"
+            Fill="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
+        <Pivot Grid.Row="1">
+            <Pivot.Resources>
+                <Style TargetType="ToggleSwitch">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="0,8" />
+                </Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Margin" Value="0,12,0,0" />
+                </Style>
+                <Style TargetType="TextBox">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="0,10" />
+                </Style>
+                <Style TargetType="PasswordBox">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+                <Style
+                    x:Key="CustomMenuHeaderTextBlockStyle"
+                    BasedOn="{StaticResource MenuHeaderTextBlockStyle}"
+                    TargetType="TextBlock">
+                    <Setter Property="Margin" Value="0,16,0,4" />
+                </Style>
+            </Pivot.Resources>
+            <PivotItem Header="General">
+                <StackPanel>
+                    <ToggleSwitch Header="Sync with the server on start" IsOn="{x:Bind ViewModel.SyncOnStartup, Mode=TwoWay}" />
+                    <TextBlock
+                        MaxWidth="400"
+                        Margin="2,16,2,8"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource InfoTextBlockStyle}"
+                        Text="To improve the general stability of this app, it's recommended to turn on the automatic submission of anonymous telemetry data. However, if you want to turn it off, because you care of your privacy, you can do it too. Changes will be applied after the next restart."
+                        TextWrapping="Wrap" />
+                    <ToggleSwitch Header="Allow collection of telemetry data" IsOn="{x:Bind ViewModel.AllowCollectionOfTelemetryData, Mode=TwoWay}" />
+                </StackPanel>
+            </PivotItem>
+            <PivotItem Header="Reading">
+                <StackPanel>
+                    <ToggleSwitch Header="Navigate back after reading an article" IsOn="{x:Bind ViewModel.NavigateBackAfterReadingAnArticle, Mode=TwoWay}" />
+                    <ToggleSwitch Header="Sync the reading progress" IsOn="{x:Bind ViewModel.SyncReadingProgress, Mode=TwoWay}" />
+                </StackPanel>
+            </PivotItem>
+            <PivotItem Header="Info">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,8,0,4"
+                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                            Text="VERSION" />
+                        <StackPanel Margin="0" Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="{x:Bind ViewModel.VersionNumber}" />
+                            <Button
+                                Command="{x:Bind ViewModel.OpenChangelogCommand}"
+                                Content="(changelog)"
+                                Padding="0"
+                                Style="{ThemeResource TextBlockButtonStyle}" />
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="MADE WITH PASSION BY" />
+                        <TextBlock Style="{ThemeResource InfoTextBlockStyle}" Text="Julian Oster" />
+                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="THANKS TO" />
+                        <TextBlock Style="{ThemeResource InfoTextBlockStyle}">
+                            <Hyperlink NavigateUri="http://www.newtonsoft.com/json" UnderlineStyle="None">• Newtonsoft.Json</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://github.com/Fody/PropertyChanged" UnderlineStyle="None">• PropertyChanged.Fody</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://github.com/dotMorten/WindowsStateTriggers" UnderlineStyle="None">• WindowsStateTriggers</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://htmlagilitypack.codeplex.com" UnderlineStyle="None">• HtmlAgilityPack</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://github.com/WindowsNotifications/NotificationsExtensions" UnderlineStyle="None">• NotificationsExtensions</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://github.com/Windows-XAML/Template10" UnderlineStyle="None">• Template10</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="http://sixrevisions.com/free-icons/free-windows-10-icons/" UnderlineStyle="None">• Twitter icon by Icons8</Hyperlink>
+                        </TextBlock>
+                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="SPECIAL THANKS" />
+                        <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="Nicolas Lœuillet, Thomas Citharel and Jérémy Benoist for creating such a great software." />
+                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="NEED HELP?" />
+                        <Button
+                            Command="{x:Bind ViewModel.OpenDocumentationCommand}"
+                            Content="Open the documentation"
+                            Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
+                            <Button.Tag>
+                                <SymbolIcon Symbol="Repair" />
+                            </Button.Tag>
+                        </Button>
+                        <Button
+                            Command="{x:Bind ViewModel.OpenWallabagTwitterAccountCommand}"
+                            Content="Follow @wallabagapp on Twitter"
+                            Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
+                            <Button.Tag>
+                                <PathIcon Width="20" Data="M 20 1.9241667 C 19.264166 2.250833 18.473333 2.4708331 17.643333 2.5700006 18.490833 2.0625005 19.140833 1.2583328 19.4475 0.3 18.655 0.7700002 17.776666 1.1116665 16.841666 1.2958328 16.093333 0.4983326 15.026665 0 13.846665 0 11.580832 0 9.7433308 1.8375005 9.7433308 4.1033335 c 0 0.3216676 0.036658 0.6350002 0.1058375 0.9350002 C 6.4391683 4.8675012 3.4158343 3.2333333 1.391667 0.7508326 1.0391669 1.3566665 0.83666683 2.0616667 0.83666683 2.814167 c 0 1.423334 0.72416687 2.6791669 1.82500047 3.4150008 C 1.9891671 6.2075053 1.356667 6.023334 0.80333358 5.7158339 c 0 0.0175 0 0.034162 0 0.051662 0 1.9883339 1.41416702 3.6466679 3.29166742 4.0233339 -0.3441667 0.09416 -0.7066668 0.144168 -1.0816668 0.144168 -0.2641669 0 -0.5216669 -0.02583 -0.771667 -0.07333 0.5225001 1.6300012 2.0375005 2.8166672 3.8333343 2.8500012 -1.4041669 1.100833 -3.1733342 1.756667 -5.09583467 1.756667 -0.3308333 0 -0.65750012 -0.01916 -0.97916683 -0.0575 1.8158338 1.164167 3.972501 1.843334 6.2900016 1.843334 7.5475014 0 11.6741694 -6.252501 11.6741694 -11.6750027 0 -0.1775001 -0.0042 -0.3550001 -0.01162 -0.5308339 C 18.754166 3.4691671 19.45 2.7466669 20 1.9241667 Z" />
+                            </Button.Tag>
+                        </Button>
+                        <Button
+                            Command="{x:Bind ViewModel.ContactDeveloperCommand}"
+                            Content="Contact me via e-mail"
+                            Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
+                            <Button.Tag>
+                                <SymbolIcon Symbol="Mail" />
+                            </Button.Tag>
+                        </Button>
+                        <Button
+                            Command="{x:Bind ViewModel.CreateIssueCommand}"
+                            Content="Create an issue on GitHub"
+                            Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
+                            <Button.Tag>
+                                <SymbolIcon Symbol="Remote" />
+                            </Button.Tag>
+                        </Button>
+                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="YOU LIKE MY WORK?" />
+                        <Button
+                            Command="{x:Bind ViewModel.RateAppCommand}"
+                            Content="Rate and review the app on the store!"
+                            Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
+                            <Button.Tag>
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE19F;" />
+                            </Button.Tag>
+                        </Button>
+                        <Button
+                            Command="{x:Bind ViewModel.TellFriendsCommand}"
+                            Content="Tell your friends about wallabag!"
+                            Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
+                            <Button.Tag>
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
+                            </Button.Tag>
+                        </Button>
+                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="MISCELLANOUS" />
+                        <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="Both actions will require a manual restart of this app and are IRREVERSIBLE!" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                Margin="4,0"
+                                Command="{x:Bind ViewModel.LogoutCommand}"
+                                Content="Logout" />
+                            <Button Command="{x:Bind ViewModel.DeleteDatabaseCommand}" Content="Delete database" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+        </Pivot>
     </Grid>
 </Page>
