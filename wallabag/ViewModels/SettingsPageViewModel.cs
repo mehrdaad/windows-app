@@ -21,10 +21,10 @@ namespace wallabag.ViewModels
         private Uri _githubIssueUri = new Uri("https://github.com/wallabag/windows-app/issues/new");
         private Uri _rateAppUri = new Uri("ms-windows-store://review/?ProductId=" + Package.Current.Id.FamilyName);
 
-        public bool SyncOnStartup { get; set; }
-        public bool AllowTelemetryData { get; set; }
-        public bool NavigateBackAfterReadingAnArticle { get; set; }
-        public bool SyncReadingProgress { get; set; }
+        public bool SyncOnStartup { get; set; } = SettingsService.Instance.SyncOnStartup;
+        public bool AllowCollectionOfTelemetryData { get; set; } = SettingsService.Instance.AllowCollectionOfTelemetryData;
+        public bool NavigateBackAfterReadingAnArticle { get; set; } = SettingsService.Instance.NavigateBackAfterReadingAnArticle;
+        public bool SyncReadingProgress { get; set; } = SettingsService.Instance.SyncReadingProgress;
         public string VersionNumber { get; set; }
 
         public DelegateCommand OpenChangelogCommand { get; private set; }
@@ -50,6 +50,22 @@ namespace wallabag.ViewModels
             TellFriendsCommand = new DelegateCommand(() => TellFriends());
             LogoutCommand = new DelegateCommand(() => Logout());
             DeleteDatabaseCommand = new DelegateCommand(() => DeleteDatabase());
+
+            PropertyChanged += (s, e) =>
+            {
+                var settings = SettingsService.Instance;
+                switch (e.PropertyName)
+                {
+                    case nameof(SyncOnStartup):
+                        settings.SyncOnStartup = SyncOnStartup; break;
+                    case nameof(AllowCollectionOfTelemetryData):
+                        settings.AllowCollectionOfTelemetryData = AllowCollectionOfTelemetryData; break;
+                    case nameof(NavigateBackAfterReadingAnArticle):
+                        settings.NavigateBackAfterReadingAnArticle = NavigateBackAfterReadingAnArticle; break;
+                    case nameof(SyncReadingProgress):
+                        settings.SyncReadingProgress = SyncReadingProgress; break;
+                }
+            };
         }
 
         private string GetVersionNumber()

@@ -76,7 +76,7 @@
                         Style="{StaticResource InfoTextBlockStyle}"
                         Text="To improve the general stability of this app, it's recommended to turn on the automatic submission of anonymous telemetry data. However, if you want to turn it off, because you care of your privacy, you can do it too. Changes will be applied after the next restart."
                         TextWrapping="Wrap" />
-                    <ToggleSwitch Header="Allow collection of telemetry data" IsOn="{x:Bind ViewModel.AllowTelemetryData, Mode=TwoWay}" />
+                    <ToggleSwitch Header="Allow collection of telemetry data" IsOn="{x:Bind ViewModel.AllowCollectionOfTelemetryData, Mode=TwoWay}" />
                 </StackPanel>
             </PivotItem>
             <PivotItem Header="Reading">

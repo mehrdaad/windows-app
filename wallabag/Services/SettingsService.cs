@@ -50,6 +50,36 @@ namespace wallabag.Services
 
         #endregion
 
+        #region General
+
+        public bool SyncOnStartup
+        {
+            get { return _helper.Read(nameof(SyncOnStartup), true); }
+            set { _helper.Write(nameof(SyncOnStartup), value); }
+        }
+        public bool AllowCollectionOfTelemetryData
+        {
+            get { return _helper.Read(nameof(AllowCollectionOfTelemetryData), false); }
+            set { _helper.Write(nameof(AllowCollectionOfTelemetryData), value); }
+        }
+
+        #endregion
+
+        #region Reading
+
+        public bool NavigateBackAfterReadingAnArticle
+        {
+            get { return _helper.Read(nameof(NavigateBackAfterReadingAnArticle), true); }
+            set { _helper.Write(nameof(NavigateBackAfterReadingAnArticle), value); }
+        }
+        public bool SyncReadingProgress
+        {
+            get { return _helper.Read(nameof(SyncReadingProgress), false); }
+            set { _helper.Write(nameof(SyncReadingProgress), value); }
+        }
+
+        #endregion
+
         #region Appereance
 
         public string ColorScheme
