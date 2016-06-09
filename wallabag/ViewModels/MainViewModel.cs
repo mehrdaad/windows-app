@@ -9,6 +9,7 @@ using Template10.Mvvm;
 using wallabag.Common;
 using wallabag.Models;
 using wallabag.Services;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
@@ -20,6 +21,10 @@ namespace wallabag.ViewModels
     {
         private List<Item> _items = new List<Item>();
         public ObservableCollection<ItemViewModel> Items { get; set; } = new ObservableCollection<ItemViewModel>();
+
+        [DependsOn(nameof(OfflineTaskCount))]
+        public Visibility OfflineTaskVisibility { get { return OfflineTaskCount > 0 ? Visibility.Visible : Visibility.Collapsed; } }
+        public int OfflineTaskCount { get; set; }
 
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
@@ -60,6 +65,14 @@ namespace wallabag.ViewModels
 
         private async Task SyncAsync()
         {
+            var offlineTasks = App.Database.Table<OfflineTask>().ToList();
+            OfflineTaskCount = offlineTasks.Count;
+
+            foreach (var task in offlineTasks)
+                await task.ExecuteAsync();
+
+            OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
+
             var items = await App.Client.GetItemsAsync();
 
             if (items != null)
@@ -259,7 +272,7 @@ namespace wallabag.ViewModels
         {
             if (SettingsService.Instance.SyncOnStartup)
                 await SyncAsync();
-            
+
             Messenger.Default.Register<NotificationMessage>(this, message =>
             {
                 if (message.Notification.Equals("FetchFromDatabase"))
