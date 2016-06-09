@@ -60,7 +60,7 @@ namespace wallabag.ViewModels
             TagChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => TagChanged(args));
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
-            CurrentSearchProperties.SearchCanceled += p => FetchFromDatabase();
+            CurrentSearchProperties.SearchCanceled += p => UpdateViewBySearchProperties();
 
             App.OfflineTasksChanged += async (s, e) =>
             {
@@ -85,13 +85,8 @@ namespace wallabag.ViewModels
                         _items.Add(item);
 
                 await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(_items));
-                FetchFromDatabase();
+                UpdateViewBySearchProperties();
             }
-        }
-        private void FetchFromDatabase()
-        {
-            var databaseItems = App.Database.Table<Item>().Where(i => i.IsRead == false).ToList();
-            UpdateItemCollection(databaseItems);
         }
         private void ItemClick(ItemClickEventArgs args)
         {
@@ -279,7 +274,7 @@ namespace wallabag.ViewModels
             Messenger.Default.Register<NotificationMessage>(this, message =>
             {
                 if (message.Notification.Equals("FetchFromDatabase"))
-                    FetchFromDatabase();
+                    UpdateViewBySearchProperties();
             });
 
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
