@@ -22,6 +22,10 @@ namespace wallabag
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
             Settings = SettingsService.Instance;
+
+            if (Settings.AllowCollectionOfTelemetryData)
+                Microsoft.HockeyApp.HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
+
             await CreateClientAndDatabaseAsync();
 
             if (string.IsNullOrEmpty(Settings.AccessToken) || string.IsNullOrEmpty(Settings.RefreshToken))
