@@ -21,8 +21,8 @@ namespace wallabag
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
-            await CreateClientAndDatabase();
             Settings = SettingsService.Instance;
+            await CreateClientAndDatabaseAsync();
 
             if (string.IsNullOrEmpty(Settings.AccessToken) || string.IsNullOrEmpty(Settings.RefreshToken))
             {
@@ -54,7 +54,7 @@ namespace wallabag
 
         public override async void OnResuming(object s, object e, AppExecutionState previousExecutionState)
         {
-            await CreateClientAndDatabase();
+            await CreateClientAndDatabaseAsync();
             Client.AccessToken = Settings.AccessToken;
             Client.RefreshToken = Settings.RefreshToken;
             Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
@@ -63,7 +63,7 @@ namespace wallabag
                 await NavigationService.RestoreSavedNavigationAsync();
         }
 
-        private async Task CreateClientAndDatabase()
+        private async Task CreateClientAndDatabaseAsync()
         {
             if (Client == null)
                 Client = new Api.WallabagClient(Settings.WallabagUrl, Settings.ClientId, Settings.ClientSecret);
