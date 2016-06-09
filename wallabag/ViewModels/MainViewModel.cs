@@ -61,6 +61,12 @@ namespace wallabag.ViewModels
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
             CurrentSearchProperties.SearchCanceled += p => FetchFromDatabase();
+
+            App.OfflineTasksChanged += async (s, e) =>
+            {
+                OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
+                await SyncAsync();
+            };
         }
 
         private async Task SyncAsync()
