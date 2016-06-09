@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common;
 using wallabag.Models;
+using wallabag.Services;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
@@ -256,9 +257,9 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            if (mode != NavigationMode.Refresh)
-                FetchFromDatabase();
-
+            if (SettingsService.Instance.SyncOnStartup)
+                await SyncAsync();
+            
             Messenger.Default.Register<NotificationMessage>(this, message =>
             {
                 if (message.Notification.Equals("FetchFromDatabase"))

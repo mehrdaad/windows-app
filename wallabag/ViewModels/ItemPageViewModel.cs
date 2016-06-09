@@ -88,7 +88,19 @@ namespace wallabag.ViewModels
             if (Item.Model.IsRead)
                 Item.UnmarkAsReadCommand.Execute();
             else
+            {
                 Item.MarkAsReadCommand.Execute();
+
+                if (SettingsService.Instance.NavigateBackAfterReadingAnArticle)
+                    NavigationService.GoBack();
+
+                if (SettingsService.Instance.SyncReadingProgress)
+                {
+                    var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{SettingsService.Instance.ClientId}", ApplicationDataCreateDisposition.Always);
+                    if (readingSettingsContainer.Values.ContainsKey(Item.Model.Id.ToString()))
+                        readingSettingsContainer.Values.Remove(Item.Model.Id.ToString());
+                }
+            }
 
             UpdateReadIcon();
         }
@@ -153,6 +165,13 @@ namespace wallabag.ViewModels
             UpdateFavoriteIcon();
             UpdateBrushes();
 
+            if (SettingsService.Instance.SyncReadingProgress && Item.Model.ReadingProgress < 100)
+            {
+                var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{SettingsService.Instance.ClientId}", ApplicationDataCreateDisposition.Always);
+                if (readingSettingsContainer.Values.ContainsKey(Item.Model.Id.ToString()))
+                    Item.Model.ReadingProgress = (double)readingSettingsContainer.Values[Item.Model.Id.ToString()];
+            }
+
             await GenerateFormattedHtmlAsync();
         }
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
@@ -163,6 +182,12 @@ namespace wallabag.ViewModels
             SettingsService.Instance.TextAlignment = TextAlignment;
 
             App.Database.Update(Item.Model);
+
+            if (SettingsService.Instance.SyncReadingProgress && Item.Model.ReadingProgress < 100)
+            {
+                var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{SettingsService.Instance.ClientId}", ApplicationDataCreateDisposition.Always);
+                readingSettingsContainer.Values[Item.Model.Id.ToString()] = Item.Model.ReadingProgress;
+            }
 
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
             titleBar.BackgroundColor = null;
