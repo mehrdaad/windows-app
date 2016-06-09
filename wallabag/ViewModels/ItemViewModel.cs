@@ -26,48 +26,38 @@ namespace wallabag.ViewModels
         public ItemViewModel(Item Model)
         {
             this.Model = Model;
-            
+
             (Model as INotifyPropertyChanged).PropertyChanged += (s, e) => { RaisePropertyChanged(nameof(Model)); };
 
-            MarkAsReadCommand = new DelegateCommand(async () =>
+            MarkAsReadCommand = new DelegateCommand(() =>
             {
-                if (await App.Client.ArchiveAsync(Model))
-                {
-                    Model.IsRead = true;
-                    UpdateItem();
-                }
+                Model.IsRead = true;
+                UpdateItem();
+                App.Database.Insert(new OfflineTask(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead));
             });
-            UnmarkAsReadCommand = new DelegateCommand(async () =>
+            UnmarkAsReadCommand = new DelegateCommand(() =>
             {
-                if (await App.Client.UnarchiveAsync(Model))
-                {
-                    Model.IsRead = false;
-                    UpdateItem();
-                }
+                Model.IsRead = false;
+                UpdateItem();
+                App.Database.Insert(new OfflineTask(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead));
             });
-            MarkAsStarredCommand = new DelegateCommand(async () =>
+            MarkAsStarredCommand = new DelegateCommand(() =>
             {
-                if (await App.Client.FavoriteAsync(Model))
-                {
-                    Model.IsStarred = true;
-                    UpdateItem();
-                }
+                Model.IsStarred = true;
+                UpdateItem();
+                App.Database.Insert(new OfflineTask(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred));
             });
-            UnmarkAsStarredCommand = new DelegateCommand(async () =>
+            UnmarkAsStarredCommand = new DelegateCommand(() =>
             {
-                if (await App.Client.UnfavoriteAsync(Model))
-                {
-                    Model.IsStarred = false;
-                    UpdateItem();
-                }
+                Model.IsStarred = false;
+                UpdateItem();
+                App.Database.Insert(new OfflineTask(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred));
             });
-            DeleteCommand = new DelegateCommand(async () =>
+            DeleteCommand = new DelegateCommand(() =>
             {
-                if (await App.Client.DeleteAsync(Model))
-                {
-                    App.Database.Delete(Model);
-                    SendUpdateMessage();
-                }
+                App.Database.Delete(Model);
+                SendUpdateMessage();
+                App.Database.Insert(new OfflineTask(Model.Id, OfflineTask.OfflineTaskAction.Delete));
             });
             ShareCommand = new DelegateCommand(() =>
             {

@@ -21,12 +21,12 @@ namespace wallabag.ViewModels
 
         public EditTagsViewModel()
         {
-            FinishCommand = new DelegateCommand(async () => await FinishAsync());
+            FinishCommand = new DelegateCommand(() => Finish());
             CancelCommand = new DelegateCommand(() => Services.DialogService.HideCurrentDialog());
         }
         public EditTagsViewModel(Item Item)
         {
-            FinishCommand = new DelegateCommand(async () => await FinishAsync());
+            FinishCommand = new DelegateCommand(() => Finish());
             CancelCommand = new DelegateCommand(() => Services.DialogService.HideCurrentDialog());
 
             Items.Add(Item);
@@ -34,17 +34,17 @@ namespace wallabag.ViewModels
             Tags = new ObservableCollection<Tag>(Item.Tags);
         }
 
-        private async Task FinishAsync()
+        private void Finish()
         {
             if (_previousTags == null)
             {
                 foreach (var item in Items)
                 {
-                    var results = await App.Client.AddTagsAsync(item.Id, string.Join(",", Tags).Split(","[0]));
-                    var tags = item.Tags as List<Tag>;
+                    App.Database.Insert(new OfflineTask(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, Tags));
 
-                    foreach (var tag in results)
-                        tags.Add(tag);
+                    var itemTags = item.Tags as List<Tag>;
+                    foreach (var tag in Tags)
+                        itemTags.Add(tag);
                 }
             }
             else
@@ -52,8 +52,7 @@ namespace wallabag.ViewModels
                 var newTags = Tags.Except(_previousTags);
                 var deletedTags = _previousTags.Except(Tags);
 
-                await App.Client.AddTagsAsync(Items.First(), string.Join(",", newTags).Split(","[0]));
-                await App.Client.RemoveTagsAsync(Items.First(), (IEnumerable<WallabagTag>)deletedTags);
+                App.Database.Insert(new OfflineTask(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags));
             }
         }
     }
