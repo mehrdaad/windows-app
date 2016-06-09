@@ -94,7 +94,7 @@ namespace wallabag.ViewModels
             SettingsService.Instance.RefreshToken = string.Empty;
             SettingsService.Instance.LastTokenRefreshDateTime = DateTime.MinValue;
 
-            Application.Current.Exit();
+            DeleteDatabase();
         }
         private void DeleteDatabase()
         {
