@@ -76,7 +76,7 @@ namespace wallabag.ViewModels
 
             OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
 
-            var items = await App.Client.GetItemsAsync(DateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate);
+            var items = await App.Client.GetItemsAsync();
 
             if (items != null)
             {
