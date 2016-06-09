@@ -71,15 +71,12 @@ namespace wallabag.ViewModels
 
         private async Task SyncAsync()
         {
-            var offlineTasks = App.Database.Table<OfflineTask>().ToList();
-            OfflineTaskCount = offlineTasks.Count;
-
-            foreach (var task in offlineTasks)
+            foreach (var task in App.Database.Table<OfflineTask>())
                 await task.ExecuteAsync();
 
             OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
 
-            var items = await App.Client.GetItemsAsync();
+            var items = await App.Client.GetItemsAsync(DateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate);
 
             if (items != null)
             {
