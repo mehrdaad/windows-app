@@ -34,6 +34,7 @@ namespace wallabag.Common
             foreach (var item in newList)
                 oldList.Add(item);
         }
+        public static string[] ToStringArray<T>(this IEnumerable<T> list) => string.Join(",", list).Split(","[0]);
     }
 
     public static class StringExtensions

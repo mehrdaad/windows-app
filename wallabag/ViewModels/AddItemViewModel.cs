@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Template10.Mvvm;
+using wallabag.Common;
 using wallabag.Models;
 
 namespace wallabag.ViewModels
@@ -26,7 +27,7 @@ namespace wallabag.ViewModels
 
         private void Add()
         {
-            OfflineTask.Add(UriString, string.Join(",", Tags).Split(","[0]));
+            OfflineTask.Add(UriString, Tags.ToStringArray());
 
             var uri = new Uri(UriString);
             App.Database.Insert(new Item()

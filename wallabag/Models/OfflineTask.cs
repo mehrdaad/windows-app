@@ -46,7 +46,7 @@ namespace wallabag.Models
 
                     if (addTagsList?.Count > 0)
                     {
-                        var newTags = await App.Client.AddTagsAsync(ItemId, string.Join(",", addTagsList).Split(","[0]));
+                        var newTags = await App.Client.AddTagsAsync(ItemId, addTagsList.ToStringArray());
 
                         if (newTags != null)
                         {
