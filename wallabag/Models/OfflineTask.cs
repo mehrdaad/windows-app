@@ -50,6 +50,13 @@ namespace wallabag.Models
                         tags.Replace(newTags.Convert<WallabagTag, Tag>().ToList());
 
                     executionIsSuccessful = await App.Client.RemoveTagsAsync(ItemId, removeTagsList.Convert<Tag, WallabagTag>());
+
+                    if (executionIsSuccessful)
+                        foreach (var tag in removeTagsList)
+                            tags.Remove(tag);
+
+                    App.Database.Update(item);
+
                     break;
                 case OfflineTaskAction.AddItem:
                     var newItem = await App.Client.AddAsync(new Uri(Url), Tags);
