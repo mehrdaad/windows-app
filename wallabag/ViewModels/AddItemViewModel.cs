@@ -3,7 +3,6 @@ using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Models;
 
@@ -21,20 +20,24 @@ namespace wallabag.ViewModels
 
         public AddItemViewModel()
         {
-            AddCommand = new DelegateCommand(async () => await AddAsync());
+            AddCommand = new DelegateCommand(() => Add());
             CancelCommand = new DelegateCommand(() => Services.DialogService.HideCurrentDialog());
         }
 
-        private async Task<bool> AddAsync()
+        private void Add()
         {
-            var item = await App.Client.AddAsync(new Uri(UriString), string.Join(",", Tags).Split(","[0]));
-            if (item != null)
+            OfflineTask.Add(UriString, string.Join(",", Tags).Split(","[0]));
+
+            var uri = new Uri(UriString);
+            App.Database.Insert(new Item()
             {
-                App.Database.Insert((Item)item);
-                Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
-                return true;
-            }
-            return false;
+                Id = App.Database.Table<Item>().OrderByDescending(i => i.Id).FirstOrDefault().Id + 1,
+                Title = uri.Host,
+                Url = UriString,
+                Hostname = uri.Host
+            });
+
+            Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
         }
     }
 }

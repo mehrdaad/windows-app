@@ -12,19 +12,19 @@ namespace wallabag.Models
         [PrimaryKey]
         public int Id { get; set; }
 
-        public string Title { get; set; }
-        public string Content { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
         public string Url { get; set; }
-        public IEnumerable<Tag> Tags { get; set; }
+        public IEnumerable<Tag> Tags { get; set; } = new List<Tag>();
 
         [Indexed]
-        public bool IsRead { get; set; }
+        public bool IsRead { get; set; } = false;
         [Indexed]
-        public bool IsStarred { get; set; }
+        public bool IsStarred { get; set; } = false;
         [Indexed]
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.UtcNow;
         [Indexed]
-        public DateTime LastModificationDate { get; set; }
+        public DateTime LastModificationDate { get; set; } = DateTime.UtcNow;
         [Indexed]
         public int EstimatedReadingTime { get; set; }
         public string Hostname { get; set; }
