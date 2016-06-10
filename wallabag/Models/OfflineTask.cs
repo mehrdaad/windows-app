@@ -1,6 +1,7 @@
 ﻿using SQLite.Net.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using wallabag.Api.Models;
@@ -41,22 +42,34 @@ namespace wallabag.Models
                     executionIsSuccessful = await App.Client.UnfavoriteAsync(ItemId);
                     break;
                 case OfflineTaskAction.EditTags:
-                    var newTags = await App.Client.AddTagsAsync(ItemId, string.Join(",", addTagsList).Split(","[0]));
-
                     var item = App.Database.Get<Item>(i => i.Id == ItemId);
-                    var tags = item.Tags as List<Tag>;
 
-                    if (newTags != null)
-                        tags.Replace(newTags.Convert<WallabagTag, Tag>().ToList());
+                    if (addTagsList?.Count > 0)
+                    {
+                        var newTags = await App.Client.AddTagsAsync(ItemId, string.Join(",", addTagsList).Split(","[0]));
 
-                    executionIsSuccessful = await App.Client.RemoveTagsAsync(ItemId, removeTagsList.Convert<Tag, WallabagTag>());
+                        if (newTags != null)
+                        {
+                            var convertedTags = new ObservableCollection<Tag>();
+                            foreach (var tag in newTags)
+                                convertedTags.Add(tag);
 
-                    if (executionIsSuccessful)
+                            item.Tags.Replace(convertedTags);
+                        }
+                    }
+                    if (removeTagsList?.Count > 0)
+                    {
+                        List<WallabagTag> tagsToRemove = new List<WallabagTag>();
                         foreach (var tag in removeTagsList)
-                            tags.Remove(tag);
+                            tagsToRemove.Add(tag);
 
-                    App.Database.Update(item);
+                        if (await App.Client.RemoveTagsAsync(ItemId, tagsToRemove))
+                            foreach (var tag in removeTagsList)
+                                if (item.Tags.Contains(tag))
+                                    item.Tags.Remove(tag);
+                    }
 
+                    executionIsSuccessful = App.Database.Update(item) == 1;
                     break;
                 case OfflineTaskAction.AddItem:
                     var newItem = await App.Client.AddAsync(new Uri(Url), Tags);
