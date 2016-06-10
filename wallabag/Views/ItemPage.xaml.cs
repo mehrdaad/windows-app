@@ -43,7 +43,7 @@ namespace wallabag.Views
             {
                 _isCommandBarVisible = false;
                 _isCommandBarCompact = false;
-            };
+            };          
         }
 
         private void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
@@ -52,10 +52,7 @@ namespace wallabag.Views
             {
                 ViewModel.Item.Model.ReadingProgress = double.Parse(e.Value.Replace(".", ","));
                 if (_isCommandBarCompact && ViewModel.Item.Model.ReadingProgress < 99)
-                {
-                    _isCommandBarCompact = false;
                     HideCommandBarStoryboard.Begin();
-                }
             }
             else if (!_isCommandBarVisible)
                 ShowMinimalCommandBarStoryboard.Begin();
