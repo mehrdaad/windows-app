@@ -34,15 +34,6 @@ namespace wallabag.Common
             foreach (var item in newList)
                 oldList.Add(item);
         }
-        public static IEnumerable<T2> Convert<T1, T2>(this IEnumerable<T1> sourceList)
-        {
-            var newList = new List<T2>();
-
-            foreach (var item in sourceList)
-                newList.Add((T2)(dynamic)item);
-
-            return newList;
-        }
     }
 
     public static class StringExtensions
