@@ -2,6 +2,7 @@
 using SQLite.Net.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using wallabag.Api.Models;
 
 namespace wallabag.Models
@@ -15,7 +16,7 @@ namespace wallabag.Models
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public string Url { get; set; }
-        public IEnumerable<Tag> Tags { get; set; } = new List<Tag>();
+        public ObservableCollection<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
 
         [Indexed]
         public bool IsRead { get; set; } = false;
@@ -63,7 +64,7 @@ namespace wallabag.Models
         }
         public static implicit operator Item(WallabagItem i)
         {
-            List<Tag> convertedTags = new List<Tag>();
+            ObservableCollection<Tag> convertedTags = new ObservableCollection<Tag>();
             foreach (var item in i.Tags)
                 convertedTags.Add(item);
 
