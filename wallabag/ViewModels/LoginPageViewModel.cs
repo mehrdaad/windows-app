@@ -77,6 +77,9 @@ namespace wallabag.ViewModels
             Services.SettingsService.Instance.ClientId = ClientId;
             Services.SettingsService.Instance.ClientSecret = ClientSecret;
             Services.SettingsService.Instance.WallabagUrl = new Uri(Url);
+            Services.SettingsService.Instance.AccessToken = App.Client.AccessToken;
+            Services.SettingsService.Instance.RefreshToken = App.Client.RefreshToken;
+            Services.SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
 
             var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(ItemsPerPage: 1000);
             var items = itemResponse.Items as List<WallabagItem>;
@@ -100,7 +103,7 @@ namespace wallabag.ViewModels
 
             ContinueCompleted?.Invoke(this, new EventArgs());
 
-            var titleBar = ApplicationView.GetForCurrentView().TitleBar;        
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
             titleBar.ButtonBackgroundColor = null;
             titleBar.ButtonForegroundColor = null;
 
