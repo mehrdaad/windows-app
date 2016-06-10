@@ -243,7 +243,14 @@
         </Grid.RowDefinitions>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="AdaptiveStates">
-                <VisualState x:Name="Narrow" />
+                <VisualState x:Name="Narrow">
+                    <VisualState.Setters>
+                        <Setter Target="ItemGridView.MinItemHeight" Value="75" />
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                </VisualState>
                 <VisualState x:Name="Wide">
                     <VisualState.Setters>
                         <Setter Target="searchBox.Visibility" Value="Visible" />
