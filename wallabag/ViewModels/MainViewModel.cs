@@ -25,6 +25,7 @@ namespace wallabag.ViewModels
         [DependsOn(nameof(OfflineTaskCount))]
         public Visibility OfflineTaskVisibility { get { return OfflineTaskCount > 0 ? Visibility.Visible : Visibility.Collapsed; } }
         public int OfflineTaskCount { get; set; }
+        public bool IsSyncing { get; set; }
 
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
@@ -71,6 +72,7 @@ namespace wallabag.ViewModels
 
         private async Task SyncAsync()
         {
+            IsSyncing = true;
             foreach (var task in App.Database.Table<OfflineTask>())
                 await task.ExecuteAsync();
 
@@ -87,6 +89,7 @@ namespace wallabag.ViewModels
                 await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(_items));
                 UpdateViewBySearchProperties();
             }
+            IsSyncing = false;
         }
         private void ItemClick(ItemClickEventArgs args)
         {

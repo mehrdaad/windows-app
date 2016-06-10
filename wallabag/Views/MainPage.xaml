@@ -261,6 +261,22 @@
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
+            <VisualStateGroup>
+                <VisualState x:Name="SyncState">
+                    <Storyboard>
+                        <DoubleAnimation
+                            d:IsOptimized="True"
+                            Duration="0:0:1"
+                            RepeatBehavior="Forever"
+                            Storyboard.TargetName="syncIcon"
+                            Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                            To="360" />
+                    </Storyboard>
+                    <VisualState.StateTriggers>
+                        <StateTrigger IsActive="{x:Bind ViewModel.IsSyncing, Mode=OneWay}" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="UNREAD" />
@@ -557,10 +573,18 @@
                 Command="{x:Bind ViewModel.AddCommand}"
                 Icon="Add"
                 Label="Add" />
-            <AppBarButton
-                Command="{x:Bind ViewModel.SyncCommand}"
-                Icon="Sync"
-                Label="Sync" />
+            <AppBarButton Command="{x:Bind ViewModel.SyncCommand}" Label="Sync">
+                <AppBarButton.Icon>
+                    <SymbolIcon
+                        x:Name="syncIcon"
+                        RenderTransformOrigin="0.5,0.5"
+                        Symbol="Sync">
+                        <SymbolIcon.RenderTransform>
+                            <CompositeTransform />
+                        </SymbolIcon.RenderTransform>
+                    </SymbolIcon>
+                </AppBarButton.Icon>
+            </AppBarButton>
             <AppBarButton
                 Click="EnableMultipleSelectionButtonClick"
                 Icon="Bullets"
@@ -592,6 +616,7 @@
         <CommandBar
             x:Name="MultipleSelectionCommandBar"
             Grid.Row="2"
+            d:IsHidden="True"
             Visibility="Collapsed">
             <AppBarButton Icon="Edit" Label="Edit">
                 <AppBarButton.Flyout>
