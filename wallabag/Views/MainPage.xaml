@@ -323,7 +323,7 @@
             MinItemWidth="300">
             <controls:AdaptiveGridView.ItemTemplate>
                 <DataTemplate x:DataType="vm:ItemViewModel">
-                    <RelativePanel x:Name="RootPanel">
+                    <RelativePanel x:Name="RootPanel" RequestedTheme="Dark">
                         <Image
                             x:Name="image"
                             RelativePanel.AlignBottomWithPanel="True"
@@ -340,8 +340,7 @@
                             RelativePanel.AlignBottomWithPanel="True"
                             RelativePanel.AlignLeftWithPanel="True"
                             RelativePanel.AlignRightWithPanel="True"
-                            RelativePanel.AlignTopWithPanel="True"
-                            RequestedTheme="Dark">
+                            RelativePanel.AlignTopWithPanel="True">
                             <StackPanel
                                 x:Name="ContentStackPanel"
                                 Margin="12"
@@ -361,6 +360,35 @@
                                     Text="{x:Bind Model.Hostname}" />
                             </StackPanel>
                         </Border>
+                        <StackPanel
+                            x:Name="readingTimeIndicator"
+                            Margin="8"
+                            Orientation="Horizontal"
+                            RelativePanel.AlignRightWithPanel="True"
+                            RelativePanel.AlignTopWithPanel="True">
+                            <TextBlock
+                                Margin="0,0,4,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="&#xE2AD;" />
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.EstimatedReadingTime}" />
+                        </StackPanel>
+                        <StackPanel
+                            x:Name="tagsIndicator"
+                            Margin="8"
+                            Orientation="Horizontal"
+                            RelativePanel.AlignBottomWithPanel="True"
+                            RelativePanel.AlignRightWithPanel="True"
+                            Visibility="{x:Bind TagsAreExisting, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock
+                                Margin="0,0,4,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="&#xE1CB;" />
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind TagsString, Mode=OneWay}" />
+                        </StackPanel>
                     </RelativePanel>
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>

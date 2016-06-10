@@ -13,6 +13,9 @@ namespace wallabag.ViewModels
     public class ItemViewModel : ViewModelBase, IComparable
     {
         public Item Model { get; private set; }
+        
+        public string TagsString { get { return string.Join(", ", Model.Tags); } }
+        public bool TagsAreExisting { get { return Model.Tags.Count > 0; } }
 
         public DelegateCommand MarkAsReadCommand { get; private set; }
         public DelegateCommand UnmarkAsReadCommand { get; private set; }
@@ -28,6 +31,10 @@ namespace wallabag.ViewModels
             this.Model = Model;
 
             (Model as INotifyPropertyChanged).PropertyChanged += (s, e) => { RaisePropertyChanged(nameof(Model)); };
+            Model.Tags.CollectionChanged += (s, e) => {
+                RaisePropertyChanged(nameof(TagsString));
+                RaisePropertyChanged(nameof(TagsAreExisting));
+            };
 
             MarkAsReadCommand = new DelegateCommand(() =>
             {
