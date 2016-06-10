@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using Template10.Mvvm;
-using wallabag.Api.Models;
+using wallabag.Common;
 using wallabag.Models;
 
 namespace wallabag.ViewModels
@@ -14,7 +13,7 @@ namespace wallabag.ViewModels
     {
         private IEnumerable<Tag> _previousTags;
         public IList<Item> Items { get; set; } = new List<Item>();
-        public IEnumerable<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
+        public ObservableCollection<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
 
         public DelegateCommand FinishCommand { get; private set; }
         public DelegateCommand CancelCommand { get; private set; }
@@ -41,7 +40,7 @@ namespace wallabag.ViewModels
                 foreach (var item in Items)
                 {
                     OfflineTask.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
-                    
+
                     foreach (var tag in Tags)
                         item.Tags.Add(tag);
                 }
@@ -50,6 +49,8 @@ namespace wallabag.ViewModels
             {
                 var newTags = Tags.Except(_previousTags);
                 var deletedTags = _previousTags.Except(Tags);
+
+                Items.First().Tags.Replace(Tags);
 
                 OfflineTask.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags.ToList(), deletedTags.ToList());
             }
