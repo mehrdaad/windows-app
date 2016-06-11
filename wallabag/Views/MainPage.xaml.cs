@@ -200,7 +200,12 @@ namespace wallabag.Views
         {
             HideFilterStoryboard.Begin();
         }
-       
+        private void searchBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (Window.Current.Bounds.Width < 720)
+                HideSearchStoryboard.Begin();
+        }
+
         #endregion
     }
 }

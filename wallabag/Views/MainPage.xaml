@@ -293,6 +293,7 @@
                 VerticalAlignment="Center"
                 x:DeferLoadStrategy="Lazy"
                 ItemsSource="{x:Bind ViewModel.SearchQuerySuggestions, Mode=OneWay}"
+                LostFocus="searchBox_LostFocus"
                 PlaceholderText="Search…"
                 QueryIcon="Find"
                 Text="{x:Bind ViewModel.CurrentSearchProperties.Query, Mode=TwoWay}"
