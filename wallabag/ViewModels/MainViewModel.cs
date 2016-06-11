@@ -88,6 +88,8 @@ namespace wallabag.ViewModels
 
             OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
 
+            UpdateView();
+
             IsSyncing = false;
         }
         private async Task SyncAsync()
