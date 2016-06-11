@@ -43,9 +43,12 @@ namespace wallabag.Views
             HideSearchStoryboard.Completed += (s, e) => _isSearchVisible = false;
             ShowFilterStoryboard.Completed += (s, e) => _isFilterVisible = true;
             HideFilterStoryboard.Completed += (s, e) => _isFilterVisible = false;
-
-            ViewModel.CurrentSearchProperties.SearchStarted += p => StartSearch();
-            ViewModel.CurrentSearchProperties.SearchCanceled += p => EndSearch(null, null);
+            
+            ViewModel.CurrentSearchProperties.SearchCanceled += p =>
+            {
+                if (_isSearchVisible)
+                    HideSearchStoryboard.Begin();
+            };
         }
 
         #region Context menu
@@ -181,25 +184,6 @@ namespace wallabag.Views
                 HideFilterStoryboard.Begin();
         }
 
-        private void StartSearch()
-        {
-            SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => EndSearch(s, e);
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-        }
-        private void EndSearch(object sender, BackRequestedEventArgs e)
-        {
-            SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearch(s, args);
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-
-            if (!string.IsNullOrWhiteSpace(ViewModel.CurrentSearchProperties.Query))
-                ViewModel.CurrentSearchProperties.Query = string.Empty;
-
-            if (e != null)
-                e.Handled = true;
-
-            if (_isSearchVisible)
-                HideSearchStoryboard.Begin();
-        }
         private void overlayRectangle_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             HideFilterStoryboard.Begin();

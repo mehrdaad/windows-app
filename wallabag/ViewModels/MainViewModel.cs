@@ -9,6 +9,7 @@ using Template10.Mvvm;
 using wallabag.Common;
 using wallabag.Models;
 using wallabag.Services;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -60,10 +61,13 @@ namespace wallabag.ViewModels
             TagChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => TagChanged(args));
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
+            CurrentSearchProperties.SearchStarted += p => StartSearch();
+            CurrentSearchProperties.SearchCanceled += p => EndSearch(null, null);
             CurrentSearchProperties.SearchCanceled += p => UpdateView();
             CurrentSearchProperties.PropertyChanged += (s, e) =>
             {
-                if (e.PropertyName != nameof(CurrentSearchProperties.SortOrder))
+                if (e.PropertyName != nameof(CurrentSearchProperties.SortOrder) &&
+                    e.PropertyName != nameof(CurrentSearchProperties.Query))
                     UpdateView();
             };
             CurrentSearchProperties.SortOrderChanged += p => SortItems(p);
@@ -181,6 +185,23 @@ namespace wallabag.ViewModels
             var selectedTag = args.AddedItems.FirstOrDefault() as Tag;
 
             CurrentSearchProperties.Tag = selectedTag as Tag;
+        }
+
+        private void StartSearch()
+        {
+            SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => EndSearch(s, e);
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+        }
+        private void EndSearch(object sender, BackRequestedEventArgs e)
+        {
+            SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearch(s, args);
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+
+            if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+                CurrentSearchProperties.Query = string.Empty;
+
+            if (e != null)
+                e.Handled = true;
         }
 
         private void UpdateView()
