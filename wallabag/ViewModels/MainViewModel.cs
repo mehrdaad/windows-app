@@ -19,7 +19,6 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class MainViewModel : ViewModelBase
     {
-        private List<Item> _items = new List<Item>();
         public ObservableCollection<ItemViewModel> Items { get; set; } = new ObservableCollection<ItemViewModel>();
 
         [DependsOn(nameof(OfflineTaskCount))]
@@ -47,7 +46,7 @@ namespace wallabag.ViewModels
 
         public MainViewModel()
         {
-            AddCommand = new DelegateCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.AddItem));
+            AddCommand = new DelegateCommand(async () => await DialogService.ShowAsync(DialogService.Dialog.AddItem));
             SyncCommand = new DelegateCommand(async () => await SyncAsync());
             NavigateToSettingsPageCommand = new DelegateCommand(() => NavigationService.Navigate(typeof(Views.SettingsPage), infoOverride: new DrillInNavigationTransitionInfo()));
             ItemClickCommand = new DelegateCommand<ItemClickEventArgs>(t => ItemClick(t));
@@ -61,7 +60,13 @@ namespace wallabag.ViewModels
             TagChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => TagChanged(args));
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
-            CurrentSearchProperties.SearchCanceled += p => UpdateViewBySearchProperties();
+            CurrentSearchProperties.SearchCanceled += p => UpdateView();
+            CurrentSearchProperties.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName != nameof(CurrentSearchProperties.SortOrder))
+                    UpdateView();
+            };
+            CurrentSearchProperties.SortOrderChanged += p => SortItems(p);
 
             App.OfflineTasksChanged += async (s, e) =>
             {
@@ -81,25 +86,28 @@ namespace wallabag.ViewModels
 
             IsSyncing = false;
         }
-
         private async Task SyncAsync()
         {
             IsSyncing = true;
             await ExecuteOfflineTasksAsync();
 
-            var items = await App.Client.GetItemsAsync();
-            
+            var items = await App.Client.GetItemsAsync(
+                DateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
+                SortOrder: Api.WallabagClient.WallabagSortOrder.Descending);
+
             if (items != null)
             {
-                foreach (var item in items)
-                    if (!_items.Contains(item))
-                        _items.Add(item);
+                var itemList = new List<Item>();
 
-                await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(_items));
-                UpdateViewBySearchProperties();
+                foreach (var item in items)
+                    itemList.Add(item);
+
+                await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(itemList));
+                UpdateView();
             }
             IsSyncing = false;
         }
+
         private void ItemClick(ItemClickEventArgs args)
         {
             var item = args.ClickedItem as ItemViewModel;
@@ -123,7 +131,6 @@ namespace wallabag.ViewModels
                     CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Archived;
                     break;
             }
-            UpdateViewBySearchProperties();
         }
         private void SetEstimatedReadingTimeFilter(string order)
         {
@@ -131,7 +138,6 @@ namespace wallabag.ViewModels
                 CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.AscendingByReadingTime;
             else
                 CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.DescendingByReadingTime;
-            UpdateViewBySearchProperties();
         }
         private void SetCreationDateFilter(string order)
         {
@@ -139,7 +145,6 @@ namespace wallabag.ViewModels
                 CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.AscendingByCreationDate;
             else
                 CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.DescendingByCreationDate;
-            UpdateViewBySearchProperties();
         }
         private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -164,39 +169,55 @@ namespace wallabag.ViewModels
                 return;
 
             CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.All;
-            UpdateViewBySearchProperties();
         }
         private void LanguageCodeChanged(SelectionChangedEventArgs args)
         {
             var selectedLanguage = args.AddedItems.FirstOrDefault() as Language;
 
             CurrentSearchProperties.Language = selectedLanguage as Language;
-            UpdateViewBySearchProperties();
         }
         private void TagChanged(SelectionChangedEventArgs args)
         {
             var selectedTag = args.AddedItems.FirstOrDefault() as Tag;
 
             CurrentSearchProperties.Tag = selectedTag as Tag;
-            UpdateViewBySearchProperties();
         }
 
-        private void UpdateItemCollection(List<Item> newItemList)
+        private void UpdateView()
         {
-            var idComparer = new ItemByIdEqualityComparer();
-            var modificationDateComparer = new ItemByModificationDateEqualityComparer();
+            var currentItems = new List<Item>();
+            var databaseItems = GetItemsForCurrentSearchProperties();
 
-            var newItems = newItemList.Except(_items, idComparer);
-            var changedItems = newItemList.Except(_items, modificationDateComparer).Except(newItems);
-            var deletedItems = _items.Except(newItemList, idComparer);
+            foreach (var item in Items)
+                currentItems.Add(item.Model);
 
-            _items = newItemList;
 
-            foreach (var item in _items)
+            var newItems = databaseItems.Except(currentItems).ToList();
+            var changedItems = databaseItems.Except(currentItems, new ItemByModificationDateEqualityComparer()).Except(newItems).ToList();
+            var deletedItems = currentItems.Except(databaseItems).ToList();
+
+
+            foreach (var item in newItems)
+                Items.AddSorted(new ItemViewModel(item));
+
+            foreach (var item in changedItems)
             {
-                if (item.Language != null)
+                Items.Remove(Items.Where(i => i.Model.Equals(item)).FirstOrDefault());
+                Items.AddSorted(new ItemViewModel(item));
+            }
+
+            foreach (var item in deletedItems)
+                Items.Remove(new ItemViewModel(item));
+
+            GetMetadataForItems(Items);
+        }
+        private void GetMetadataForItems(ObservableCollection<ItemViewModel> items)
+        {
+            foreach (var item in items)
+            {
+                if (item.Model.Language != null)
                 {
-                    var translatedLanguage = new Language(item.Language);
+                    var translatedLanguage = new Language(item.Model.Language);
 
                     if (!LanguageSuggestions.Contains(translatedLanguage))
                         LanguageSuggestions.Add(translatedLanguage);
@@ -207,24 +228,12 @@ namespace wallabag.ViewModels
                         LanguageSuggestions.Add(Language.Unknown);
                 }
 
-                foreach (var tag in item.Tags)
+                foreach (var tag in item.Model.Tags)
                     if (!TagSuggestions.Contains(tag))
                         TagSuggestions.Add(tag);
             }
-
-            foreach (var item in newItems)
-                Items.AddSorted(new ItemViewModel(item));
-
-            foreach (var item in changedItems)
-            {
-                Items.Remove(Items.Where(i => i.Model.Id == item.Id).FirstOrDefault());
-                Items.AddSorted(new ItemViewModel(item));
-            }
-
-            foreach (var item in deletedItems)
-                Items.Remove(new ItemViewModel(item));
         }
-        private void UpdateViewBySearchProperties()
+        private List<Item> GetItemsForCurrentSearchProperties()
         {
             var items = App.Database.Table<Item>();
 
@@ -254,11 +263,13 @@ namespace wallabag.ViewModels
             if (CurrentSearchProperties.Tag != null)
                 list = list.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag)).ToList();
 
-            UpdateItemCollection(list);
-
+            return list;
+        }
+        private void SortItems(SearchProperties.SearchPropertiesSortOrder newSortOrder)
+        {
             IOrderedEnumerable<ItemViewModel> sortedItems;
 
-            switch (CurrentSearchProperties.SortOrder)
+            switch (newSortOrder)
             {
                 case SearchProperties.SearchPropertiesSortOrder.AscendingByReadingTime:
                     sortedItems = Items.OrderBy(i => i.Model.EstimatedReadingTime);
@@ -280,13 +291,16 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
+            foreach (var item in App.Database.Table<Item>().Where(i => i.IsRead == false).ToList())
+                Items.Add(new ItemViewModel(item));
+
             if (SettingsService.Instance.SyncOnStartup)
                 await SyncAsync();
 
             Messenger.Default.Register<NotificationMessage>(this, message =>
             {
                 if (message.Notification.Equals("FetchFromDatabase"))
-                    UpdateViewBySearchProperties();
+                    UpdateView();
             });
 
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
