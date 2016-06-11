@@ -35,7 +35,11 @@ namespace wallabag.Views
                 if (ItemGridView.SelectedItems.Count == 0) DisableMultipleSelection();
             };
 
-            ShowSearchStoryboard.Completed += (s, e) => _isSearchVisible = true;
+            ShowSearchStoryboard.Completed += (s, e) =>
+            {
+                _isSearchVisible = true;
+                searchBox.Focus(FocusState.Programmatic);
+            };
             HideSearchStoryboard.Completed += (s, e) => _isSearchVisible = false;
             ShowFilterStoryboard.Completed += (s, e) => _isFilterVisible = true;
             HideFilterStoryboard.Completed += (s, e) => _isFilterVisible = false;
