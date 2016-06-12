@@ -148,11 +148,11 @@
                         Icon="{x:Bind ViewModel.ChangeFavoriteStatusButtonFontIcon, Mode=OneWay}"
                         Label="Mark as favorite" />
                     <AppBarButton
-                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
                         Command="{x:Bind ViewModel.ChangeReadStatusCommand}"
                         Icon="{x:Bind ViewModel.ChangeReadStatusButtonFontIcon, Mode=OneWay}"
                         Label="Mark as read"
-                        RequestedTheme="Dark" />
+                        IsCompact="True"
+                        Style="{StaticResource AccentColorAppBarButton}" />
                     <AppBarButton
                         Command="{x:Bind ViewModel.EditTagsCommand}"
                         Icon="Tag"
