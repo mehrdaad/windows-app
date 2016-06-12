@@ -166,7 +166,7 @@
                                         Margin="0,8,0,0"
                                         HorizontalAlignment="Right"
                                         Background="Red"
-                                        Command="{x:Bind ViewModel.Item.DeleteCommand}"
+                                        Command="{x:Bind ViewModel.DeleteCommand}"
                                         Content="Delete permanently"
                                         RequestedTheme="Dark" />
                                 </StackPanel>

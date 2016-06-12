@@ -35,6 +35,7 @@ namespace wallabag.ViewModels
         public DelegateCommand ChangeReadStatusCommand { get; private set; }
         public DelegateCommand ChangeFavoriteStatusCommand { get; private set; }
         public DelegateCommand EditTagsCommand { get; private set; }
+        public DelegateCommand DeleteCommand { get; private set; }
 
         public SolidColorBrush ForegroundBrush { get; set; }
         public SolidColorBrush BackgroundBrush { get; set; }
@@ -52,6 +53,11 @@ namespace wallabag.ViewModels
             EditTagsCommand = new DelegateCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags,
                 new EditTagsViewModel(Item.Model),
                 ColorApplicationTheme));
+            DeleteCommand = new DelegateCommand(() =>
+            {
+                Item.DeleteCommand.Execute();
+                NavigationService.GoBack();
+            });
         }
 
         private async Task GenerateFormattedHtmlAsync()
