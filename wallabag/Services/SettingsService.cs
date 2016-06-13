@@ -99,8 +99,8 @@ namespace wallabag.Services
         }
         public string TextAlignment
         {
-            get { return _helper.Read(nameof(FontFamily), "left"); }
-            set { _helper.Write(nameof(FontFamily), value); }
+            get { return _helper.Read(nameof(TextAlignment), "left"); }
+            set { _helper.Write(nameof(TextAlignment), value); }
         }
 
         #endregion
