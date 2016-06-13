@@ -47,7 +47,13 @@ namespace wallabag
                 Client.RefreshToken = Settings.RefreshToken;
                 Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
 
-                NavigationService.Navigate(typeof(Views.MainPage));
+                if (args is IShareTargetActivatedEventArgs)
+                {
+                    SessionState["shareTarget"] =  args;
+                    NavigationService.Navigate(typeof(Views.ShareTargetPage));
+                }
+                else
+                    NavigationService.Navigate(typeof(Views.MainPage));
             }
         }
 
@@ -56,7 +62,7 @@ namespace wallabag
             e.SuspendingOperation.GetDeferral();
 
             Settings.ClientId = Client.ClientId;
-            Settings.ClientSecret = Client.ClientSecret;                
+            Settings.ClientSecret = Client.ClientSecret;
             Settings.AccessToken = Client.AccessToken;
             Settings.RefreshToken = Client.RefreshToken;
             Settings.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
