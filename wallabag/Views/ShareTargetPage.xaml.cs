@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using wallabag.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,6 +23,7 @@ namespace wallabag.Views
     /// </summary>
     public sealed partial class ShareTargetPage : Page
     {
+        public AddItemViewModel ViewModel { get { return DataContext as AddItemViewModel; } }
         public ShareTargetPage()
         {
             this.InitializeComponent();
