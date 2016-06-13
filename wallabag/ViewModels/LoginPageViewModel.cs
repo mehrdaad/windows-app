@@ -7,12 +7,15 @@ using wallabag.Api.Models;
 using wallabag.Models;
 using Windows.ApplicationModel.Core;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Navigation;
 
 namespace wallabag.ViewModels
 {
     [ImplementPropertyChanged]
     public class LoginPageViewModel : ViewModelBase
     {
+        public bool CredentialsAreExisting { get; set; }
+
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
@@ -70,16 +73,19 @@ namespace wallabag.ViewModels
 
             return (App.Client.RequestTokenAsync(Username, Password).ContinueWith(x => { IsTestRunning = false; return x.Result; }));
         }
-        private async Task ContinueAsync()
+        private async Task ContinueAsync(bool credentialsExist = false)
         {
             ContinueStarted?.Invoke(this, new EventArgs());
 
-            Services.SettingsService.Instance.ClientId = ClientId;
-            Services.SettingsService.Instance.ClientSecret = ClientSecret;
-            Services.SettingsService.Instance.WallabagUrl = new Uri(Url);
-            Services.SettingsService.Instance.AccessToken = App.Client.AccessToken;
-            Services.SettingsService.Instance.RefreshToken = App.Client.RefreshToken;
-            Services.SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
+            if (!credentialsExist)
+            {
+                Services.SettingsService.Instance.ClientId = ClientId;
+                Services.SettingsService.Instance.ClientSecret = ClientSecret;
+                Services.SettingsService.Instance.WallabagUrl = new Uri(Url);
+                Services.SettingsService.Instance.AccessToken = App.Client.AccessToken;
+                Services.SettingsService.Instance.RefreshToken = App.Client.RefreshToken;
+                Services.SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
+            }
 
             var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(ItemsPerPage: 1000);
             var items = itemResponse.Items as List<WallabagItem>;
@@ -112,6 +118,15 @@ namespace wallabag.ViewModels
 
             NavigationService.Navigate(typeof(Views.MainPage));
             NavigationService.ClearHistory();
+        }
+
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        {
+            if (parameter is bool)
+            {
+                CredentialsAreExisting = (bool)parameter;
+                await ContinueAsync(true);
+            }
         }
     }
 }

@@ -28,7 +28,14 @@ namespace wallabag.Views
         public LoginPage()
         {
             this.InitializeComponent();
-            this.Loaded += (s, e) => GoToStep1Storyboard.Begin();
+            ViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "CredentialsAreExisting")
+                    if (ViewModel.CredentialsAreExisting)
+                        GoToStep2Storyboard.Begin();
+                    else
+                        GoToStep1Storyboard.Begin();
+            };
             ViewModel.ContinueStarted += (s, e) => GoToStep2Storyboard.Begin();
         }
     }
