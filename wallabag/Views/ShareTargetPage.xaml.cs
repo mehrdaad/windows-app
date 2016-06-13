@@ -27,6 +27,7 @@ namespace wallabag.Views
         public ShareTargetPage()
         {
             this.InitializeComponent();
+            ViewModel.AddingStarted += (s, e) => AddStoryboard.Begin();
         }
     }
 }

@@ -18,6 +18,8 @@ namespace wallabag.ViewModels
     {
         private ShareOperation _shareOperation;
 
+        public event EventHandler AddingStarted;
+
         public string UriString { get; set; } = string.Empty;
         public IEnumerable<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
         public string Title { get; set; } = string.Empty;
@@ -37,6 +39,7 @@ namespace wallabag.ViewModels
 
         private async Task Add()
         {
+            AddingStarted?.Invoke(this, new EventArgs());
             if (_shareOperation != null)
             {
                 _shareOperation.ReportStarted();
