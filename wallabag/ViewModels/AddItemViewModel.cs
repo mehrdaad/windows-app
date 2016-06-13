@@ -44,9 +44,8 @@ namespace wallabag.ViewModels
                 var item = await App.Client.AddAsync(new Uri(UriString), Tags.ToStringArray());
                 if (item != null)
                 {
-                    App.Database.Insert((Item)item);
-                    Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
                     _shareOperation.ReportCompleted();
+                    App.Database.Insert((Item)item);
                     return;
                 }
             }
@@ -64,7 +63,6 @@ namespace wallabag.ViewModels
 
             _shareOperation?.ReportCompleted();
             Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
-
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
