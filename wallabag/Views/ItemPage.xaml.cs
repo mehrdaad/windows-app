@@ -50,7 +50,7 @@ namespace wallabag.Views
         {
             if (e.Value != "finishedReading")
             {
-                ViewModel.Item.Model.ReadingProgress = double.Parse(e.Value.Replace(".", ","));
+                ViewModel.Item.Model.ReadingProgress = double.Parse(e.Value.Replace(",", "."));
                 if (_isCommandBarCompact && ViewModel.Item.Model.ReadingProgress < 99)
                     HideCommandBarStoryboard.Begin();
             }
