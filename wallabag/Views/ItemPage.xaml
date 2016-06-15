@@ -98,6 +98,17 @@
     </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="ErrorState">
+                    <VisualState.Setters>
+                        <Setter Target="failureOverlay.Visibility" Value="Visible" />
+                        <Setter Target="HtmlViewer.Visibility" Value="Collapsed" />
+                        <Setter Target="openCommandsButton.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <WebView x:Name="HtmlViewer" common:WebViewExtensions.Html="{x:Bind ViewModel.FormattedHtml}" />
         <Button
             x:Name="backButton"
@@ -150,8 +161,8 @@
                     <AppBarButton
                         Command="{x:Bind ViewModel.ChangeReadStatusCommand}"
                         Icon="{x:Bind ViewModel.ChangeReadStatusButtonFontIcon, Mode=OneWay}"
-                        Label="Mark as read"
                         IsCompact="True"
+                        Label="Mark as read"
                         Style="{StaticResource AccentColorAppBarButton}" />
                     <AppBarButton
                         Command="{x:Bind ViewModel.EditTagsCommand}"
@@ -199,6 +210,24 @@
                     <Button Click="ChangeTextAlignment" Content="&#xE8E4;" />
                 </StackPanel>
             </Grid>
+        </StackPanel>
+
+        <StackPanel
+            x:Name="failureOverlay"
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            x:DeferLoadStrategy="Lazy"
+            Visibility="Collapsed">
+            <TextBlock
+                FontFamily="Segoe UI Emoji"
+                FontSize="60"
+                Text="{x:Bind ViewModel.FailureEmoji, Mode=OneWay}"
+                TextAlignment="Center" />
+            <TextBlock
+                Margin="0,8,0,0"
+                Style="{StaticResource InfoTextBlockStyle}"
+                Text="{x:Bind ViewModel.FailureDescription, Mode=OneWay}" />
         </StackPanel>
     </Grid>
 </Page>

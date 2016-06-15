@@ -25,6 +25,10 @@ namespace wallabag.ViewModels
         public ItemViewModel Item { get; set; }
         public string FormattedHtml { get; set; }
 
+        public bool FailureHasHappened { get; set; }
+        public string FailureEmoji { get; set; }
+        public string FailureDescription { get; set; }
+
         private FontFamily _iconFontFamily = new FontFamily("Segoe MDL2 Assets");
         private const string _readGlyph = "\uE001";
         private const string _unreadGlyph = "\uE18B";
@@ -166,6 +170,19 @@ namespace wallabag.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             Item = new ItemViewModel(parameter as Item);
+
+            if (string.IsNullOrEmpty(Item.Model.Content))
+            {
+                FailureHasHappened = true;
+                FailureEmoji = "😶";
+                FailureDescription = "There is no content available. Maybe the item wasn't added yet."; // TODO: Translation.
+            }
+            if (Item.Model.Content.Contains("wallabag can't retrieve contents for this article."))
+            {
+                FailureHasHappened = true;
+                FailureEmoji = "😈";
+                FailureDescription = "wallabag can't retrieve contents for this article."; // TODO: Translation.
+            }
 
             UpdateReadIcon();
             UpdateFavoriteIcon();

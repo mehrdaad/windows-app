@@ -27,6 +27,8 @@ namespace wallabag.ViewModels
         public int OfflineTaskCount { get; set; }
         public bool IsSyncing { get; set; }
 
+        public bool ItemsCountIsZero { get { return Items.Count == 0; } }
+
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
         public DelegateCommand NavigateToSettingsPageCommand { get; private set; }
@@ -77,6 +79,7 @@ namespace wallabag.ViewModels
                 OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
                 await ExecuteOfflineTasksAsync();
             };
+            Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
         }
 
         private async Task ExecuteOfflineTasksAsync()
