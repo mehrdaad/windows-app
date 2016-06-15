@@ -175,6 +175,7 @@ namespace wallabag.ViewModels
                 return;
 
             CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.All;
+            UpdateView();
         }
         private void LanguageCodeChanged(SelectionChangedEventArgs args)
         {
@@ -204,6 +205,8 @@ namespace wallabag.ViewModels
 
             if (e != null)
                 e.Handled = true;
+
+            UpdateView();
         }
 
         private void UpdateView()
