@@ -20,6 +20,13 @@
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen\SplashScreen.png" BackgroundColor="#000000" />
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.shareTarget" EntryPoint="wallabag.App">
+          <uap:ShareTarget Description="Save a link in your wallabag!">
+            <uap:DataFormat>URI</uap:DataFormat>
+          </uap:ShareTarget>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
   <Capabilities>
