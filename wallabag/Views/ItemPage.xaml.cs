@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using wallabag.ViewModels;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -43,7 +44,13 @@ namespace wallabag.Views
             {
                 _isCommandBarVisible = false;
                 _isCommandBarCompact = false;
-            };          
+            };
+
+            (ViewModel as INotifyPropertyChanged).PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(ViewModel.FailureHasHappened))
+                    VisualStateManager.GoToState(this, nameof(ErrorState), false);
+            };
         }
 
         private void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
