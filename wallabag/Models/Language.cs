@@ -34,7 +34,7 @@ namespace wallabag.Models
                 {
                     wallabagLanguageCode = null,
                     LanguageCode = null,
-                    DisplayName = "unknown" // TODO: Translate
+                    DisplayName = "unknown" // TODO: UnknownLanguageDisplayName
                 };
             }
         }

@@ -172,8 +172,12 @@
                         <AppBarButton.Flyout>
                             <Flyout>
                                 <StackPanel>
-                                    <TextBlock Text="This will delete the item permanently from your wallabag." TextWrapping="Wrap" />
+                                    <TextBlock
+                                        x:Uid="DeleteWarningTextBlock"
+                                        Text="This will delete the item permanently from your wallabag."
+                                        TextWrapping="Wrap" />
                                     <Button
+                                        x:Uid="DeletePermanentlyButton"
                                         Margin="0,8,0,0"
                                         HorizontalAlignment="Right"
                                         Background="Red"

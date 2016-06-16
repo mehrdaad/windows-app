@@ -138,6 +138,9 @@
   <data name="CancelAppBarButton.Label" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="CantRetrieveContentsErrorMessage" xml:space="preserve">
+    <value>wallabag can't retrieve contents for this article.</value>
+  </data>
   <data name="ClientIdTextBox.Header" xml:space="preserve">
     <value>Client ID</value>
   </data>
@@ -158,6 +161,12 @@
   </data>
   <data name="DeleteMenuFlyoutItem.Text" xml:space="preserve">
     <value>Delete</value>
+  </data>
+  <data name="DeletePermanentlyButton.Content" xml:space="preserve">
+    <value>Delete permanently</value>
+  </data>
+  <data name="DeleteWarningTextBlock.Text" xml:space="preserve">
+    <value>This will delete the item permanently from your wallabag.</value>
   </data>
   <data name="DownloadingItemsTextBlock.Text" xml:space="preserve">
     <value>Downloading items…</value>
@@ -218,6 +227,9 @@
   </data>
   <data name="NeedHelpHeaderTextBlock" xml:space="preserve">
     <value>NEED HELP?</value>
+  </data>
+  <data name="NoContentAvailableErrorMessage" xml:space="preserve">
+    <value>There is no content available. Maybe the item wasn't added yet.</value>
   </data>
   <data name="NoTagsInfoTextBlock.Content" xml:space="preserve">
     <value>No tags added, yet.</value>
@@ -314,6 +326,9 @@
   </data>
   <data name="ThanksToHeaderTextBlock.Text" xml:space="preserve">
     <value>THANKS TO</value>
+  </data>
+  <data name="UnknownLanguageDisplayName" xml:space="preserve">
+    <value>unknown</value>
   </data>
   <data name="UnmarkAsFavoriteMenuFlyoutItem.Text" xml:space="preserve">
     <value>Unmark as favorite</value>

@@ -175,13 +175,13 @@ namespace wallabag.ViewModels
             {
                 FailureHasHappened = true;
                 FailureEmoji = "😶";
-                FailureDescription = "There is no content available. Maybe the item wasn't added yet."; // TODO: Translation.
+                FailureDescription = "There is no content available. Maybe the item wasn't added yet."; // TODO: NoContentAvailableErrorMessage
             }
             if (Item.Model.Content.Contains("wallabag can't retrieve contents for this article."))
             {
                 FailureHasHappened = true;
                 FailureEmoji = "😈";
-                FailureDescription = "wallabag can't retrieve contents for this article."; // TODO: Translation.
+                FailureDescription = "wallabag can't retrieve contents for this article."; // TODO: CantRetrieveContentsErrorMessage
             }
 
             UpdateReadIcon();
