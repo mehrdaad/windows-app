@@ -120,6 +120,15 @@
   <data name="AddItemAppBarButton.Label" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="AddItemContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AddItemContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AddItemContentDialog.Title" xml:space="preserve">
+    <value>ADD ITEM</value>
+  </data>
   <data name="AllPageTitleTextBlock.Text" xml:space="preserve">
     <value>ALL</value>
   </data>
@@ -152,6 +161,15 @@
   </data>
   <data name="DownloadingItemsTextBlock.Text" xml:space="preserve">
     <value>Downloading items…</value>
+  </data>
+  <data name="EditTagsContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Finish</value>
+  </data>
+  <data name="EditTagsContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="EditTagsContentDialog.Title" xml:space="preserve">
+    <value>EDIT TAGS</value>
   </data>
   <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
     <value>Edit tags</value>
