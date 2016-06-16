@@ -129,8 +129,20 @@
   <data name="CancelAppBarButton.Label" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="ClientIdTextBox.Header" xml:space="preserve">
+    <value>Client ID</value>
+  </data>
+  <data name="ClientSecretTextBox.Header" xml:space="preserve">
+    <value>Client secret</value>
+  </data>
+  <data name="ContinueButton.Content" xml:space="preserve">
+    <value>Continue</value>
+  </data>
   <data name="DeleteMenuFlyoutItem.Text" xml:space="preserve">
     <value>Delete</value>
+  </data>
+  <data name="DownloadingItemsTextBlock.Text" xml:space="preserve">
+    <value>Downloading items…</value>
   </data>
   <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
     <value>Edit tags</value>
@@ -158,6 +170,9 @@
   </data>
   <data name="OpenInBrowserMenuFlyoutItem.Text" xml:space="preserve">
     <value>Open in browser</value>
+  </data>
+  <data name="PasswordBox.Header" xml:space="preserve">
+    <value>Password</value>
   </data>
   <data name="ResetFilterButton.Content" xml:space="preserve">
     <value>Reset filter</value>
@@ -195,6 +210,9 @@
   <data name="TagFilterTitleTextBlock.Text" xml:space="preserve">
     <value>TAG</value>
   </data>
+  <data name="TestConfigurationTextBlock.Text" xml:space="preserve">
+    <value>Test configuration</value>
+  </data>
   <data name="UnmarkAsFavoriteMenuFlyoutItem.Text" xml:space="preserve">
     <value>Unmark as favorite</value>
   </data>
@@ -203,5 +221,14 @@
   </data>
   <data name="UnreadPageTitleTextBlock.Text" xml:space="preserve">
     <value>UNREAD</value>
+  </data>
+  <data name="UsernameTextBox.Header" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="WallabagUrlTextBox.Header" xml:space="preserve">
+    <value>URL of your wallabag instance</value>
+  </data>
+  <data name="WelcomeTextBlock.Text" xml:space="preserve">
+    <value>Welcome!</value>
   </data>
 </root>

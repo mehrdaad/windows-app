@@ -112,6 +112,7 @@
             Source="ms-appx:///Assets/books.jpg"
             Stretch="UniformToFill" />
         <TextBlock
+            x:Uid="WelcomeTextBlock"
             x:Name="textBlock"
             VerticalAlignment="Center"
             RenderTransformOrigin="0.5,0.5"
@@ -138,6 +139,7 @@
                 Foreground="White"
                 IsActive="True" />
             <TextBlock
+                x:Uid="DownloadingItemsTextBlock"
                 Margin="0,16,0,0"
                 Text="Downloading items…"
                 TextAlignment="Center" />
@@ -158,21 +160,28 @@
                 <CompositeTransform />
             </StackPanel.RenderTransform>
             <TextBox
+                x:Uid="WallabagUrlTextBox"
                 Header="Wallabag URL"
                 InputScope="Url"
                 PlaceholderText="https://"
                 Text="{x:Bind ViewModel.Url, Mode=TwoWay}" />
             <TextBox
+                x:Uid="UsernameTextBox"
                 Header="Username"
                 IsSpellCheckEnabled="False"
                 Text="{x:Bind ViewModel.Username, Mode=TwoWay}" />
-            <PasswordBox Header="Password" Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
+            <PasswordBox
+                x:Uid="PasswordBox"
+                Header="Password"
+                Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
             <TextBox
+                x:Uid="ClientIdTextBox"
                 Margin="8,48,8,4"
                 Header="Client Id"
                 IsSpellCheckEnabled="False"
                 Text="{x:Bind ViewModel.ClientId, Mode=TwoWay}" />
             <TextBox
+                x:Uid="ClientSecretTextBox"
                 Header="Client Secret"
                 IsSpellCheckEnabled="False"
                 Text="{x:Bind ViewModel.ClientSecret, Mode=TwoWay}" />
@@ -188,10 +197,11 @@
                             Foreground="White"
                             IsActive="{x:Bind ViewModel.IsTestRunning, Mode=OneWay}"
                             Visibility="{x:Bind ViewModel.IsTestRunning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <TextBlock Text="Test configuration" />
+                        <TextBlock x:Uid="TestConfigurationTextBlock" Text="Test configuration" />
                     </StackPanel>
                 </Button>
                 <Button
+                    x:Uid="ContinueButton"
                     Grid.Column="1"
                     HorizontalAlignment="Stretch"
                     Command="{x:Bind ViewModel.ContinueCommand}"
