@@ -117,4 +117,241 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddItemAppBarButton.Label" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="AddItemContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="AddItemContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="AddItemContentDialog.Title" xml:space="preserve">
+    <value>EINTRAG HINZUFÜGEN</value>
+  </data>
+  <data name="AllPageTitleTextBlock.Text" xml:space="preserve">
+    <value>ALLE</value>
+  </data>
+  <data name="ArchivedPageTitleTextBlock.Text" xml:space="preserve">
+    <value>ARCHIVIERT</value>
+  </data>
+  <data name="CancelAppBarButton.Label" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="CantRetrieveContentsErrorMessage" xml:space="preserve">
+    <value>wallabag kann keine Inhalte für diesen Link finden.</value>
+  </data>
+  <data name="ClientIdTextBox.Header" xml:space="preserve">
+    <value>Client-ID</value>
+  </data>
+  <data name="ClientSecretTextBox.Header" xml:space="preserve">
+    <value>Client-Secret</value>
+  </data>
+  <data name="ContactDeveloperButton.Content" xml:space="preserve">
+    <value>Entwickler per E-Mail kontaktieren</value>
+  </data>
+  <data name="ContinueButton.Content" xml:space="preserve">
+    <value>Fortfahren</value>
+  </data>
+  <data name="CreateIssueButton.Content" xml:space="preserve">
+    <value>Issue auf GitHub erstellen</value>
+  </data>
+  <data name="DeleteDatabaseButton.Content" xml:space="preserve">
+    <value>Datenbank löschen</value>
+  </data>
+  <data name="DeleteMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="DeletePermanentlyButton.Content" xml:space="preserve">
+    <value>Permanent entfernen</value>
+  </data>
+  <data name="DeleteWarningTextBlock.Text" xml:space="preserve">
+    <value>Dies wird den Artikel permanent entfernen.</value>
+  </data>
+  <data name="DownloadingItemsTextBlock.Text" xml:space="preserve">
+    <value>Einträge werden heruntergeladen…</value>
+  </data>
+  <data name="EditTagsContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Fertigstellen</value>
+  </data>
+  <data name="EditTagsContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="EditTagsContentDialog.Title" xml:space="preserve">
+    <value>TAGS BEARBEITEN</value>
+  </data>
+  <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Tags bearbeiten</value>
+  </data>
+  <data name="EnterTagAutoSuggestBox.PlaceholderText" xml:space="preserve">
+    <value>tag eingeben…</value>
+  </data>
+  <data name="FollowOnTwitterButton.Content" xml:space="preserve">
+    <value>Folge @wallabagapp auf Twitter</value>
+  </data>
+  <data name="GeneralSettingsPivotItem.Header" xml:space="preserve">
+    <value>Allgemein</value>
+  </data>
+  <data name="InfoPivotItem.Header" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="ItemTypeFilterTitleTextBlock.Text" xml:space="preserve">
+    <value>ITEM-TYP</value>
+  </data>
+  <data name="LanguageComboBox.PlaceholderText" xml:space="preserve">
+    <value>sprache auswählen…</value>
+  </data>
+  <data name="LanguageFilterTitleTextBlock" xml:space="preserve">
+    <value>SPRACHE</value>
+  </data>
+  <data name="LikeMyWorkHeaderTextBlock.Text" xml:space="preserve">
+    <value>DIR GEFÄLLT MEINE ARBEIT?</value>
+  </data>
+  <data name="LogoutButton.Content" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+  <data name="MarkAsFavoriteMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Als favorisiert markieren</value>
+  </data>
+  <data name="MarkAsReadMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Als gelesen markieren</value>
+  </data>
+  <data name="MiscHeaderTextBlock.Text" xml:space="preserve">
+    <value>VERSCHIEDENES</value>
+  </data>
+  <data name="MultipleSelectionAppBarButton.Label" xml:space="preserve">
+    <value>Auswählen</value>
+  </data>
+  <data name="NavigateBackAfterReadingToggleSwitch.Header" xml:space="preserve">
+    <value>Nach dem Lesen auf die Startseite navigieren</value>
+  </data>
+  <data name="NeedHelpHeaderTextBlock" xml:space="preserve">
+    <value>BRAUCHST DU HILFE?</value>
+  </data>
+  <data name="NoContentAvailableErrorMessage" xml:space="preserve">
+    <value>Es ist kein Inhalt verfügbar. Vielleicht wurde der Eintrag noch nicht mit wallabag synchronisiert.</value>
+  </data>
+  <data name="NoTagsInfoTextBlock.Content" xml:space="preserve">
+    <value>Bisher noch keine Tags hinzugefügt.</value>
+  </data>
+  <data name="NothingFoundTextBlock.Text" xml:space="preserve">
+    <value>Es tut mir leid, ich hab leider nichts finden können.</value>
+  </data>
+  <data name="OpenChangelogButton.Content" xml:space="preserve">
+    <value>(änderungen)</value>
+  </data>
+  <data name="OpenDocumentationButton.Content" xml:space="preserve">
+    <value>Dokumentation öffnen</value>
+  </data>
+  <data name="OpenInBrowserMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Im Browser öffnen</value>
+  </data>
+  <data name="PasswordBox.Header" xml:space="preserve">
+    <value>Kennwort</value>
+  </data>
+  <data name="RateAppButton.Content" xml:space="preserve">
+    <value>Bewerte und rezensiere die App im Store!</value>
+  </data>
+  <data name="ReadingSettingsPivotItem.Header" xml:space="preserve">
+    <value>Lesen</value>
+  </data>
+  <data name="ResetFilterButton.Content" xml:space="preserve">
+    <value>Filter zurücksetzen</value>
+  </data>
+  <data name="ResetWarningTextBlock.Text" xml:space="preserve">
+    <value>Beide Aktionen erfordern einen manuellen Neustart der App und sind UNWIDERRUFLICH!</value>
+  </data>
+  <data name="SaveAppBarButton.Label" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Suchen…</value>
+  </data>
+  <data name="SettingsPageTitleTextBlock.Text" xml:space="preserve">
+    <value>EINSTELLUNGEN</value>
+  </data>
+  <data name="ShareMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Teilen</value>
+  </data>
+  <data name="SortByLongestFirstTextBlock.Text" xml:space="preserve">
+    <value>längste zuerst</value>
+  </data>
+  <data name="SortByNewestFirstTextBlock.Text" xml:space="preserve">
+    <value>neueste zuerst</value>
+  </data>
+  <data name="SortByOldestFirstTextBlock.Text" xml:space="preserve">
+    <value>älteste zuerst</value>
+  </data>
+  <data name="SortByShortestFirstTextBlock.Text" xml:space="preserve">
+    <value>kürzeste zuerst</value>
+  </data>
+  <data name="SortOrderFilterTitleTextBlock.Text" xml:space="preserve">
+    <value>SORTIERUNG</value>
+  </data>
+  <data name="SpecialThanksHeaderTextBlock.Text" xml:space="preserve">
+    <value>SPEZIELLES DANKESCHÖN</value>
+  </data>
+  <data name="SpecialThanksInfoTextBlock.Text" xml:space="preserve">
+    <value>Nicolas Lœuillet, Thomas Citharel und Jérémy Benoist für dieses großartige Stück Software.</value>
+  </data>
+  <data name="StarredPageTitleTextBlock.Text" xml:space="preserve">
+    <value>FAVORITEN</value>
+  </data>
+  <data name="SyncAppBarButton.Label" xml:space="preserve">
+    <value>Synchronisieren</value>
+  </data>
+  <data name="SyncOnStartupToggleSwitch.Header" xml:space="preserve">
+    <value>Bei App-Start synchronisieren</value>
+  </data>
+  <data name="SyncReadingProgressToggleSwitch.Header" xml:space="preserve">
+    <value>Lesefortschritt synchronisieren</value>
+  </data>
+  <data name="TagComboBox.PlaceholderText" xml:space="preserve">
+    <value>tag auswählen…</value>
+  </data>
+  <data name="TagFilterTitleTextBlock.Text" xml:space="preserve">
+    <value>TAG</value>
+  </data>
+  <data name="TelemetryCollectionInfoTextBlock.Text" xml:space="preserve">
+    <value>Um die allgemeine Stabilität der App zu verbessern, ist es ratsam, das automatische Sammeln von Telemetrie-Daten zu erlauben. Diese sind anonymisiert und erlauben keine Rückschlüsse auf die einzelne Person. Falls allerdings Bedenken aufgrund der Privatsphäre existieren, kann dies abgeschaltet werden. Änderungen werden nach einem Neustart übernommen.</value>
+  </data>
+  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
+    <value>Sammeln von Telemetrie-Daten erlauben</value>
+  </data>
+  <data name="TellFriendsButton.Content" xml:space="preserve">
+    <value>Erzähl deinen Freunden von wallabag!</value>
+  </data>
+  <data name="TestConfigurationTextBlock.Text" xml:space="preserve">
+    <value>Konfiguration testen</value>
+  </data>
+  <data name="ThanksToHeaderTextBlock.Text" xml:space="preserve">
+    <value>DANKESCHÖN</value>
+  </data>
+  <data name="UnknownLanguageDisplayName" xml:space="preserve">
+    <value>unbekannt</value>
+  </data>
+  <data name="UnmarkAsFavoriteMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Als defavorisiert markieren</value>
+  </data>
+  <data name="UnmarkAsReadMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Als ungelesen markieren</value>
+  </data>
+  <data name="UnreadPageTitleTextBlock.Text" xml:space="preserve">
+    <value>UNGELESEN</value>
+  </data>
+  <data name="UrlTextBox.Header" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="UsernameTextBox.Header" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="VersionHeaderTextBlock.Text" xml:space="preserve">
+    <value>VERSION</value>
+  </data>
+  <data name="WallabagUrlTextBox.Header" xml:space="preserve">
+    <value>URL deiner wallabag-Instanz</value>
+  </data>
+  <data name="WelcomeTextBlock.Text" xml:space="preserve">
+    <value>Willkommen!</value>
+  </data>
 </root>
