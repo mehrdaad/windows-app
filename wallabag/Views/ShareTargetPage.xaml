@@ -61,6 +61,7 @@
             VerticalAlignment="Center"
             Padding="24">
             <TextBox
+                x:Uid="UrlTextBox"
                 Header="URL"
                 IsReadOnly="True"
                 PlaceholderText="https://"
@@ -72,10 +73,12 @@
                 Orientation="Horizontal">
 
                 <AppBarButton
+                    x:Uid="SaveAppBarButton"
                     Command="{x:Bind ViewModel.AddCommand}"
                     Icon="Accept"
                     Label="Save" />
                 <AppBarButton
+                    x:Uid="CancelAppBarButton"
                     Command="{x:Bind ViewModel.CancelCommand}"
                     Icon="Cancel"
                     Label="Cancel" />

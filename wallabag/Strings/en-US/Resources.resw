@@ -156,6 +156,9 @@
   <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
     <value>Edit tags</value>
   </data>
+  <data name="EnterTagAutoSuggestBox.PlaceholderText" xml:space="preserve">
+    <value>enter a tag…</value>
+  </data>
   <data name="FollowOnTwitterButton.Content" xml:space="preserve">
     <value>Follow @wallabagapp on Twitter</value>
   </data>
@@ -198,6 +201,9 @@
   <data name="NeedHelpHeaderTextBlock" xml:space="preserve">
     <value>NEED HELP?</value>
   </data>
+  <data name="NoTagsInfoTextBlock.Content" xml:space="preserve">
+    <value>No tags added, yet.</value>
+  </data>
   <data name="NothingFoundTextBlock.Text" xml:space="preserve">
     <value>Didn't found something for you. Sorry.</value>
   </data>
@@ -224,6 +230,9 @@
   </data>
   <data name="ResetWarningTextBlock.Text" xml:space="preserve">
     <value>Both actions will require a manual restart of this app and are IRREVERSIBLE!</value>
+  </data>
+  <data name="SaveAppBarButton.Label" xml:space="preserve">
+    <value>Save</value>
   </data>
   <data name="SearchBox.PlaceholderText" xml:space="preserve">
     <value>Search…</value>
@@ -296,6 +305,9 @@
   </data>
   <data name="UnreadPageTitleTextBlock.Text" xml:space="preserve">
     <value>UNREAD</value>
+  </data>
+  <data name="UrlTextBox.Header" xml:space="preserve">
+    <value>URL</value>
   </data>
   <data name="UsernameTextBox.Header" xml:space="preserve">
     <value>Username</value>

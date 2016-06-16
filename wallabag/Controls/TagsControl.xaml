@@ -16,6 +16,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock
+            x:Uid="NoTagsInfoTextBlock"
             x:Name="noTagsInfoTextBlock"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
@@ -60,6 +61,7 @@
             </ListView.ItemContainerStyle>
         </ListView>
         <AutoSuggestBox
+            x:Uid="EnterTagAutoSuggestBox"
             Grid.Row="1"
             VerticalAlignment="Bottom"
             PlaceholderText="enter a tag…"
