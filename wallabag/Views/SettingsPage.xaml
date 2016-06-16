@@ -36,7 +36,10 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-            <TextBlock Style="{ThemeResource PageTitleTextBlockStyle}" Text="SETTINGS" />
+            <TextBlock
+                x:Uid="SettingsPageTitleTextBlock"
+                Style="{ThemeResource PageTitleTextBlockStyle}"
+                Text="SETTINGS" />
         </Grid>
         <Rectangle
             Grid.Row="1"
@@ -66,43 +69,64 @@
                     <Setter Property="Margin" Value="0,16,0,4" />
                 </Style>
             </Pivot.Resources>
-            <PivotItem Header="General">
+            <PivotItem x:Uid="GeneralSettingsPivotItem" Header="General">
                 <StackPanel>
-                    <ToggleSwitch Header="Sync with the server on start" IsOn="{x:Bind ViewModel.SyncOnStartup, Mode=TwoWay}" />
+                    <ToggleSwitch
+                        x:Uid="SyncOnStartupToggleSwitch"
+                        Header="Sync with the server on start"
+                        IsOn="{x:Bind ViewModel.SyncOnStartup, Mode=TwoWay}" />
                     <TextBlock
+                        x:Uid="TelemetryCollectionInfoTextBlock"
                         MaxWidth="400"
                         Margin="2,16,2,8"
                         HorizontalAlignment="Left"
                         Style="{StaticResource InfoTextBlockStyle}"
                         Text="To improve the general stability of this app, it's recommended to turn on the automatic submission of anonymous telemetry data. However, if you want to turn it off, because you care of your privacy, you can do it too. Changes will be applied after the next restart."
                         TextWrapping="Wrap" />
-                    <ToggleSwitch Header="Allow collection of telemetry data" IsOn="{x:Bind ViewModel.AllowCollectionOfTelemetryData, Mode=TwoWay}" />
+                    <ToggleSwitch
+                        x:Uid="TelemetryDataToggleSwitch"
+                        Header="Allow collection of telemetry data"
+                        IsOn="{x:Bind ViewModel.AllowCollectionOfTelemetryData, Mode=TwoWay}" />
                 </StackPanel>
             </PivotItem>
-            <PivotItem Header="Reading">
+            <PivotItem x:Uid="ReadingSettingsPivotItem" Header="Reading">
                 <StackPanel>
-                    <ToggleSwitch Header="Navigate back after reading an article" IsOn="{x:Bind ViewModel.NavigateBackAfterReadingAnArticle, Mode=TwoWay}" />
-                    <ToggleSwitch Header="Sync the reading progress" IsOn="{x:Bind ViewModel.SyncReadingProgress, Mode=TwoWay}" />
+                    <ToggleSwitch
+                        x:Uid="NavigateBackAfterReadingToggleSwitch"
+                        Header="Navigate back after reading an article"
+                        IsOn="{x:Bind ViewModel.NavigateBackAfterReadingAnArticle, Mode=TwoWay}" />
+                    <ToggleSwitch
+                        x:Uid="SyncReadingProgressToggleSwitch"
+                        Header="Sync the reading progress"
+                        IsOn="{x:Bind ViewModel.SyncReadingProgress, Mode=TwoWay}" />
                 </StackPanel>
             </PivotItem>
-            <PivotItem Header="Info">
+            <PivotItem x:Uid="InfoPivotItem" Header="Info">
                 <ScrollViewer VerticalScrollBarVisibility="Hidden">
                     <StackPanel>
                         <TextBlock
+                            x:Uid="VersionHeaderTextBlock"
                             Margin="0,8,0,4"
                             Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
                             Text="VERSION" />
                         <StackPanel Margin="0" Orientation="Horizontal">
                             <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="{x:Bind ViewModel.VersionNumber}" />
                             <Button
+                                x:Uid="OpenChangelogButton"
                                 Command="{x:Bind ViewModel.OpenChangelogCommand}"
                                 Content="(changelog)"
                                 Padding="0"
                                 Style="{ThemeResource TextBlockButtonStyle}" />
                         </StackPanel>
-                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="MADE WITH PASSION BY" />
+                        <TextBlock
+                            x:Name="MadeByHeaderTextBlock"
+                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                            Text="MADE WITH PASSION BY" />
                         <TextBlock Style="{ThemeResource InfoTextBlockStyle}" Text="Julian Oster" />
-                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="THANKS TO" />
+                        <TextBlock
+                            x:Uid="ThanksToHeaderTextBlock"
+                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                            Text="THANKS TO" />
                         <TextBlock Style="{ThemeResource InfoTextBlockStyle}">
                             <Hyperlink NavigateUri="http://www.newtonsoft.com/json" UnderlineStyle="None">• Newtonsoft.Json</Hyperlink>
                             <LineBreak />
@@ -118,10 +142,20 @@
                             <LineBreak />
                             <Hyperlink NavigateUri="http://sixrevisions.com/free-icons/free-windows-10-icons/" UnderlineStyle="None">• Twitter icon by Icons8</Hyperlink>
                         </TextBlock>
-                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="SPECIAL THANKS" />
-                        <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="Nicolas Lœuillet, Thomas Citharel and Jérémy Benoist for creating such a great software." />
-                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="NEED HELP?" />
+                        <TextBlock
+                            x:Uid="SpecialThanksHeaderTextBlock"
+                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                            Text="SPECIAL THANKS" />
+                        <TextBlock
+                            x:Uid="SpecialThanksInfoTextBlock"
+                            Style="{StaticResource InfoTextBlockStyle}"
+                            Text="Nicolas Lœuillet, Thomas Citharel and Jérémy Benoist for creating such a great software." />
+                        <TextBlock
+                            x:Uid="NeedHelpHeaderTextBlock"
+                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                            Text="NEED HELP?" />
                         <Button
+                            x:Uid="OpenDocumentationButton"
                             Command="{x:Bind ViewModel.OpenDocumentationCommand}"
                             Content="Open the documentation"
                             Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
@@ -130,6 +164,7 @@
                             </Button.Tag>
                         </Button>
                         <Button
+                            x:Uid="FollowOnTwitterButton"
                             Command="{x:Bind ViewModel.OpenWallabagTwitterAccountCommand}"
                             Content="Follow @wallabagapp on Twitter"
                             Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
@@ -138,6 +173,7 @@
                             </Button.Tag>
                         </Button>
                         <Button
+                            x:Uid="ContactDeveloperButton"
                             Command="{x:Bind ViewModel.ContactDeveloperCommand}"
                             Content="Contact me via e-mail"
                             Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
@@ -146,6 +182,7 @@
                             </Button.Tag>
                         </Button>
                         <Button
+                            x:Uid="CreateIssueButton"
                             Command="{x:Bind ViewModel.CreateIssueCommand}"
                             Content="Create an issue on GitHub"
                             Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
@@ -153,8 +190,12 @@
                                 <SymbolIcon Symbol="Remote" />
                             </Button.Tag>
                         </Button>
-                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="YOU LIKE MY WORK?" />
+                        <TextBlock
+                            x:Uid="LikeMyWorkHeaderTextBlock"
+                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                            Text="YOU LIKE MY WORK?" />
                         <Button
+                            x:Uid="RateAppButton"
                             Command="{x:Bind ViewModel.RateAppCommand}"
                             Content="Rate and review the app on the store!"
                             Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
@@ -163,6 +204,7 @@
                             </Button.Tag>
                         </Button>
                         <Button
+                            x:Uid="TellFriendsButton"
                             Command="{x:Bind ViewModel.TellFriendsCommand}"
                             Content="Tell your friends about wallabag!"
                             Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
@@ -170,14 +212,24 @@
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
                             </Button.Tag>
                         </Button>
-                        <TextBlock Style="{StaticResource CustomMenuHeaderTextBlockStyle}" Text="MISCELLANOUS" />
-                        <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="Both actions will require a manual restart of this app and are IRREVERSIBLE!" />
+                        <TextBlock
+                            x:Uid="MiscHeaderTextBlock"
+                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                            Text="MISCELLANOUS" />
+                        <TextBlock
+                            x:Uid="ResetWarningTextBlock"
+                            Style="{StaticResource InfoTextBlockStyle}"
+                            Text="Both actions will require a manual restart of this app and are IRREVERSIBLE!" />
                         <StackPanel Orientation="Horizontal">
                             <Button
+                                x:Uid="LogoutButton"
                                 Margin="4,0"
                                 Command="{x:Bind ViewModel.LogoutCommand}"
                                 Content="Logout" />
-                            <Button Command="{x:Bind ViewModel.DeleteDatabaseCommand}" Content="Delete database" />
+                            <Button
+                                x:Uid="DeleteDatabaseButton"
+                                Command="{x:Bind ViewModel.DeleteDatabaseCommand}"
+                                Content="Delete database" />
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>

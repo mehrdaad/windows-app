@@ -135,8 +135,17 @@
   <data name="ClientSecretTextBox.Header" xml:space="preserve">
     <value>Client secret</value>
   </data>
+  <data name="ContactDeveloperButton.Content" xml:space="preserve">
+    <value>Contact the developer via e-mail</value>
+  </data>
   <data name="ContinueButton.Content" xml:space="preserve">
     <value>Continue</value>
+  </data>
+  <data name="CreateIssueButton.Content" xml:space="preserve">
+    <value>Create an issue on GitHub</value>
+  </data>
+  <data name="DeleteDatabaseButton.Content" xml:space="preserve">
+    <value>Delete database</value>
   </data>
   <data name="DeleteMenuFlyoutItem.Text" xml:space="preserve">
     <value>Delete</value>
@@ -147,6 +156,15 @@
   <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
     <value>Edit tags</value>
   </data>
+  <data name="FollowOnTwitterButton.Content" xml:space="preserve">
+    <value>Follow @wallabagapp on Twitter</value>
+  </data>
+  <data name="GeneralSettingsPivotItem.Header" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="InfoPivotItem.Header" xml:space="preserve">
+    <value>Info</value>
+  </data>
   <data name="ItemTypeFilterTitleTextBlock.Text" xml:space="preserve">
     <value>ITEM TYPE</value>
   </data>
@@ -156,17 +174,38 @@
   <data name="LanguageFilterTitleTextBlock" xml:space="preserve">
     <value>LANGUAGE</value>
   </data>
+  <data name="LikeMyWorkHeaderTextBlock.Text" xml:space="preserve">
+    <value>YOU LIKE MY WORK?</value>
+  </data>
+  <data name="LogoutButton.Content" xml:space="preserve">
+    <value>Logout</value>
+  </data>
   <data name="MarkAsFavoriteMenuFlyoutItem.Text" xml:space="preserve">
     <value>Mark as favorite</value>
   </data>
   <data name="MarkAsReadMenuFlyoutItem.Text" xml:space="preserve">
     <value>Mark as read</value>
   </data>
+  <data name="MiscHeaderTextBlock.Text" xml:space="preserve">
+    <value>MISCELLANOUS</value>
+  </data>
   <data name="MultipleSelectionAppBarButton.Label" xml:space="preserve">
     <value>Select</value>
   </data>
+  <data name="NavigateBackAfterReadingToggleSwitch.Header" xml:space="preserve">
+    <value>Navigate back after finished reading</value>
+  </data>
+  <data name="NeedHelpHeaderTextBlock" xml:space="preserve">
+    <value>NEED HELP?</value>
+  </data>
   <data name="NothingFoundTextBlock.Text" xml:space="preserve">
     <value>Didn't found something for you. Sorry.</value>
+  </data>
+  <data name="OpenChangelogButton.Content" xml:space="preserve">
+    <value>(changelog)</value>
+  </data>
+  <data name="OpenDocumentationButton.Content" xml:space="preserve">
+    <value>Open documentation</value>
   </data>
   <data name="OpenInBrowserMenuFlyoutItem.Text" xml:space="preserve">
     <value>Open in browser</value>
@@ -174,11 +213,23 @@
   <data name="PasswordBox.Header" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="RateAppButton.Content" xml:space="preserve">
+    <value>Rate and review the app on the store!</value>
+  </data>
+  <data name="ReadingSettingsPivotItem.Header" xml:space="preserve">
+    <value>Reading</value>
+  </data>
   <data name="ResetFilterButton.Content" xml:space="preserve">
     <value>Reset filter</value>
   </data>
+  <data name="ResetWarningTextBlock.Text" xml:space="preserve">
+    <value>Both actions will require a manual restart of this app and are IRREVERSIBLE!</value>
+  </data>
   <data name="SearchBox.PlaceholderText" xml:space="preserve">
     <value>Search…</value>
+  </data>
+  <data name="SettingsPageTitleTextBlock.Text" xml:space="preserve">
+    <value>SETTINGS</value>
   </data>
   <data name="ShareMenuFlyoutItem.Text" xml:space="preserve">
     <value>Share</value>
@@ -198,11 +249,23 @@
   <data name="SortOrderFilterTitleTextBlock.Text" xml:space="preserve">
     <value>SORT ORDER</value>
   </data>
+  <data name="SpecialThanksHeaderTextBlock.Text" xml:space="preserve">
+    <value>SPECIAL THANKS</value>
+  </data>
+  <data name="SpecialThanksInfoTextBlock.Text" xml:space="preserve">
+    <value />
+  </data>
   <data name="StarredPageTitleTextBlock.Text" xml:space="preserve">
     <value>FAVORITES</value>
   </data>
   <data name="SyncAppBarButton.Label" xml:space="preserve">
     <value>Sync</value>
+  </data>
+  <data name="SyncOnStartupToggleSwitch.Header" xml:space="preserve">
+    <value>Sync on application startup</value>
+  </data>
+  <data name="SyncReadingProgressToggleSwitch.Header" xml:space="preserve">
+    <value>Sync reading progress</value>
   </data>
   <data name="TagComboBox.PlaceholderText" xml:space="preserve">
     <value>select a tag…</value>
@@ -210,8 +273,20 @@
   <data name="TagFilterTitleTextBlock.Text" xml:space="preserve">
     <value>TAG</value>
   </data>
+  <data name="TelemetryCollectionInfoTextBlock.Text" xml:space="preserve">
+    <value>To improve the general stability of this app, it's recommended to turn on the automatic submission of anonymous telemetry data. However, if you want to turn it off, because you care of your privacy, you can do it too. Changes will be applied after the next restart.</value>
+  </data>
+  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
+    <value>Allow collection of telemetry data</value>
+  </data>
+  <data name="TellFriendsButton.Content" xml:space="preserve">
+    <value>Tell your friends about wallabag!</value>
+  </data>
   <data name="TestConfigurationTextBlock.Text" xml:space="preserve">
     <value>Test configuration</value>
+  </data>
+  <data name="ThanksToHeaderTextBlock.Text" xml:space="preserve">
+    <value>THANKS TO</value>
   </data>
   <data name="UnmarkAsFavoriteMenuFlyoutItem.Text" xml:space="preserve">
     <value>Unmark as favorite</value>
@@ -224,6 +299,9 @@
   </data>
   <data name="UsernameTextBox.Header" xml:space="preserve">
     <value>Username</value>
+  </data>
+  <data name="VersionHeaderTextBlock.Text" xml:space="preserve">
+    <value>VERSION</value>
   </data>
   <data name="WallabagUrlTextBox.Header" xml:space="preserve">
     <value>URL of your wallabag instance</value>
