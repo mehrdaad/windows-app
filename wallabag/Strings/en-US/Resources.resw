@@ -117,4 +117,91 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddItemAppBarButton.Label" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AllPageTitleTextBlock.Text" xml:space="preserve">
+    <value>ALL</value>
+  </data>
+  <data name="ArchivedPageTitleTextBlock.Text" xml:space="preserve">
+    <value>ARCHIVED</value>
+  </data>
+  <data name="CancelAppBarButton.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DeleteMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Edit tags</value>
+  </data>
+  <data name="ItemTypeFilterTitleTextBlock.Text" xml:space="preserve">
+    <value>ITEM TYPE</value>
+  </data>
+  <data name="LanguageComboBox.PlaceholderText" xml:space="preserve">
+    <value>select a language…</value>
+  </data>
+  <data name="LanguageFilterTitleTextBlock" xml:space="preserve">
+    <value>LANGUAGE</value>
+  </data>
+  <data name="MarkAsFavoriteMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Mark as favorite</value>
+  </data>
+  <data name="MarkAsReadMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Mark as read</value>
+  </data>
+  <data name="MultipleSelectionAppBarButton.Label" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="NothingFoundTextBlock.Text" xml:space="preserve">
+    <value>Didn't found something for you. Sorry.</value>
+  </data>
+  <data name="OpenInBrowserMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Open in browser</value>
+  </data>
+  <data name="ResetFilterButton.Content" xml:space="preserve">
+    <value>Reset filter</value>
+  </data>
+  <data name="SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Search…</value>
+  </data>
+  <data name="ShareMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="SortByLongestFirstTextBlock.Text" xml:space="preserve">
+    <value>longest first</value>
+  </data>
+  <data name="SortByNewestFirstTextBlock.Text" xml:space="preserve">
+    <value>newest first</value>
+  </data>
+  <data name="SortByOldestFirstTextBlock.Text" xml:space="preserve">
+    <value>oldest first</value>
+  </data>
+  <data name="SortByShortestFirstTextBlock.Text" xml:space="preserve">
+    <value>shortest first</value>
+  </data>
+  <data name="SortOrderFilterTitleTextBlock.Text" xml:space="preserve">
+    <value>SORT ORDER</value>
+  </data>
+  <data name="StarredPageTitleTextBlock.Text" xml:space="preserve">
+    <value>FAVORITES</value>
+  </data>
+  <data name="SyncAppBarButton.Label" xml:space="preserve">
+    <value>Sync</value>
+  </data>
+  <data name="TagComboBox.PlaceholderText" xml:space="preserve">
+    <value>select a tag…</value>
+  </data>
+  <data name="TagFilterTitleTextBlock.Text" xml:space="preserve">
+    <value>TAG</value>
+  </data>
+  <data name="UnmarkAsFavoriteMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Unmark as favorite</value>
+  </data>
+  <data name="UnmarkAsReadMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Unmark as read</value>
+  </data>
+  <data name="UnreadPageTitleTextBlock.Text" xml:space="preserve">
+    <value>UNREAD</value>
+  </data>
 </root>

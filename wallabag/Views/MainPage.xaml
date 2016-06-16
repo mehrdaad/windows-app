@@ -22,6 +22,7 @@
     <Page.Resources>
         <MenuFlyout x:Key="ItemContextMenuMenuFlyout">
             <MenuFlyoutItem
+                x:Uid="MarkAsReadMenuFlyoutItem"
                 Command="{Binding MarkAsReadCommand}"
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE001;"
@@ -30,6 +31,7 @@
                                      Converter={StaticResource BooleanToVisibilityConverter},
                                      ConverterParameter=true}" />
             <MenuFlyoutItem
+                x:Uid="UnmarkAsReadMenuFlyoutItem"
                 Command="{Binding UnmarkAsReadCommand}"
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE052;"
@@ -37,6 +39,7 @@
                 Visibility="{Binding Model.IsRead,
                                      Converter={StaticResource BooleanToVisibilityConverter}}" />
             <MenuFlyoutItem
+                x:Uid="MarkAsFavoriteMenuFlyoutItem"
                 Command="{Binding MarkAsStarredCommand}"
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE006;"
@@ -45,6 +48,7 @@
                                      Converter={StaticResource BooleanToVisibilityConverter},
                                      ConverterParameter=true}" />
             <MenuFlyoutItem
+                x:Uid="UnmarkAsFavoriteMenuFlyoutItem"
                 Command="{Binding UnmarkAsStarredCommand}"
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE007;"
@@ -53,22 +57,26 @@
                                      Converter={StaticResource BooleanToVisibilityConverter}}" />
             <MenuFlyoutSeparator />
             <MenuFlyoutItem
+                x:Uid="EditTagsMenuFlyoutItem"
                 Command="{Binding EditTagsCommand}"
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE1CB;"
                 Text="Edit tags" />
             <MenuFlyoutItem
+                x:Uid="ShareMenuFlyoutItem"
                 Command="{Binding ShareCommand}"
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE72D;"
                 Text="Share" />
             <MenuFlyoutItem
+                x:Uid="OpenInBrowserMenuFlyoutItem"
                 Command="{Binding OpenInBrowserCommand}"
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE12B;"
                 Text="Open in browser" />
             <MenuFlyoutSeparator />
             <MenuFlyoutItem
+                x:Uid="DeleteMenuFlyoutItem"
                 Command="{Binding DeleteCommand}"
                 Style="{StaticResource MenuFlyoutItemIconTemplate}"
                 Tag="&#xE107;"
@@ -286,8 +294,12 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-            <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="UNREAD" />
+            <TextBlock
+                x:Uid="UnreadPageTitleTextBlock"
+                Style="{StaticResource PageTitleTextBlockStyle}"
+                Text="UNREAD" />
             <AutoSuggestBox
+                x:Uid="SearchBox"
                 x:Name="searchBox"
                 Margin="8,8,76,8"
                 VerticalAlignment="Center"
@@ -424,7 +436,10 @@
             <StackPanel.RenderTransform>
                 <CompositeTransform />
             </StackPanel.RenderTransform>
-            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="ITEM TYPE" />
+            <TextBlock
+                x:Uid="ItemTypeFilterTitleTextBlock"
+                Style="{StaticResource MenuHeaderTextBlockStyle}"
+                Text="ITEM TYPE" />
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                 <RadioButton
                     Background="#16a085"
@@ -471,7 +486,10 @@
                     </interactivity:Interaction.Behaviors>
                 </RadioButton>
             </StackPanel>
-            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="SORT BY" />
+            <TextBlock
+                x:Uid="SortOrderFilterTitleTextBlock"
+                Style="{StaticResource MenuHeaderTextBlockStyle}"
+                Text="SORT BY" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -491,7 +509,7 @@
                             VerticalAlignment="Center"
                             FontFamily="Segoe MDL2 Assets"
                             Text="&#xE143;" />
-                        <TextBlock Text="newest first" />
+                        <TextBlock x:Uid="SortByNewestFirstTextBlock" Text="newest first" />
                     </StackPanel>
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
@@ -515,7 +533,7 @@
                                 <CompositeTransform ScaleY="-1" />
                             </TextBlock.RenderTransform>
                         </TextBlock>
-                        <TextBlock Text="oldest first" />
+                        <TextBlock x:Uid="SortByOldestFirstTextBlock" Text="oldest first" />
                     </StackPanel>
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
@@ -535,7 +553,7 @@
                             VerticalAlignment="Center"
                             FontFamily="Segoe MDL2 Assets"
                             Text="&#xE143;" />
-                        <TextBlock Text="shortest first" />
+                        <TextBlock x:Uid="SortByShortestFirstTextBlock" Text="shortest first" />
                     </StackPanel>
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
@@ -561,7 +579,7 @@
                                 <CompositeTransform ScaleY="-1" />
                             </TextBlock.RenderTransform>
                         </TextBlock>
-                        <TextBlock Text="longest first" />
+                        <TextBlock x:Uid="SortByLongestFirstTextBlock" Text="longest first" />
                     </StackPanel>
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Checked">
@@ -570,8 +588,12 @@
                     </interactivity:Interaction.Behaviors>
                 </RadioButton>
             </Grid>
-            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="LANGUAGE" />
+            <TextBlock
+                x:Uid="LanguageFilterTitleTextBlock"
+                Style="{StaticResource MenuHeaderTextBlockStyle}"
+                Text="LANGUAGE" />
             <ComboBox
+                x:Uid="LanguageComboBox"
                 HorizontalAlignment="Stretch"
                 BorderThickness="0"
                 ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}"
@@ -583,8 +605,12 @@
                     </core:EventTriggerBehavior>
                 </interactivity:Interaction.Behaviors>
             </ComboBox>
-            <TextBlock Style="{StaticResource MenuHeaderTextBlockStyle}" Text="TAG" />
+            <TextBlock
+                x:Uid="TagFilterTitleTextBlock"
+                Style="{StaticResource MenuHeaderTextBlockStyle}"
+                Text="TAG" />
             <ComboBox
+                x:Uid="TagComboBox"
                 HorizontalAlignment="Stretch"
                 BorderThickness="0"
                 ItemsSource="{x:Bind ViewModel.TagSuggestions, Mode=OneWay}"
@@ -598,6 +624,7 @@
             </ComboBox>
 
             <Button
+                x:Uid="ResetFilterButton"
                 Margin="0,12,0,4"
                 HorizontalAlignment="Stretch"
                 Command="{x:Bind ViewModel.ResetFilterCommand}"
@@ -615,16 +642,21 @@
                 Text="&#x1F616;"
                 TextAlignment="Center" />
             <TextBlock
+                x:Uid="NothingFoundTextBlock"
                 Margin="0,12,0,0"
                 Style="{StaticResource InfoTextBlockStyle}"
                 Text="Didn't found something for you. Sorry." />
         </StackPanel>
         <CommandBar x:Name="MainCommandBar" Grid.Row="2">
             <AppBarButton
+                x:Uid="AddItemAppBarButton"
                 Command="{x:Bind ViewModel.AddCommand}"
                 Icon="Add"
                 Label="Add" />
-            <AppBarButton Command="{x:Bind ViewModel.SyncCommand}" Label="Sync">
+            <AppBarButton
+                x:Uid="SyncAppBarButton"
+                Command="{x:Bind ViewModel.SyncCommand}"
+                Label="Sync">
                 <AppBarButton.Icon>
                     <SymbolIcon
                         x:Name="syncIcon"
@@ -637,6 +669,7 @@
                 </AppBarButton.Icon>
             </AppBarButton>
             <AppBarButton
+                x:Uid="MultipleSelectionAppBarButton"
                 Click="EnableMultipleSelectionButtonClick"
                 Icon="Bullets"
                 Label="Select" />
@@ -667,53 +700,60 @@
         <CommandBar
             x:Name="MultipleSelectionCommandBar"
             Grid.Row="2"
-            d:IsHidden="True"
+            x:DeferLoadStrategy="Lazy"
             Visibility="Collapsed">
             <AppBarButton Icon="Edit" Label="Edit">
                 <AppBarButton.Flyout>
                     <MenuFlyout>
                         <MenuFlyoutItem
+                            x:Uid="MarkAsReadMenuFlyoutItem"
                             Command="{x:Bind SelectionViewModel.MarkAsReadCommand}"
                             Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE001;"
                             Text="Mark as read" />
                         <MenuFlyoutItem
+                            x:Uid="UnmarkAsReadMenuFlyoutItem"
                             Command="{x:Bind SelectionViewModel.UnmarkAsReadCommand}"
                             Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE052;"
                             Text="Unmark as read" />
                         <MenuFlyoutItem
+                            x:Uid="MarkAsFavoriteMenuFlyoutItem"
                             Command="{x:Bind SelectionViewModel.MarkAsFavoriteCommand}"
                             Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE006;"
                             Text="Mark as favorite" />
                         <MenuFlyoutItem
+                            x:Uid="UnmarkAsFavoriteMenuFlyoutItem"
                             Command="{x:Bind SelectionViewModel.UnmarkAsFavoriteCommand}"
                             Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE007;"
                             Text="Unmark as favorite" />
                         <MenuFlyoutSeparator />
                         <MenuFlyoutItem
+                            x:Uid="EditTagsMenuFlyoutItem"
                             Command="{x:Bind SelectionViewModel.EditTagsCommand}"
                             Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE1CB;"
                             Text="Edit tags" />
                         <MenuFlyoutItem
+                            x:Uid="OpenInBrowserMenuFlyoutItem"
                             Command="{x:Bind SelectionViewModel.OpenInBrowserCommand}"
                             Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE12B;"
                             Text="Open in browser" />
                         <MenuFlyoutSeparator />
                         <MenuFlyoutItem
+                            x:Uid="DeleteMenuFlyoutItem"
                             Command="{x:Bind SelectionViewModel.DeleteCommand}"
                             Style="{StaticResource MenuFlyoutItemIconTemplate}"
                             Tag="&#xE107;"
                             Text="Delete" />
                     </MenuFlyout>
-
                 </AppBarButton.Flyout>
             </AppBarButton>
             <AppBarButton
+                x:Uid="CancelAppBarButton"
                 Click="DisableMultipleSelectionButtonClick"
                 Icon="Cancel"
                 Label="Cancel" />
