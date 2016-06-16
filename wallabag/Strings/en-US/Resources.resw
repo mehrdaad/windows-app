@@ -267,6 +267,9 @@
   <data name="SearchBox.PlaceholderText" xml:space="preserve">
     <value>Search…</value>
   </data>
+  <data name="SettingsAppBarButton.Label" xml:space="preserve">
+    <value>Settings</value>
+  </data>
   <data name="SettingsPageTitleTextBlock.Text" xml:space="preserve">
     <value>SETTINGS</value>
   </data>
@@ -292,7 +295,7 @@
     <value>SPECIAL THANKS</value>
   </data>
   <data name="SpecialThanksInfoTextBlock.Text" xml:space="preserve">
-    <value />
+    <value>Nicolas Lœuillet, Thomas Citharel and Jérémy Benoist for creating such a great software.</value>
   </data>
   <data name="StarredPageTitleTextBlock.Text" xml:space="preserve">
     <value>FAVORITES</value>

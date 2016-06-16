@@ -674,7 +674,10 @@
                 Icon="Bullets"
                 Label="Select" />
             <CommandBar.SecondaryCommands>
-                <AppBarButton Command="{x:Bind ViewModel.NavigateToSettingsPageCommand}" Label="Settings" />
+                <AppBarButton
+                    x:Uid="SettingsAppBarButton"
+                    Command="{x:Bind ViewModel.NavigateToSettingsPageCommand}"
+                    Label="Settings" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
         <Border
