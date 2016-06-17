@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using Template10.Mvvm;
+using wallabag.Common;
 using wallabag.Services;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
@@ -78,13 +79,11 @@ namespace wallabag.ViewModels
         }
         private void TellFriends()
         {
-            // TODO: Update strings.
             DataTransferManager.GetForCurrentView().DataRequested += (s, e) =>
             {
-                e.Request.Data.SetText("YO, CHECK OUT WALLABAG!");
-                e.Request.Data.SetWebLink(_changelogUri);
+                e.Request.Data.SetWebLink(new Uri("https://www.wallabag.org/"));
                 e.Request.Data.Properties.ApplicationName = Package.Current.DisplayName;
-                e.Request.Data.Properties.Title = "Have you heard of wallabag?";
+                e.Request.Data.Properties.Title = Helpers.LocalizedResource("TellFriendsQuestion");
             };
             DataTransferManager.ShowShareUI();
         }

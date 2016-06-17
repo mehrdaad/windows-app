@@ -324,6 +324,9 @@
   <data name="TellFriendsButton.Content" xml:space="preserve">
     <value>Tell your friends about wallabag!</value>
   </data>
+  <data name="TellFriendsQuestion" xml:space="preserve">
+    <value>Have you heard of wallabag?</value>
+  </data>
   <data name="TestConfigurationTextBlock.Text" xml:space="preserve">
     <value>Test configuration</value>
   </data>
