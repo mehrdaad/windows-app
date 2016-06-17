@@ -144,69 +144,71 @@
                 Text="Downloading items…"
                 TextAlignment="Center" />
         </StackPanel>
-        <StackPanel
+        <ScrollViewer
             x:Name="step1Grid"
             Grid.Row="1"
             RenderTransformOrigin="0.5,0.5">
-            <StackPanel.Resources>
-                <Style TargetType="TextBox">
-                    <Setter Property="Margin" Value="8,4" />
-                </Style>
-                <Style TargetType="PasswordBox">
-                    <Setter Property="Margin" Value="8,4" />
-                </Style>
-            </StackPanel.Resources>
-            <StackPanel.RenderTransform>
+            <ScrollViewer.RenderTransform>
                 <CompositeTransform />
-            </StackPanel.RenderTransform>
-            <TextBox
-                x:Uid="WallabagUrlTextBox"
-                Header="Wallabag URL"
-                InputScope="Url"
-                PlaceholderText="https://"
-                Text="{x:Bind ViewModel.Url, Mode=TwoWay}" />
-            <TextBox
-                x:Uid="UsernameTextBox"
-                Header="Username"
-                IsSpellCheckEnabled="False"
-                Text="{x:Bind ViewModel.Username, Mode=TwoWay}" />
-            <PasswordBox
-                x:Uid="PasswordBox"
-                Header="Password"
-                Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
-            <TextBox
-                x:Uid="ClientIdTextBox"
-                Margin="8,48,8,4"
-                Header="Client Id"
-                IsSpellCheckEnabled="False"
-                Text="{x:Bind ViewModel.ClientId, Mode=TwoWay}" />
-            <TextBox
-                x:Uid="ClientSecretTextBox"
-                Header="Client Secret"
-                IsSpellCheckEnabled="False"
-                Text="{x:Bind ViewModel.ClientSecret, Mode=TwoWay}" />
-            <Grid Margin="0,48,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Button HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.TestConfigurationCommand}">
-                    <StackPanel Orientation="Horizontal">
-                        <ProgressRing
-                            Margin="0,0,8,0"
-                            Foreground="White"
-                            IsActive="{x:Bind ViewModel.IsTestRunning, Mode=OneWay}"
-                            Visibility="{x:Bind ViewModel.IsTestRunning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <TextBlock x:Uid="TestConfigurationTextBlock" Text="Test configuration" />
-                    </StackPanel>
-                </Button>
-                <Button
-                    x:Uid="ContinueButton"
-                    Grid.Column="1"
-                    HorizontalAlignment="Stretch"
-                    Command="{x:Bind ViewModel.ContinueCommand}"
-                    Content="Continue" />
-            </Grid>
-        </StackPanel>
+            </ScrollViewer.RenderTransform>
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Margin" Value="8,4" />
+                    </Style>
+                    <Style TargetType="PasswordBox">
+                        <Setter Property="Margin" Value="8,4" />
+                    </Style>
+                </StackPanel.Resources>
+                <TextBox
+                    x:Uid="WallabagUrlTextBox"
+                    Header="Wallabag URL"
+                    InputScope="Url"
+                    PlaceholderText="https://"
+                    Text="{x:Bind ViewModel.Url, Mode=TwoWay}" />
+                <TextBox
+                    x:Uid="UsernameTextBox"
+                    Header="Username"
+                    IsSpellCheckEnabled="False"
+                    Text="{x:Bind ViewModel.Username, Mode=TwoWay}" />
+                <PasswordBox
+                    x:Uid="PasswordBox"
+                    Header="Password"
+                    Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
+                <TextBox
+                    x:Uid="ClientIdTextBox"
+                    Margin="8,48,8,4"
+                    Header="Client Id"
+                    IsSpellCheckEnabled="False"
+                    Text="{x:Bind ViewModel.ClientId, Mode=TwoWay}" />
+                <TextBox
+                    x:Uid="ClientSecretTextBox"
+                    Header="Client Secret"
+                    IsSpellCheckEnabled="False"
+                    Text="{x:Bind ViewModel.ClientSecret, Mode=TwoWay}" />
+                <Grid Margin="0,48,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.TestConfigurationCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <ProgressRing
+                                Margin="0,0,8,0"
+                                Foreground="White"
+                                IsActive="{x:Bind ViewModel.IsTestRunning, Mode=OneWay}"
+                                Visibility="{x:Bind ViewModel.IsTestRunning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBlock x:Uid="TestConfigurationTextBlock" Text="Test configuration" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        x:Uid="ContinueButton"
+                        Grid.Column="1"
+                        HorizontalAlignment="Stretch"
+                        Command="{x:Bind ViewModel.ContinueCommand}"
+                        Content="Continue" />
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>
