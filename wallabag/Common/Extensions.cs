@@ -104,6 +104,12 @@ namespace wallabag.Common
             var color = (Color)e.NewValue;
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
             titleBar.ForegroundColor = color;
+
+            if (Helpers.IsPhone)
+            {
+                StatusBar statusBar = StatusBar.GetForCurrentView();
+                statusBar.ForegroundColor = color;          
+            }
         }
 
         public static readonly DependencyProperty BackgroundColorProperty =
@@ -127,6 +133,13 @@ namespace wallabag.Common
             var color = (Color)e.NewValue;
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
             titleBar.BackgroundColor = color;
+            
+            if (Helpers.IsPhone)
+            {
+                StatusBar statusBar = StatusBar.GetForCurrentView();
+                statusBar.BackgroundColor = color;
+                statusBar.BackgroundOpacity = 0.8;
+            }
         }
 
         public static readonly DependencyProperty ButtonForegroundColorProperty =
@@ -190,13 +203,22 @@ namespace wallabag.Common
             d.SetValue(IsVisibleProperty, value);
         }
 
-        private static void OnIsVisiblePropertyChanged(DependencyObject d,
+        private static async void OnIsVisiblePropertyChanged(DependencyObject d,
             DependencyPropertyChangedEventArgs e)
         {
             var isExtended = !(bool)e.NewValue;
 
             CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.ExtendViewIntoTitleBar = isExtended;
+
+            if (Helpers.IsPhone)
+            {
+                StatusBar statusBar = StatusBar.GetForCurrentView();
+                if (isExtended)
+                    await statusBar.HideAsync();
+                else
+                    await statusBar.ShowAsync();
+            }
         }
     }
 

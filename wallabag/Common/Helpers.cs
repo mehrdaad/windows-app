@@ -9,6 +9,17 @@ namespace wallabag.Common
 {
     class Helpers
     {
+        public static bool IsPhone
+        {
+            get
+            {
+                var qualifiers = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().QualifierValues;
+                if (qualifiers.ContainsKey("DeviceFamily") && qualifiers["DeviceFamily"] == "Mobile")
+                    return true;
+                else return false;
+            }
+        }
+
         public static string LocalizedResource(string resourceName)
         {
             return ResourceLoader.GetForCurrentView().GetString(resourceName);
