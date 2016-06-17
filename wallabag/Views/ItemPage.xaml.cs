@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using wallabag.ViewModels;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -57,12 +58,15 @@ namespace wallabag.Views
         {
             if (e.Value != "finishedReading")
             {
-                ViewModel.Item.Model.ReadingProgress = double.Parse(e.Value.Replace(",", "."));
+                ViewModel.Item.Model.ReadingProgress = double.Parse(e.Value, NumberStyles.AllowDecimalPoint, NumberFormatInfo.InvariantInfo);
                 if (_isCommandBarCompact && ViewModel.Item.Model.ReadingProgress < 99)
+                {
+                    _isCommandBarCompact = false;
                     HideCommandBarStoryboard.Begin();
+                }
             }
-            else if (!_isCommandBarVisible)
-                ShowMinimalCommandBarStoryboard.Begin();
+            else if (!_isCommandBarVisible)            
+                ShowMinimalCommandBarStoryboard.Begin();            
         }
 
         private async void IncreaseFontSize(object sender, RoutedEventArgs e)
