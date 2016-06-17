@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using wallabag.Common;
 
 namespace wallabag.Models
 {
@@ -34,7 +35,7 @@ namespace wallabag.Models
                 {
                     wallabagLanguageCode = null,
                     LanguageCode = null,
-                    DisplayName = "unknown" // TODO: UnknownLanguageDisplayName
+                    DisplayName = Helpers.LocalizedResource("UnknownLanguageDisplayName")
                 };
             }
         }
