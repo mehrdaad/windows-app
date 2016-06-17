@@ -297,7 +297,7 @@
             <TextBlock
                 x:Uid="UnreadPageTitleTextBlock"
                 Style="{StaticResource PageTitleTextBlockStyle}"
-                Text="UNREAD" />
+                Text="{x:Bind ViewModel.PageHeader, Mode=OneWay}" />
             <AutoSuggestBox
                 x:Uid="SearchBox"
                 x:Name="searchBox"

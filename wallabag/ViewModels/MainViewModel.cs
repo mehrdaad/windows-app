@@ -28,6 +28,8 @@ namespace wallabag.ViewModels
         public bool IsSyncing { get; set; }
 
         public bool ItemsCountIsZero { get { return Items.Count == 0; } }
+        public bool IsSearchActive { get; set; } = false;
+        public string PageHeader { get; set; } = Helpers.LocalizedResource("UnreadPageTitleTextBlock.Text");
 
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
@@ -140,7 +142,30 @@ namespace wallabag.ViewModels
                     CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Archived;
                     break;
             }
+            UpdatePageHeader();
         }
+
+        private void UpdatePageHeader()
+        {
+            if (IsSearchActive)
+                PageHeader = $"\"{CurrentSearchProperties.Query.ToUpper()}\"";
+            else
+            {
+                switch (CurrentSearchProperties.ItemType)
+                {
+                    case SearchProperties.SearchPropertiesItemType.All:
+                        PageHeader = Helpers.LocalizedResource("AllPageTitleTextBlock.Text"); break;
+                    case SearchProperties.SearchPropertiesItemType.Unread:
+                    default:
+                        PageHeader = Helpers.LocalizedResource("UnreadPageTitleTextBlock.Text"); break;
+                    case SearchProperties.SearchPropertiesItemType.Favorites:
+                        PageHeader = Helpers.LocalizedResource("StarredPageTitleTextBlock.Text"); break;
+                    case SearchProperties.SearchPropertiesItemType.Archived:
+                        PageHeader = Helpers.LocalizedResource("ArchivedPageTitleTextBlock.Text"); break;
+                }
+            }
+        }
+
         private void SetEstimatedReadingTimeFilter(string order)
         {
             if (order.Equals("asc"))
@@ -195,11 +220,13 @@ namespace wallabag.ViewModels
 
         private void StartSearch()
         {
+            IsSearchActive = true;
             SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => EndSearch(s, e);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
         }
         private void EndSearch(object sender, BackRequestedEventArgs e)
         {
+            IsSearchActive = false;
             SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearch(s, args);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
@@ -210,6 +237,7 @@ namespace wallabag.ViewModels
                 e.Handled = true;
 
             UpdateView();
+            UpdatePageHeader();
         }
 
         private void UpdateView()
