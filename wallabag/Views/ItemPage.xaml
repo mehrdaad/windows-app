@@ -9,6 +9,7 @@
     xmlns:local="using:wallabag.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:t10b="using:Template10.Behaviors"
+    xmlns:triggers="using:WindowsStateTriggers"
     xmlns:vm="using:wallabag.ViewModels"
     common:TitleBarExtensions.ButtonBackgroundColor="Transparent"
     common:TitleBarExtensions.ButtonForegroundColor="{x:Bind ViewModel.ForegroundBrush.Color, Mode=OneWay}"
@@ -105,6 +106,16 @@
                         <Setter Target="failureOverlay.Visibility" Value="Visible" />
                         <Setter Target="HtmlViewer.Visibility" Value="Collapsed" />
                         <Setter Target="openCommandsButton.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <triggers:DeviceFamilyStateTrigger DeviceFamily="Mobile" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="backButton.Visibility" Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
