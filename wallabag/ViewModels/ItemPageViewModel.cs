@@ -197,7 +197,7 @@ namespace wallabag.ViewModels
 
             await GenerateFormattedHtmlAsync();
         }
-        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
+        public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
             SettingsService.Instance.FontSize = FontSize;
             SettingsService.Instance.FontFamily = FontFamily;
@@ -221,7 +221,8 @@ namespace wallabag.ViewModels
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.ExtendViewIntoTitleBar = false;
 
-            return base.OnNavigatedFromAsync(pageState, suspending);
+            if (Helpers.IsPhone)
+                await StatusBar.GetForCurrentView().ShowAsync();
         }
     }
 }
