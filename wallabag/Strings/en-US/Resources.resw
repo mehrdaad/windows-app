@@ -231,7 +231,7 @@
   <data name="NoContentAvailableErrorMessage" xml:space="preserve">
     <value>There is no content available. Maybe the item wasn't added yet.</value>
   </data>
-  <data name="NoTagsInfoTextBlock.Content" xml:space="preserve">
+  <data name="NoTagsInfoTextBlock.Text" xml:space="preserve">
     <value>No tags added, yet.</value>
   </data>
   <data name="NothingFoundTextBlock.Text" xml:space="preserve">

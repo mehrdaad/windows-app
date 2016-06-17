@@ -231,7 +231,7 @@
   <data name="NoContentAvailableErrorMessage" xml:space="preserve">
     <value>Es ist kein Inhalt verfügbar. Vielleicht wurde der Eintrag noch nicht mit wallabag synchronisiert.</value>
   </data>
-  <data name="NoTagsInfoTextBlock.Content" xml:space="preserve">
+  <data name="NoTagsInfoTextBlock.Text" xml:space="preserve">
     <value>Bisher noch keine Tags hinzugefügt.</value>
   </data>
   <data name="NothingFoundTextBlock.Text" xml:space="preserve">
