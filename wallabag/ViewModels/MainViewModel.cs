@@ -227,6 +227,8 @@ namespace wallabag.ViewModels
         private void EndSearch(object sender, BackRequestedEventArgs e)
         {
             IsSearchActive = false;
+            CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Unread;
+
             SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearch(s, args);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
