@@ -22,7 +22,7 @@ namespace wallabag.Common
 
         public static string LocalizedResource(string resourceName)
         {
-            return ResourceLoader.GetForCurrentView().GetString(resourceName);
+            return ResourceLoader.GetForCurrentView().GetString(resourceName.Replace(".", "/"));
         }
     }
 }
