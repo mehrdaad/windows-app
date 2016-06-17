@@ -225,7 +225,7 @@
   <data name="NavigateBackAfterReadingToggleSwitch.Header" xml:space="preserve">
     <value>Navigate back after finished reading</value>
   </data>
-  <data name="NeedHelpHeaderTextBlock" xml:space="preserve">
+  <data name="NeedHelpHeaderTextBlock.Text" xml:space="preserve">
     <value>NEED HELP?</value>
   </data>
   <data name="NoContentAvailableErrorMessage" xml:space="preserve">
