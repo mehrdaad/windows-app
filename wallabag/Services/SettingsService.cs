@@ -57,9 +57,13 @@ namespace wallabag.Services
             get { return _helper.Read(nameof(SyncOnStartup), true); }
             set { _helper.Write(nameof(SyncOnStartup), value); }
         }
+
+        /// <summary>
+        /// Because it's a beta, the default value is set to true. In the final release it will be set to false by default.
+        /// </summary>
         public bool AllowCollectionOfTelemetryData
         {
-            get { return _helper.Read(nameof(AllowCollectionOfTelemetryData), false); }
+            get { return _helper.Read(nameof(AllowCollectionOfTelemetryData), true); }
             set { _helper.Write(nameof(AllowCollectionOfTelemetryData), value); }
         }
 
