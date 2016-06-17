@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="36523JulianOster.wallabag.Beta" Publisher="CN=1568B1BC-E22B-483C-96D0-E71125281590" Version="1.1.0.0" />
+  <Identity Name="36523JulianOster.wallabag.Beta" Publisher="CN=1568B1BC-E22B-483C-96D0-E71125281590" Version="2.1.0.0" />
   <mp:PhoneIdentity PhoneProductId="ce750668-9dba-409c-83d6-53d781a957ed" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>wallabag.Beta</DisplayName>
