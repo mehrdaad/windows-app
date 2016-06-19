@@ -178,13 +178,13 @@
     <value>Abbrechen</value>
   </data>
   <data name="EditTagsContentDialog.Title" xml:space="preserve">
-    <value>TAGS BEARBEITEN</value>
+    <value>SCHLAGWÖRTER BEARBEITEN</value>
   </data>
   <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Tags bearbeiten</value>
+    <value>Schlagwörter bearbeiten</value>
   </data>
   <data name="EnterTagAutoSuggestBox.PlaceholderText" xml:space="preserve">
-    <value>tag eingeben…</value>
+    <value>schlagwort eingeben…</value>
   </data>
   <data name="FollowOnTwitterButton.Content" xml:space="preserve">
     <value>Folge @wallabagapp auf Twitter</value>
@@ -232,7 +232,7 @@
     <value>Es ist kein Inhalt verfügbar. Vielleicht wurde der Eintrag noch nicht mit wallabag synchronisiert.</value>
   </data>
   <data name="NoTagsInfoTextBlock.Text" xml:space="preserve">
-    <value>Bisher noch keine Tags hinzugefügt.</value>
+    <value>Bisher sind noch keine Schlagwörter hinzugefügt.</value>
   </data>
   <data name="NothingFoundTextBlock.Text" xml:space="preserve">
     <value>Es tut mir leid, ich hab leider nichts finden können.</value>
@@ -310,10 +310,10 @@
     <value>Lesefortschritt synchronisieren</value>
   </data>
   <data name="TagComboBox.PlaceholderText" xml:space="preserve">
-    <value>tag auswählen…</value>
+    <value>schlagwort auswählen…</value>
   </data>
   <data name="TagFilterTitleTextBlock.Text" xml:space="preserve">
-    <value>TAG</value>
+    <value>SCHLAGWORT</value>
   </data>
   <data name="TelemetryCollectionInfoTextBlock.Text" xml:space="preserve">
     <value>Um die allgemeine Stabilität der App zu verbessern, ist es ratsam, das automatische Sammeln von Telemetrie-Daten zu erlauben. Diese sind anonymisiert und erlauben keine Rückschlüsse auf die einzelne Person. Falls allerdings Bedenken aufgrund der Privatsphäre existieren, kann dies abgeschaltet werden. Änderungen werden nach einem Neustart übernommen.</value>
