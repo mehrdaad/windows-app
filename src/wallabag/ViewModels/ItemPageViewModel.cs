@@ -169,7 +169,7 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            Item = new ItemViewModel(parameter as Item);
+            Item = new ItemViewModel(App.Database.Get<Item>(i => i.Id == (int)parameter));
 
             if (string.IsNullOrEmpty(Item.Model.Content))
             {

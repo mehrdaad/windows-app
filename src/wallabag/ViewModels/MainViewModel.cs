@@ -122,7 +122,7 @@ namespace wallabag.ViewModels
         private void ItemClick(ItemClickEventArgs args)
         {
             var item = args.ClickedItem as ItemViewModel;
-            NavigationService.Navigate(typeof(Views.ItemPage), item.Model);
+            NavigationService.Navigate(typeof(Views.ItemPage), item.Model.Id);
         }
 
         private void SetItemTypeFilter(string type)
@@ -195,7 +195,7 @@ namespace wallabag.ViewModels
         {
             if (args.ChosenSuggestion != null)
             {
-                NavigationService.Navigate(typeof(Views.ItemPage), args.ChosenSuggestion as Item);
+                NavigationService.Navigate(typeof(Views.ItemPage), (args.ChosenSuggestion as Item).Id);
                 return;
             }
 
