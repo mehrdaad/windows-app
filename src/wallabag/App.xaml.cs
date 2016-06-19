@@ -24,6 +24,14 @@ namespace wallabag
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
             await CreateClientAndDatabaseAsync();
+            Client.CredentialsRefreshed += (s, e) =>
+            {
+                Settings.ClientId = Client.ClientId;
+                Settings.ClientSecret = Client.ClientSecret;
+                Settings.AccessToken = Client.AccessToken;
+                Settings.RefreshToken = Client.RefreshToken;
+                Settings.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
+            };
 
             if (Settings.AllowCollectionOfTelemetryData)
                 Microsoft.HockeyApp.HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
@@ -49,7 +57,7 @@ namespace wallabag
 
                 if (args is IShareTargetActivatedEventArgs)
                 {
-                    SessionState["shareTarget"] =  args;
+                    SessionState["shareTarget"] = args;
                     NavigationService.Navigate(typeof(Views.ShareTargetPage));
                 }
                 else
@@ -60,12 +68,6 @@ namespace wallabag
         public override async Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
             e.SuspendingOperation.GetDeferral();
-
-            Settings.ClientId = Client.ClientId;
-            Settings.ClientSecret = Client.ClientSecret;
-            Settings.AccessToken = Client.AccessToken;
-            Settings.RefreshToken = Client.RefreshToken;
-            Settings.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
 
             await NavigationService.SaveNavigationAsync();
             Database.Close();
