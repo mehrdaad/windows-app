@@ -292,6 +292,24 @@
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
+            <VisualStateGroup x:Name="MultipleSelectionStates">
+                <VisualState x:Name="MultipleSelectionEnabled">
+                    <VisualState.Setters>
+                        <Setter Target="ItemGridView.SelectionMode" Value="Multiple" />
+                        <Setter Target="ItemGridView.IsItemClickEnabled" Value="False" />
+                        <Setter Target="ItemGridView.IsMultiSelectCheckBoxEnabled" Value="True" />
+                        <Setter Target="MultipleSelectionCommandBar.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MultipleSelectionDisabled">
+                    <VisualState.Setters>
+                        <Setter Target="ItemGridView.SelectionMode" Value="None" />
+                        <Setter Target="ItemGridView.IsItemClickEnabled" Value="True" />
+                        <Setter Target="ItemGridView.IsMultiSelectCheckBoxEnabled" Value="False" />
+                        <Setter Target="MultipleSelectionCommandBar.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <TextBlock

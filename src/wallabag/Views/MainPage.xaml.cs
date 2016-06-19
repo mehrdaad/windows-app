@@ -43,7 +43,7 @@ namespace wallabag.Views
             HideSearchStoryboard.Completed += (s, e) => _isSearchVisible = false;
             ShowFilterStoryboard.Completed += (s, e) => _isFilterVisible = true;
             HideFilterStoryboard.Completed += (s, e) => _isFilterVisible = false;
-            
+
             ViewModel.CurrentSearchProperties.SearchCanceled += p =>
             {
                 if (_isSearchVisible)
@@ -144,20 +144,14 @@ namespace wallabag.Views
         private void EnableMultipleSelection()
         {
             _IsMultipleSelectionEnabled = true;
-            ItemGridView.SelectionMode = ListViewSelectionMode.Multiple;
-            MultipleSelectionCommandBar.Visibility = Visibility.Visible;
-            ItemGridView.IsItemClickEnabled = false;
-            ItemGridView.IsMultiSelectCheckBoxEnabled = true;
+            VisualStateManager.GoToState(this, nameof(MultipleSelectionEnabled), false);
         }
         private void DisableMultipleSelection(bool forceDisable = false)
         {
             if (ItemGridView.SelectedItems.Count == 0 || forceDisable)
             {
                 _IsMultipleSelectionEnabled = false;
-                MultipleSelectionCommandBar.Visibility = Visibility.Collapsed;
-                ItemGridView.SelectionMode = ListViewSelectionMode.None;
-                ItemGridView.IsItemClickEnabled = true;
-                ItemGridView.IsMultiSelectCheckBoxEnabled = false;
+                VisualStateManager.GoToState(this, nameof(MultipleSelectionDisabled), false);
             }
         }
 
