@@ -21,9 +21,15 @@ namespace wallabag
 
         public App() { InitializeComponent(); }
 
-        public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
+        public override async Task OnInitializeAsync(IActivatedEventArgs args)
         {
+            Settings = SettingsService.Instance;
+
+            if (Settings.AllowCollectionOfTelemetryData)
+                Microsoft.HockeyApp.HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
+
             await CreateClientAndDatabaseAsync();
+
             Client.CredentialsRefreshed += (s, e) =>
             {
                 Settings.ClientId = Client.ClientId;
@@ -33,49 +39,51 @@ namespace wallabag
                 Settings.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
             };
 
-            if (Settings.AllowCollectionOfTelemetryData)
-                Microsoft.HockeyApp.HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
+            Client.AccessToken = Settings.AccessToken;
+            Client.RefreshToken = Settings.RefreshToken;
+            Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
+        }
 
-            if (string.IsNullOrEmpty(Settings.AccessToken) || string.IsNullOrEmpty(Settings.RefreshToken))
+        public override Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
+        {
+            if (args.Kind == ActivationKind.ShareTarget)
             {
-                Client = new Api.WallabagClient(null, string.Empty, string.Empty);
-                NavigationService.Navigate(typeof(Views.LoginPage));
-            }
-            else if (Database.Table<Item>().Count() == 0)
-            {
-                Client.AccessToken = Settings.AccessToken;
-                Client.RefreshToken = Settings.RefreshToken;
-                Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
-
-                NavigationService.Navigate(typeof(Views.LoginPage), true);
+                SessionState["shareTarget"] = args;
+                NavigationService.Navigate(typeof(Views.ShareTargetPage));
             }
             else
             {
-                Client.AccessToken = Settings.AccessToken;
-                Client.RefreshToken = Settings.RefreshToken;
-                Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
-
-                if (args is IShareTargetActivatedEventArgs)
+                if (string.IsNullOrEmpty(Settings.AccessToken) || string.IsNullOrEmpty(Settings.RefreshToken))
                 {
-                    SessionState["shareTarget"] = args;
-                    NavigationService.Navigate(typeof(Views.ShareTargetPage));
+                    Client = new Api.WallabagClient(null, string.Empty, string.Empty);
+                    NavigationService.Navigate(typeof(Views.LoginPage));
+                }
+                else if (Database.Table<Item>().Count() == 0)
+                {
+                    Client.AccessToken = Settings.AccessToken;
+                    Client.RefreshToken = Settings.RefreshToken;
+                    Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
+
+                    NavigationService.Navigate(typeof(Views.LoginPage), true);
                 }
                 else
                     NavigationService.Navigate(typeof(Views.MainPage));
             }
+            return Task.CompletedTask;
         }
 
         public override async Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
             e.SuspendingOperation.GetDeferral();
 
-            await NavigationService.SaveNavigationAsync();
+            if (!prelaunchActivated)
+                await NavigationService.SaveNavigationAsync();
+
             Database.Close();
         }
 
         public override async void OnResuming(object s, object e, AppExecutionState previousExecutionState)
         {
-            await CreateClientAndDatabaseAsync();
             Client.AccessToken = Settings.AccessToken;
             Client.RefreshToken = Settings.RefreshToken;
             Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
@@ -86,8 +94,6 @@ namespace wallabag
 
         private async Task CreateClientAndDatabaseAsync()
         {
-            Settings = SettingsService.Instance;
-
             if (Client == null)
                 Client = new Api.WallabagClient(Settings.WallabagUrl, Settings.ClientId, Settings.ClientSecret);
 
