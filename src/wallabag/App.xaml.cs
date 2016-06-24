@@ -100,7 +100,7 @@ namespace wallabag
             if (Database == null)
             {
                 var path = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", Windows.Storage.CreationCollisionOption.OpenIfExists)).Path;
-                await Task.Factory.StartNew(() =>
+                await Task.Run(() =>
                 {
                     Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
                     Database.CreateTable<Item>();

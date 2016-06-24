@@ -113,7 +113,7 @@ namespace wallabag.ViewModels
                 foreach (var item in items)
                     itemList.Add(item);
 
-                await Task.Factory.StartNew(() => App.Database.InsertOrReplaceAll(itemList));
+                await Task.Run(() => App.Database.InsertOrReplaceAll(itemList));
                 UpdateView();
             }
             IsSyncing = false;
@@ -365,12 +365,12 @@ namespace wallabag.ViewModels
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
             {
                 var stateValue = state[nameof(CurrentSearchProperties)] as string;
-                CurrentSearchProperties = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue));
+                CurrentSearchProperties = await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue));
             }
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
-            var serializedSearchProperties = await Task.Factory.StartNew(() => JsonConvert.SerializeObject(CurrentSearchProperties));
+            var serializedSearchProperties = await Task.Run(() => JsonConvert.SerializeObject(CurrentSearchProperties));
             pageState[nameof(CurrentSearchProperties)] = serializedSearchProperties;
         }
     }

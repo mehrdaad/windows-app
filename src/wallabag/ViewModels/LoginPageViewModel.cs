@@ -97,15 +97,14 @@ namespace wallabag.ViewModels
 
             var tags = await App.Client.GetTagsAsync();
 
-            await Task.Factory.StartNew(() =>
+            await Task.Run(() =>
             {
                 foreach (var item in items)
                     App.Database.Insert((Item)item);
 
                 foreach (var tag in tags)
                     App.Database.Insert((Tag)tag);
-
-            }, TaskCreationOptions.LongRunning);
+            });
 
             ContinueCompleted?.Invoke(this, new EventArgs());
 
