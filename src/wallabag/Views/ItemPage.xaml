@@ -155,31 +155,18 @@
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                    <StackPanel.Resources>
-                        <Style TargetType="AppBarButton">
-                            <Setter Property="IsCompact" Value="True" />
-                        </Style>
-                    </StackPanel.Resources>
-                    <AppBarButton Command="{x:Bind ViewModel.Item.ShareCommand}" Label="Share">
+                    <AppBarButton Command="{x:Bind ViewModel.Item.ShareCommand}">
                         <AppBarButton.Icon>
                             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton
-                        Command="{x:Bind ViewModel.ChangeFavoriteStatusCommand}"
-                        Icon="{x:Bind ViewModel.ChangeFavoriteStatusButtonFontIcon, Mode=OneWay}"
-                        Label="Mark as favorite" />
+                    <AppBarButton Command="{x:Bind ViewModel.ChangeFavoriteStatusCommand}" Icon="{x:Bind ViewModel.ChangeFavoriteStatusButtonFontIcon, Mode=OneWay}" />
                     <AppBarButton
                         Command="{x:Bind ViewModel.ChangeReadStatusCommand}"
                         Icon="{x:Bind ViewModel.ChangeReadStatusButtonFontIcon, Mode=OneWay}"
-                        IsCompact="True"
-                        Label="Mark as read"
                         Style="{StaticResource AccentColorAppBarButton}" />
-                    <AppBarButton
-                        Command="{x:Bind ViewModel.EditTagsCommand}"
-                        Icon="Tag"
-                        Label="Edit tags" />
-                    <AppBarButton Icon="Delete" Label="Delete">
+                    <AppBarButton Command="{x:Bind ViewModel.EditTagsCommand}" Icon="Tag" />
+                    <AppBarButton Icon="Delete">
                         <AppBarButton.Flyout>
                             <Flyout>
                                 <StackPanel>
