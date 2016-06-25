@@ -8,6 +8,7 @@ using wallabag.Models;
 using wallabag.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
+using System.IO;
 
 namespace wallabag
 {
@@ -21,14 +22,14 @@ namespace wallabag
 
         public App() { InitializeComponent(); }
 
-        public override async Task OnInitializeAsync(IActivatedEventArgs args)
+        public override Task OnInitializeAsync(IActivatedEventArgs args)
         {
             Settings = SettingsService.Instance;
 
             if (Settings.AllowCollectionOfTelemetryData)
                 Microsoft.HockeyApp.HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
 
-            await CreateClientAndDatabaseAsync();
+            CreateClientAndDatabase();
 
             Client.CredentialsRefreshed += (s, e) =>
             {
@@ -42,6 +43,8 @@ namespace wallabag
             Client.AccessToken = Settings.AccessToken;
             Client.RefreshToken = Settings.RefreshToken;
             Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
+
+            return Task.CompletedTask;
         }
 
         public override Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
@@ -88,21 +91,19 @@ namespace wallabag
                 await NavigationService.RestoreSavedNavigationAsync();
         }
 
-        private async Task CreateClientAndDatabaseAsync()
+        private void CreateClientAndDatabase()
         {
             if (Client == null)
                 Client = new Api.WallabagClient(Settings.WallabagUrl, Settings.ClientId, Settings.ClientSecret);
 
             if (Database == null)
             {
-                var path = (await Windows.Storage.ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", Windows.Storage.CreationCollisionOption.OpenIfExists)).Path;
-                await Task.Run(() =>
-                {
-                    Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
-                    Database.CreateTable<Item>();
-                    Database.CreateTable<Tag>();
-                    Database.CreateTable<OfflineTask>();
-                });
+                var path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path, "wallabag.db");
+
+                Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
+                Database.CreateTable<Item>();
+                Database.CreateTable<Tag>();
+                Database.CreateTable<OfflineTask>();
             }
         }
     }
