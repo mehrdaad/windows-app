@@ -72,14 +72,10 @@ namespace wallabag
             return Task.CompletedTask;
         }
 
-        public override async Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
+        public override Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
-            e.SuspendingOperation.GetDeferral();
-
-            if (!prelaunchActivated)
-                await NavigationService.SaveNavigationAsync();
-
             Database.Close();
+            return NavigationService.SaveNavigationAsync();
         }
 
         public override async void OnResuming(object s, object e, AppExecutionState previousExecutionState)
