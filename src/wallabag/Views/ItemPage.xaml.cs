@@ -5,6 +5,7 @@ using System.Globalization;
 using wallabag.ViewModels;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -29,7 +30,9 @@ namespace wallabag.Views
 
             CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.IsVisibleChanged += (s, e) => backButton.Visibility = s.IsVisible ? Visibility.Visible : Visibility.Collapsed;
+
             HtmlViewer.ScriptNotify += HtmlViewer_ScriptNotify;
+            HtmlViewer.NavigationStarting += HtmlViewer_NavigationStarting;
 
             ShowMinimalCommandBarStoryboard.Completed += (s, e) =>
             {
@@ -65,8 +68,16 @@ namespace wallabag.Views
                     HideCommandBarStoryboard.Begin();
                 }
             }
-            else if (!_isCommandBarVisible)            
-                ShowMinimalCommandBarStoryboard.Begin();            
+            else if (!_isCommandBarVisible)
+                ShowMinimalCommandBarStoryboard.Begin();
+        }
+        private async void HtmlViewer_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
+        {
+            if (args.Uri != null)
+            {
+                args.Cancel = true;
+                await Launcher.LaunchUriAsync(args.Uri);
+            }
         }
 
         private async void IncreaseFontSize(object sender, RoutedEventArgs e)
