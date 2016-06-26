@@ -94,8 +94,51 @@
         </Storyboard>
 
         <MenuFlyout x:Name="RightClickMenuFlyout">
-            <MenuFlyoutItem Text="Save in wallabag" />
-            <MenuFlyoutItem Text="Share" />
+            <MenuFlyout.MenuFlyoutPresenterStyle>
+                <Style TargetType="MenuFlyoutPresenter">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Grid
+                                    Height="48"
+                                    MinWidth="250"
+                                    MaxWidth="350"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                                    CornerRadius="24">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Button
+                                        Width="48"
+                                        Height="48"
+                                        Margin="0"
+                                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                        Command="{Binding SaveRightClickLinkCommand}"
+                                        Content="&#xE109;"
+                                        Padding="8"
+                                        RequestedTheme="Dark"
+                                        Style="{StaticResource RoundIconButtonStyle}" />
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="6,4,16,4"
+                                        VerticalAlignment="Center">
+                                        <TextBlock FontWeight="SemiBold" Text="{Binding RightClickUri.Host}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="12"
+                                            FontWeight="SemiLight"
+                                            Text="{Binding RightClickUri.PathAndQuery}"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </MenuFlyout.MenuFlyoutPresenterStyle>
         </MenuFlyout>
     </Page.Resources>
 
