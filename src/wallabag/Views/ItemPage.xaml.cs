@@ -81,12 +81,22 @@ namespace wallabag.Views
                         break;
                     case "RC":
                     case "LC":
+                        var x = int.Parse(notify[2]);
+                        var y = int.Parse(notify[3]);
+                        ShowRightClickContextMenu(x, y);
                         break;
                     default:
                         break;
                 }
             }
         }
+
+        private void ShowRightClickContextMenu(int x, int y)
+        {           
+            var menu = Resources["RightClickMenuFlyout"] as MenuFlyout;
+            menu.ShowAt(HtmlViewer, new Point(x, y));
+        }
+
         private async void HtmlViewer_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             if (args.Uri != null)
