@@ -31,3 +31,45 @@ function getSelectionText() {
     }
     return text;
 }
+
+function rightClickInitialize() {
+    var nodes = document.getElementsByTagName("a");
+    var longpress = false;
+    var presstimer = null;
+    var longtarget = null;
+
+    var cancel = function (e) {
+        if (presstimer !== null) {
+            clearTimeout(presstimer);
+            presstimer = null;
+        }
+    };
+
+    var start = function (e) {
+        if (e.type === "click" && e.button !== 0) {
+            return;
+        }
+        if (e.button === 2) {
+            window.external.notify("RC|" + e.srcElement.href);
+            return;
+        }
+
+        longpress = false;
+
+        presstimer = setTimeout(function () {
+            window.external.notify("LC|" + e.srcElement.href);
+            longpress = true;
+        }, 500);
+
+        return false;
+    };
+
+    for (let node of nodes) {
+        node.addEventListener("mousedown", start);
+        node.addEventListener("touchstart", start);
+        node.addEventListener("mouseout", cancel);
+        node.addEventListener("touchend", cancel);
+        node.addEventListener("touchleave", cancel);
+        node.addEventListener("touchcancel", cancel);
+    }
+}
