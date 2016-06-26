@@ -56,9 +56,7 @@ namespace wallabag.ViewModels
                 !string.IsNullOrWhiteSpace(Password) &&
                 !string.IsNullOrWhiteSpace(Url) &&
                 !string.IsNullOrWhiteSpace(ClientId) &&
-                !string.IsNullOrWhiteSpace(ClientSecret) &&
-                ClientId.Length == 52 &&
-                ClientSecret.Length == 50)
+                !string.IsNullOrWhiteSpace(ClientSecret))
                 return true;
             else
                 return false;
