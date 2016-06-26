@@ -100,27 +100,72 @@
                         <Setter.Value>
                             <ControlTemplate>
                                 <Grid
+                                    x:Name="rightClickGrid"
+                                    Width="250"
                                     Height="48"
-                                    MinWidth="250"
-                                    MaxWidth="350"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                                    CornerRadius="24">
+                                    CornerRadius="24"
+                                    Loaded="rightClickGrid_Loaded">
+                                    <Grid.Resources>
+                                        <Storyboard x:Name="SaveRightClickLinkStoryboard">
+                                            <DoubleAnimation
+                                                d:IsOptimized="True"
+                                                Duration="0:0:0.5"
+                                                Storyboard.TargetName="saveButton"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                To="135" />
+                                            <DoubleAnimationUsingKeyFrames
+                                                EnableDependentAnimation="True"
+                                                Storyboard.TargetName="rightClickGrid"
+                                                Storyboard.TargetProperty="(FrameworkElement.Width)">
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="48" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="rightClickGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1" />
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                        <Storyboard x:Name="ResetRightClickLinkStoryboard">
+                                            <DoubleAnimation
+                                                d:IsOptimized="True"
+                                                Duration="0"
+                                                Storyboard.TargetName="saveButton"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                To="0" />
+                                            <DoubleAnimationUsingKeyFrames
+                                                EnableDependentAnimation="True"
+                                                Storyboard.TargetName="rightClickGrid"
+                                                Storyboard.TargetProperty="(FrameworkElement.Width)">
+                                                <EasingDoubleKeyFrame KeyTime="0" Value="250" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="rightClickGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
+                                                <EasingDoubleKeyFrame KeyTime="0" Value="1" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </Grid.Resources>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <Button
+                                        x:Name="saveButton"
                                         Width="48"
                                         Height="48"
                                         Margin="0"
                                         Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                        Click="saveButton_Click"
                                         Command="{Binding SaveRightClickLinkCommand}"
                                         Content="&#xE109;"
                                         Padding="8"
+                                        RenderTransformOrigin="0.5,0.5"
                                         RequestedTheme="Dark"
-                                        Style="{StaticResource RoundIconButtonStyle}" />
+                                        Style="{StaticResource RoundIconButtonStyle}">
+                                        <Button.RenderTransform>
+                                            <CompositeTransform />
+                                        </Button.RenderTransform>
+                                    </Button>
                                     <StackPanel
                                         Grid.Column="1"
                                         Margin="6,4,16,4"
@@ -279,5 +324,6 @@
                 Style="{StaticResource InfoTextBlockStyle}"
                 Text="{x:Bind ViewModel.FailureDescription, Mode=OneWay}" />
         </StackPanel>
+
     </Grid>
 </Page>
