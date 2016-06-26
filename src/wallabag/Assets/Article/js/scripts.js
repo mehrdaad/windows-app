@@ -64,12 +64,12 @@ function rightClickInitialize() {
         return false;
     };
 
-    for (let node of nodes) {
-        node.addEventListener("mousedown", start);
-        node.addEventListener("touchstart", start);
-        node.addEventListener("mouseout", cancel);
-        node.addEventListener("touchend", cancel);
-        node.addEventListener("touchleave", cancel);
-        node.addEventListener("touchcancel", cancel);
+    for (i = 0; i < nodes.length; i++) {
+        nodes[i].addEventListener("mousedown", start);
+        nodes[i].addEventListener("touchstart", start);
+        nodes[i].addEventListener("mouseout", cancel);
+        nodes[i].addEventListener("touchend", cancel);
+        nodes[i].addEventListener("touchleave", cancel);
+        nodes[i].addEventListener("touchcancel", cancel);
     }
 }
