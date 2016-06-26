@@ -6,7 +6,11 @@
     xmlns:t10="using:Template10.Common">
 
     <t10:BootStrapper.Resources>
-        <ResourceDictionary Source="Assets/Styles.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Assets/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </t10:BootStrapper.Resources>
 
 </t10:BootStrapper>
