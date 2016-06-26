@@ -59,17 +59,33 @@ namespace wallabag.Views
 
         private void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
         {
-            if (e.Value != "finishedReading")
+            if (e.Value == "finishedReading")
             {
-                ViewModel.Item.Model.ReadingProgress = double.Parse(e.Value, NumberStyles.AllowDecimalPoint, NumberFormatInfo.InvariantInfo);
-                if (_isCommandBarCompact && ViewModel.Item.Model.ReadingProgress < 99)
+                if (!_isCommandBarVisible)
+                    ShowMinimalCommandBarStoryboard.Begin();
+
+            }
+            else
+            {
+                var notify = e.Value.Split("|"[0]);
+
+                switch (notify[0])
                 {
-                    _isCommandBarCompact = false;
-                    HideCommandBarStoryboard.Begin();
+                    case "S":
+                        ViewModel.Item.Model.ReadingProgress = double.Parse(notify[1], NumberStyles.AllowDecimalPoint, NumberFormatInfo.InvariantInfo);
+                        if (_isCommandBarCompact && ViewModel.Item.Model.ReadingProgress < 99)
+                        {
+                            _isCommandBarCompact = false;
+                            HideCommandBarStoryboard.Begin();
+                        }
+                        break;
+                    case "RC":
+                    case "LC":
+                        break;
+                    default:
+                        break;
                 }
             }
-            else if (!_isCommandBarVisible)
-                ShowMinimalCommandBarStoryboard.Begin();
         }
         private async void HtmlViewer_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
