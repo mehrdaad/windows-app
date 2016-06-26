@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 
 // Die Elementvorlage "Leere Seite" ist unter http://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
@@ -57,20 +58,64 @@ namespace wallabag.Views
             };
         }
 
+        private MenuFlyout _rightClickMenuFlyout;
+        private Grid _rightClickMenuGrid;
         private void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
         {
-            if (e.Value != "finishedReading")
+            if (e.Value == "finishedReading")
             {
-                ViewModel.Item.Model.ReadingProgress = double.Parse(e.Value, NumberStyles.AllowDecimalPoint, NumberFormatInfo.InvariantInfo);
-                if (_isCommandBarCompact && ViewModel.Item.Model.ReadingProgress < 99)
+                if (!_isCommandBarVisible)
+                    ShowMinimalCommandBarStoryboard.Begin();
+
+            }
+            else
+            {
+                var notify = e.Value.Split("|"[0]);
+
+                switch (notify[0])
                 {
-                    _isCommandBarCompact = false;
-                    HideCommandBarStoryboard.Begin();
+                    case "S":
+                        ViewModel.Item.Model.ReadingProgress = double.Parse(notify[1], NumberStyles.AllowDecimalPoint, NumberFormatInfo.InvariantInfo);
+                        if (_isCommandBarCompact && ViewModel.Item.Model.ReadingProgress < 99)
+                        {
+                            _isCommandBarCompact = false;
+                            HideCommandBarStoryboard.Begin();
+                        }
+                        break;
+                    case "RC":
+                    case "LC":
+                        var x = int.Parse(notify[2]);
+                        var y = int.Parse(notify[3]);
+                        ViewModel.RightClickUri = new Uri(notify[1]);
+                        ShowRightClickContextMenu(x, y);
+                        break;
+                    default:
+                        break;
                 }
             }
-            else if (!_isCommandBarVisible)
-                ShowMinimalCommandBarStoryboard.Begin();
         }
+
+        private void ShowRightClickContextMenu(int x, int y)
+        {
+            if (_rightClickMenuFlyout == null)
+            {
+                _rightClickMenuFlyout = Resources["RightClickMenuFlyout"] as MenuFlyout;
+                _rightClickMenuFlyout.Closed += (s, e) =>
+                {
+                    (_rightClickMenuGrid.Resources["ResetRightClickLinkStoryboard"] as Storyboard).Begin();
+                };
+            }
+
+            _rightClickMenuFlyout.ShowAt(HtmlViewer, new Point(x, y));
+        }
+
+        private void saveButton_Click(object sender, RoutedEventArgs e) => (_rightClickMenuGrid.Resources["SaveRightClickLinkStoryboard"] as Storyboard).Begin();
+        private void rightClickGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            _rightClickMenuGrid = sender as Grid;
+            (_rightClickMenuGrid.Resources["SaveRightClickLinkStoryboard"] as Storyboard).Completed += (s, args) => _rightClickMenuFlyout.Hide();
+        }
+
         private async void HtmlViewer_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             if (args.Uri != null)
