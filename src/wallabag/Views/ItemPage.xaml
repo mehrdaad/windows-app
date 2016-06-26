@@ -92,6 +92,11 @@
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
         </Storyboard>
+
+        <MenuFlyout x:Name="RightClickMenuFlyout">
+            <MenuFlyoutItem Text="Save in wallabag" />
+            <MenuFlyoutItem Text="Share" />
+        </MenuFlyout>
     </Page.Resources>
 
     <Page.DataContext>
