@@ -77,7 +77,6 @@ namespace wallabag
 
         public override Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
-            Database.Close();
             return NavigationService.SaveNavigationAsync();
         }
 
