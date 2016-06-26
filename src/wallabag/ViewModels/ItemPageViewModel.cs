@@ -48,6 +48,9 @@ namespace wallabag.ViewModels
         public string ColorScheme { get; set; } = SettingsService.Instance.ColorScheme;
         public string TextAlignment { get; set; } = SettingsService.Instance.TextAlignment;
 
+        public Uri RightClickUri { get; set; }
+        public DelegateCommand SaveRightClickLinkCommand { get; private set; }
+
         public ItemPageViewModel()
         {
             ChangeReadStatusCommand = new DelegateCommand(() => ChangeReadStatus());
@@ -60,6 +63,8 @@ namespace wallabag.ViewModels
                 Item.DeleteCommand.Execute();
                 NavigationService.GoBack();
             });
+
+            SaveRightClickLinkCommand = new DelegateCommand(() => OfflineTask.Add(RightClickUri.ToString(), new List<string>()));
         }
 
         private async Task GenerateFormattedHtmlAsync()
