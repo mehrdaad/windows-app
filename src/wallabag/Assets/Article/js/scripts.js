@@ -5,7 +5,7 @@
 
     if (root.scrollHeight - top === root.clientHeight || scrollPercentage > 100)
         window.external.notify("finishedReading");
-    window.external.notify(scrollPercentage.toString());
+    window.external.notify("S|" + scrollPercentage.toString());
 }
 
 function changeHtmlAttributes(color, font, fontsize, textalign) {
