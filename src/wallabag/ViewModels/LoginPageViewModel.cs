@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Api.Models;
+using wallabag.Common;
 using wallabag.Models;
-using Windows.ApplicationModel.Core;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Navigation;
 
 namespace wallabag.ViewModels
@@ -108,12 +107,7 @@ namespace wallabag.ViewModels
 
             ContinueCompleted?.Invoke(this, new EventArgs());
 
-            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.ButtonBackgroundColor = null;
-            titleBar.ButtonForegroundColor = null;
-
-            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-            coreTitleBar.ExtendViewIntoTitleBar = false;
+            await TitleBarExtensions.ResetAsync();
 
             NavigationService.Navigate(typeof(Views.MainPage));
             NavigationService.ClearHistory();

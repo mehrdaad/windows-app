@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -108,7 +109,7 @@ namespace wallabag.Common
             if (Helpers.IsPhone)
             {
                 StatusBar statusBar = StatusBar.GetForCurrentView();
-                statusBar.ForegroundColor = color;          
+                statusBar.ForegroundColor = color;
             }
         }
 
@@ -133,7 +134,7 @@ namespace wallabag.Common
             var color = (Color)e.NewValue;
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
             titleBar.BackgroundColor = color;
-            
+
             if (Helpers.IsPhone)
             {
                 StatusBar statusBar = StatusBar.GetForCurrentView();
@@ -218,6 +219,24 @@ namespace wallabag.Common
                     await statusBar.HideAsync();
                 else
                     await statusBar.ShowAsync();
+            }
+        }
+
+        public static async Task ResetAsync()
+        {
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+
+            coreTitleBar.ExtendViewIntoTitleBar = false;
+            titleBar.BackgroundColor = null;
+            titleBar.ButtonBackgroundColor = null;
+            titleBar.ForegroundColor = null;
+            titleBar.ButtonForegroundColor = null;
+
+            if (Helpers.IsPhone)
+            {
+                StatusBar statusBar = StatusBar.GetForCurrentView();
+                await statusBar.ShowAsync();
             }
         }
     }
