@@ -160,8 +160,7 @@
                                         Content="&#xE109;"
                                         Padding="8"
                                         RenderTransformOrigin="0.5,0.5"
-                                        RequestedTheme="Dark"
-                                        Style="{StaticResource RoundIconButtonStyle}">
+                                        Style="{StaticResource ColoredRoundIconButtonStyle}">
                                         <Button.RenderTransform>
                                             <CompositeTransform />
                                         </Button.RenderTransform>
