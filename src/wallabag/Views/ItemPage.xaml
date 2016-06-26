@@ -142,7 +142,7 @@
                 FontFamily="Segoe MDL2 Assets"
                 FontSize="16"
                 Padding="12,2"
-                RequestedTheme="Dark" />
+                Style="{StaticResource ColoredButtonStyle}" />
             <Grid
                 x:Name="commandsGrid"
                 Height="0"
