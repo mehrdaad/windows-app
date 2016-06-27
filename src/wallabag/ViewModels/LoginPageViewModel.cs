@@ -22,7 +22,7 @@ namespace wallabag.ViewModels
         public string ClientSecret { get; set; } = string.Empty;
 
         public bool IsTestRunning { get; set; }
-        private bool _TestIsSuccessful = false;
+        public bool TestWasSuccessful { get; set; } = false;
 
         public event EventHandler ConfigurationTestFailed;
         public event EventHandler ConfigurationTestSucceeded;
@@ -36,16 +36,16 @@ namespace wallabag.ViewModels
         {
             TestConfigurationCommand = new DelegateCommand(async () =>
             {
-                _TestIsSuccessful = await TestConfigurationAsync();
+                TestWasSuccessful = await TestConfigurationAsync();
 
-                if (_TestIsSuccessful)
+                if (TestWasSuccessful)
                     ConfigurationTestSucceeded?.Invoke(this, new EventArgs());
                 else
                     ConfigurationTestFailed?.Invoke(this, new EventArgs());
 
                 ContinueCommand.RaiseCanExecuteChanged();
             }, () => TestConfigurationCanExecute());
-            ContinueCommand = new DelegateCommand(async () => await ContinueAsync(), () => _TestIsSuccessful);
+            ContinueCommand = new DelegateCommand(async () => await ContinueAsync(), () => TestWasSuccessful);
 
             PropertyChanged += (s, e) => TestConfigurationCommand.RaiseCanExecuteChanged();
         }
