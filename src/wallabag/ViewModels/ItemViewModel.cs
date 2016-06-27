@@ -13,7 +13,7 @@ namespace wallabag.ViewModels
     public class ItemViewModel : ViewModelBase, IComparable
     {
         public Item Model { get; private set; }
-        
+
         public string TagsString { get { return string.Join(", ", Model.Tags); } }
         public bool TagsAreExisting { get { return Model.Tags.Count > 0; } }
 
@@ -25,13 +25,15 @@ namespace wallabag.ViewModels
         public DelegateCommand ShareCommand { get; private set; }
         public DelegateCommand EditTagsCommand { get; private set; }
         public DelegateCommand OpenInBrowserCommand { get; private set; }
+        public bool BlockUpdateMessage { get; internal set; }
 
         public ItemViewModel(Item Model)
         {
             this.Model = Model;
 
             (Model as INotifyPropertyChanged).PropertyChanged += (s, e) => { RaisePropertyChanged(nameof(Model)); };
-            Model.Tags.CollectionChanged += (s, e) => {
+            Model.Tags.CollectionChanged += (s, e) =>
+            {
                 RaisePropertyChanged(nameof(TagsString));
                 RaisePropertyChanged(nameof(TagsAreExisting));
             };
@@ -87,7 +89,11 @@ namespace wallabag.ViewModels
             App.Database.Update(Model);
             SendUpdateMessage();
         }
-        private void SendUpdateMessage() => Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
+        public void SendUpdateMessage()
+        {
+            if (!BlockUpdateMessage)
+                Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
+        }
 
         public int CompareTo(object obj) => ((IComparable)Model).CompareTo((obj as ItemViewModel).Model);
         public override bool Equals(object obj) => Model.Equals((obj as ItemViewModel).Model);

@@ -1,18 +1,14 @@
-﻿using PropertyChanged;
-using System;
+﻿using GalaSoft.MvvmLight.Messaging;
+using PropertyChanged;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Template10.Mvvm;
-using wallabag.Models;
 
 namespace wallabag.ViewModels
 {
     [ImplementPropertyChanged]
     public class MultipleSelectionViewModel
     {
-        public IList<ItemViewModel> Items { get; set; }
+        public List<ItemViewModel> Items { get; set; }
 
         public DelegateCommand MarkAsReadCommand { get; private set; }
         public DelegateCommand UnmarkAsReadCommand { get; private set; }
@@ -29,22 +25,42 @@ namespace wallabag.ViewModels
             MarkAsReadCommand = new DelegateCommand(() =>
             {
                 foreach (var item in Items)
+                {
+                    item.BlockUpdateMessage = true;
                     item.MarkAsReadCommand.Execute();
+                    item.BlockUpdateMessage = false;
+                }
+                CompleteMultipleSelection();
             });
             UnmarkAsReadCommand = new DelegateCommand(() =>
             {
                 foreach (var item in Items)
+                {
+                    item.BlockUpdateMessage = true;
                     item.UnmarkAsReadCommand.Execute();
+                    item.BlockUpdateMessage = false;
+                }
+                CompleteMultipleSelection();
             });
             MarkAsFavoriteCommand = new DelegateCommand(() =>
             {
                 foreach (var item in Items)
+                {
+                    item.BlockUpdateMessage = true;
                     item.MarkAsStarredCommand.Execute();
+                    item.BlockUpdateMessage = false;
+                }
+                CompleteMultipleSelection();
             });
             UnmarkAsFavoriteCommand = new DelegateCommand(() =>
             {
                 foreach (var item in Items)
+                {
+                    item.BlockUpdateMessage = true;
                     item.UnmarkAsStarredCommand.Execute();
+                    item.BlockUpdateMessage = false;
+                }
+                CompleteMultipleSelection();
             });
             EditTagsCommand = new DelegateCommand(async () =>
             {
@@ -63,8 +79,19 @@ namespace wallabag.ViewModels
             DeleteCommand = new DelegateCommand(() =>
             {
                 foreach (var item in Items)
+                {
+                    item.BlockUpdateMessage = true;
                     item.DeleteCommand.Execute();
+                    item.BlockUpdateMessage = false;
+                }
+                CompleteMultipleSelection();
             });
+        }
+
+        public void CompleteMultipleSelection()
+        {
+            Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
+            Messenger.Default.Send(new NotificationMessage("CompleteMultipleSelection"));
         }
     }
 }

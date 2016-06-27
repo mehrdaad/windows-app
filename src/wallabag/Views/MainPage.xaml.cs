@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Messaging;
+using PropertyChanged;
 using wallabag.Common;
 using wallabag.ViewModels;
 using Windows.Foundation;
@@ -8,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 // Die Elementvorlage "Leere Seite" ist unter http://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
@@ -49,6 +51,19 @@ namespace wallabag.Views
                 if (_isSearchVisible)
                     HideSearchStoryboard.Begin();
             };
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            Messenger.Default.Register<NotificationMessage>(this, message =>
+            {
+                if (message.Notification.Equals("CompleteMultipleSelection"))
+                    DisableMultipleSelection(true);
+            });
+        }
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            Messenger.Default.Unregister(this);
         }
 
         #region Context menu
