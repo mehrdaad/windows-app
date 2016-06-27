@@ -9,6 +9,7 @@ using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Navigation;
 
 // Die Elementvorlage "Leere Seite" ist unter http://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
@@ -57,6 +58,8 @@ namespace wallabag.Views
                     VisualStateManager.GoToState(this, nameof(ErrorState), false);
             };
         }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e) => HtmlViewer.NavigateToString("<p></p>");
 
         private MenuFlyout _rightClickMenuFlyout;
         private Grid _rightClickMenuGrid;
