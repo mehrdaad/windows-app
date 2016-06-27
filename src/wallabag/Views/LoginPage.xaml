@@ -100,6 +100,17 @@
                 <VisualState x:Name="Wide">
                     <VisualState.Setters>
                         <Setter Target="step1Grid.Width" Value="400" />
+                        <Setter Target="buttonGrid.(FrameworkElement.Width)" Value="500" />
+                        <Setter Target="buttonGrid.(FrameworkElement.Margin)">
+                            <Setter.Value>
+                                <Thickness>0,32</Thickness>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Target="textBlock.(FrameworkElement.Margin)">
+                            <Setter.Value>
+                                <Thickness>0,32</Thickness>
+                            </Setter.Value>
+                        </Setter>
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="720" />
@@ -193,7 +204,10 @@
                     Text="{x:Bind ViewModel.ClientSecret, Mode=TwoWay}" />
             </StackPanel>
         </ScrollViewer>
-        <Grid Grid.Row="2" Margin="0,24">
+        <Grid
+            x:Name="buttonGrid"
+            Grid.Row="2"
+            Margin="0,24">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
