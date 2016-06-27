@@ -50,14 +50,14 @@ function rightClickInitialize() {
             return;
         }
         if (e.button === 2) {
-            window.external.notify("RC|" + e.srcElement.href + "|" + e.x + "|" + e.y);
+            window.external.notify("RC|" + e.srcElement.href + "|" + e.touches[0].clientX + "|" + e.touches[0].clientY);
             return;
         }
 
         longpress = false;
 
         presstimer = setTimeout(function () {
-            window.external.notify("LC|" + e.srcElement.href + "|" + e.x + "|" + e.y);
+            window.external.notify("LC|" + e.srcElement.href + "|" + e.touches[0].clientX + "|" + e.touches[0].clientY);
             longpress = true;
         }, 500);
 
