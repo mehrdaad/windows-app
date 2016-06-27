@@ -46,18 +46,30 @@ function rightClickInitialize() {
     };
 
     var start = function (e) {
+        var x = 0;
+        var y = 0;
+
+        if (e.touches == null) {
+            x = e.x;
+            y = e.y;
+        }
+        else {
+            x = e.touches[0].clientX;
+            y = e.touches[0].clientY;
+        }
+
         if (e.type === "click" && e.button !== 0) {
             return;
         }
         if (e.button === 2) {
-            window.external.notify("RC|" + e.srcElement.href + "|" + e.touches[0].clientX + "|" + e.touches[0].clientY);
+            window.external.notify("RC|" + e.srcElement.href + "|" + x + "|" + y);
             return;
         }
 
         longpress = false;
 
         presstimer = setTimeout(function () {
-            window.external.notify("LC|" + e.srcElement.href + "|" + e.touches[0].clientX + "|" + e.touches[0].clientY);
+            window.external.notify("LC|" + e.srcElement.href + "|" + x + "|" + y);
             longpress = true;
         }, 500);
 
