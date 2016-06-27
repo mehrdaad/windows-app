@@ -163,12 +163,12 @@
                         <Setter Target="buttonGrid.(FrameworkElement.Width)" Value="500" />
                         <Setter Target="buttonGrid.(FrameworkElement.Margin)">
                             <Setter.Value>
-                                <Thickness>0,32</Thickness>
+                                <Thickness>0,48</Thickness>
                             </Setter.Value>
                         </Setter>
                         <Setter Target="textBlock.(FrameworkElement.Margin)">
                             <Setter.Value>
-                                <Thickness>0,32</Thickness>
+                                <Thickness>0,48</Thickness>
                             </Setter.Value>
                         </Setter>
                     </VisualState.Setters>
