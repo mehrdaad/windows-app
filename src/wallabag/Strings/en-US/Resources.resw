@@ -219,6 +219,9 @@
   <data name="MiscHeaderTextBlock.Text" xml:space="preserve">
     <value>MISCELLANOUS</value>
   </data>
+  <data name="MultipleDevicesAlertTextBlock.Text" xml:space="preserve">
+    <value>A usage of the same ID/secret combination on multiple devices isn't recommended and could cause (a lot of) frustration.</value>
+  </data>
   <data name="MultipleSelectionAppBarButton.Label" xml:space="preserve">
     <value>Select</value>
   </data>
