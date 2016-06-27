@@ -89,8 +89,12 @@ namespace wallabag.Views
                     case "LC":
                         var x = int.Parse(notify[2]);
                         var y = int.Parse(notify[3]);
-                        ViewModel.RightClickUri = new Uri(notify[1]);
-                        ShowRightClickContextMenu(x, y);
+                        try
+                        {
+                            ViewModel.RightClickUri = new Uri(notify[1]);
+                            ShowRightClickContextMenu(x, y);
+                        }
+                        catch { }
                         break;
                     default:
                         break;
