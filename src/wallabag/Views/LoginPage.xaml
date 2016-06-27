@@ -280,9 +280,15 @@
                     x:Uid="PasswordBox"
                     Header="Password"
                     Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
+                <TextBlock
+                    x:Uid="MultipleDevicesAlertTextBlock"
+                    Margin="8,48,8,12"
+                    FontSize="13.333"
+                    Opacity="0.8"
+                    Text="A usage of the same ID/secret combination on multiple devices isn't recommended and could cause (a lot of) frustration."
+                    TextWrapping="Wrap" />
                 <TextBox
                     x:Uid="ClientIdTextBox"
-                    Margin="8,48,8,4"
                     Header="Client Id"
                     IsSpellCheckEnabled="False"
                     Text="{x:Bind ViewModel.ClientId, Mode=TwoWay}" />
