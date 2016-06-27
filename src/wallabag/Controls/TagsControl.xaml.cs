@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using wallabag.Common;
 using wallabag.Models;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -25,6 +26,8 @@ namespace wallabag.Controls
 
         #endregion
 
+        public ObservableCollection<Tag> Suggestions { get; set; } = new ObservableCollection<Tag>();
+
         public TagsControl()
         {
             this.InitializeComponent();
@@ -48,6 +51,11 @@ namespace wallabag.Controls
 
             UpdateNoTagsInfoTextBlockVisibility();
             sender.Text = string.Empty;
+        }
+        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+                Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(sender.Text.ToLower())).Take(3).ToList());
         }
 
         private void UpdateNoTagsInfoTextBlockVisibility()
