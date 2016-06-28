@@ -65,7 +65,7 @@ namespace wallabag.ViewModels
         {
             IsTestRunning = true;
 
-            if (!Url.StartsWith("https://") || !Url.StartsWith("http://"))
+            if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
                 Url = "https://" + Url;
 
             App.Client.ClientId = ClientId;
