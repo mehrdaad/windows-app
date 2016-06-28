@@ -11,7 +11,7 @@ namespace wallabag.Common
     public class IncrementalObservableCollection<T> : ObservableCollection<T>, ISupportIncrementalLoading
     {
         private Func<uint, Task<List<T>>> load;
-        public bool HasMoreItems { get; protected set; }
+        public bool HasMoreItems { get; set; }
 
         public IncrementalObservableCollection(Func<uint, Task<List<T>>> load)
         {
@@ -28,7 +28,10 @@ namespace wallabag.Common
                 foreach (var item in data)
                     Add(item);
 
-                // TODO: Update HasMoreItems
+                if (data.Count < count)
+                    HasMoreItems = false;
+                else
+                    HasMoreItems = true;
 
                 return new LoadMoreItemsResult { Count = (uint)data.Count };
             });

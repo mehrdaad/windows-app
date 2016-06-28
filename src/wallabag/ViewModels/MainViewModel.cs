@@ -259,6 +259,8 @@ namespace wallabag.ViewModels
 
         private void UpdateView()
         {
+            Items.HasMoreItems = true;
+
             var currentItems = new List<Item>();
             var databaseItems = GetItemsForCurrentSearchProperties(limit: Items.Count);
 
