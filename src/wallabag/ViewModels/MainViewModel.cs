@@ -351,6 +351,8 @@ namespace wallabag.ViewModels
                     break;
             }
 
+            Items.MaxItems = items.Count();
+
             if (offset != null)
                 items = items.Skip((int)offset);
 

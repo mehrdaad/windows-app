@@ -12,6 +12,7 @@ namespace wallabag.Common
     {
         private Func<uint, Task<List<T>>> load;
         public bool HasMoreItems { get; set; }
+        public int MaxItems { get; set; }
 
         public IncrementalObservableCollection(Func<uint, Task<List<T>>> load)
         {
