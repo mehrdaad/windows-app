@@ -74,7 +74,6 @@ namespace wallabag.ViewModels
                     e.PropertyName != nameof(CurrentSearchProperties.Query))
                     UpdateView();
             };
-            CurrentSearchProperties.SortOrderChanged += p => SortItems(p);
 
             App.OfflineTasksChanged += async (s, e) =>
             {
