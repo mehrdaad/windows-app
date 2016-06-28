@@ -260,7 +260,7 @@ namespace wallabag.ViewModels
         private void UpdateView()
         {
             var currentItems = new List<Item>();
-            var databaseItems = GetItemsForCurrentSearchProperties();
+            var databaseItems = GetItemsForCurrentSearchProperties(limit: Items.Count);
 
             foreach (var item in Items)
                 currentItems.Add(item.Model);
