@@ -20,7 +20,7 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class MainViewModel : ViewModelBase
     {
-        public ObservableCollection<ItemViewModel> Items { get; set; } = new ObservableCollection<ItemViewModel>();
+        public IncrementalObservableCollection<ItemViewModel> Items { get; set; }
 
         [DependsOn(nameof(OfflineTaskCount))]
         public Visibility OfflineTaskVisibility { get { return OfflineTaskCount > 0 ? Visibility.Visible : Visibility.Collapsed; } }
@@ -75,12 +75,28 @@ namespace wallabag.ViewModels
                     UpdateView();
             };
 
+            Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
+
             App.OfflineTasksChanged += async (s, e) =>
             {
                 OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
                 await ExecuteOfflineTasksAsync();
             };
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
+        }
+
+        private Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
+        {
+            var result = new List<ItemViewModel>();
+
+            var database = GetItemsForCurrentSearchProperties(Items.Count, (int)count);
+
+            foreach (var item in database)
+                result.Add(new ItemViewModel(item));
+
+            //GetMetadataForItems(result);
+
+            return Task.FromResult(result);
         }
 
         private async Task ExecuteOfflineTasksAsync()
