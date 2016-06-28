@@ -61,14 +61,42 @@ namespace wallabag.ViewModels
             else
                 return false;
         }
-        private Task<bool> TestConfigurationAsync()
+        private async Task<bool> TestConfigurationAsync()
         {
             IsTestRunning = true;
+
+            if (!Url.StartsWith("https://") || !Url.StartsWith("http://"))
+                Url = "https://" + Url;
+
             App.Client.ClientId = ClientId;
             App.Client.ClientSecret = ClientSecret;
             App.Client.InstanceUri = new Uri(Url);
 
-            return (App.Client.RequestTokenAsync(Username, Password).ContinueWith(x => { IsTestRunning = false; return x.Result; }));
+            var result = await App.Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
+            {
+                IsTestRunning = false;
+                if (x.Exception == null)
+                    return x.Result;
+                else
+                    return false;
+            });
+
+            if (result == false && Url.StartsWith("https://"))
+            {
+                Url = Url.Replace("https://", "http://");
+                App.Client.InstanceUri = new Uri(Url);
+
+                result = await App.Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
+                {
+                    IsTestRunning = false;
+                    if (x.Exception == null)
+                        return x.Result;
+                    else
+                        return false;
+                });
+            }
+
+            return result;
         }
         private async Task ContinueAsync(bool credentialsExist = false)
         {
