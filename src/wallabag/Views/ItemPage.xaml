@@ -322,6 +322,12 @@
                 Margin="0,8,0,0"
                 Style="{StaticResource InfoTextBlockStyle}"
                 Text="{x:Bind ViewModel.FailureDescription, Mode=OneWay}" />
+            <Button
+                x:Uid="OpenInBrowserButton"
+                Margin="0,12,0,0"
+                HorizontalAlignment="Center"
+                Command="{x:Bind ViewModel.Item.OpenInBrowserCommand}"
+                Content="Open in browser" />
         </StackPanel>
 
     </Grid>

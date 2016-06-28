@@ -246,6 +246,9 @@
   <data name="OpenDocumentationButton.Content" xml:space="preserve">
     <value>Dokumentation öffnen</value>
   </data>
+  <data name="OpenInBrowserButton.Content" xml:space="preserve">
+    <value>Im Browser öffnen</value>
+  </data>
   <data name="OpenInBrowserMenuFlyoutItem.Text" xml:space="preserve">
     <value>Im Browser öffnen</value>
   </data>
