@@ -292,7 +292,7 @@ namespace wallabag.ViewModels
                         TagSuggestions.Add(tag);
             }
         }
-        private List<Item> GetItemsForCurrentSearchProperties()
+        private List<Item> GetItemsForCurrentSearchProperties(int? offset = null, int? limit = null)
         {
             var items = App.Database.Table<Item>();
 
@@ -317,35 +317,35 @@ namespace wallabag.ViewModels
             else if (CurrentSearchProperties.Language?.IsUnknown == true)
                 items = items.Where(i => i.Language == null);
 
+            switch (CurrentSearchProperties.SortOrder)
+            {
+                case SearchProperties.SearchPropertiesSortOrder.AscendingByReadingTime:
+                    items = items.OrderBy(i => i.EstimatedReadingTime);
+                    break;
+                case SearchProperties.SearchPropertiesSortOrder.DescendingByReadingTime:
+                    items = items.OrderByDescending(i => i.EstimatedReadingTime);
+                    break;
+                case SearchProperties.SearchPropertiesSortOrder.AscendingByCreationDate:
+                    items = items.OrderBy(i => i.CreationDate);
+                    break;
+                case SearchProperties.SearchPropertiesSortOrder.DescendingByCreationDate:
+                default:
+                    items = items.OrderByDescending(i => i.CreationDate);
+                    break;
+            }
+
+            if (offset != null)
+                items = items.Skip((int)offset);
+
+            if (limit != null)
+                items = items.Take((int)limit);
+
             var list = items.ToList();
 
             if (CurrentSearchProperties.Tag != null)
                 list = list.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag)).ToList();
 
             return list;
-        }
-        private void SortItems(SearchProperties.SearchPropertiesSortOrder newSortOrder)
-        {
-            IOrderedEnumerable<ItemViewModel> sortedItems;
-
-            switch (newSortOrder)
-            {
-                case SearchProperties.SearchPropertiesSortOrder.AscendingByReadingTime:
-                    sortedItems = Items.OrderBy(i => i.Model.EstimatedReadingTime);
-                    break;
-                case SearchProperties.SearchPropertiesSortOrder.DescendingByReadingTime:
-                    sortedItems = Items.OrderByDescending(i => i.Model.EstimatedReadingTime);
-                    break;
-                case SearchProperties.SearchPropertiesSortOrder.AscendingByCreationDate:
-                    sortedItems = Items.OrderBy(i => i.Model.CreationDate);
-                    break;
-                case SearchProperties.SearchPropertiesSortOrder.DescendingByCreationDate:
-                default:
-                    sortedItems = Items.OrderByDescending(i => i.Model.CreationDate);
-                    break;
-            }
-
-            Items = new ObservableCollection<ItemViewModel>(sortedItems);
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
