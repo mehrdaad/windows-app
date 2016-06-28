@@ -146,6 +146,28 @@ namespace wallabag.ViewModels
                 CredentialsAreExisting = (bool)parameter;
                 await ContinueAsync(true);
             }
+
+            if (state.Count == 5)
+            {
+                Username = state[nameof(Username)] as string;
+                Password = state[nameof(Password)] as string;
+                Url = state[nameof(Url)] as string;
+                ClientId = state[nameof(ClientId)] as string;
+                ClientSecret = state[nameof(ClientSecret)] as string;
+            }
+        }
+
+        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
+        {
+            if (suspending)
+            {
+                pageState[nameof(Username)] = Username;
+                pageState[nameof(Password)] = Password;
+                pageState[nameof(Url)] = Url;
+                pageState[nameof(ClientId)] = ClientId;
+                pageState[nameof(ClientSecret)] = ClientSecret;
+            }
+            return Task.CompletedTask;
         }
     }
 }
