@@ -197,7 +197,6 @@
                     <VisualState.Setters>
                         <Setter Target="failureOverlay.Visibility" Value="Visible" />
                         <Setter Target="HtmlViewer.Visibility" Value="Collapsed" />
-                        <Setter Target="openCommandsButton.Visibility" Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
