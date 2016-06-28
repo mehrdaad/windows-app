@@ -190,7 +190,7 @@
         <vm:ItemPageViewModel />
     </Page.DataContext>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="{x:Bind ViewModel.ColorApplicationTheme, Mode=OneWay}">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="ErrorState">
@@ -239,7 +239,6 @@
                 Height="0"
                 x:DeferLoadStrategy="Lazy"
                 Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                RequestedTheme="{x:Bind ViewModel.ColorApplicationTheme, Mode=OneWay}"
                 Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="48" />
