@@ -94,7 +94,7 @@ namespace wallabag.ViewModels
             foreach (var item in database)
                 result.Add(new ItemViewModel(item));
 
-            //GetMetadataForItems(result);
+            GetMetadataForItems(result);
 
             return Task.FromResult(result);
         }
@@ -287,7 +287,7 @@ namespace wallabag.ViewModels
 
             GetMetadataForItems(Items);
         }
-        private void GetMetadataForItems(ObservableCollection<ItemViewModel> items)
+        private void GetMetadataForItems(IEnumerable<ItemViewModel> items)
         {
             foreach (var item in items)
             {
