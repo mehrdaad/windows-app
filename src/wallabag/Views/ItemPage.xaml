@@ -277,30 +277,95 @@
                         </AppBarButton.Flyout>
                     </AppBarButton>
                 </StackPanel>
-                <StackPanel
-                    x:Name="stackPanel"
+                <RelativePanel
+                    x:Name="extendedPanel"
                     Grid.Row="1"
-                    HorizontalAlignment="Center"
-                    x:DeferLoadStrategy="Lazy"
-                    BorderBrush="{ThemeResource SystemControlBackgroundAccentBrush}"
-                    BorderThickness="0,1,0,0"
-                    Orientation="Horizontal"
-                    Padding="0,4,0,0"
-                    Visibility="Collapsed">
-                    <StackPanel.Resources>
-                        <Style BasedOn="{StaticResource RoundIconButtonStyle}" TargetType="Button">
-                            <Setter Property="FontSize" Value="18" />
+                    Background="{ThemeResource SystemControlHighlightAltAltMediumHighBrush}">
+                    <RelativePanel.Resources>
+                        <Style TargetType="AppBarButton">
+                            <Setter Property="Margin" Value="0,4,0,0" />
+                            <Setter Property="Opacity" Value="0.8" />
                         </Style>
-                    </StackPanel.Resources>
-                    <Button Click="IncreaseFontSize" Content="&#xE109;" />
-                    <Button Click="DecreaseFontSize" Content="&#xE108;" />
-                    <AppBarSeparator VerticalAlignment="Center" />
-                    <Button Click="ChangeColorSchemeToLight" Content="&#xE706;" />
-                    <Button Click="ChangeColorSchemeToDark" Content="&#xE708;" />
-                    <AppBarSeparator VerticalAlignment="Center" />
-                    <Button Click="ChangeFontFamily" Content="&#xE185;" />
-                    <Button Click="ChangeTextAlignment" Content="&#xE8E4;" />
-                </StackPanel>
+                        <Style BasedOn="{StaticResource RoundIconButtonStyle}" TargetType="Button">
+                            <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
+                            <Setter Property="Margin" Value="8,8,8,16" />
+                            <Setter Property="Padding" Value="8" />
+                        </Style>
+                        <Style TargetType="FontIcon">
+                            <Setter Property="Margin" Value="0,-2,0,0" />
+                        </Style>
+                    </RelativePanel.Resources>
+                    <AppBarButton
+                        x:Name="grayThemeButton"
+                        Label="Gray"
+                        RelativePanel.AlignHorizontalCenterWithPanel="True">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe UI Symbol" Glyph="&#x1F313;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        x:Name="lightThemeButton"
+                        Label="Light"
+                        RelativePanel.LeftOf="sepiaThemeButton">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe UI Symbol" Glyph="&#x1F311;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        x:Name="sepiaThemeButton"
+                        Label="Sepia"
+                        RelativePanel.LeftOf="grayThemeButton">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe UI Symbol" Glyph="&#x1F312;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        x:Name="darkThemeButton"
+                        Label="Dark"
+                        RelativePanel.RightOf="grayThemeButton">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe UI Symbol" Glyph="&#x1F314;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        x:Name="blackThemeButton"
+                        Label="Black"
+                        RelativePanel.RightOf="darkThemeButton">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe UI Symbol" Glyph="&#x1F315;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+
+                    <Rectangle
+                        x:Name="separator"
+                        Height="1"
+                        Margin="0,8"
+                        Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                        RelativePanel.AlignLeftWithPanel="True"
+                        RelativePanel.AlignRightWithPanel="True"
+                        RelativePanel.Below="grayThemeButton" />
+
+                    <Button
+                        x:Name="increaseFontSizeButton"
+                        Content="&#xE109;"
+                        RelativePanel.AlignHorizontalCenterWith="lightThemeButton"
+                        RelativePanel.Below="separator" />
+                    <Button
+                        x:Name="decreaseFontSizeButton"
+                        Content="&#xE108;"
+                        RelativePanel.Below="separator"
+                        RelativePanel.RightOf="increaseFontSizeButton" />
+                    <Button
+                        x:Name="fontFamilyButton"
+                        Content="&#xE185;"
+                        RelativePanel.Below="separator"
+                        RelativePanel.LeftOf="textAlignmentButton" />
+                    <Button
+                        x:Name="textAlignmentButton"
+                        Content="&#xE1A2;"
+                        RelativePanel.AlignHorizontalCenterWith="blackThemeButton"
+                        RelativePanel.Below="separator" />
+                </RelativePanel>
             </Grid>
         </StackPanel>
 
