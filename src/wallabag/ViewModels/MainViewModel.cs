@@ -68,12 +68,8 @@ namespace wallabag.ViewModels
             CurrentSearchProperties.SearchStarted += p => StartSearch();
             CurrentSearchProperties.SearchCanceled += p => EndSearch(null, null);
             CurrentSearchProperties.SearchCanceled += p => UpdateView();
-            CurrentSearchProperties.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName != nameof(CurrentSearchProperties.SortOrder) &&
-                    e.PropertyName != nameof(CurrentSearchProperties.Query))
-                    UpdateView();
-            };
+            CurrentSearchProperties.ItemTypeChanged += i => UpdateView();
+            CurrentSearchProperties.SortOrderChanged += i => UpdateView();
 
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
 
