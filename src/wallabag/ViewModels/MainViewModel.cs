@@ -377,8 +377,7 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            foreach (var item in App.Database.Table<Item>().Where(i => i.IsRead == false).OrderByDescending(i => i.CreationDate).ToList())
-                Items.Add(new ItemViewModel(item));
+            UpdateView();
 
             if (SettingsService.Instance.SyncOnStartup)
                 await SyncAsync();
