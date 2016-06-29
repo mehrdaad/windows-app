@@ -135,6 +135,9 @@
   <data name="ArchivedPageTitleTextBlock.Text" xml:space="preserve">
     <value>ARCHIVED</value>
   </data>
+  <data name="blackThemeButton.Label" xml:space="preserve">
+    <value>Black</value>
+  </data>
   <data name="CancelAppBarButton.Label" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="CreateIssueButton.Content" xml:space="preserve">
     <value>Create an issue on GitHub</value>
+  </data>
+  <data name="darkThemeButton.Label" xml:space="preserve">
+    <value>Dark</value>
   </data>
   <data name="DeleteDatabaseButton.Content" xml:space="preserve">
     <value>Delete database</value>
@@ -195,6 +201,9 @@
   <data name="GeneralSettingsPivotItem.Header" xml:space="preserve">
     <value>General</value>
   </data>
+  <data name="grayThemeButton.Label" xml:space="preserve">
+    <value>Gray</value>
+  </data>
   <data name="InfoPivotItem.Header" xml:space="preserve">
     <value>Info</value>
   </data>
@@ -206,6 +215,9 @@
   </data>
   <data name="LanguageFilterTitleTextBlock" xml:space="preserve">
     <value>LANGUAGE</value>
+  </data>
+  <data name="lightThemeButton.Label" xml:space="preserve">
+    <value>Light</value>
   </data>
   <data name="LikeMyWorkHeaderTextBlock.Text" xml:space="preserve">
     <value>YOU LIKE MY WORK?</value>
@@ -275,6 +287,9 @@
   </data>
   <data name="SearchBox.PlaceholderText" xml:space="preserve">
     <value>Search…</value>
+  </data>
+  <data name="sepiaThemeButton.Label" xml:space="preserve">
+    <value>Sepia</value>
   </data>
   <data name="SettingsAppBarButton.Label" xml:space="preserve">
     <value>Settings</value>

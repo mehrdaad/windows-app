@@ -296,6 +296,7 @@
                         </Style>
                     </RelativePanel.Resources>
                     <AppBarButton
+                        x:Uid="grayThemeButton"
                         x:Name="grayThemeButton"
                         Click="ChangeColorScheme"
                         Label="Gray"
@@ -305,6 +306,7 @@
                         </AppBarButton.Icon>
                     </AppBarButton>
                     <AppBarButton
+                        x:Uid="lightThemeButton"
                         x:Name="lightThemeButton"
                         Click="ChangeColorScheme"
                         Label="Light"
@@ -315,6 +317,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="sepiaThemeButton"
+                        x:Uid="sepiaThemeButton"
                         Click="ChangeColorScheme"
                         Label="Sepia"
                         RelativePanel.LeftOf="grayThemeButton">
@@ -324,6 +327,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="darkThemeButton"
+                        x:Uid="darkThemeButton"
                         Click="ChangeColorScheme"
                         Label="Dark"
                         RelativePanel.RightOf="grayThemeButton">
@@ -333,6 +337,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="blackThemeButton"
+                        x:Uid="blackThemeButton"
                         Click="ChangeColorScheme"
                         Label="Black"
                         RelativePanel.RightOf="darkThemeButton">
