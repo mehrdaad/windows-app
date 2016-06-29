@@ -124,9 +124,9 @@
                             Text="MADE WITH PASSION BY" />
                         <TextBlock Style="{ThemeResource InfoTextBlockStyle}" Text="Julian Oster" />
                         <TextBlock
-                            x:Uid="ThanksToHeaderTextBlock"
+                            x:Uid="UsedLibrariesHeaderTextBlock"
                             Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
-                            Text="THANKS TO" />
+                            Text="USED LIBRARIES" />
                         <TextBlock Style="{ThemeResource InfoTextBlockStyle}">
                             <Hyperlink NavigateUri="http://www.newtonsoft.com/json" UnderlineStyle="None">• Newtonsoft.Json</Hyperlink>
                             <LineBreak />
@@ -134,18 +134,16 @@
                             <LineBreak />
                             <Hyperlink NavigateUri="https://github.com/dotMorten/WindowsStateTriggers" UnderlineStyle="None">• WindowsStateTriggers</Hyperlink>
                             <LineBreak />
-                            <Hyperlink NavigateUri="https://htmlagilitypack.codeplex.com" UnderlineStyle="None">• HtmlAgilityPack</Hyperlink>
-                            <LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/WindowsNotifications/NotificationsExtensions" UnderlineStyle="None">• NotificationsExtensions</Hyperlink>
-                            <LineBreak />
                             <Hyperlink NavigateUri="https://github.com/Windows-XAML/Template10" UnderlineStyle="None">• Template10</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://github.com/oysteinkrog/SQLite.Net-PCL" UnderlineStyle="None">• SQLite.Net-PCL</Hyperlink>
                             <LineBreak />
                             <Hyperlink NavigateUri="http://sixrevisions.com/free-icons/free-windows-10-icons/" UnderlineStyle="None">• Twitter icon by Icons8</Hyperlink>
                         </TextBlock>
                         <TextBlock
-                            x:Uid="SpecialThanksHeaderTextBlock"
+                            x:Uid="ThanksToHeaderTextBlock"
                             Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
-                            Text="SPECIAL THANKS" />
+                            Text="THANKS TO" />
                         <TextBlock
                             x:Uid="SpecialThanksInfoTextBlock"
                             Style="{StaticResource InfoTextBlockStyle}"

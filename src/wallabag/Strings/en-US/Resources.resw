@@ -300,9 +300,6 @@
   <data name="SortOrderFilterTitleTextBlock.Text" xml:space="preserve">
     <value>SORT ORDER</value>
   </data>
-  <data name="SpecialThanksHeaderTextBlock.Text" xml:space="preserve">
-    <value>SPECIAL THANKS</value>
-  </data>
   <data name="SpecialThanksInfoTextBlock.Text" xml:space="preserve">
     <value>Nicolas Lœuillet, Thomas Citharel and Jérémy Benoist for creating such a great software.</value>
   </data>
@@ -356,6 +353,9 @@
   </data>
   <data name="UrlTextBox.Header" xml:space="preserve">
     <value>URL</value>
+  </data>
+  <data name="UsedLibrariesHeaderTextBlock.Text" xml:space="preserve">
+    <value>USED LIBRARIES</value>
   </data>
   <data name="UsernameTextBox.Header" xml:space="preserve">
     <value>Username</value>
