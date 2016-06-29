@@ -171,6 +171,9 @@
   <data name="DownloadingItemsTextBlock.Text" xml:space="preserve">
     <value>Einträge werden heruntergeladen…</value>
   </data>
+  <data name="EditAppBarButton.Text" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
   <data name="EditTagsContentDialog.PrimaryButtonText" xml:space="preserve">
     <value>Fertigstellen</value>
   </data>

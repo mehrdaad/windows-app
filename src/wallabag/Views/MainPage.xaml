@@ -723,7 +723,10 @@
             Grid.Row="2"
             x:DeferLoadStrategy="Lazy"
             Visibility="Collapsed">
-            <AppBarButton Icon="Edit" Label="Edit">
+            <AppBarButton
+                x:Uid="EditAppBarButton"
+                Icon="Edit"
+                Label="Edit">
                 <AppBarButton.Flyout>
                     <MenuFlyout>
                         <MenuFlyoutItem
