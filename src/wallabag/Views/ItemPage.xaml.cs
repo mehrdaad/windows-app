@@ -142,14 +142,21 @@ namespace wallabag.Views
             ViewModel.FontSize -= 1;
             await InvokeChangeHtmlAttributesAsync();
         }
-        private async void ChangeColorSchemeToLight(object sender, RoutedEventArgs e)
+        private async void ChangeColorScheme(object sender, RoutedEventArgs e)
         {
-            ViewModel.ColorScheme = "light";
-            await InvokeChangeHtmlAttributesAsync();
-        }
-        private async void ChangeColorSchemeToDark(object sender, RoutedEventArgs e)
-        {
-            ViewModel.ColorScheme = "dark";
+            var button = sender as Button;
+
+            if (button == lightThemeButton)
+                ViewModel.ColorScheme = "light";
+            else if (button == sepiaThemeButton)
+                ViewModel.ColorScheme = "sepia";
+            else if (button == grayThemeButton)
+                ViewModel.ColorScheme = "gray";
+            else if (button == darkThemeButton)
+                ViewModel.ColorScheme = "dark";
+            else if (button == blackThemeButton)
+                ViewModel.ColorScheme = "black";
+
             await InvokeChangeHtmlAttributesAsync();
         }
         private async void ChangeFontFamily(object sender, RoutedEventArgs e)

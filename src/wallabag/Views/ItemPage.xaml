@@ -297,6 +297,7 @@
                     </RelativePanel.Resources>
                     <AppBarButton
                         x:Name="grayThemeButton"
+                        Click="ChangeColorScheme"
                         Label="Gray"
                         RelativePanel.AlignHorizontalCenterWithPanel="True">
                         <AppBarButton.Icon>
@@ -305,6 +306,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="lightThemeButton"
+                        Click="ChangeColorScheme"
                         Label="Light"
                         RelativePanel.LeftOf="sepiaThemeButton">
                         <AppBarButton.Icon>
@@ -313,6 +315,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="sepiaThemeButton"
+                        Click="ChangeColorScheme"
                         Label="Sepia"
                         RelativePanel.LeftOf="grayThemeButton">
                         <AppBarButton.Icon>
@@ -321,6 +324,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="darkThemeButton"
+                        Click="ChangeColorScheme"
                         Label="Dark"
                         RelativePanel.RightOf="grayThemeButton">
                         <AppBarButton.Icon>
@@ -329,6 +333,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="blackThemeButton"
+                        Click="ChangeColorScheme"
                         Label="Black"
                         RelativePanel.RightOf="darkThemeButton">
                         <AppBarButton.Icon>
@@ -347,21 +352,25 @@
 
                     <Button
                         x:Name="increaseFontSizeButton"
+                        Click="IncreaseFontSize"
                         Content="&#xE109;"
                         RelativePanel.AlignHorizontalCenterWith="lightThemeButton"
                         RelativePanel.Below="separator" />
                     <Button
                         x:Name="decreaseFontSizeButton"
+                        Click="DecreaseFontSize"
                         Content="&#xE108;"
                         RelativePanel.Below="separator"
                         RelativePanel.RightOf="increaseFontSizeButton" />
                     <Button
                         x:Name="fontFamilyButton"
+                        Click="ChangeFontFamily"
                         Content="&#xE185;"
                         RelativePanel.Below="separator"
                         RelativePanel.LeftOf="textAlignmentButton" />
                     <Button
                         x:Name="textAlignmentButton"
+                        Click="ChangeTextAlignment"
                         Content="&#xE1A2;"
                         RelativePanel.AlignHorizontalCenterWith="blackThemeButton"
                         RelativePanel.Below="separator" />
