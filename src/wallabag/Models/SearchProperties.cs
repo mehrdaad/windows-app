@@ -1,5 +1,6 @@
 ﻿using PropertyChanged;
 using System.ComponentModel;
+using System;
 
 namespace wallabag.Models
 {
@@ -99,6 +100,15 @@ namespace wallabag.Models
             SortOrder = SearchPropertiesSortOrder.DescendingByCreationDate;
             Language = null;
             Tag = null;
+        }
+
+        internal void Replace(SearchProperties searchProperties)
+        {
+            this.Query = searchProperties.Query;
+            this.ItemType = searchProperties.ItemType;
+            this.SortOrder = searchProperties.SortOrder;
+            this.Language = searchProperties.Language;
+            this.Tag = searchProperties.Tag;
         }
     }
 }

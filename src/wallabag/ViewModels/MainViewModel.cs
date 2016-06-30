@@ -391,7 +391,7 @@ namespace wallabag.ViewModels
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
             {
                 var stateValue = state[nameof(CurrentSearchProperties)] as string;
-                CurrentSearchProperties = await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue));
+                CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
             }
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
