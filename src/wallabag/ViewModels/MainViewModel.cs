@@ -377,6 +377,12 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
+            if (state.ContainsKey(nameof(CurrentSearchProperties)))
+            {
+                var stateValue = state[nameof(CurrentSearchProperties)] as string;
+                CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
+            }
+
             UpdateView();
 
             if (SettingsService.Instance.SyncOnStartup)
@@ -387,12 +393,6 @@ namespace wallabag.ViewModels
                 if (message.Notification.Equals("FetchFromDatabase"))
                     UpdateView();
             });
-
-            if (state.ContainsKey(nameof(CurrentSearchProperties)))
-            {
-                var stateValue = state[nameof(CurrentSearchProperties)] as string;
-                CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
-            }
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
