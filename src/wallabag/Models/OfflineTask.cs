@@ -89,7 +89,7 @@ namespace wallabag.Models
             if (executionIsSuccessful)
             {
                 App.Database.Delete(this);
-                App.OfflineTasksChanged?.Invoke(this, new EventArgs());
+                App.OfflineTaskRemoved?.Invoke(this, this);
             }
         }
         public static void Add(string url, IEnumerable<string> newTags, string title = "")
@@ -101,7 +101,7 @@ namespace wallabag.Models
             newTask.Tags = newTags.ToList();
 
             App.Database.Insert(newTask);
-            App.OfflineTasksChanged?.Invoke(newTask, new EventArgs());
+            App.OfflineTaskAdded?.Invoke(null, newTask);
         }
         public static void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
@@ -113,7 +113,7 @@ namespace wallabag.Models
             newTask.removeTagsList = removeTagsList;
 
             App.Database.Insert(newTask);
-            App.OfflineTasksChanged?.Invoke(newTask, new EventArgs());
+            App.OfflineTaskAdded?.Invoke(null, newTask);
         }
 
         public enum OfflineTaskAction

@@ -17,8 +17,9 @@ namespace wallabag
         public static Api.WallabagClient Client { get; private set; }
         public static SQLiteConnection Database { get; private set; }
         public static SettingsService Settings { get; private set; }
-
-        public static EventHandler OfflineTasksChanged;
+        
+        public static EventHandler<OfflineTask> OfflineTaskAdded;
+        public static EventHandler<OfflineTask> OfflineTaskRemoved;
 
         public App() { InitializeComponent(); }
 
