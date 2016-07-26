@@ -76,7 +76,7 @@ namespace wallabag.ViewModels
             App.OfflineTasksChanged += async (s, e) =>
             {
                 OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
-                await ExecuteOfflineTasksAsync();
+                await ExecuteOfflineTasksAsync(true);
             };
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
         }
@@ -97,16 +97,12 @@ namespace wallabag.ViewModels
 
         private async Task ExecuteOfflineTasksAsync()
         {
-            IsSyncing = true;
-
             foreach (var task in App.Database.Table<OfflineTask>())
                 await task.ExecuteAsync();
 
             OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
 
             UpdateView();
-
-            IsSyncing = false;
         }
         private async Task SyncAsync()
         {
