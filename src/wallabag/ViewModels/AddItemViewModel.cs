@@ -29,7 +29,7 @@ namespace wallabag.ViewModels
 
         public AddItemViewModel()
         {
-            AddCommand = new DelegateCommand(async () => await Add());
+            AddCommand = new DelegateCommand(() => Add());
             CancelCommand = new DelegateCommand(() =>
             {
                 _shareOperation?.ReportCompleted();
@@ -37,21 +37,9 @@ namespace wallabag.ViewModels
             });
         }
 
-        private async Task Add()
+        private void Add()
         {
             AddingStarted?.Invoke(this, new EventArgs());
-            if (_shareOperation != null)
-            {
-                _shareOperation.ReportStarted();
-
-                var item = await App.Client.AddAsync(new Uri(UriString), Tags.ToStringArray());
-                if (item != null)
-                {
-                    _shareOperation.ReportCompleted();
-                    App.Database.Insert((Item)item);
-                    return;
-                }
-            }
 
             OfflineTask.Add(UriString, Tags.ToStringArray());
 
