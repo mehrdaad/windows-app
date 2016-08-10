@@ -30,9 +30,6 @@ namespace wallabag.Views
         {
             this.InitializeComponent();
 
-            CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-            coreTitleBar.IsVisibleChanged += (s, e) => backButton.Visibility = s.IsVisible ? Visibility.Visible : Visibility.Collapsed;
-
             HtmlViewer.ScriptNotify += HtmlViewer_ScriptNotify;
             HtmlViewer.NavigationStarting += HtmlViewer_NavigationStarting;
 
