@@ -92,6 +92,37 @@
             </ObjectAnimationUsingKeyFrames>
         </Storyboard>
 
+        <Storyboard x:Name="ShowHtmlViewerStoryboard">
+            <DoubleAnimation
+                d:IsOptimized="True"
+                Duration="0:0:0.3"
+                Storyboard.TargetName="HtmlViewer"
+                Storyboard.TargetProperty="(UIElement.Opacity)"
+                To="1">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseIn" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="HtmlViewer" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0.8" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1" />
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="HtmlViewer" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0.8" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1" />
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="progressRing" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="progressRing" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.3">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+
         <MenuFlyout x:Name="RightClickMenuFlyout">
             <MenuFlyout.MenuFlyoutPresenterStyle>
                 <Style TargetType="MenuFlyoutPresenter">
@@ -196,11 +227,28 @@
                     <VisualState.Setters>
                         <Setter Target="failureOverlay.Visibility" Value="Visible" />
                         <Setter Target="HtmlViewer.Visibility" Value="Collapsed" />
+                        <Setter Target="progressRing.Visibility" Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <WebView x:Name="HtmlViewer" common:WebViewExtensions.Html="{x:Bind ViewModel.FormattedHtml}" />
+        <WebView
+            x:Name="HtmlViewer"
+            common:WebViewExtensions.Html="{x:Bind ViewModel.FormattedHtml}"
+            NavigationCompleted="HtmlViewer_NavigationCompleted"
+            Opacity="0"
+            RenderTransformOrigin="0.5,0.5">
+            <WebView.RenderTransform>
+                <CompositeTransform />
+            </WebView.RenderTransform>
+        </WebView>
+        <ProgressRing
+            x:Name="progressRing"
+            Width="64"
+            Height="64"
+            Foreground="{x:Bind ViewModel.ForegroundBrush, Mode=OneWay}"
+            IsActive="True" />
+
         <StackPanel VerticalAlignment="Bottom">
             <Button
                 x:Name="openCommandsButton"
@@ -385,6 +433,5 @@
                 Command="{x:Bind ViewModel.Item.OpenInBrowserCommand}"
                 Content="Open in browser" />
         </StackPanel>
-
     </Grid>
 </Page>

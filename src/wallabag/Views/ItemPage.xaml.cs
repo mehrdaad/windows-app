@@ -201,5 +201,11 @@ namespace wallabag.Views
             else
                 HideCommandBarStoryboard.Begin();
         }
+
+        private void HtmlViewer_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        {
+            if (args.IsSuccess)
+                ShowHtmlViewerStoryboard.Begin();
+        }
     }
 }
