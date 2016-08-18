@@ -24,5 +24,14 @@ namespace wallabag.Common
         {
             return ResourceLoader.GetForCurrentView().GetString(resourceName.Replace(".", "/"));
         }
+
+        public static bool InternetConnectionIsAvailable
+        {
+            get
+            {
+                var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
+                return profile?.GetNetworkConnectivityLevel() == Windows.Networking.Connectivity.NetworkConnectivityLevel.InternetAccess;
+            }
+        }
     }
 }

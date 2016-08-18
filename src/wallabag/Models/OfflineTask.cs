@@ -26,6 +26,9 @@ namespace wallabag.Models
 
         public async Task ExecuteAsync()
         {
+            if (Helpers.InternetConnectionIsAvailable == false)
+                return;
+
             bool executionIsSuccessful = false;
             switch (Action)
             {

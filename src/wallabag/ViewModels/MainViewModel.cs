@@ -108,6 +108,9 @@ namespace wallabag.ViewModels
         }
         private async Task SyncAsync()
         {
+            if (Helpers.InternetConnectionIsAvailable == false)
+                return;
+
             IsSyncing = true;
             await ExecuteOfflineTasksAsync();
             int syncLimit = 30;
