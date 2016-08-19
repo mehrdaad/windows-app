@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using wallabag.Common;
 using wallabag.Models;
+using wallabag.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -32,6 +33,9 @@ namespace wallabag.Controls
         {
             this.InitializeComponent();
             this.Loaded += (s, e) => UpdateNoTagsInfoTextBlockVisibility();
+
+            if (SettingsService.Instance.EnableAutomaticAddingOfTags)
+                autoSuggestBox.KeyDown += AutoSuggestBox_KeyDown;
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
@@ -54,8 +58,8 @@ namespace wallabag.Controls
         }
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)            
-                Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(sender.Text.ToLower())).Take(3).ToList());            
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+                Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(sender.Text.ToLower())).Take(3).ToList());
         }
 
         private void UpdateNoTagsInfoTextBlockVisibility()

@@ -62,10 +62,10 @@
         </ListView>
         <AutoSuggestBox
             x:Uid="EnterTagAutoSuggestBox"
+            x:Name="autoSuggestBox"
             Grid.Row="1"
             VerticalAlignment="Bottom"
             ItemsSource="{x:Bind Suggestions, Mode=OneWay}"
-            KeyDown="AutoSuggestBox_KeyDown"
             PlaceholderText="enter a tag…"
             QueryIcon="Add"
             QuerySubmitted="AutoSuggestBox_QuerySubmitted"
