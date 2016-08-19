@@ -54,8 +54,8 @@ namespace wallabag.Controls
         }
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-                Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(sender.Text.ToLower())).Take(3).ToList());
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)            
+                Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(sender.Text.ToLower())).Take(3).ToList());            
         }
 
         private void UpdateNoTagsInfoTextBlockVisibility()
@@ -70,6 +70,19 @@ namespace wallabag.Controls
         {
             (ItemsSource as IList<Tag>).Remove(e.ClickedItem as Tag);
             UpdateNoTagsInfoTextBlockVisibility();
+        }
+
+        private void AutoSuggestBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            // Checks if the comma key was pressed (code 188)
+            if ((int)e.Key == 188)
+            {
+                e.Handled = true;
+                var textBox = e.OriginalSource as TextBox;
+
+                (ItemsSource as ObservableCollection<Tag>).Add(new Tag() { Label = textBox.Text.Replace(",", string.Empty) });
+                textBox.Text = string.Empty;
+            }
         }
     }
 }
