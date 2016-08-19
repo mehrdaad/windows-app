@@ -26,6 +26,7 @@ namespace wallabag.ViewModels
         public bool AllowCollectionOfTelemetryData { get; set; } = SettingsService.Instance.AllowCollectionOfTelemetryData;
         public bool NavigateBackAfterReadingAnArticle { get; set; } = SettingsService.Instance.NavigateBackAfterReadingAnArticle;
         public bool SyncReadingProgress { get; set; } = SettingsService.Instance.SyncReadingProgress;
+        public bool EnableAutomaticAddingOfTags { get; set; } = SettingsService.Instance.EnableAutomaticAddingOfTags;
         public string VersionNumber { get; set; }
 
         public DelegateCommand OpenChangelogCommand { get; private set; }
