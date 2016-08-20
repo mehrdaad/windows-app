@@ -311,7 +311,7 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+        <Grid Height="48" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <TextBlock
                 x:Uid="UnreadPageTitleTextBlock"
                 Style="{StaticResource PageTitleTextBlockStyle}"
