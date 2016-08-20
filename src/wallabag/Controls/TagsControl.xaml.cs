@@ -36,6 +36,8 @@ namespace wallabag.Controls
 
             if (SettingsService.Instance.EnableAutomaticAddingOfTags)
                 autoSuggestBox.KeyDown += AutoSuggestBox_KeyDown;
+            else
+                autoSuggestBox.SuggestionChosen += AutoSuggestBox_SuggestionChosen;
         }
 
         private bool _loadOldQuery;
