@@ -104,7 +104,10 @@ namespace wallabag.Controls
                 e.Handled = true;
                 var textBox = e.OriginalSource as TextBox;
 
-                (ItemsSource as ObservableCollection<Tag>).Add(new Tag() { Label = textBox.Text.Replace(",", string.Empty) });
+                var label = textBox.Text.Replace(",", string.Empty);
+                if (!string.IsNullOrWhiteSpace(label))
+                    (ItemsSource as ObservableCollection<Tag>).Add(new Tag() { Label = label });
+
                 textBox.Text = string.Empty;
             }
             UpdateNoTagsInfoTextBlockVisibility();
