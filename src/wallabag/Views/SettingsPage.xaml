@@ -87,10 +87,6 @@
                         x:Uid="TelemetryDataToggleSwitch"
                         Header="Allow collection of telemetry data"
                         IsOn="{x:Bind ViewModel.AllowCollectionOfTelemetryData, Mode=TwoWay}" />
-                    <ToggleSwitch
-                        x:Uid="EnableAutomaticAddingOfTagsToggleSwitch"
-                        Header="Enable automatic adding of tags after pressing the comma key"
-                        IsOn="{x:Bind ViewModel.EnableAutomaticAddingOfTags, Mode=TwoWay}" />
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="ReadingSettingsPivotItem" Header="Reading">

@@ -34,21 +34,7 @@ namespace wallabag.Controls
             this.InitializeComponent();
             this.Loaded += (s, e) => UpdateNoTagsInfoTextBlockVisibility();
 
-            if (SettingsService.Instance.EnableAutomaticAddingOfTags)
-                autoSuggestBox.KeyDown += AutoSuggestBox_KeyDown;
-            else
-                autoSuggestBox.SuggestionChosen += AutoSuggestBox_SuggestionChosen;
-        }
-
-        private bool _loadOldQuery;
-        private string _oldQuery;
-        private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-        {
-            if (args.SelectedItem != null)
-            {
-                _loadOldQuery = true;
-                _oldQuery = sender.Text;
-            }
+            autoSuggestBox.KeyDown += AutoSuggestBox_KeyDown;
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
@@ -67,30 +53,15 @@ namespace wallabag.Controls
             }
 
             UpdateNoTagsInfoTextBlockVisibility();
-
-            if (_loadOldQuery)
-            {
-                _loadOldQuery = false;
-
-                var queryWithoutLastElement = _oldQuery.Split(","[0]).ToList();
-                queryWithoutLastElement.Remove(queryWithoutLastElement.Last());
-
-                sender.Text = string.Join(",", queryWithoutLastElement);
-            }
-            else
-                sender.Text = string.Empty;
+            sender.Text = string.Empty;
         }
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-
-                if (SettingsService.Instance.EnableAutomaticAddingOfTags)
-                    Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(sender.Text.ToLower())).Take(3).ToList());
-                else
-                {
-                    var suggestionString = sender.Text.ToLower().Split(","[0]).Last();
-                    Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(suggestionString)).Take(3).ToList());
-                }
+            {
+                var suggestionString = sender.Text.ToLower().Split(","[0]).Last();
+                Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(suggestionString)).Take(3).ToList());
+            }
         }
 
         private void UpdateNoTagsInfoTextBlockVisibility()
@@ -118,6 +89,7 @@ namespace wallabag.Controls
                 (ItemsSource as ObservableCollection<Tag>).Add(new Tag() { Label = textBox.Text.Replace(",", string.Empty) });
                 textBox.Text = string.Empty;
             }
+            UpdateNoTagsInfoTextBlockVisibility();
         }
     }
 }

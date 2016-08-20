@@ -106,12 +106,6 @@ namespace wallabag.Services
             get { return _helper.Read(nameof(TextAlignment), "left"); }
             set { _helper.Write(nameof(TextAlignment), value); }
         }
-
-        public bool EnableAutomaticAddingOfTags
-        {
-            get { return _helper.Read(nameof(EnableAutomaticAddingOfTags), true); }
-            set { _helper.Write(nameof(EnableAutomaticAddingOfTags), value); }
-        }
         
         #endregion
     }
