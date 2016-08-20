@@ -62,6 +62,8 @@ namespace wallabag.Controls
                 var suggestionString = sender.Text.ToLower().Split(","[0]).Last();
                 Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(suggestionString)).Take(3).ToList());
             }
+            else if (args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen)
+                sender.Text = string.Empty;
         }
 
         private void UpdateNoTagsInfoTextBlockVisibility()
