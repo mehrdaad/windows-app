@@ -38,6 +38,17 @@ namespace wallabag.Controls
                 autoSuggestBox.KeyDown += AutoSuggestBox_KeyDown;
         }
 
+        private bool _loadOldQuery;
+        private string _oldQuery;
+        private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            if (args.SelectedItem != null)
+            {
+                _loadOldQuery = true;
+                _oldQuery = sender.Text;
+            }
+        }
+
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             var tags = args.QueryText.Split(","[0]).ToList();
@@ -54,7 +65,18 @@ namespace wallabag.Controls
             }
 
             UpdateNoTagsInfoTextBlockVisibility();
-            sender.Text = string.Empty;
+
+            if (_loadOldQuery)
+            {
+                _loadOldQuery = false;
+
+                var queryWithoutLastElement = _oldQuery.Split(","[0]).ToList();
+                queryWithoutLastElement.Remove(queryWithoutLastElement.Last());
+
+                sender.Text = string.Join(",", queryWithoutLastElement);
+            }
+            else
+                sender.Text = string.Empty;
         }
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
