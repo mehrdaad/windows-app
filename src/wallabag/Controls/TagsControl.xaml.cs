@@ -64,7 +64,11 @@ namespace wallabag.Controls
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
                 var suggestionString = sender.Text.ToLower().Split(","[0]).Last();
-                Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(suggestionString)).Take(3).ToList());
+                Suggestions.Replace(
+                    App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(suggestionString))
+                        .Except(ItemsSource)
+                        .Take(3)
+                        .ToList());
             }
             else if (_queryIsAlreadyHandled)
             {
