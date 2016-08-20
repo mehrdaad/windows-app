@@ -37,6 +37,7 @@ namespace wallabag.Controls
             autoSuggestBox.KeyDown += AutoSuggestBox_KeyDown;
         }
 
+        private bool _queryIsAlreadyHandled;
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             var tags = args.QueryText.Split(","[0]).ToList();
@@ -53,7 +54,10 @@ namespace wallabag.Controls
             }
 
             UpdateNoTagsInfoTextBlockVisibility();
-            sender.Text = string.Empty;
+            if (string.IsNullOrEmpty(sender.Text))
+                _queryIsAlreadyHandled = true;
+            else
+                sender.Text = string.Empty;
         }
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -62,8 +66,11 @@ namespace wallabag.Controls
                 var suggestionString = sender.Text.ToLower().Split(","[0]).Last();
                 Suggestions.Replace(App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(suggestionString)).Take(3).ToList());
             }
-            else if (args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen)
+            else if (_queryIsAlreadyHandled)
+            {
+                _queryIsAlreadyHandled = false;
                 sender.Text = string.Empty;
+            }
         }
 
         private void UpdateNoTagsInfoTextBlockVisibility()
