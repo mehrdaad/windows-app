@@ -66,6 +66,8 @@ namespace wallabag.ViewModels
                         settings.NavigateBackAfterReadingAnArticle = NavigateBackAfterReadingAnArticle; break;
                     case nameof(SyncReadingProgress):
                         settings.SyncReadingProgress = SyncReadingProgress; break;
+                    case nameof(EnableAutomaticAddingOfTags):
+                        settings.EnableAutomaticAddingOfTags = EnableAutomaticAddingOfTags; break;
                 }
             };
         }
