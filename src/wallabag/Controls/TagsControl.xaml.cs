@@ -40,17 +40,22 @@ namespace wallabag.Controls
         private bool _queryIsAlreadyHandled;
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            var tags = args.QueryText.Split(","[0]).ToList();
             var itemsSource = ItemsSource as ICollection<Tag>;
+            var suggestion = args.ChosenSuggestion as Tag;
 
-            foreach (var item in tags)
+            if (suggestion != null && !itemsSource.Contains(suggestion))
+                itemsSource.Add(args.ChosenSuggestion as Tag);
+            else
             {
-                if (!string.IsNullOrWhiteSpace(item))
-                {
-                    var newTag = new Tag() { Label = item, Id = itemsSource.Count + 1 };
-                    if (itemsSource.Contains(newTag) == false)
-                        itemsSource.Add(newTag);
-                }
+                var tags = args.QueryText.Split(","[0]).ToList();
+                foreach (var item in tags)
+                    if (!string.IsNullOrWhiteSpace(item))
+                    {
+                        var newTag = new Tag() { Label = item, Id = itemsSource.Count + 1 };
+
+                        if (itemsSource.Contains(newTag) == false)
+                            itemsSource.Add(newTag);
+                    }
             }
 
             UpdateNoTagsInfoTextBlockVisibility();
