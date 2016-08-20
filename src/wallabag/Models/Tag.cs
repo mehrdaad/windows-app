@@ -15,7 +15,7 @@ namespace wallabag.Models
 
         public override string ToString() => Label;
         public override int GetHashCode() => Id;
-        public override bool Equals(object obj) => Id == (obj as Tag).Id;
+        public override bool Equals(object obj) => Label == (obj as Tag).Label;
 
         public static implicit operator WallabagTag(Tag t)
         {
