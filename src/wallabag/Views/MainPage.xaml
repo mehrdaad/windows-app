@@ -657,7 +657,7 @@
             Visibility="{x:Bind ViewModel.ItemsCountIsZero, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
             <TextBlock
                 FontSize="60"
-                Text="&#x1F616;"
+                Text="&#x1F614;"
                 TextAlignment="Center" />
             <TextBlock
                 x:Uid="NothingFoundTextBlock"
