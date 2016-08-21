@@ -358,7 +358,8 @@
             IsItemClickEnabled="True"
             ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
             MinItemHeight="175"
-            MinItemWidth="300">
+            MinItemWidth="300"
+            Padding="4">
             <controls:AdaptiveGridView.ItemTemplate>
                 <DataTemplate x:DataType="vm:ItemViewModel">
                     <RelativePanel x:Name="RootPanel" RequestedTheme="Dark">
