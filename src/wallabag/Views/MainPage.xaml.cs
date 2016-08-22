@@ -1,12 +1,16 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Graphics.Canvas.Effects;
 using PropertyChanged;
-using wallabag.Common;
+using System.Numerics;
 using wallabag.ViewModels;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.System;
-using Windows.UI.Core;
+using Windows.UI;
+using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -51,6 +55,56 @@ namespace wallabag.Views
                 if (_isSearchVisible)
                     HideSearchStoryboard.Begin();
             };
+
+            Loaded += MainPage_Loaded;
+        }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!ApiInformation.IsTypePresent(typeof(CompositionBackdropBrush).FullName))
+                return;
+
+            var gridVisual = ElementCompositionPreview.GetElementVisual(backdropRectangle);
+
+            var compositor = gridVisual.Compositor;
+
+            var effectVisual = compositor.CreateSpriteVisual();
+
+            // We'd need to resize this as/when the grid resized.
+            effectVisual.Size = new Vector2(
+              (float)this.topGrid.ActualWidth,
+              (float)this.topGrid.ActualHeight);
+
+            var colorEffect = new ColorSourceEffect()
+            {
+                Name = "ColorSource",
+                Color = (Color)Template10.Common.BootStrapper.Current.Resources["SystemChromeMediumColor"]
+            };
+
+            GaussianBlurEffect blurEffect = new GaussianBlurEffect()
+            {
+                BorderMode = EffectBorderMode.Hard,
+                Source = new CompositionEffectSourceParameter("source"),
+                BlurAmount = 24f,
+                Optimization = EffectOptimization.Balanced
+            };
+
+            var blendEffect = new BlendEffect()
+            {
+                Mode = BlendEffectMode.SoftLight,
+
+                Foreground = colorEffect,
+                Background = blurEffect
+            };
+
+
+            var effectFactory = compositor.CreateEffectFactory(blendEffect);
+            var effectBrush = effectFactory.CreateBrush();
+            effectBrush.SetSourceParameter("source", compositor.CreateBackdropBrush());
+
+            effectVisual.Brush = effectBrush;
+
+            ElementCompositionPreview.SetElementChildVisual(backdropRectangle, effectVisual);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
