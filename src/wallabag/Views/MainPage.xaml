@@ -11,8 +11,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:t10b="using:Template10.Behaviors"
     xmlns:vm="using:wallabag.ViewModels"
-    common:TitleBarExtensions.BackgroundColor="{ThemeResource SystemChromeMediumColor}"
-    common:TitleBarExtensions.ButtonBackgroundColor="{ThemeResource SystemChromeMediumColor}"
     mc:Ignorable="d">
 
     <Page.DataContext>
