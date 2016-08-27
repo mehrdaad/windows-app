@@ -8,6 +8,7 @@
     "SQLite.Net-PCL": "3.1.1",
     "Template10": "1.1.11",
     "wallabag.Api": "1.2.0",
+    "Win2D.uwp": "1.19.0",
     "WindowsStateTriggers": "1.1.0"
   },
   "frameworks": {

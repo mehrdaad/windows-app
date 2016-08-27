@@ -11,8 +11,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:t10b="using:Template10.Behaviors"
     xmlns:vm="using:wallabag.ViewModels"
-    common:TitleBarExtensions.BackgroundColor="{ThemeResource SystemChromeMediumColor}"
-    common:TitleBarExtensions.ButtonBackgroundColor="{ThemeResource SystemChromeMediumColor}"
     mc:Ignorable="d">
 
     <Page.DataContext>
@@ -245,7 +243,6 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
             <RowDefinition />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
@@ -311,55 +308,13 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <Grid Height="48" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-            <TextBlock
-                x:Uid="UnreadPageTitleTextBlock"
-                Style="{StaticResource PageTitleTextBlockStyle}"
-                Text="{x:Bind ViewModel.PageHeader, Mode=OneWay}" />
-            <AutoSuggestBox
-                x:Uid="SearchBox"
-                x:Name="searchBox"
-                Margin="8,8,76,8"
-                VerticalAlignment="Center"
-                x:DeferLoadStrategy="Lazy"
-                ItemsSource="{x:Bind ViewModel.SearchQuerySuggestions, Mode=OneWay}"
-                LostFocus="searchBox_LostFocus"
-                PlaceholderText="Search…"
-                QueryIcon="Find"
-                Text="{x:Bind ViewModel.CurrentSearchProperties.Query, Mode=TwoWay}"
-                Visibility="Collapsed">
-                <interactivity:Interaction.Behaviors>
-                    <core:EventTriggerBehavior EventName="QuerySubmitted">
-                        <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQuerySubmittedCommand}" />
-                    </core:EventTriggerBehavior>
-                    <core:EventTriggerBehavior EventName="TextChanged">
-                        <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQueryChangedCommand}" />
-                    </core:EventTriggerBehavior>
-                </interactivity:Interaction.Behaviors>
-            </AutoSuggestBox>
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <AppBarButton
-                    x:Name="searchButton"
-                    Click="searchButton_Click"
-                    Icon="Find"
-                    IsCompact="True" />
-                <AppBarButton
-                    x:Name="filterButton"
-                    x:DeferLoadStrategy="Lazy"
-                    Click="filterButton_Click"
-                    Icon="Filter"
-                    IsCompact="True"
-                    Visibility="Collapsed" />
-            </StackPanel>
-        </Grid>
         <controls:AdaptiveGridView
             x:Name="ItemGridView"
-            Grid.Row="1"
             IsItemClickEnabled="True"
             ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
             MinItemHeight="175"
             MinItemWidth="300"
-            Padding="4">
+            Padding="4,52,4,4">
             <controls:AdaptiveGridView.ItemTemplate>
                 <DataTemplate x:DataType="vm:ItemViewModel">
                     <RelativePanel x:Name="RootPanel" RequestedTheme="Dark">
@@ -437,16 +392,63 @@
                 </core:EventTriggerBehavior>
             </interactivity:Interaction.Behaviors>
         </controls:AdaptiveGridView>
+
+        <Rectangle
+            x:Name="backdropRectangle"
+            Height="48"
+            VerticalAlignment="Top" />
+        <Grid
+            x:Name="topGrid"
+            Height="48"
+            VerticalAlignment="Top">
+            <TextBlock
+                x:Uid="UnreadPageTitleTextBlock"
+                Style="{StaticResource PageTitleTextBlockStyle}"
+                Text="{x:Bind ViewModel.PageHeader, Mode=OneWay}" />
+            <AutoSuggestBox
+                x:Uid="SearchBox"
+                x:Name="searchBox"
+                Margin="8,8,76,8"
+                VerticalAlignment="Center"
+                x:DeferLoadStrategy="Lazy"
+                ItemsSource="{x:Bind ViewModel.SearchQuerySuggestions, Mode=OneWay}"
+                LostFocus="searchBox_LostFocus"
+                PlaceholderText="Search…"
+                QueryIcon="Find"
+                Text="{x:Bind ViewModel.CurrentSearchProperties.Query, Mode=TwoWay}"
+                Visibility="Collapsed">
+                <interactivity:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="QuerySubmitted">
+                        <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQuerySubmittedCommand}" />
+                    </core:EventTriggerBehavior>
+                    <core:EventTriggerBehavior EventName="TextChanged">
+                        <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQueryChangedCommand}" />
+                    </core:EventTriggerBehavior>
+                </interactivity:Interaction.Behaviors>
+            </AutoSuggestBox>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <AppBarButton
+                    x:Name="searchButton"
+                    Click="searchButton_Click"
+                    Icon="Find"
+                    IsCompact="True" />
+                <AppBarButton
+                    x:Name="filterButton"
+                    x:DeferLoadStrategy="Lazy"
+                    Click="filterButton_Click"
+                    Icon="Filter"
+                    IsCompact="True"
+                    Visibility="Collapsed" />
+            </StackPanel>
+        </Grid>
         <Rectangle
             x:Name="overlayRectangle"
-            Grid.Row="1"
             x:DeferLoadStrategy="Lazy"
             Fill="#54000000"
             PointerPressed="overlayRectangle_PointerPressed"
             Visibility="Collapsed" />
         <StackPanel
             x:Name="filterStackPanel"
-            Grid.Row="1"
             VerticalAlignment="Top"
             x:DeferLoadStrategy="Lazy"
             Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
@@ -652,7 +654,6 @@
         </StackPanel>
         <StackPanel
             x:Name="noItemsOverlay"
-            Grid.Row="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Visibility="{x:Bind ViewModel.ItemsCountIsZero, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -666,7 +667,7 @@
                 Style="{StaticResource InfoTextBlockStyle}"
                 Text="Didn't found something for you. Sorry." />
         </StackPanel>
-        <CommandBar x:Name="MainCommandBar" Grid.Row="2">
+        <CommandBar x:Name="MainCommandBar" Grid.Row="1">
             <AppBarButton
                 x:Uid="AddItemAppBarButton"
                 Command="{x:Bind ViewModel.AddCommand}"
@@ -701,7 +702,7 @@
         </CommandBar>
         <Border
             x:Name="offlineTaskIndicatorBorder"
-            Grid.Row="2"
+            Grid.Row="1"
             Width="16"
             Height="16"
             Margin="0,0,132,6"
@@ -721,7 +722,7 @@
         </Border>
         <CommandBar
             x:Name="MultipleSelectionCommandBar"
-            Grid.Row="2"
+            Grid.Row="1"
             x:DeferLoadStrategy="Lazy"
             Visibility="Collapsed">
             <AppBarButton
