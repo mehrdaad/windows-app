@@ -384,4 +384,7 @@
   <data name="WelcomeTextBlock.Text" xml:space="preserve">
     <value>Willkommen!</value>
   </data>
+  <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
+    <value>Einstellungen anpassen</value>
+  </data>
 </root>

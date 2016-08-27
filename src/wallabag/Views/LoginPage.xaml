@@ -281,6 +281,7 @@
                     Header="Password"
                     Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
                 <CheckBox
+                    x:Uid="UseCustomSettingsCheckBox"
                     Margin="8,4"
                     Content="Use custom settings"
                     IsChecked="{x:Bind ViewModel.UseCustomSettings, Mode=TwoWay}" />
