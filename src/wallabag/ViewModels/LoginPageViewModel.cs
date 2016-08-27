@@ -22,6 +22,7 @@ namespace wallabag.ViewModels
         public string Url { get; set; } = string.Empty;
         public string ClientId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
+        public bool? UseCustomSettings { get; set; } = false;
 
         public bool IsTestRunning { get; set; }
         public bool TestWasSuccessful { get; set; } = false;
