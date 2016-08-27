@@ -70,15 +70,15 @@ namespace wallabag.Views
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             if (!ApiInformation.IsTypePresent(typeof(CompositionBackdropBrush).FullName))
+            {
+                backdropRectangle.Fill = new SolidColorBrush((Color)Template10.Common.BootStrapper.Current.Resources["SystemChromeMediumColor"]);
                 return;
+            }
 
             var gridVisual = ElementCompositionPreview.GetElementVisual(backdropRectangle);
-
             var compositor = gridVisual.Compositor;
 
-            var effectVisual = compositor.CreateSpriteVisual();
-
-            // We'd need to resize this as/when the grid resized.
+            var effectVisual = compositor.CreateSpriteVisual();            
             effectVisual.Size = new Vector2(
               (float)this.topGrid.ActualWidth,
               (float)this.topGrid.ActualHeight);
@@ -93,7 +93,7 @@ namespace wallabag.Views
             {
                 BorderMode = EffectBorderMode.Hard,
                 Source = new CompositionEffectSourceParameter("source"),
-                BlurAmount = 15f, //24f
+                BlurAmount = 15f,
                 Optimization = EffectOptimization.Balanced
             };
 
