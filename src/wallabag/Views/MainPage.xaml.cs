@@ -57,6 +57,14 @@ namespace wallabag.Views
             };
 
             Loaded += MainPage_Loaded;
+            topGrid.SizeChanged += TopGrid_SizeChanged;
+        }
+
+        private void TopGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var effectVisual = ElementCompositionPreview.GetElementChildVisual(backdropRectangle);
+            if (effectVisual != null)
+                effectVisual.Size = e.NewSize.ToVector2();
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -85,7 +93,7 @@ namespace wallabag.Views
             {
                 BorderMode = EffectBorderMode.Hard,
                 Source = new CompositionEffectSourceParameter("source"),
-                BlurAmount = 24f,
+                BlurAmount = 15f, //24f
                 Optimization = EffectOptimization.Balanced
             };
 
