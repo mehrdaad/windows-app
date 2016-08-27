@@ -57,12 +57,15 @@ namespace wallabag.ViewModels
         {
             if (!string.IsNullOrWhiteSpace(Username) &&
                 !string.IsNullOrWhiteSpace(Password) &&
-                !string.IsNullOrWhiteSpace(Url) &&
-                !string.IsNullOrWhiteSpace(ClientId) &&
-                !string.IsNullOrWhiteSpace(ClientSecret))
-                return true;
-            else
-                return false;
+                !string.IsNullOrWhiteSpace(Url))
+                if ((UseCustomSettings == true &&
+                    !string.IsNullOrWhiteSpace(ClientId) &&
+                    !string.IsNullOrWhiteSpace(ClientSecret)) ||
+                    UseCustomSettings == false)
+                    return true;
+                else
+                    return false;
+            else return false;
         }
         private async Task<bool> TestConfigurationAsync()
         {
@@ -70,6 +73,20 @@ namespace wallabag.ViewModels
 
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
                 Url = "https://" + Url;
+
+            if (UseCustomSettings == false)
+            {
+                var clientCreationIsSuccessful = await CreateApiClientAsync();
+
+                if (clientCreationIsSuccessful == false &&
+                    Url.StartsWith("https://"))
+                {
+                    Url = Url.Replace("https://", "http://");
+
+                    if (await CreateApiClientAsync() == false)
+                        return false;
+                }
+            }
 
             App.Client.ClientId = ClientId;
             App.Client.ClientSecret = ClientSecret;
