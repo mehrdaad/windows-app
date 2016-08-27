@@ -6,7 +6,9 @@ using Template10.Mvvm;
 using wallabag.Api.Models;
 using wallabag.Common;
 using wallabag.Models;
+using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.UI.Xaml.Navigation;
+using Windows.Web.Http;
 
 namespace wallabag.ViewModels
 {
@@ -169,5 +171,67 @@ namespace wallabag.ViewModels
             }
             return Task.CompletedTask;
         }
+
+        #region Client creation
+
+        HttpClient _http;
+
+        private const string m_loginStartString = "<input type=\"hidden\" name=\"_csrf_token\" value=\"";
+        private const string m_tokenStartString = "<input type=\"hidden\" id=\"client__token\" name=\"client[_token]\" value=\"";
+        private const string m_finalTokenStartString = "<strong><pre>";
+        private const string m_finalTokenEndString = "</pre></strong>";
+        private const string m_htmlInputEndString = "\" />";
+
+        public async Task<bool> CreateApiClientAsync()
+        {
+            _http = new HttpClient();
+            var instanceUri = new Uri(Url);
+
+            // Step 1: Login to get a cookie.
+            var loginContent = new HttpStringContent($"_username={Username}&_password={Password}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+            var loginResponse = await _http.PostAsync(new Uri(instanceUri, "/login_check"), loginContent);
+
+            if (!loginResponse.IsSuccessStatusCode)
+                return false;
+
+            // Step 2: Get the client token
+            var clientCreateUri = new Uri(instanceUri, "/developer/client/create");
+            var token = await GetStringFromHtmlSequenceAsync(clientCreateUri, m_tokenStartString, m_htmlInputEndString);
+
+            // Step 3: Create the new client
+            var addContent = new HttpStringContent($"client[redirect_uris]={GetRedirectUri()}&client[save]=&client[_token]={token}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+            var addResponse = await _http.PostAsync(clientCreateUri, addContent);
+
+            if (!addResponse.IsSuccessStatusCode)
+                return false;
+
+            var finalHtml = await addResponse.Content.ReadAsStringAsync();
+
+            var clientIdStartIndex = finalHtml.IndexOf(m_finalTokenStartString) + m_finalTokenStartString.Length;
+            var clientIdEndIndex = finalHtml.IndexOf(m_finalTokenEndString);
+            var clientSecretStartIndex = finalHtml.LastIndexOf(m_finalTokenStartString) + m_finalTokenStartString.Length;
+            var clientSecretEndIndex = finalHtml.LastIndexOf(m_finalTokenEndString);
+
+            this.ClientId = finalHtml.Substring(clientIdStartIndex, clientIdEndIndex - clientIdStartIndex);
+            this.ClientSecret = finalHtml.Substring(clientSecretStartIndex, clientSecretEndIndex - clientSecretStartIndex);
+
+            _http.Dispose();
+            return true;
+        }
+
+        private object GetRedirectUri() => new Uri(new Uri(Url), new EasClientDeviceInformation().FriendlyName);
+        private Task<string> GetCsrfTokenAsync() => GetStringFromHtmlSequenceAsync(new Uri(new Uri(Url), "/login"), m_loginStartString, m_htmlInputEndString);
+
+        private async Task<string> GetStringFromHtmlSequenceAsync(Uri uri, string startString, string endString)
+        {
+            var html = await (await _http.GetAsync(uri)).Content.ReadAsStringAsync();
+
+            var startIndex = html.IndexOf(startString) + startString.Length;
+            var endIndex = html.IndexOf(endString, startIndex);
+
+            return html.Substring(startIndex, endIndex - startIndex);
+        }
+
+        #endregion
     }
 }
