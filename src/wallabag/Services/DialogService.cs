@@ -28,7 +28,11 @@ namespace wallabag.Services
 
             await _dialog?.ShowAsync();
         }
-        public static void HideCurrentDialog() => _dialog?.Hide();
+        public static void HideCurrentDialog()
+        {
+            _dialog?.Hide();
+            _dialog = null;
+        }
 
         public enum Dialog
         {
