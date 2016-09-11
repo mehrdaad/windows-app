@@ -378,6 +378,8 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
+            await TitleBarExtensions.ResetAsync();
+
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
             {
                 var stateValue = state[nameof(CurrentSearchProperties)] as string;
