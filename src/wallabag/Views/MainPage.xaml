@@ -599,8 +599,7 @@
 
             <Button
                 x:Uid="ResetFilterButton"
-                Margin="0,12,0,4"
-                HorizontalAlignment="Stretch"
+                Margin="4,18,4,4"
                 Command="{x:Bind ViewModel.ResetFilterCommand}"
                 Content="Reset filter"
                 Style="{StaticResource TextBlockButtonStyle}" />
