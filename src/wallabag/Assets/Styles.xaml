@@ -194,19 +194,22 @@
     </Style>
 
     <Style x:Key="IconRadioButtonStyle" TargetType="RadioButton">
-        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
         <Setter Property="Margin" Value="4,0" />
-        <Setter Property="MinWidth" Value="0" />
-        <Setter Property="Padding" Value="10" />
-        <Setter Property="MinWidth" Value="36" />
-        <Setter Property="MinHeight" Value="36" />
         <Setter Property="MaxHeight" Value="36" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinWidth" Value="36" />
+        <Setter Property="Padding" Value="10" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="100">
+                    <Grid
+                        x:Name="RootGrid"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="100">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal">
@@ -285,14 +288,23 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="ExpandableIconRadioButtonStyle" TargetType="RadioButton" BasedOn="{StaticResource IconRadioButtonStyle}">
+    <Style
+        x:Key="ExpandableIconRadioButtonStyle"
+        BasedOn="{StaticResource IconRadioButtonStyle}"
+        TargetType="RadioButton">
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="Padding" Value="8,4,12,4" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="18">
+                    <Grid
+                        x:Name="RootGrid"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="18">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal">
@@ -348,15 +360,10 @@
                                         <Setter Target="IconPresenter.Foreground" Value="White" />
                                     </VisualState.Setters>
                                 </VisualState>
-                                <VisualState x:Name="Unchecked">
-                                </VisualState>
+                                <VisualState x:Name="Unchecked" />
                                 <VisualState x:Name="Indeterminate" />
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="36"/>
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
                         <Ellipse
                             x:Name="backgroundEllipse"
                             Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
@@ -364,9 +371,9 @@
                         <ContentPresenter
                             x:Name="IconPresenter"
                             HorizontalContentAlignment="Center"
-                            VerticalContentAlignment  ="Center"
-                            FontFamily="Segoe MDL2 Assets"
-                            Content="{TemplateBinding Tag}"/>
+                            VerticalContentAlignment="Center"
+                            Content="{TemplateBinding Tag}"
+                            FontFamily="Segoe MDL2 Assets" />
                         <ContentPresenter
                             x:Name="ContentPresenter"
                             Grid.Column="1"
@@ -384,6 +391,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <Style x:Key="ToggleButtonRadioButtonStyle" TargetType="RadioButton">

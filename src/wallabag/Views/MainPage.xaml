@@ -451,9 +451,9 @@
             x:Name="filterStackPanel"
             VerticalAlignment="Top"
             x:DeferLoadStrategy="Lazy"
-            BorderThickness="1"
-            BorderBrush="{ThemeResource SystemControlBackgroundBaseLowBrush}"
             Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+            BorderBrush="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+            BorderThickness="1"
             RenderTransformOrigin="0.5,0.5">
             <StackPanel.RenderTransform>
                 <CompositeTransform />
@@ -476,8 +476,15 @@
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
-                    <RadioButton Content="by date" Tag="&#xE163;" IsChecked="True" Style="{StaticResource ExpandableIconRadioButtonStyle}"/>
-                    <RadioButton Content="by reading time" Tag="&#xE121;" Style="{StaticResource ExpandableIconRadioButtonStyle}"/>
+                    <RadioButton
+                        Content="by date"
+                        IsChecked="True"
+                        Style="{StaticResource ExpandableIconRadioButtonStyle}"
+                        Tag="&#xE163;" />
+                    <RadioButton
+                        Content="by reading time"
+                        Style="{StaticResource ExpandableIconRadioButtonStyle}"
+                        Tag="&#xE121;" />
                 </StackPanel>
                 <StackPanel
                     Grid.Column="1"
@@ -487,9 +494,7 @@
                         Content="&#xE70E;"
                         IsChecked="True"
                         Style="{StaticResource IconRadioButtonStyle}" />
-                    <RadioButton
-                        Content="&#xE70D;"
-                        Style="{StaticResource IconRadioButtonStyle}" />
+                    <RadioButton Content="&#xE70D;" Style="{StaticResource IconRadioButtonStyle}" />
                 </StackPanel>
             </Grid>
             <TextBlock
