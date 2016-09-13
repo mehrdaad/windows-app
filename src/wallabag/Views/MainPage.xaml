@@ -456,6 +456,14 @@
             <StackPanel.RenderTransform>
                 <CompositeTransform />
             </StackPanel.RenderTransform>
+            <StackPanel.Resources>
+                <Style TargetType="ComboBox">
+                    <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+                    <Setter Property="BorderThickness" Value="0,1" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Padding" Value="12,7,0,9" />
+                </Style>
+            </StackPanel.Resources>
             <TextBlock
                 x:Uid="SortOrderFilterTitleTextBlock"
                 Style="{StaticResource MenuHeaderTextBlockStyle}"
@@ -564,8 +572,6 @@
                 Text="LANGUAGE" />
             <ComboBox
                 x:Uid="LanguageComboBox"
-                HorizontalAlignment="Stretch"
-                BorderThickness="0"
                 ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}"
                 PlaceholderText="select language…"
                 SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=OneWay}">
@@ -581,8 +587,6 @@
                 Text="TAG" />
             <ComboBox
                 x:Uid="TagComboBox"
-                HorizontalAlignment="Stretch"
-                BorderThickness="0"
                 ItemsSource="{x:Bind ViewModel.TagSuggestions, Mode=OneWay}"
                 PlaceholderText="select tag…"
                 SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=OneWay}">
