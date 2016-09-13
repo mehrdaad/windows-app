@@ -457,56 +457,6 @@
                 <CompositeTransform />
             </StackPanel.RenderTransform>
             <TextBlock
-                x:Uid="ItemTypeFilterTitleTextBlock"
-                Style="{StaticResource MenuHeaderTextBlockStyle}"
-                Text="ITEM TYPE" />
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                <RadioButton
-                    Background="#16a085"
-                    Content="&#xE138;"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.IsAllItemsFilterActive, Mode=OneWay}"
-                    Style="{StaticResource IconRadioButtonStyle}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="all" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-                <RadioButton
-                    Background="#2980b9"
-                    Content="&#xE052;"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.IsUnreadItemsFilterActive, Mode=OneWay}"
-                    Style="{StaticResource IconRadioButtonStyle}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="unread" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-                <RadioButton
-                    Background="#f39c12"
-                    Content="&#xE006;"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.IsStarredItemsFilterActive, Mode=OneWay}"
-                    Style="{StaticResource IconRadioButtonStyle}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="starred" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-                <RadioButton
-                    Background="#c0392b"
-                    Content="&#xE1D3;"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.IsArchivedItemsFilterActive, Mode=OneWay}"
-                    Style="{StaticResource IconRadioButtonStyle}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="archived" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-            </StackPanel>
-            <TextBlock
                 x:Uid="SortOrderFilterTitleTextBlock"
                 Style="{StaticResource MenuHeaderTextBlockStyle}"
                 Text="SORT BY" />
