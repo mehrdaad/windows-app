@@ -493,14 +493,17 @@
                     Grid.Column="1"
                     Margin="4,0"
                     Orientation="Horizontal">
+                    <!--  TODO: Add translation for both tags  -->
                     <RadioButton
                         Content="&#xE143;"
                         IsChecked="True"
-                        Style="{StaticResource IconRadioButtonStyle}" />
+                        Style="{StaticResource IconRadioButtonStyle}"
+                        Tag="sort ascending" />
                     <RadioButton
                         Content="&#xE143;"
                         RenderTransformOrigin="0.5,0.5"
-                        Style="{StaticResource IconRadioButtonStyle}">
+                        Style="{StaticResource IconRadioButtonStyle}"
+                        Tag="sort descending">
                         <RadioButton.RenderTransform>
                             <CompositeTransform Rotation="90" />
                         </RadioButton.RenderTransform>
