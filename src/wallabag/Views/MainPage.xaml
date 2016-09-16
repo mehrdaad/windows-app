@@ -470,7 +470,10 @@
                 x:Uid="SortOrderFilterTitleTextBlock"
                 Style="{StaticResource MenuHeaderTextBlockStyle}"
                 Text="SORT BY" />
-            <Grid>
+            <Grid
+                Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}"
+                BorderBrush="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                BorderThickness="0,1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
