@@ -291,6 +291,7 @@
         BasedOn="{StaticResource IconRadioButtonStyle}"
         TargetType="RadioButton">
         <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="Margin" Value="2,0" />
         <Setter Property="Padding" Value="8,4,12,4" />
         <Setter Property="Template">
             <Setter.Value>
@@ -298,7 +299,8 @@
                     <Grid
                         x:Name="RootGrid"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="18">
+                        BorderThickness="1,0"
+                        ToolTipService.ToolTip="{TemplateBinding Content}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="36" />
                             <ColumnDefinition />
@@ -306,24 +308,20 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Target="ContentPresenter.Visibility" Value="Collapsed" />
-                                    </VisualState.Setters>
                                     <Storyboard>
                                         <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="PointerOver">
-                                    <VisualState.Setters>
-                                        <Setter Target="ContentPresenter.Visibility" Value="Visible" />
-                                    </VisualState.Setters>
                                     <Storyboard>
                                         <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
                                     </Storyboard>
+                                    <VisualState.Setters>
+                                        <Setter Target="IconPresenter.Background" Value="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}" />
+                                    </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
-                                        <Setter Target="ContentPresenter.Visibility" Value="Visible" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}" />
                                     </VisualState.Setters>
                                     <Storyboard>
@@ -349,7 +347,7 @@
                                     <Storyboard>
                                         <DoubleAnimation
                                             Duration="0:0:0.3"
-                                            Storyboard.TargetName="backgroundEllipse"
+                                            Storyboard.TargetName="backgroundRectangle"
                                             Storyboard.TargetProperty="Opacity"
                                             To="1" />
                                     </Storyboard>
@@ -358,12 +356,17 @@
                                         <Setter Target="IconPresenter.Foreground" Value="White" />
                                     </VisualState.Setters>
                                 </VisualState>
-                                <VisualState x:Name="Unchecked" />
+                                <VisualState x:Name="Unchecked">
+                                    <VisualState.Setters>
+                                        <Setter Target="ContentPresenter.Visibility" Value="Collapsed" />
+                                        <Setter Target="BackgroundRectangle.Opacity" Value="0" />
+                                    </VisualState.Setters>
+                                </VisualState>
                                 <VisualState x:Name="Indeterminate" />
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Ellipse
-                            x:Name="backgroundEllipse"
+                        <Rectangle
+                            x:Name="BackgroundRectangle"
                             Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
                             Opacity="0" />
                         <ContentPresenter
@@ -378,12 +381,9 @@
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                             AutomationProperties.AccessibilityView="Raw"
-                            BorderBrush="{TemplateBinding Background}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             ContentTransitions="{TemplateBinding ContentTransitions}"
-                            CornerRadius="100"
                             Padding="{TemplateBinding Padding}" />
                     </Grid>
                 </ControlTemplate>
