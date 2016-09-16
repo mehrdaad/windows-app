@@ -347,7 +347,7 @@
                                     <Storyboard>
                                         <DoubleAnimation
                                             Duration="0:0:0.3"
-                                            Storyboard.TargetName="backgroundRectangle"
+                                            Storyboard.TargetName="BackgroundRectangle"
                                             Storyboard.TargetProperty="Opacity"
                                             To="1" />
                                     </Storyboard>
