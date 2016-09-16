@@ -491,8 +491,9 @@
                 </StackPanel>
                 <StackPanel
                     Grid.Column="1"
-                    Margin="4,0"
-                    Orientation="Horizontal">
+                    Margin="1,0,0,0"
+                    Orientation="Horizontal"
+                    Padding="5,0,0,0">
                     <!--  TODO: Add translation for both tags  -->
                     <RadioButton
                         Content="&#xE143;"
