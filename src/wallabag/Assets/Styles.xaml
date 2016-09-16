@@ -194,10 +194,9 @@
     </Style>
 
     <Style x:Key="IconRadioButtonStyle" TargetType="RadioButton">
-        <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
-        <Setter Property="Margin" Value="4,0" />
+        <Setter Property="Margin" Value="2,0" />
         <Setter Property="MaxHeight" Value="36" />
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="MinWidth" Value="0" />
@@ -209,7 +208,7 @@
                     <Grid
                         x:Name="RootGrid"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="100">
+                        ToolTipService.ToolTip="{TemplateBinding Tag}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal">
@@ -255,7 +254,7 @@
                                     <Storyboard>
                                         <DoubleAnimation
                                             Duration="0:0:0.3"
-                                            Storyboard.TargetName="backgroundEllipse"
+                                            Storyboard.TargetName="BackgroundRectangle"
                                             Storyboard.TargetProperty="Opacity"
                                             To="1" />
                                     </Storyboard>
@@ -267,8 +266,8 @@
                                 <VisualState x:Name="Indeterminate" />
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Ellipse
-                            x:Name="backgroundEllipse"
+                        <Rectangle
+                            x:Name="BackgroundRectangle"
                             Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
                             Opacity="0" />
                         <ContentPresenter
@@ -281,7 +280,6 @@
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             ContentTransitions="{TemplateBinding ContentTransitions}"
-                            CornerRadius="100"
                             Padding="{TemplateBinding Padding}" />
                     </Grid>
                 </ControlTemplate>
