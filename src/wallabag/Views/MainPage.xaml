@@ -483,21 +483,28 @@
                         Content="by date"
                         IsChecked="True"
                         Style="{StaticResource ExpandableIconRadioButtonStyle}"
-                        Tag="&#xE163;" />
+                        Tag="&#xE1DC;" />
                     <RadioButton
                         Content="by reading time"
                         Style="{StaticResource ExpandableIconRadioButtonStyle}"
-                        Tag="&#xE121;" />
+                        Tag="&#xE2AD;" />
                 </StackPanel>
                 <StackPanel
                     Grid.Column="1"
                     Margin="4,0"
                     Orientation="Horizontal">
                     <RadioButton
-                        Content="&#xE70E;"
+                        Content="&#xE143;"
                         IsChecked="True"
                         Style="{StaticResource IconRadioButtonStyle}" />
-                    <RadioButton Content="&#xE70D;" Style="{StaticResource IconRadioButtonStyle}" />
+                    <RadioButton
+                        Content="&#xE143;"
+                        RenderTransformOrigin="0.5,0.5"
+                        Style="{StaticResource IconRadioButtonStyle}">
+                        <RadioButton.RenderTransform>
+                            <CompositeTransform Rotation="90" />
+                        </RadioButton.RenderTransform>
+                    </RadioButton>
                 </StackPanel>
             </Grid>
             <TextBlock
