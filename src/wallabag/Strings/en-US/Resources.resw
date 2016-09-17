@@ -387,4 +387,16 @@
   <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
     <value>Use custom settings</value>
   </data>
+  <data name="OrderAscendingRadioButton.Tag" xml:space="preserve">
+    <value>order ascending</value>
+  </data>
+  <data name="OrderDescendingRadioButton.Tag" xml:space="preserve">
+    <value>order descending</value>
+  </data>
+  <data name="SortByDateRadioButton.Content" xml:space="preserve">
+    <value>by date</value>
+  </data>
+  <data name="SortByReadingTimeRadioButton.Content" xml:space="preserve">
+    <value>by reading time</value>
+  </data>
 </root>
