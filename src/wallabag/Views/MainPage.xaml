@@ -251,6 +251,7 @@
                 <VisualState x:Name="Narrow">
                     <VisualState.Setters>
                         <Setter Target="ItemGridView.MinItemHeight" Value="75" />
+                        <Setter Target="filterStackPanel.VerticalAlignment" Value="Bottom" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="0" />
@@ -266,7 +267,9 @@
                         <Setter Target="searchBox.HorizontalAlignment" Value="Right" />
                         <Setter Target="searchBox.MinWidth" Value="300" />
                         <Setter Target="filterStackPanel.HorizontalAlignment" Value="Right" />
+                        <Setter Target="filterStackPanel.VerticalAlignment" Value="Top" />
                         <Setter Target="filterStackPanel.MinWidth" Value="300" />
+                        <Setter Target="filterStackPanel.Margin" Value="0,48,0,0" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="720" />
