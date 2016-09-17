@@ -30,11 +30,13 @@ namespace wallabag.ViewModels
         public bool ItemsCountIsZero { get { return Items.Count == 0; } }
         public bool IsSearchActive { get; set; } = false;
         public string PageHeader { get; set; } = Helpers.LocalizedResource("UnreadPageTitleTextBlock.Text");
+        public int PivotIndex { get; set; }
 
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
         public DelegateCommand NavigateToSettingsPageCommand { get; private set; }
         public DelegateCommand<ItemClickEventArgs> ItemClickCommand { get; private set; }
+        public DelegateCommand<SelectionChangedEventArgs> PivotSelectionChangedCommand { get; private set; }
 
         public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties();
         public ObservableCollection<Item> SearchQuerySuggestions { get; set; } = new ObservableCollection<Item>();
@@ -64,6 +66,18 @@ namespace wallabag.ViewModels
             LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
             TagChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => TagChanged(args));
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
+            PivotSelectionChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args =>
+            {
+                var newItem = args.AddedItems.First() as PivotItem;
+                var header = newItem.Header.ToString();
+
+                if (header == Helpers.LocalizedResource("UnreadPivotItem.Header"))
+                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Unread;
+                else if (header == Helpers.LocalizedResource("FavoritesPivotItem.Header"))
+                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Favorites;
+                else if (header == Helpers.LocalizedResource("ArchivedPivotItem.Header"))
+                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Archived;
+            });
 
             CurrentSearchProperties.SearchStarted += p => StartSearch();
             CurrentSearchProperties.SearchCanceled += p => EndSearch(null, null);
@@ -379,6 +393,7 @@ namespace wallabag.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             await TitleBarExtensions.ResetAsync();
+            PivotIndex = (int?)state[nameof(PivotIndex)] ?? 0;
 
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
             {
@@ -401,6 +416,7 @@ namespace wallabag.ViewModels
         {
             var serializedSearchProperties = await Task.Run(() => JsonConvert.SerializeObject(CurrentSearchProperties));
             pageState[nameof(CurrentSearchProperties)] = serializedSearchProperties;
+            pageState[nameof(PivotIndex)] = PivotIndex;
         }
     }
 }

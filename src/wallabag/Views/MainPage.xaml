@@ -404,10 +404,22 @@
             x:Name="topGrid"
             Height="48"
             VerticalAlignment="Top">
-            <TextBlock
-                x:Uid="UnreadPageTitleTextBlock"
-                Style="{StaticResource PageTitleTextBlockStyle}"
-                Text="{x:Bind ViewModel.PageHeader, Mode=OneWay}" />
+            <Pivot SelectedIndex="{x:Bind ViewModel.PivotIndex, Mode=TwoWay}">
+                <Pivot.Resources>
+                    <Style TargetType="PivotHeaderItem">
+                        <Setter Property="FontSize" Value="15" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                    </Style>
+                </Pivot.Resources>
+                <PivotItem x:Uid="UnreadPivotItem" Header="UNREAD" />
+                <PivotItem x:Uid="FavoritesPivotItem" Header="FAVORITES" />
+                <PivotItem x:Uid="ArchivedPivotItem" Header="ARCHIVED" />
+                <interactivity:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="SelectionChanged">
+                        <core:InvokeCommandAction Command="{x:Bind ViewModel.PivotSelectionChangedCommand}" />
+                    </core:EventTriggerBehavior>
+                </interactivity:Interaction.Behaviors>
+            </Pivot>
             <AutoSuggestBox
                 x:Uid="SearchBox"
                 x:Name="searchBox"
