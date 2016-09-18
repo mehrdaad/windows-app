@@ -12,12 +12,8 @@ namespace wallabag.Models
 
         public event SearchChangedEventHandler SearchCanceled;
         public event SearchChangedEventHandler SearchStarted;
-        public event ItemTypeChangedEventHandler ItemTypeChanged;
-        public event SortOrderChangedEventHandler SortOrderChanged;
 
         public delegate void SearchChangedEventHandler(SearchProperties p);
-        public delegate void ItemTypeChangedEventHandler(SearchPropertiesItemType newItemType);
-        public delegate void SortOrderChangedEventHandler(SearchPropertiesSortOrder newSortOrder);
         #endregion
 
         private string _query;
@@ -41,74 +37,44 @@ namespace wallabag.Models
             }
         }
 
-        private SearchPropertiesItemType _itemType = SearchPropertiesItemType.Unread;
-        public SearchPropertiesItemType ItemType
-        {
-            get { return _itemType; }
-            set
-            {
-                if (_itemType != value)
-                {
-                    _itemType = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemType)));
-                    ItemTypeChanged?.Invoke(value);
-                }
-            }
-        }
-
-        private SearchPropertiesSortOrder _sortOrder = SearchPropertiesSortOrder.DescendingByCreationDate;
-        public SearchPropertiesSortOrder SortOrder
-        {
-            get { return _sortOrder; }
-            set
-            {
-                if (_sortOrder != value)
-                {
-                    _sortOrder = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SortOrder)));
-                    SortOrderChanged?.Invoke(value);
-                }
-            }
-        }
+        /// <summary>
+        /// 0: unread
+        /// 1: favorites
+        /// 2: archived
+        /// 3: all
+        /// </summary>
+        public int ItemTypeIndex { get; set; }
+        public bool? OrderAscending { get; set; }
+        public SearchPropertiesOrderType OrderType { get; set; }
         public Language Language { get; set; }
         public Tag Tag { get; set; }
-
-        public enum SearchPropertiesItemType
-        {
-            All = 0,
-            Unread = 1,
-            Favorites = 2,
-            Archived = 3
-        }
-        public enum SearchPropertiesSortOrder
-        {
-            DescendingByCreationDate = 0,
-            AscendingByCreationDate = 1,
-            DescendingByReadingTime = 2,
-            AscendingByReadingTime = 3
-        }
 
         public SearchProperties()
         {
             Reset();
         }
 
-        public void Reset()
+        public enum SearchPropertiesOrderType
+        {
+            ByCreationDate = 0,
+            ByReadingTime = 1
+        }
+
+        internal void Reset()
         {
             Query = string.Empty;
-            ItemType = SearchPropertiesItemType.Unread;
-            SortOrder = SearchPropertiesSortOrder.DescendingByCreationDate;
+            ItemTypeIndex = 0;
+            OrderAscending = false;
             Language = null;
             Tag = null;
         }
-
         internal void Replace(SearchProperties searchProperties)
         {
-            this.Query = searchProperties.Query;
-            this.ItemType = searchProperties.ItemType;
-            this.SortOrder = searchProperties.SortOrder;
-            this.Language = searchProperties.Language;
-            this.Tag = searchProperties.Tag;
+            Query = searchProperties.Query;
+            ItemTypeIndex = searchProperties.ItemTypeIndex;
+            OrderAscending = searchProperties.OrderAscending;
+            Language = searchProperties.Language;
+            Tag = searchProperties.Tag;
         }
     }
 }
