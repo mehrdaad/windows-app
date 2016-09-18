@@ -41,9 +41,6 @@ namespace wallabag.ViewModels
         public ObservableCollection<Item> SearchQuerySuggestions { get; set; } = new ObservableCollection<Item>();
         public ObservableCollection<Language> LanguageSuggestions { get; set; } = new ObservableCollection<Language>();
         public ObservableCollection<Tag> TagSuggestions { get; set; } = new ObservableCollection<Tag>();
-        public DelegateCommand<string> SetItemTypeFilterCommand { get; private set; }
-        public DelegateCommand<string> SetEstimatedReadingTimeFilterCommand { get; private set; }
-        public DelegateCommand<string> SetCreationDateFilterCommand { get; private set; }
         public DelegateCommand<AutoSuggestBoxTextChangedEventArgs> SearchQueryChangedCommand { get; private set; }
         public DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs> SearchQuerySubmittedCommand { get; private set; }
         public DelegateCommand<SelectionChangedEventArgs> LanguageCodeChangedCommand { get; private set; }
@@ -57,32 +54,20 @@ namespace wallabag.ViewModels
             NavigateToSettingsPageCommand = new DelegateCommand(() => NavigationService.Navigate(typeof(Views.SettingsPage), infoOverride: new DrillInNavigationTransitionInfo()));
             ItemClickCommand = new DelegateCommand<ItemClickEventArgs>(t => ItemClick(t));
 
-            SetItemTypeFilterCommand = new DelegateCommand<string>(type => SetItemTypeFilter(type));
-            SetEstimatedReadingTimeFilterCommand = new DelegateCommand<string>(order => SetEstimatedReadingTimeFilter(order));
-            SetCreationDateFilterCommand = new DelegateCommand<string>(order => SetCreationDateFilter(order));
             SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
             SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
             LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
             TagChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => TagChanged(args));
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
-            PivotSelectionChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args =>
-            {
-                var newItem = args.AddedItems.First() as PivotItem;
-                var header = newItem.Header.ToString();
-
-                if (header == Helpers.LocalizedResource("UnreadPivotItem.Header"))
-                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Unread;
-                else if (header == Helpers.LocalizedResource("FavoritesPivotItem.Header"))
-                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Favorites;
-                else if (header == Helpers.LocalizedResource("ArchivedPivotItem.Header"))
-                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Archived;
-            });
 
             CurrentSearchProperties.SearchStarted += p => StartSearch();
             CurrentSearchProperties.SearchCanceled += p => EndSearch(null, null);
             CurrentSearchProperties.SearchCanceled += p => UpdateView();
-            CurrentSearchProperties.ItemTypeChanged += i => UpdateView();
-            CurrentSearchProperties.SortOrderChanged += i => UpdateView();
+            CurrentSearchProperties.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName != nameof(CurrentSearchProperties.Query))
+                    UpdateView();
+            };
 
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
 
@@ -164,61 +149,27 @@ namespace wallabag.ViewModels
             NavigationService.Navigate(typeof(Views.ItemPage), item.Model.Id);
         }
 
-        private void SetItemTypeFilter(string type)
-        {
-            switch (type)
-            {
-                case "all":
-                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.All;
-                    break;
-                case "unread":
-                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Unread;
-                    break;
-                case "starred":
-                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Favorites;
-                    break;
-                case "archived":
-                    CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Archived;
-                    break;
-            }
-            UpdatePageHeader();
-        }
-
         private void UpdatePageHeader()
         {
             if (IsSearchActive)
                 PageHeader = $"\"{CurrentSearchProperties.Query.ToUpper()}\"";
             else
             {
-                switch (CurrentSearchProperties.ItemType)
+                switch (CurrentSearchProperties.ItemTypeIndex)
                 {
-                    case SearchProperties.SearchPropertiesItemType.All:
-                        PageHeader = Helpers.LocalizedResource("AllPageTitleTextBlock.Text"); break;
-                    case SearchProperties.SearchPropertiesItemType.Unread:
+                    case 0:
                     default:
                         PageHeader = Helpers.LocalizedResource("UnreadPageTitleTextBlock.Text"); break;
-                    case SearchProperties.SearchPropertiesItemType.Favorites:
+                    case 1:
                         PageHeader = Helpers.LocalizedResource("StarredPageTitleTextBlock.Text"); break;
-                    case SearchProperties.SearchPropertiesItemType.Archived:
+                    case 2:
                         PageHeader = Helpers.LocalizedResource("ArchivedPageTitleTextBlock.Text"); break;
+                    case 3:
+                        PageHeader = Helpers.LocalizedResource("AllPageTitleTextBlock.Text"); break;
                 }
             }
         }
 
-        private void SetEstimatedReadingTimeFilter(string order)
-        {
-            if (order.Equals("asc"))
-                CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.AscendingByReadingTime;
-            else
-                CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.DescendingByReadingTime;
-        }
-        private void SetCreationDateFilter(string order)
-        {
-            if (order.Equals("asc"))
-                CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.AscendingByCreationDate;
-            else
-                CurrentSearchProperties.SortOrder = SearchProperties.SearchPropertiesSortOrder.DescendingByCreationDate;
-        }
         private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
         {
             if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
@@ -241,7 +192,7 @@ namespace wallabag.ViewModels
             if (string.IsNullOrWhiteSpace(args.QueryText))
                 return;
 
-            CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.All;
+            CurrentSearchProperties.ItemTypeIndex = 3;
             UpdateView();
         }
         private void LanguageCodeChanged(SelectionChangedEventArgs args)
@@ -266,7 +217,7 @@ namespace wallabag.ViewModels
         private void EndSearch(object sender, BackRequestedEventArgs e)
         {
             IsSearchActive = false;
-            CurrentSearchProperties.ItemType = SearchProperties.SearchPropertiesItemType.Unread;
+            CurrentSearchProperties.ItemTypeIndex = 0; // TODO: Take previous setting.
 
             SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearch(s, args);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
@@ -335,15 +286,15 @@ namespace wallabag.ViewModels
         {
             var items = App.Database.Table<Item>();
 
-            switch (CurrentSearchProperties.ItemType)
+            switch (CurrentSearchProperties.ItemTypeIndex)
             {
-                case SearchProperties.SearchPropertiesItemType.Unread:
+                case 0:
                     items = items.Where(i => i.IsRead == false); break;
-                case SearchProperties.SearchPropertiesItemType.Favorites:
+                case 1:
                     items = items.Where(i => i.IsStarred == true); break;
-                case SearchProperties.SearchPropertiesItemType.Archived:
+                case 2:
                     items = items.Where(i => i.IsRead == true); break;
-                case SearchProperties.SearchPropertiesItemType.All:
+                case 3:
                 default:
                     break;
             }
@@ -356,21 +307,19 @@ namespace wallabag.ViewModels
             else if (CurrentSearchProperties.Language?.IsUnknown == true)
                 items = items.Where(i => i.Language == null);
 
-            switch (CurrentSearchProperties.SortOrder)
+            if (CurrentSearchProperties.OrderType == SearchProperties.SearchPropertiesOrderType.ByCreationDate)
             {
-                case SearchProperties.SearchPropertiesSortOrder.AscendingByReadingTime:
+                if (CurrentSearchProperties.OrderAscending == true)
                     items = items.OrderBy(i => i.EstimatedReadingTime);
-                    break;
-                case SearchProperties.SearchPropertiesSortOrder.DescendingByReadingTime:
+                else
                     items = items.OrderByDescending(i => i.EstimatedReadingTime);
-                    break;
-                case SearchProperties.SearchPropertiesSortOrder.AscendingByCreationDate:
+            }
+            else
+            {
+                if (CurrentSearchProperties.OrderAscending == true)
                     items = items.OrderBy(i => i.CreationDate);
-                    break;
-                case SearchProperties.SearchPropertiesSortOrder.DescendingByCreationDate:
-                default:
+                else
                     items = items.OrderByDescending(i => i.CreationDate);
-                    break;
             }
 
             Items.MaxItems = items.Count();
