@@ -404,7 +404,7 @@
             x:Name="topGrid"
             Height="48"
             VerticalAlignment="Top">
-            <Pivot SelectedIndex="{x:Bind ViewModel.PivotIndex, Mode=TwoWay}">
+            <Pivot SelectedIndex="{x:Bind ViewModel.CurrentSearchProperties.ItemTypeIndex, Mode=TwoWay}">
                 <Pivot.Resources>
                     <Style TargetType="PivotHeaderItem">
                         <Setter Property="FontSize" Value="15" />
@@ -414,11 +414,6 @@
                 <PivotItem x:Uid="UnreadPivotItem" Header="UNREAD" />
                 <PivotItem x:Uid="FavoritesPivotItem" Header="FAVORITES" />
                 <PivotItem x:Uid="ArchivedPivotItem" Header="ARCHIVED" />
-                <interactivity:Interaction.Behaviors>
-                    <core:EventTriggerBehavior EventName="SelectionChanged">
-                        <core:InvokeCommandAction Command="{x:Bind ViewModel.PivotSelectionChangedCommand}" />
-                    </core:EventTriggerBehavior>
-                </interactivity:Interaction.Behaviors>
             </Pivot>
             <AutoSuggestBox
                 x:Uid="SearchBox"

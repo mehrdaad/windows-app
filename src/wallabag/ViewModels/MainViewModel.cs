@@ -30,7 +30,6 @@ namespace wallabag.ViewModels
         public bool ItemsCountIsZero { get { return Items.Count == 0; } }
         public bool IsSearchActive { get; set; } = false;
         public string PageHeader { get; set; } = Helpers.LocalizedResource("UnreadPageTitleTextBlock.Text");
-        public int PivotIndex { get; set; }
 
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
@@ -393,7 +392,6 @@ namespace wallabag.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             await TitleBarExtensions.ResetAsync();
-            PivotIndex = (int?)state[nameof(PivotIndex)] ?? 0;
 
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
             {
@@ -416,7 +414,6 @@ namespace wallabag.ViewModels
         {
             var serializedSearchProperties = await Task.Run(() => JsonConvert.SerializeObject(CurrentSearchProperties));
             pageState[nameof(CurrentSearchProperties)] = serializedSearchProperties;
-            pageState[nameof(PivotIndex)] = PivotIndex;
         }
     }
 }
