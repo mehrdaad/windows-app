@@ -4,6 +4,7 @@
     xmlns:conv="using:wallabag.Converters">
 
     <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <conv:BooleanNegationConverter x:Key="BooleanNegationConverter" />
 
     <DataTemplate x:Key="ContentDialogTitleDataTemplate">
         <TextBlock
