@@ -307,7 +307,7 @@ namespace wallabag.ViewModels
             else if (CurrentSearchProperties.Language?.IsUnknown == true)
                 items = items.Where(i => i.Language == null);
 
-            if (CurrentSearchProperties.OrderType == SearchProperties.SearchPropertiesOrderType.ByCreationDate)
+            if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByCreationDate)
             {
                 if (CurrentSearchProperties.OrderAscending == true)
                     items = items.OrderBy(i => i.EstimatedReadingTime);

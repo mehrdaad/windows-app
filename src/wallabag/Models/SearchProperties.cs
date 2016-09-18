@@ -45,7 +45,7 @@ namespace wallabag.Models
         /// </summary>
         public int ItemTypeIndex { get; set; }
         public bool? OrderAscending { get; set; }
-        public SearchPropertiesOrderType OrderType { get; set; }
+        public SearchPropertiesSortType SortType { get; set; }
         public Language Language { get; set; }
         public Tag Tag { get; set; }
 
@@ -54,7 +54,7 @@ namespace wallabag.Models
             Reset();
         }
 
-        public enum SearchPropertiesOrderType
+        public enum SearchPropertiesSortType
         {
             ByCreationDate = 0,
             ByReadingTime = 1
