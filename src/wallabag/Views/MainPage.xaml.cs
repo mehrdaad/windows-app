@@ -26,7 +26,6 @@ namespace wallabag.Views
     public sealed partial class MainPage : Page
     {
         public MainViewModel ViewModel { get { return DataContext as MainViewModel; } }
-        public SearchPropertiesViewModel SearchPropertiesViewModel { get { return new SearchPropertiesViewModel(ViewModel.CurrentSearchProperties); } }
 
         public MainPage()
         {
