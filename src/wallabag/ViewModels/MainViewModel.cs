@@ -31,6 +31,19 @@ namespace wallabag.ViewModels
         public bool IsSearchActive { get; set; } = false;
         public string PageHeader { get; set; } = Helpers.LocalizedResource("UnreadPageTitleTextBlock.Text");
 
+        public bool? SortByCreationDate
+        {
+            get { return CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByCreationDate; }
+            set { CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByCreationDate; }
+        }
+        public bool? SortByReadingTime
+        {
+            get { return CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime; }
+            set { CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByReadingTime; }
+        }
+        public DelegateCommand<string> SetSortTypeFilterCommand { get; private set; }
+        public DelegateCommand<string> SetSortOrderCommand { get; private set; }
+
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
         public DelegateCommand NavigateToSettingsPageCommand { get; private set; }
@@ -54,6 +67,8 @@ namespace wallabag.ViewModels
             NavigateToSettingsPageCommand = new DelegateCommand(() => NavigationService.Navigate(typeof(Views.SettingsPage), infoOverride: new DrillInNavigationTransitionInfo()));
             ItemClickCommand = new DelegateCommand<ItemClickEventArgs>(t => ItemClick(t));
 
+            SetSortTypeFilterCommand = new DelegateCommand<string>(filter => SetSortTypeFilter(filter));
+            SetSortOrderCommand = new DelegateCommand<string>(order => SetSortOrder(order));
             SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
             SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
             LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
@@ -67,6 +82,9 @@ namespace wallabag.ViewModels
             {
                 if (e.PropertyName != nameof(CurrentSearchProperties.Query))
                     UpdateView();
+
+                RaisePropertyChanged(nameof(SortByCreationDate));
+                RaisePropertyChanged(nameof(SortByReadingTime));
             };
 
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
@@ -207,6 +225,14 @@ namespace wallabag.ViewModels
 
             CurrentSearchProperties.Tag = selectedTag as Tag;
         }
+        private void SetSortTypeFilter(string filter)
+        {
+            if (filter == "date")
+                CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByCreationDate;
+            else
+                CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByReadingTime;
+        }
+        private void SetSortOrder(string order) => CurrentSearchProperties.OrderAscending = order == "asc";
 
         private void StartSearch()
         {

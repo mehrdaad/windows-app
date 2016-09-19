@@ -414,6 +414,7 @@
                 <PivotItem x:Uid="UnreadPivotItem" Header="UNREAD" />
                 <PivotItem x:Uid="FavoritesPivotItem" Header="FAVORITES" />
                 <PivotItem x:Uid="ArchivedPivotItem" Header="ARCHIVED" />
+                <PivotItem />
             </Pivot>
             <AutoSuggestBox
                 x:Uid="SearchBox"
@@ -492,13 +493,18 @@
                 <StackPanel Orientation="Horizontal">
                     <RadioButton
                         x:Uid="SortByDateRadioButton"
+                        Command="{x:Bind ViewModel.SetSortTypeFilterCommand}"
+                        CommandParameter="date"
                         Content="by date"
-                        IsChecked="True"
+                        IsChecked="{x:Bind ViewModel.SortByCreationDate, Mode=OneWay}"
                         Style="{StaticResource ExpandableIconRadioButtonStyle}"
                         Tag="&#xE1DC;" />
                     <RadioButton
                         x:Uid="SortByReadingTimeRadioButton"
+                        Command="{x:Bind ViewModel.SetSortTypeFilterCommand}"
+                        CommandParameter="time"
                         Content="by reading time"
+                        IsChecked="{x:Bind ViewModel.SortByReadingTime, Mode=OneWay}"
                         Style="{StaticResource ExpandableIconRadioButtonStyle}"
                         Tag="&#xE2AD;" />
                 </StackPanel>
@@ -509,13 +515,18 @@
                     Padding="5,0,0,0">
                     <RadioButton
                         x:Uid="OrderAscendingRadioButton"
+                        Command="{x:Bind ViewModel.SetSortOrderCommand}"
+                        CommandParameter="asc"
                         Content="&#xE143;"
-                        IsChecked="True"
+                        IsChecked="{x:Bind ViewModel.CurrentSearchProperties.OrderAscending, Mode=OneWay}"
                         Style="{StaticResource IconRadioButtonStyle}"
                         Tag="order ascending" />
                     <RadioButton
                         x:Uid="OrderDescendingRadioButton"
+                        Command="{x:Bind ViewModel.SetSortOrderCommand}"
+                        CommandParameter="desc"
                         Content="&#xE143;"
+                        IsChecked="{x:Bind ViewModel.CurrentSearchProperties.OrderAscending, Mode=OneWay, Converter={StaticResource BooleanNegationConverter}}"
                         RenderTransformOrigin="0.5,0.5"
                         Style="{StaticResource IconRadioButtonStyle}"
                         Tag="order descending">
