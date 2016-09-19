@@ -104,7 +104,7 @@
                         <Visibility>Collapsed</Visibility>
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
-            </ObjectAnimationUsingKeyFrames>            
+            </ObjectAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Name="HideSearchStoryboard">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Visibility)">
@@ -130,7 +130,7 @@
                         <Visibility>Visible</Visibility>
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
-            </ObjectAnimationUsingKeyFrames>            
+            </ObjectAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Name="ShowFilterStoryboard">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterStackPanel" Storyboard.TargetProperty="(UIElement.Opacity)">
@@ -145,14 +145,14 @@
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterStackPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="-50">
+                <EasingDoubleKeyFrame KeyTime="0" Value="48">
                     <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
+                        <BackEase Amplitude="0.5" EasingMode="EaseOut" />
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
                 <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0">
                     <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
+                        <BackEase Amplitude="0.5" EasingMode="EaseOut" />
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
@@ -187,15 +187,16 @@
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterStackPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0">
                     <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
+                        <BackEase Amplitude="0.5" EasingMode="EaseIn" />
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="-50">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="48">
                     <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
+                        <BackEase Amplitude="0.5" EasingMode="EaseIn" />
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
+
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="overlayRectangle" Storyboard.TargetProperty="(UIElement.Visibility)">
                 <DiscreteObjectKeyFrame KeyTime="0">
                     <DiscreteObjectKeyFrame.Value>
