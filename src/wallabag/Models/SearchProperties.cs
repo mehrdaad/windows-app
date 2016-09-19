@@ -65,6 +65,7 @@ namespace wallabag.Models
             Query = string.Empty;
             ItemTypeIndex = 0;
             OrderAscending = false;
+            SortType = SearchPropertiesSortType.ByCreationDate;
             Language = null;
             Tag = null;
         }
@@ -73,6 +74,7 @@ namespace wallabag.Models
             Query = searchProperties.Query;
             ItemTypeIndex = searchProperties.ItemTypeIndex;
             OrderAscending = searchProperties.OrderAscending;
+            SortType = searchProperties.SortType;
             Language = searchProperties.Language;
             Tag = searchProperties.Tag;
         }
