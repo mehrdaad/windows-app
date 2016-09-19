@@ -16,8 +16,10 @@
 
 <body onscroll="updateReadingProgress()">
     <header class="wallabag-header {{containsHeader}}">
-        <h1>{{title}}</h1>
-        <h2><a href="{{articleUrl}}">{{hostname}}</a>|<span>{{publishDate}}</span></h2>
+        <div>
+            <h1>{{title}}</h1>
+            <h2><a href="{{articleUrl}}">{{hostname}}</a>|<span>{{publishDate}}</span></h2>
+        </div>
     </header>
     <article>{{content}}</article>
     <script>
