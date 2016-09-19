@@ -79,8 +79,13 @@ namespace wallabag.ViewModels
             styleSheetBuilder.Append("::selection,mark {background: " + accentColor + " !important}");
             styleSheetBuilder.Append("body {");
             styleSheetBuilder.Append($"font-size: {FontSize}px;");
-            styleSheetBuilder.Append($"text-align: {TextAlignment};");
-            styleSheetBuilder.Append("}</style>");
+            styleSheetBuilder.Append($"text-align: {TextAlignment};}}");
+            if (Item.Model.PreviewImageUri != null)
+            {
+                styleSheetBuilder.Append(".with-image {");
+                styleSheetBuilder.Append($"background-image: url(\"{Item.Model.PreviewImageUri}\")}}");
+            }
+            styleSheetBuilder.Append("</style>");
 
             FormattedHtml = _template.FormatWith(new
             {
