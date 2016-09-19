@@ -104,18 +104,7 @@
                         <Visibility>Collapsed</Visibility>
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
-            </ObjectAnimationUsingKeyFrames>
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="filterButton" Storyboard.TargetProperty="(UIElement.Visibility)">
-                <DiscreteObjectKeyFrame KeyTime="0">
-                    <DiscreteObjectKeyFrame.Value>
-                        <Visibility>Visible</Visibility>
-                    </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-            </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterButton" Storyboard.TargetProperty="(UIElement.Opacity)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1" />
-            </DoubleAnimationUsingKeyFrames>
+            </ObjectAnimationUsingKeyFrames>            
         </Storyboard>
         <Storyboard x:Name="HideSearchStoryboard">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Visibility)">
@@ -141,18 +130,7 @@
                         <Visibility>Visible</Visibility>
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
-            </ObjectAnimationUsingKeyFrames>
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="filterButton" Storyboard.TargetProperty="(UIElement.Visibility)">
-                <DiscreteObjectKeyFrame KeyTime="0:0:0.3">
-                    <DiscreteObjectKeyFrame.Value>
-                        <Visibility>Collapsed</Visibility>
-                    </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-            </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterButton" Storyboard.TargetProperty="(UIElement.Opacity)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="1" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
-            </DoubleAnimationUsingKeyFrames>
+            </ObjectAnimationUsingKeyFrames>            
         </Storyboard>
         <Storyboard x:Name="ShowFilterStoryboard">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterStackPanel" Storyboard.TargetProperty="(UIElement.Opacity)">
@@ -262,14 +240,11 @@
                         <Setter Target="searchBox.Visibility" Value="Visible" />
                         <Setter Target="searchBox.Opacity" Value="1" />
                         <Setter Target="searchButton.Visibility" Value="Collapsed" />
-                        <Setter Target="filterButton.Visibility" Value="Visible" />
-                        <Setter Target="filterButton.Opacity" Value="1" />
                         <Setter Target="searchBox.HorizontalAlignment" Value="Right" />
                         <Setter Target="searchBox.MinWidth" Value="300" />
                         <Setter Target="filterStackPanel.HorizontalAlignment" Value="Right" />
-                        <Setter Target="filterStackPanel.VerticalAlignment" Value="Top" />
+                        <Setter Target="filterStackPanel.VerticalAlignment" Value="Bottom" />
                         <Setter Target="filterStackPanel.MinWidth" Value="300" />
-                        <Setter Target="filterStackPanel.Margin" Value="0,48,0,0" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="720" />
@@ -419,7 +394,7 @@
             <AutoSuggestBox
                 x:Uid="SearchBox"
                 x:Name="searchBox"
-                Margin="8,8,76,8"
+                Margin="8"
                 VerticalAlignment="Center"
                 x:DeferLoadStrategy="Lazy"
                 ItemsSource="{x:Bind ViewModel.SearchQuerySuggestions, Mode=OneWay}"
@@ -443,13 +418,6 @@
                     Click="searchButton_Click"
                     Icon="Find"
                     IsCompact="True" />
-                <AppBarButton
-                    x:Name="filterButton"
-                    x:DeferLoadStrategy="Lazy"
-                    Click="filterButton_Click"
-                    Icon="Filter"
-                    IsCompact="True"
-                    Visibility="Collapsed" />
             </StackPanel>
         </Grid>
         <Rectangle
@@ -615,6 +583,10 @@
                 Click="EnableMultipleSelectionButtonClick"
                 Icon="Bullets"
                 Label="Select" />
+            <AppBarButton
+                x:Name="filterButton"
+                Click="filterButton_Click"
+                Icon="Filter" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton
                     x:Uid="SettingsAppBarButton"
