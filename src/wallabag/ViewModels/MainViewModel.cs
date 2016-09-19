@@ -260,29 +260,12 @@ namespace wallabag.ViewModels
 
         private void UpdateView()
         {
-            var currentItems = new List<Item>();
+            Items.Clear();
+
             var databaseItems = GetItemsForCurrentSearchProperties(limit: 24);
 
-            foreach (var item in Items)
-                currentItems.Add(item.Model);
-
-
-            var newItems = databaseItems.Except(currentItems).ToList();
-            var changedItems = databaseItems.Except(currentItems, new ItemByModificationDateEqualityComparer()).Except(newItems).ToList();
-            var deletedItems = currentItems.Except(databaseItems).ToList();
-
-
-            foreach (var item in newItems)
-                Items.AddSorted(new ItemViewModel(item));
-
-            foreach (var item in changedItems)
-            {
-                Items.Remove(Items.Where(i => i.Model.Equals(item)).FirstOrDefault());
-                Items.AddSorted(new ItemViewModel(item));
-            }
-
-            foreach (var item in deletedItems)
-                Items.Remove(new ItemViewModel(item));
+            foreach (var item in databaseItems)
+                Items.Add(new ItemViewModel(item));
 
             GetMetadataForItems(Items);
         }
@@ -333,7 +316,7 @@ namespace wallabag.ViewModels
             else if (CurrentSearchProperties.Language?.IsUnknown == true)
                 items = items.Where(i => i.Language == null);
 
-            if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByCreationDate)
+            if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime)
             {
                 if (CurrentSearchProperties.OrderAscending == true)
                     items = items.OrderBy(i => i.EstimatedReadingTime);
