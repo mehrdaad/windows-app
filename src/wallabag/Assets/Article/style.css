@@ -52,11 +52,13 @@ p {
     margin-bottom: 0.75em;
 }
 
-b, strong {
+b,
+strong {
     font-weight: bold;
 }
 
-i, em {
+i,
+em {
     font-style: italic;
 }
 
@@ -104,7 +106,6 @@ mark {
     mark a {
         text-decoration: none;
     }
-
 
 blockquote {
     font-style: italic;
@@ -217,11 +218,13 @@ code {
     overflow: auto;
 }
 
-audio, video {
+audio,
+video {
     max-width: 43.75em;
 }
 
-::selection, mark {
+::selection,
+mark {
     background: #666;
     color: white;
 }
@@ -232,7 +235,8 @@ table {
     width: 100%;
 }
 
-th, td {
+th,
+td {
     padding: .25em;
     text-align: left;
 }
@@ -329,12 +333,13 @@ article {
 
     .wallabag-header ul li {
         display: inline-block;
-        background: rgba(0,0,0,0.1);
+        background: rgba(0, 0, 0, 0.1);
         border-radius: 1px;
         padding: .1em .3em;
         margin: 0 0.2em;
         font-size: 0.9em;
     }
+
 
 /*-----------------------------------------------------------------*/
 /*----------------------- Customization ---------------------------*/
