@@ -44,7 +44,7 @@ namespace wallabag.Models
         /// 3: all
         /// </summary>
         public int ItemTypeIndex { get; set; }
-        public bool? OrderAscending { get; set; }
+        public bool? OrderAscending { get; set; } = false;
         public SearchPropertiesSortType SortType { get; set; }
         public Language Language { get; set; }
         public Tag Tag { get; set; }
