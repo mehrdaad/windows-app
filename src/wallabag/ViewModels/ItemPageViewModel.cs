@@ -92,7 +92,8 @@ namespace wallabag.ViewModels
                 font = FontFamily,
                 progress = Item.Model.ReadingProgress,
                 publishDate = string.Format("{0:d}", Item.Model.CreationDate),
-                stylesheet = styleSheetBuilder.ToString()
+                stylesheet = styleSheetBuilder.ToString(),
+                containsHeader = Item.Model.PreviewImageUri == null ? string.Empty : "with-image"
             });
         }
 
