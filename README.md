@@ -5,6 +5,7 @@ wallabag for Windows 10
 ## Currently supported languages
 - English
 - German
+- [add more](https://github.com/wallabag/windows-app/wiki/Translations)
 
 ## Credits
 - the wallabag community for such a nice software (especially [Thomas](https://github.com/tcitworld), [Nicolas](https://github.com/nicosomb) and [Jeremy](https://github.com/j0k3r))
