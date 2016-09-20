@@ -396,4 +396,7 @@
   <data name="SortByReadingTimeRadioButton.Content" xml:space="preserve">
     <value>by reading time</value>
   </data>
+  <data name="filterButton.Label" xml:space="preserve">
+    <value>Filter</value>
+  </data>
 </root>

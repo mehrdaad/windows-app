@@ -585,9 +585,11 @@
                 Icon="Bullets"
                 Label="Select" />
             <AppBarToggleButton
+                x:Uid="filterButton"
                 x:Name="filterButton"
                 Click="filterButton_Click"
-                Icon="Filter" />
+                Icon="Filter"
+                Label="Filter" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton
                     x:Uid="SettingsAppBarButton"
