@@ -428,6 +428,21 @@
             PointerPressed="overlayRectangle_PointerPressed"
             Visibility="Collapsed" />
         <StackPanel
+            x:Name="noItemsOverlay"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="{x:Bind ViewModel.ItemsCountIsZero, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+            <TextBlock
+                FontSize="60"
+                Text="😔"
+                TextAlignment="Center" />
+            <TextBlock
+                x:Uid="NothingFoundTextBlock"
+                Margin="0,12,0,0"
+                Style="{StaticResource InfoTextBlockStyle}"
+                Text="Didn't found something for you. Sorry." />
+        </StackPanel>
+        <StackPanel
             x:Name="filterStackPanel"
             VerticalAlignment="Top"
             x:DeferLoadStrategy="Lazy"
@@ -542,21 +557,6 @@
                 Command="{x:Bind ViewModel.ResetFilterCommand}"
                 Content="Reset filter"
                 Style="{StaticResource TextBlockButtonStyle}" />
-        </StackPanel>
-        <StackPanel
-            x:Name="noItemsOverlay"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Visibility="{x:Bind ViewModel.ItemsCountIsZero, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock
-                FontSize="60"
-                Text="&#x1F614;"
-                TextAlignment="Center" />
-            <TextBlock
-                x:Uid="NothingFoundTextBlock"
-                Margin="0,12,0,0"
-                Style="{StaticResource InfoTextBlockStyle}"
-                Text="Didn't found something for you. Sorry." />
         </StackPanel>
         <CommandBar x:Name="MainCommandBar" Grid.Row="1">
             <AppBarButton
