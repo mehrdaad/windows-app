@@ -234,16 +234,18 @@ namespace wallabag.ViewModels
         }
         private void SetSortOrder(string order) => CurrentSearchProperties.OrderAscending = order == "asc";
 
+        private int _previousItemTypeIndex;
         private void StartSearch()
         {
             IsSearchActive = true;
+            _previousItemTypeIndex = CurrentSearchProperties.ItemTypeIndex;
             SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => EndSearch(s, e);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
         }
         private void EndSearch(object sender, BackRequestedEventArgs e)
         {
             IsSearchActive = false;
-            CurrentSearchProperties.ItemTypeIndex = 0; // TODO: Take previous setting.
+            CurrentSearchProperties.ItemTypeIndex = _previousItemTypeIndex;
 
             SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearch(s, args);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
