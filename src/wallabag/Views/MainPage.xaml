@@ -584,7 +584,7 @@
                 Click="EnableMultipleSelectionButtonClick"
                 Icon="Bullets"
                 Label="Select" />
-            <AppBarButton
+            <AppBarToggleButton
                 x:Name="filterButton"
                 Click="filterButton_Click"
                 Icon="Filter" />
