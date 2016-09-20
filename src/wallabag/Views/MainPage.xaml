@@ -482,7 +482,7 @@
                         Content="by date"
                         IsChecked="{x:Bind ViewModel.SortByCreationDate, Mode=OneWay}"
                         Style="{StaticResource ExpandableIconRadioButtonStyle}"
-                        Tag="&#xE1DC;" />
+                        Tag="&#xE163;" />
                     <RadioButton
                         x:Uid="SortByReadingTimeRadioButton"
                         Command="{x:Bind ViewModel.SetSortTypeFilterCommand}"
