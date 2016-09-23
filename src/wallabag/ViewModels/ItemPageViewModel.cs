@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using HtmlAgilityPack;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -90,7 +91,7 @@ namespace wallabag.ViewModels
             FormattedHtml = _template.FormatWith(new
             {
                 title = Item.Model.Title,
-                content = Item.Model.Content,
+                content = SetupArticleForHtmlViewer(),
                 articleUrl = Item.Model.Url,
                 hostname = Item.Model.Hostname,
                 color = ColorScheme,
@@ -100,6 +101,32 @@ namespace wallabag.ViewModels
                 stylesheet = styleSheetBuilder.ToString(),
                 containsHeader = Item.Model.PreviewImageUri == null ? string.Empty : "with-image"
             });
+
+            await FileIO.WriteTextAsync(await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("article.html", CreationCollisionOption.ReplaceExisting), FormattedHtml);
+        }
+
+        private string SetupArticleForHtmlViewer()
+        {
+            var document = new HtmlDocument();
+            document.LoadHtml(Item.Model.Content);
+            document.OptionCheckSyntax = false;
+
+            // Implement lazy-loading for images
+            foreach (var node in document.DocumentNode.Descendants("img"))
+            {
+                if (node.HasAttributes && node.Attributes["src"] != null)
+                {
+                    var oldSource = node.Attributes["src"].Value;
+                    node.Attributes.RemoveAll();
+
+                    node.Attributes.Add("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+                    node.Attributes.Add("data-src", oldSource);
+                    node.Attributes.Add("class", "lazy");
+                    node.InnerHtml = " "; // dirty hack to let HtmlAgilityPack close the <img> tag
+                }
+            }
+
+            return document.DocumentNode.OuterHtml;
         }
 
         private void ChangeReadStatus()

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="ms-appx-web:///Assets/Article/style.css" type="text/css" media="screen" />
     <script src="ms-appx-web:///Assets/Article/js/jquery-2.1.4.min.js" type="text/javascript"></script>
     <script src="ms-appx-web:///Assets/Article/js/jquery.fitvids.js" type="text/javascript"></script>
+    <script src="ms-appx-web:///Assets/Article/js/jquery.unveil.min.js" type="text/javascript"></script>
     <script src="ms-appx-web:///Assets/Article/js/scripts.js" type="text/javascript"></script>
     {{stylesheet}}
 </head>
@@ -31,6 +32,7 @@
 
         $(document).ready(function () {
             rightClickInitialize();
+            $("img").unveil();
             $("article").fitVids({ customSelector: "iframe[src^='https://medium.com/media']" });
         });
     </script>

@@ -161,6 +161,7 @@
     <Content Include="Assets\Article\article.html" />
     <Content Include="Assets\Article\js\jquery-2.1.4.min.js" />
     <Content Include="Assets\Article\js\jquery.fitvids.js" />
+    <Content Include="Assets\Article\js\jquery.unveil.min.js" />
     <Content Include="Assets\Article\js\scripts.js" />
     <Content Include="Assets\Article\reset.css" />
     <Content Include="Assets\Article\style.css" />
