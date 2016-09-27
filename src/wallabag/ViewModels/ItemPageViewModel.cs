@@ -2,6 +2,7 @@
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template10.Mvvm;
@@ -126,7 +127,65 @@ namespace wallabag.ViewModels
                 }
             }
 
+            var c = "/"[0];
+            var containerString = "<div class='wallabag-video' style='background-image: url({0})' data-inline='true' data-provider='{1}' data-video-id='{2}'><span></span></div>";
+
+            // Replace videos (YouTube & Vimeo) by static thumbnails                  
+            var iframeNodes = document.DocumentNode.Descendants("iframe").ToList();
+            var videoNodes = document.DocumentNode.Descendants("video").ToList();
+
+            foreach (var node in iframeNodes)
+            {
+                if (node.HasAttributes &&
+                    node.Attributes.Contains("src"))
+                {
+                    var videoSource = node.Attributes["src"].Value;
+                    var videoId = videoSource.TrimEnd(c).Split(c).Last();
+                    var videoProvider = new Uri(videoSource).Host;
+
+                    if (videoProvider.Contains("youtube.com"))
+                        videoProvider = "youtube";
+                    else if (videoProvider.Contains("player.vimeo.com"))
+                        videoProvider = "vimeo";
+
+                    var newContainer = string.Format(containerString, GetPreviewImageForVideo(videoProvider, videoId), videoProvider, videoId);
+
+                    node.ParentNode.InsertAfter(HtmlNode.CreateNode(newContainer), node);
+                    node.ParentNode.RemoveChild(node);
+                }
+            }
+
+            // This loop is for HTML5 videos using the <video> tag
+            foreach (var node in videoNodes)
+            {
+                var videoSource = string.Empty;
+
+                videoSource = node.GetAttributeValue("src", string.Empty);
+
+                if (string.IsNullOrEmpty(videoSource) && node.HasChildNodes)
+                    videoSource = node.ChildNodes
+                          .Where(i => i.Name.Equals("source") && i.GetAttributeValue("type", string.Empty).Equals("video/mp4"))
+                          .FirstOrDefault()
+                          ?.GetAttributeValue("src", string.Empty);
+
+                if (!string.IsNullOrEmpty(videoSource))
+                {
+                    var newContainer = string.Format(containerString, string.Empty, "html", videoSource);
+
+                    node.ParentNode.InsertAfter(HtmlNode.CreateNode(newContainer), node);
+                    node.ParentNode.RemoveChild(node);
+                }
+            }
+
             return document.DocumentNode.OuterHtml;
+        }
+
+        private object GetPreviewImageForVideo(string videoProvider, string videoId)
+        {
+            if (videoProvider == "youtube")
+                return $"http://img.youtube.com/vi/{videoId}/0.jpg";
+            else
+                return string.Empty; // TODO: parse json
         }
 
         private void ChangeReadStatus()

@@ -32,6 +32,7 @@
 
         $(document).ready(function () {
             rightClickInitialize();
+            setupVideoLazyLoading();
             $("img").unveil();
             $("article").fitVids({ customSelector: "iframe[src^='https://medium.com/media']" });
         });

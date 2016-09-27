@@ -32,6 +32,30 @@ function getSelectionText() {
     return text;
 }
 
+function setupVideoLazyLoading() {
+    var videos = document.querySelectorAll(".wallabag-video");
+
+    if (videos.length > 0)
+        for (var video, l = 0; l < videos.length; l++) {
+            video = videos[l];
+
+                video.addEventListener("click", function (video) {
+                    var provider = this.getAttribute("data-provider");
+                    var videoId = this.getAttribute("data-video-id");
+
+                    this.setAttribute("data-transformed", "true");
+                    if (provider == "youtube") {
+                        this.innerHTML = "<div class='wallabag-video-container'><iframe type='text/html' src='https://www.youtube-nocookie.com/embed/" + videoId + "?rel=0&showinfo=0&color=white' frameborder='0' allowfullscreen></iframe></div>";
+                    }
+                    else if (provider == "vimeo") {
+                        this.innerHTML = "<div class='wallabag-video-container'><iframe type='text/html' src='http://player.vimeo.com/video/" + videoId + "?portrait=0' frameborder='0' allowfullscreen></iframe></div>";
+                    }
+                    else
+                        this.innerHTML = "<video src='" + videoId + "' preload controls></video>";
+                })
+        }
+}
+
 function rightClickInitialize() {
     var nodes = document.getElementsByTagName("a");
     var longpress = false;

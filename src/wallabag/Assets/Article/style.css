@@ -340,6 +340,65 @@ article {
         font-size: 0.9em;
     }
 
+/* Lazy loading */
+
+.wallabag-video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+    .wallabag-video-container iframe,
+    .wallabag-video-container object,
+    .wallabag-video-container embed {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+.wallabag-video {
+    position: relative;
+    background: #222;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    height: 0;
+    margin: 0 0 0.7em 0;
+    padding-bottom: 56.25%;
+    background-color: #222;
+    background-size: cover;
+    background-position: center center;
+}
+
+    .wallabag-video[data-transformed] {
+        width: auto;
+        height: auto;
+        padding-bottom: 0;
+        background: none !important;
+    }
+
+    .wallabag-video span {
+        width: 50px;
+        height: 25px;
+        margin: -25px -25px 0 0;
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        font-family: "Segoe MDL2 Assets";
+        font-size: 25px;
+        line-height: 40px;
+        font-style: normal !important;
+        text-decoration: none !important;
+        color: white;
+        background: transparent;
+    }
 
 /*-----------------------------------------------------------------*/
 /*----------------------- Customization ---------------------------*/
