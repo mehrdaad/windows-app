@@ -16,6 +16,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Web.Http;
 
 namespace wallabag.ViewModels
 {
@@ -180,12 +181,20 @@ namespace wallabag.ViewModels
             return document.DocumentNode.OuterHtml;
         }
 
-        private object GetPreviewImageForVideo(string videoProvider, string videoId)
+        private async Task<string> GetPreviewImageForVideo(string videoProvider, string videoId)
         {
             if (videoProvider == "youtube")
                 return $"http://img.youtube.com/vi/{videoId}/0.jpg";
             else
-                return string.Empty; // TODO: parse json
+            {
+                var link = $"http://vimeo.com/api/v2/video/{videoId}.json";
+                using (HttpClient client = new HttpClient())
+                {
+                    var resp = await client.GetAsync(new Uri(link));
+                    dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(await resp.Content.ReadAsStringAsync());
+                    return json[0].thumbnail_large.Value;
+                }
+            }
         }
 
         private void ChangeReadStatus()
