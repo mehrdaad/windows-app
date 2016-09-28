@@ -27,8 +27,10 @@ namespace wallabag
         {
             Settings = SettingsService.Instance;
 
+#if DEBUG == false
             if (Settings.AllowCollectionOfTelemetryData)
                 Microsoft.HockeyApp.HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
+#endif
 
             CreateClientAndDatabase();
 
