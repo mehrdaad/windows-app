@@ -287,111 +287,116 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <controls:AdaptiveGridView
-            x:Name="ItemGridView"
-            IsItemClickEnabled="True"
-            ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
-            MinItemHeight="175"
-            MinItemWidth="300"
-            Padding="4,52,4,4">
-            <controls:AdaptiveGridView.ItemTemplate>
-                <DataTemplate x:DataType="vm:ItemViewModel">
-                    <RelativePanel x:Name="RootPanel" RequestedTheme="Dark">
-                        <Image
-                            x:Name="image"
-                            RelativePanel.AlignBottomWithPanel="True"
-                            RelativePanel.AlignLeftWithPanel="True"
-                            RelativePanel.AlignRightWithPanel="True"
-                            RelativePanel.AlignTopWithPanel="True"
-                            Stretch="UniformToFill">
-                            <Image.Source>
-                                <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />
-                            </Image.Source>
-                        </Image>
-                        <Border
-                            Background="#4F000000"
-                            RelativePanel.AlignBottomWithPanel="True"
-                            RelativePanel.AlignLeftWithPanel="True"
-                            RelativePanel.AlignRightWithPanel="True"
-                            RelativePanel.AlignTopWithPanel="True">
-                            <StackPanel
-                                x:Name="ContentStackPanel"
-                                Margin="12"
-                                VerticalAlignment="Center">
-                                <TextBlock
-                                    x:Name="Title"
-                                    Margin="4,2"
-                                    MaxLines="2"
-                                    Text="{x:Bind Model.Title}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="Wrap" />
-                                <TextBlock
-                                    x:Name="Hostname"
-                                    Margin="4,2"
-                                    Opacity="0.7"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{x:Bind Model.Hostname}" />
-                            </StackPanel>
-                        </Border>
-                        <StackPanel
-                            x:Name="readingTimeIndicator"
-                            Margin="8"
-                            Orientation="Horizontal"
-                            RelativePanel.AlignRightWithPanel="True"
-                            RelativePanel.AlignTopWithPanel="True">
-                            <TextBlock
-                                Margin="0,0,4,0"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="&#xE2AD;" />
-                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.EstimatedReadingTime}" />
-                        </StackPanel>
-                        <StackPanel
-                            x:Name="tagsIndicator"
-                            Margin="8"
-                            Orientation="Horizontal"
-                            RelativePanel.AlignBottomWithPanel="True"
-                            RelativePanel.AlignRightWithPanel="True"
-                            Visibility="{x:Bind TagsAreExisting, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock
-                                Margin="0,0,4,0"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="&#xE1CB;" />
-                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind TagsString, Mode=OneWay}" />
-                        </StackPanel>
-                    </RelativePanel>
-                </DataTemplate>
-            </controls:AdaptiveGridView.ItemTemplate>
-            <interactivity:Interaction.Behaviors>
-                <core:EventTriggerBehavior EventName="ItemClick">
-                    <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickCommand}" />
-                </core:EventTriggerBehavior>
-            </interactivity:Interaction.Behaviors>
-        </controls:AdaptiveGridView>
-
         <Rectangle
             x:Name="backdropRectangle"
             Height="48"
             VerticalAlignment="Top" />
+
+        <Pivot SelectedIndex="{x:Bind ViewModel.CurrentSearchProperties.ItemTypeIndex, Mode=TwoWay}" SelectionChanged="Pivot_SelectionChanged">
+            <Pivot.Resources>
+                <Style TargetType="PivotHeaderItem">
+                    <Setter Property="FontSize" Value="15" />
+                    <Setter Property="FontWeight" Value="SemiBold" />
+                </Style>
+                <Style TargetType="PivotItem">
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="Padding" Value="0" />
+                </Style>
+            </Pivot.Resources>
+            <PivotItem x:Uid="UnreadPivotItem" Header="UNREAD">
+                <controls:AdaptiveGridView
+                    x:Name="ItemGridView"
+                    IsItemClickEnabled="True"
+                    ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
+                    MinItemHeight="175"
+                    MinItemWidth="300"
+                    Padding="4">
+                    <controls:AdaptiveGridView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ItemViewModel">
+                            <RelativePanel x:Name="RootPanel" RequestedTheme="Dark">
+                                <Image
+                                    x:Name="image"
+                                    RelativePanel.AlignBottomWithPanel="True"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.AlignTopWithPanel="True"
+                                    Stretch="UniformToFill">
+                                    <Image.Source>
+                                        <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />
+                                    </Image.Source>
+                                </Image>
+                                <Border
+                                    Background="#4F000000"
+                                    RelativePanel.AlignBottomWithPanel="True"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.AlignTopWithPanel="True">
+                                    <StackPanel
+                                        x:Name="ContentStackPanel"
+                                        Margin="12"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            x:Name="Title"
+                                            Margin="4,2"
+                                            MaxLines="2"
+                                            Text="{x:Bind Model.Title}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="Wrap" />
+                                        <TextBlock
+                                            x:Name="Hostname"
+                                            Margin="4,2"
+                                            Opacity="0.7"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            Text="{x:Bind Model.Hostname}" />
+                                    </StackPanel>
+                                </Border>
+                                <StackPanel
+                                    x:Name="readingTimeIndicator"
+                                    Margin="8"
+                                    Orientation="Horizontal"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.AlignTopWithPanel="True">
+                                    <TextBlock
+                                        Margin="0,0,4,0"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="&#xE2AD;" />
+                                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.EstimatedReadingTime}" />
+                                </StackPanel>
+                                <StackPanel
+                                    x:Name="tagsIndicator"
+                                    Margin="8"
+                                    Orientation="Horizontal"
+                                    RelativePanel.AlignBottomWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    Visibility="{x:Bind TagsAreExisting, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock
+                                        Margin="0,0,4,0"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="&#xE1CB;" />
+                                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind TagsString, Mode=OneWay}" />
+                                </StackPanel>
+                            </RelativePanel>
+                        </DataTemplate>
+                    </controls:AdaptiveGridView.ItemTemplate>
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="ItemClick">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickCommand}" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </controls:AdaptiveGridView>
+            </PivotItem>
+            <PivotItem x:Uid="FavoritesPivotItem" Header="FAVORITES" />
+            <PivotItem x:Uid="ArchivedPivotItem" Header="ARCHIVED" />
+            <PivotItem />
+        </Pivot>
         <Grid
             x:Name="topGrid"
             Height="48"
             VerticalAlignment="Top">
-            <Pivot SelectedIndex="{x:Bind ViewModel.CurrentSearchProperties.ItemTypeIndex, Mode=TwoWay}">
-                <Pivot.Resources>
-                    <Style TargetType="PivotHeaderItem">
-                        <Setter Property="FontSize" Value="15" />
-                        <Setter Property="FontWeight" Value="SemiBold" />
-                    </Style>
-                </Pivot.Resources>
-                <PivotItem x:Uid="UnreadPivotItem" Header="UNREAD" />
-                <PivotItem x:Uid="FavoritesPivotItem" Header="FAVORITES" />
-                <PivotItem x:Uid="ArchivedPivotItem" Header="ARCHIVED" />
-                <PivotItem />
-            </Pivot>
             <AutoSuggestBox
                 x:Uid="SearchBox"
                 x:Name="searchBox"

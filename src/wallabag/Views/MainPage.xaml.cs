@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Graphics.Canvas.Effects;
 using PropertyChanged;
+using System.Linq;
 using System.Numerics;
 using wallabag.ViewModels;
 using Windows.Foundation;
@@ -247,7 +248,7 @@ namespace wallabag.Views
         private void filterButton_Unchecked(object sender, RoutedEventArgs e) => HideFilterStoryboard.Begin();
 
         private void overlayRectangle_PointerPressed(object sender, PointerRoutedEventArgs e) => filterButton.IsChecked = false;
-      
+
         private void searchBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (Window.Current.Bounds.Width < 720)
@@ -256,5 +257,18 @@ namespace wallabag.Views
 
         #endregion
 
+        /// <summary>
+        /// Using only one ItemGridView at the time reduces the used amount of RAM
+        /// </summary>
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var lastPivotItem = (e.RemovedItems?.FirstOrDefault() ?? (sender as Pivot).Items.FirstOrDefault()) as PivotItem;
+            var currentPivotItem = e.AddedItems?.FirstOrDefault() as PivotItem;
+
+            var gridView = lastPivotItem.Content;
+
+            lastPivotItem.Content = null;
+            currentPivotItem.Content = gridView;
+        }
     }
 }
