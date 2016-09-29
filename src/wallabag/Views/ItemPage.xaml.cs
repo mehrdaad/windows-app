@@ -198,6 +198,14 @@ namespace wallabag.Views
                 ShowFullCommandBarStoryboard.Begin();
             else
                 HideCommandBarStoryboard.Begin();
+
+            if (Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent(nameof(AppBarButton), nameof(AppBarButton.LabelPosition)))
+            {
+                lightThemeButton.LabelPosition = CommandBarLabelPosition.Default;
+                sepiaThemeButton.LabelPosition = CommandBarLabelPosition.Default;
+                darkThemeButton.LabelPosition = CommandBarLabelPosition.Default;
+                blackThemeButton.LabelPosition = CommandBarLabelPosition.Default;
+            }
         }
 
         private void HtmlViewer_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
