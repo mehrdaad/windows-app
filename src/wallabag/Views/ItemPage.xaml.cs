@@ -147,8 +147,6 @@ namespace wallabag.Views
                 ViewModel.ColorScheme = "light";
             else if (button == sepiaThemeButton)
                 ViewModel.ColorScheme = "sepia";
-            else if (button == grayThemeButton)
-                ViewModel.ColorScheme = "gray";
             else if (button == darkThemeButton)
                 ViewModel.ColorScheme = "dark";
             else if (button == blackThemeButton)

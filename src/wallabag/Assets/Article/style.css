@@ -447,28 +447,6 @@ article {
     border-color: #670000;
 }
 
-[data-color="gray"] body {
-    background: gray;
-    color: lightgray;
-}
-
-[data-color="gray"] a {
-    color: #e6e6e6;
-}
-
-[data-color="gray"] .wallabag-header h2 {
-    border-color: #b3b3b3;
-    color: #808080;
-}
-
-    [data-color="gray"] .wallabag-header h2 a {
-        color: #808080 !important;
-    }
-
-[data-color="gray"] blockquote {
-    border-color: #e6e6e6;
-}
-
 [data-color="dark"] body {
     background: #333333;
     color: #cccccc;

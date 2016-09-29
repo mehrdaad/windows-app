@@ -322,16 +322,11 @@
                             <Setter Property="Margin" Value="0,-2,0,0" />
                         </Style>
                     </RelativePanel.Resources>
-                    <AppBarButton
-                        x:Uid="grayThemeButton"
-                        x:Name="grayThemeButton"
-                        Click="ChangeColorScheme"
-                        Label="Gray"
-                        RelativePanel.AlignHorizontalCenterWithPanel="True">
-                        <AppBarButton.Icon>
-                            <FontIcon FontFamily="Segoe UI Symbol" Glyph="&#x1F313;" />
-                        </AppBarButton.Icon>
-                    </AppBarButton>
+                    <Rectangle
+                        x:Name="placeholderRectangle"
+                        Width="68"
+                        Height="62"
+                        RelativePanel.AlignHorizontalCenterWithPanel="True" />
                     <AppBarButton
                         x:Uid="lightThemeButton"
                         x:Name="lightThemeButton"
@@ -347,7 +342,7 @@
                         x:Name="sepiaThemeButton"
                         Click="ChangeColorScheme"
                         Label="Sepia"
-                        RelativePanel.LeftOf="grayThemeButton">
+                        RelativePanel.LeftOf="placeholderRectangle">
                         <AppBarButton.Icon>
                             <FontIcon FontFamily="Segoe UI Symbol" Glyph="&#x1F312;" />
                         </AppBarButton.Icon>
@@ -357,7 +352,7 @@
                         x:Name="darkThemeButton"
                         Click="ChangeColorScheme"
                         Label="Dark"
-                        RelativePanel.RightOf="grayThemeButton">
+                        RelativePanel.RightOf="placeholderRectangle">
                         <AppBarButton.Icon>
                             <FontIcon FontFamily="Segoe UI Symbol" Glyph="&#x1F314;" />
                         </AppBarButton.Icon>
@@ -380,7 +375,7 @@
                         Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                         RelativePanel.AlignLeftWithPanel="True"
                         RelativePanel.AlignRightWithPanel="True"
-                        RelativePanel.Below="grayThemeButton" />
+                        RelativePanel.Below="placeholderRectangle" />
 
                     <Button
                         x:Name="increaseFontSizeButton"
