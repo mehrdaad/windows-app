@@ -144,11 +144,8 @@ namespace wallabag.ViewModels
 
             await Task.Run(() =>
             {
-                foreach (var item in items)
-                    App.Database.Insert((Item)item);
-
-                foreach (var tag in tags)
-                    App.Database.Insert((Tag)tag);
+                App.Database.InsertOrReplaceAll(items, typeof(Item));
+                App.Database.InsertOrReplaceAll(tags, typeof(Tag));
             });
 
             ContinueCompleted?.Invoke(this, new EventArgs());
