@@ -587,9 +587,10 @@
             <AppBarToggleButton
                 x:Uid="filterButton"
                 x:Name="filterButton"
-                Click="filterButton_Click"
+                Checked="filterButton_Checked"
                 Icon="Filter"
-                Label="Filter" />
+                Label="Filter"
+                Unchecked="filterButton_Unchecked" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton
                     x:Uid="SettingsAppBarButton"

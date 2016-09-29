@@ -46,8 +46,6 @@ namespace wallabag.Views
                 searchBox.Focus(FocusState.Programmatic);
             };
             HideSearchStoryboard.Completed += (s, e) => _isSearchVisible = false;
-            ShowFilterStoryboard.Completed += (s, e) => _isFilterVisible = true;
-            HideFilterStoryboard.Completed += (s, e) => _isFilterVisible = false;
 
             ViewModel.CurrentSearchProperties.SearchCanceled += p =>
             {
@@ -77,7 +75,7 @@ namespace wallabag.Views
             var gridVisual = ElementCompositionPreview.GetElementVisual(backdropRectangle);
             var compositor = gridVisual.Compositor;
 
-            var effectVisual = compositor.CreateSpriteVisual();            
+            var effectVisual = compositor.CreateSpriteVisual();
             effectVisual.Size = new Vector2(
               (float)this.topGrid.ActualWidth,
               (float)this.topGrid.ActualHeight);
@@ -238,7 +236,6 @@ namespace wallabag.Views
         #region Search & Filter
 
         private bool _isSearchVisible;
-        private bool _isFilterVisible;
         private void searchButton_Click(object sender, RoutedEventArgs e)
         {
             if (!_isSearchVisible)
@@ -246,18 +243,11 @@ namespace wallabag.Views
             else
                 HideSearchStoryboard.Begin();
         }
-        private void filterButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isFilterVisible)
-                ShowFilterStoryboard.Begin();
-            else
-                HideFilterStoryboard.Begin();
-        }
+        private void filterButton_Checked(object sender, RoutedEventArgs e) => ShowFilterStoryboard.Begin();
+        private void filterButton_Unchecked(object sender, RoutedEventArgs e) => HideFilterStoryboard.Begin();
 
-        private void overlayRectangle_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            HideFilterStoryboard.Begin();
-        }
+        private void overlayRectangle_PointerPressed(object sender, PointerRoutedEventArgs e) => filterButton.IsChecked = false;
+      
         private void searchBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (Window.Current.Bounds.Width < 720)
@@ -265,5 +255,6 @@ namespace wallabag.Views
         }
 
         #endregion
+
     }
 }
