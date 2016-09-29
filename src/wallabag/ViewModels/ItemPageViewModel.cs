@@ -121,9 +121,13 @@ namespace wallabag.ViewModels
                     var oldSource = node.Attributes["src"].Value;
                     node.Attributes.RemoveAll();
 
-                    node.Attributes.Add("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
-                    node.Attributes.Add("data-src", oldSource);
-                    node.Attributes.Add("class", "lazy");
+                    if (!oldSource.Equals(Item.Model.PreviewImageUri.ToString()))
+                    {
+                        node.Attributes.Add("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+                        node.Attributes.Add("data-src", oldSource);
+                        node.Attributes.Add("class", "lazy");
+                    }
+
                     node.InnerHtml = " "; // dirty hack to let HtmlAgilityPack close the <img> tag
                 }
             }
