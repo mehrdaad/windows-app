@@ -312,13 +312,16 @@ article {
 
     .with-image h1,
     .with-image h2 {
-        color: white;
         text-align: center;
+        opacity: 0.8;
         text-shadow: 1px 1px rgba(0, 0, 0, 0.3);
     }
 
-        .with-image h2 a {
-            color: white;
+        .with-image h1,
+        .with-image h2,
+        .with-image h2 a,
+        .with-image h2 span {
+            color: white !important;
         }
 
 .wallabag-header ul {
@@ -440,7 +443,7 @@ article {
 }
 
     [data-color="sepia"] .wallabag-header h2 a {
-        color: maroon !important;
+        color: maroon;
     }
 
 [data-color="sepia"] blockquote {
@@ -462,7 +465,7 @@ article {
 }
 
     [data-color="dark"] .wallabag-header h2 a {
-        color: #808080 !important;
+        color: #808080;
     }
 
 [data-color="dark"] blockquote {
@@ -484,7 +487,7 @@ article {
 }
 
     [data-color="black"] .wallabag-header h2 a {
-        color: #808080 !important;
+        color: #808080;
     }
 
 [data-color="black"] blockquote {
