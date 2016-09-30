@@ -29,7 +29,7 @@ namespace wallabag.ViewModels
 
         public bool ItemsCountIsZero { get { return Items.Count == 0; } }
         public bool IsSearchActive { get; set; } = false;
-        public string PageHeader { get; set; } = Helpers.LocalizedResource("UnreadPageTitleTextBlock.Text");
+        public string PageHeader { get; set; }
 
         public bool? SortByCreationDate
         {
@@ -79,7 +79,10 @@ namespace wallabag.ViewModels
             CurrentSearchProperties.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName != nameof(CurrentSearchProperties.Query))
+                {
                     UpdateView();
+                    UpdatePageHeader();
+                }
 
                 RaisePropertyChanged(nameof(SortByCreationDate));
                 RaisePropertyChanged(nameof(SortByReadingTime));
@@ -168,22 +171,10 @@ namespace wallabag.ViewModels
         private void UpdatePageHeader()
         {
             if (IsSearchActive)
-                PageHeader = $"\"{CurrentSearchProperties.Query.ToUpper()}\"";
+                PageHeader = string.Format(Helpers.LocalizedResource("SearchPivotItem.Header").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
             else
-            {
-                switch (CurrentSearchProperties.ItemTypeIndex)
-                {
-                    case 0:
-                    default:
-                        PageHeader = Helpers.LocalizedResource("UnreadPageTitleTextBlock.Text"); break;
-                    case 1:
-                        PageHeader = Helpers.LocalizedResource("StarredPageTitleTextBlock.Text"); break;
-                    case 2:
-                        PageHeader = Helpers.LocalizedResource("ArchivedPageTitleTextBlock.Text"); break;
-                    case 3:
-                        PageHeader = Helpers.LocalizedResource("AllPageTitleTextBlock.Text"); break;
-                }
-            }
+                PageHeader = string.Empty;
+
         }
 
         private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)

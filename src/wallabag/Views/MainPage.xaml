@@ -387,7 +387,7 @@
             </PivotItem>
             <PivotItem x:Uid="FavoritesPivotItem" Header="FAVORITES" />
             <PivotItem x:Uid="ArchivedPivotItem" Header="ARCHIVED" />
-            <PivotItem />
+            <PivotItem x:Uid="SearchPivotItem" Header="{x:Bind ViewModel.PageHeader, Mode=OneWay}" />
         </Pivot>
         <Grid
             x:Name="topGrid"

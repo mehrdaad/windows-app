@@ -402,4 +402,7 @@
   <data name="filterButton.Label" xml:space="preserve">
     <value>Filter</value>
   </data>
+  <data name="SearchPivotItem.Header" xml:space="preserve">
+    <value>Suchergebnisse für: {0}</value>
+  </data>
 </root>
