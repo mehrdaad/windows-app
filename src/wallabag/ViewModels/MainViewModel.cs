@@ -47,7 +47,6 @@ namespace wallabag.ViewModels
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
         public DelegateCommand NavigateToSettingsPageCommand { get; private set; }
-        public DelegateCommand<ItemClickEventArgs> ItemClickCommand { get; private set; }
         public DelegateCommand<SelectionChangedEventArgs> PivotSelectionChangedCommand { get; private set; }
 
         public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties();
@@ -65,7 +64,6 @@ namespace wallabag.ViewModels
             AddCommand = new DelegateCommand(async () => await DialogService.ShowAsync(DialogService.Dialog.AddItem));
             SyncCommand = new DelegateCommand(async () => await SyncAsync());
             NavigateToSettingsPageCommand = new DelegateCommand(() => NavigationService.Navigate(typeof(Views.SettingsPage), infoOverride: new DrillInNavigationTransitionInfo()));
-            ItemClickCommand = new DelegateCommand<ItemClickEventArgs>(t => ItemClick(t));
 
             SetSortTypeFilterCommand = new DelegateCommand<string>(filter => SetSortTypeFilter(filter));
             SetSortOrderCommand = new DelegateCommand<string>(order => SetSortOrder(order));
@@ -161,7 +159,7 @@ namespace wallabag.ViewModels
             IsSyncing = false;
         }
 
-        private void ItemClick(ItemClickEventArgs args)
+        internal void ItemClick(object sender, ItemClickEventArgs args)
         {
             var item = args.ClickedItem as ItemViewModel;
             NavigationService.Navigate(typeof(Views.ItemPage), item.Model.Id);
