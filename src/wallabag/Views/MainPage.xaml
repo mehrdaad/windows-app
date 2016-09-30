@@ -608,7 +608,7 @@
             Grid.Row="1"
             Width="16"
             Height="16"
-            Margin="0,0,132,6"
+            Margin="0,0,200,6"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Background="{ThemeResource SystemControlBackgroundAccentBrush}"
