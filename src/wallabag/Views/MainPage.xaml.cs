@@ -53,65 +53,7 @@ namespace wallabag.Views
                 if (_isSearchVisible)
                     HideSearchStoryboard.Begin();
             };
-
-            Loaded += MainPage_Loaded;
-            topGrid.SizeChanged += TopGrid_SizeChanged;
-        }
-
-        private void TopGrid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var effectVisual = ElementCompositionPreview.GetElementChildVisual(backdropRectangle);
-            if (effectVisual != null)
-                effectVisual.Size = e.NewSize.ToVector2();
-        }
-
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (!ApiInformation.IsTypePresent(typeof(CompositionBackdropBrush).FullName))
-            {
-                backdropRectangle.Fill = new SolidColorBrush((Color)Template10.Common.BootStrapper.Current.Resources["SystemChromeMediumColor"]);
-                return;
-            }
-
-            var gridVisual = ElementCompositionPreview.GetElementVisual(backdropRectangle);
-            var compositor = gridVisual.Compositor;
-
-            var effectVisual = compositor.CreateSpriteVisual();
-            effectVisual.Size = new Vector2(
-              (float)this.topGrid.ActualWidth,
-              (float)this.topGrid.ActualHeight);
-
-            var colorEffect = new ColorSourceEffect()
-            {
-                Name = "ColorSource",
-                Color = (Color)Template10.Common.BootStrapper.Current.Resources["SystemChromeMediumColor"]
-            };
-
-            GaussianBlurEffect blurEffect = new GaussianBlurEffect()
-            {
-                BorderMode = EffectBorderMode.Hard,
-                Source = new CompositionEffectSourceParameter("source"),
-                BlurAmount = 15f,
-                Optimization = EffectOptimization.Balanced
-            };
-
-            var blendEffect = new BlendEffect()
-            {
-                Mode = BlendEffectMode.SoftLight,
-
-                Foreground = colorEffect,
-                Background = blurEffect
-            };
-
-
-            var effectFactory = compositor.CreateEffectFactory(blendEffect);
-            var effectBrush = effectFactory.CreateBrush();
-            effectBrush.SetSourceParameter("source", compositor.CreateBackdropBrush());
-
-            effectVisual.Brush = effectBrush;
-
-            ElementCompositionPreview.SetElementChildVisual(backdropRectangle, effectVisual);
-        }
+        }     
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {

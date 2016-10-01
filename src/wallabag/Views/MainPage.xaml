@@ -288,10 +288,9 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Rectangle
-            x:Name="backdropRectangle"
             Height="48"
-            VerticalAlignment="Top" />
-
+            VerticalAlignment="Top"
+            Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
         <Pivot SelectedIndex="{x:Bind ViewModel.CurrentSearchProperties.ItemTypeIndex, Mode=TwoWay}" SelectionChanged="Pivot_SelectionChanged">
             <Pivot.Resources>
                 <Style TargetType="PivotHeaderItem">
