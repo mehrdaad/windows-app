@@ -81,10 +81,7 @@ namespace wallabag.ViewModels
             CurrentSearchProperties.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName != nameof(CurrentSearchProperties.Query))
-                {
                     UpdateView();
-                    UpdatePageHeader();
-                }
 
                 RaisePropertyChanged(nameof(SortByCreationDate));
                 RaisePropertyChanged(nameof(SortByReadingTime));
@@ -176,7 +173,6 @@ namespace wallabag.ViewModels
                 PageHeader = string.Format(Helpers.LocalizedResource("SearchPivotItem.Header").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
             else
                 PageHeader = string.Empty;
-
         }
 
         private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
@@ -201,6 +197,7 @@ namespace wallabag.ViewModels
             if (string.IsNullOrWhiteSpace(args.QueryText))
                 return;
 
+            UpdatePageHeader();
             UpdateView();
         }
         private void LanguageCodeChanged(SelectionChangedEventArgs args)
@@ -240,13 +237,15 @@ namespace wallabag.ViewModels
             SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearch(s, args);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
-            if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
-                CurrentSearchProperties.Query = string.Empty;
-
             if (e != null)
                 e.Handled = true;
 
-            UpdateView();
+            if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+            {
+                CurrentSearchProperties.Query = string.Empty;
+                UpdateView();
+            }
+
             UpdatePageHeader();
         }
 
