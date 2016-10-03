@@ -106,6 +106,19 @@
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
         </Storyboard>
+        <Storyboard x:Name="ShowSearchResultsStoryboard">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.3">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
         <Storyboard x:Name="HideSearchStoryboard">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="topGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
                 <DiscreteObjectKeyFrame KeyTime="0:0:0.3">
