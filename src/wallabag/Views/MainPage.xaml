@@ -312,7 +312,10 @@
             Height="48"
             VerticalAlignment="Top"
             Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
-        <Pivot SelectedIndex="{x:Bind ViewModel.CurrentSearchProperties.ItemTypeIndex, Mode=TwoWay}" SelectionChanged="Pivot_SelectionChanged">
+        <Pivot
+            x:Name="MainPivot"
+            SelectedIndex="{x:Bind ViewModel.CurrentSearchProperties.ItemTypeIndex, Mode=TwoWay}"
+            SelectionChanged="Pivot_SelectionChanged">
             <Pivot.Resources>
                 <Style TargetType="PivotHeaderItem">
                     <Setter Property="FontSize" Value="15" />
@@ -433,9 +436,9 @@
                 Margin="8"
                 VerticalAlignment="Center"
                 ItemsSource="{x:Bind ViewModel.SearchQuerySuggestions, Mode=OneWay}"
-                LostFocus="searchBox_LostFocus"
                 PlaceholderText="Search…"
                 QueryIcon="Find"
+                QuerySubmitted="searchBox_QuerySubmitted"
                 Text="{x:Bind ViewModel.CurrentSearchProperties.Query, Mode=TwoWay}">
                 <interactivity:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="QuerySubmitted">
@@ -448,6 +451,7 @@
             </AutoSuggestBox>
             <AppBarButton
                 Grid.Column="1"
+                Click="CloseSearchButton_Click"
                 Command="{x:Bind ViewModel.CloseSearchCommand}"
                 Icon="Cancel" />
         </Grid>

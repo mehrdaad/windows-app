@@ -3,6 +3,7 @@ using Microsoft.Graphics.Canvas.Effects;
 using PropertyChanged;
 using System.Linq;
 using System.Numerics;
+using wallabag.Controls;
 using wallabag.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -46,6 +47,7 @@ namespace wallabag.Views
                 _isSearchVisible = true;
                 searchBox.Focus(FocusState.Programmatic);
             };
+            ShowSearchResultsStoryboard.Completed += (s, e) => ((MainPivot.SelectedItem as PivotItem).Content as AdaptiveGridView).Focus(FocusState.Programmatic);
             HideSearchStoryboard.Completed += (s, e) => _isSearchVisible = false;
 
             ViewModel.CurrentSearchProperties.SearchCanceled += p =>
