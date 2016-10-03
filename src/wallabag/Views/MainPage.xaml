@@ -490,20 +490,33 @@
             </StackPanel.RenderTransform>
             <StackPanel.Resources>
                 <Style TargetType="ComboBox">
+                    <Setter Property="Background" Value="Transparent" />
                     <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-                    <Setter Property="BorderThickness" Value="0,1" />
+                    <Setter Property="BorderThickness" Value="0" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
                     <Setter Property="Padding" Value="12,7,0,9" />
+                </Style>
+                <Style x:Key="ResetFilterTypeButtonStyle" TargetType="Button">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Content" Value="&#xE10A;" />
+                    <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+                    <Setter Property="FontSize" Value="12" />
+                    <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" />
+                    <Setter Property="VerticalAlignment" Value="Stretch" />
+                    <Setter Property="Width" Value="36" />
+                </Style>
+                <Style x:Key="RowGridStyle" TargetType="Grid">
+                    <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundAltMediumLowBrush}" />
+                    <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+                    <Setter Property="BorderThickness" Value="0,1" />
                 </Style>
             </StackPanel.Resources>
             <TextBlock
                 x:Uid="SortOrderFilterTitleTextBlock"
                 Style="{StaticResource MenuHeaderTextBlockStyle}"
                 Text="SORT BY" />
-            <Grid
-                Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}"
-                BorderBrush="{ThemeResource SystemControlBackgroundBaseLowBrush}"
-                BorderThickness="0,1">
+            <Grid Style="{StaticResource RowGridStyle}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
@@ -558,32 +571,52 @@
                 x:Uid="LanguageFilterTitleTextBlock"
                 Style="{StaticResource MenuHeaderTextBlockStyle}"
                 Text="LANGUAGE" />
-            <ComboBox
-                x:Uid="LanguageComboBox"
-                ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}"
-                PlaceholderText="select language…"
-                SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=OneWay}">
-                <interactivity:Interaction.Behaviors>
-                    <core:EventTriggerBehavior EventName="SelectionChanged">
-                        <core:InvokeCommandAction Command="{x:Bind ViewModel.LanguageCodeChangedCommand}" />
-                    </core:EventTriggerBehavior>
-                </interactivity:Interaction.Behaviors>
-            </ComboBox>
+            <Grid Style="{StaticResource RowGridStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <ComboBox
+                    x:Uid="LanguageComboBox"
+                    ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}"
+                    PlaceholderText="select language…"
+                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=OneWay}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="SelectionChanged">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.LanguageCodeChangedCommand}" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </ComboBox>
+                <Button
+                    Grid.Column="1"
+                    Command="{x:Bind ViewModel.ResetFilterLanguageCommand}"
+                    Style="{StaticResource ResetFilterTypeButtonStyle}" />
+            </Grid>
             <TextBlock
                 x:Uid="TagFilterTitleTextBlock"
                 Style="{StaticResource MenuHeaderTextBlockStyle}"
                 Text="TAG" />
-            <ComboBox
-                x:Uid="TagComboBox"
-                ItemsSource="{x:Bind ViewModel.TagSuggestions, Mode=OneWay}"
-                PlaceholderText="select tag…"
-                SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=OneWay}">
-                <interactivity:Interaction.Behaviors>
-                    <core:EventTriggerBehavior EventName="SelectionChanged">
-                        <core:InvokeCommandAction Command="{x:Bind ViewModel.TagChangedCommand}" />
-                    </core:EventTriggerBehavior>
-                </interactivity:Interaction.Behaviors>
-            </ComboBox>
+            <Grid Style="{StaticResource RowGridStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <ComboBox
+                    x:Uid="TagComboBox"
+                    ItemsSource="{x:Bind ViewModel.TagSuggestions, Mode=OneWay}"
+                    PlaceholderText="select tag…"
+                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=OneWay}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="SelectionChanged">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.TagChangedCommand}" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </ComboBox>
+                <Button
+                    Grid.Column="1"
+                    Command="{x:Bind ViewModel.ResetFilterTagCommand}"
+                    Style="{StaticResource ResetFilterTypeButtonStyle}" />
+            </Grid>
 
             <Button
                 x:Uid="ResetFilterButton"

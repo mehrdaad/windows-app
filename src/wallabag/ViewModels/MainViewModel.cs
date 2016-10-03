@@ -58,6 +58,8 @@ namespace wallabag.ViewModels
         public DelegateCommand CloseSearchCommand { get; private set; }
         public DelegateCommand<SelectionChangedEventArgs> LanguageCodeChangedCommand { get; private set; }
         public DelegateCommand<SelectionChangedEventArgs> TagChangedCommand { get; private set; }
+        public DelegateCommand ResetFilterLanguageCommand { get; private set; }
+        public DelegateCommand ResetFilterTagCommand { get; private set; }
         public DelegateCommand ResetFilterCommand { get; private set; }
 
         public MainViewModel()
@@ -73,6 +75,8 @@ namespace wallabag.ViewModels
             CloseSearchCommand = new DelegateCommand(() => EndSearch(this, null));
             LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
             TagChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => TagChanged(args));
+            ResetFilterLanguageCommand = new DelegateCommand(() => CurrentSearchProperties.Language = null);
+            ResetFilterTagCommand = new DelegateCommand(() => CurrentSearchProperties.Tag = null);
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
             CurrentSearchProperties.SearchStarted += p => StartSearch();
