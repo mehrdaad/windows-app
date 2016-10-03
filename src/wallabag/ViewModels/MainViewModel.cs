@@ -285,6 +285,11 @@ namespace wallabag.ViewModels
                     if (!TagSuggestions.Contains(tag))
                         TagSuggestions.Add(tag);
             }
+
+            LanguageSuggestions.Replace(LanguageSuggestions.OrderBy(i => i.DisplayName).ToList());
+            TagSuggestions.Replace(TagSuggestions.OrderBy(i => i.Label).ToList());
+
+            LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.Unknown), 0);
         }
         private List<Item> GetItemsForCurrentSearchProperties(int? offset = null, int? limit = null)
         {
