@@ -435,7 +435,10 @@
                     </core:EventTriggerBehavior>
                 </interactivity:Interaction.Behaviors>
             </AutoSuggestBox>
-            <AppBarButton Grid.Column="1" Icon="Cancel" />
+            <AppBarButton
+                Grid.Column="1"
+                Command="{x:Bind ViewModel.CloseSearchCommand}"
+                Icon="Cancel" />
         </Grid>
         <Rectangle
             x:Name="overlayRectangle"

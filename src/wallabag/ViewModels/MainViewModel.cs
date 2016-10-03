@@ -55,6 +55,7 @@ namespace wallabag.ViewModels
         public ObservableCollection<Tag> TagSuggestions { get; set; } = new ObservableCollection<Tag>();
         public DelegateCommand<AutoSuggestBoxTextChangedEventArgs> SearchQueryChangedCommand { get; private set; }
         public DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs> SearchQuerySubmittedCommand { get; private set; }
+        public DelegateCommand CloseSearchCommand { get; private set; }
         public DelegateCommand<SelectionChangedEventArgs> LanguageCodeChangedCommand { get; private set; }
         public DelegateCommand<SelectionChangedEventArgs> TagChangedCommand { get; private set; }
         public DelegateCommand ResetFilterCommand { get; private set; }
@@ -69,6 +70,7 @@ namespace wallabag.ViewModels
             SetSortOrderCommand = new DelegateCommand<string>(order => SetSortOrder(order));
             SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
             SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
+            CloseSearchCommand = new DelegateCommand(() => EndSearch(this, null));
             LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
             TagChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => TagChanged(args));
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
