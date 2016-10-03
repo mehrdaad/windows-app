@@ -29,7 +29,7 @@ namespace wallabag.ViewModels
 
         public bool ItemsCountIsZero { get { return Items.Count == 0; } }
         public bool IsSearchActive { get; set; } = false;
-        public string PageHeader { get; set; }
+        public string PageHeader { get; set; } = Helpers.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
 
         public bool? SortByCreationDate
         {
@@ -172,7 +172,7 @@ namespace wallabag.ViewModels
             if (IsSearchActive)
                 PageHeader = string.Format(Helpers.LocalizedResource("SearchPivotItem.Header").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
             else
-                PageHeader = string.Empty;
+                PageHeader = Helpers.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
         }
 
         private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
