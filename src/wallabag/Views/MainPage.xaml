@@ -81,14 +81,14 @@
                 Text="Delete" />
         </MenuFlyout>
         <Storyboard x:Name="ShowSearchStoryboard">
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Visibility)">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="topGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
                 <DiscreteObjectKeyFrame KeyTime="0">
                     <DiscreteObjectKeyFrame.Value>
                         <Visibility>Visible</Visibility>
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Opacity)">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="topGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0" />
                 <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1" />
             </DoubleAnimationUsingKeyFrames>
@@ -107,14 +107,14 @@
             </ObjectAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Name="HideSearchStoryboard">
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Visibility)">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="topGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
                 <DiscreteObjectKeyFrame KeyTime="0:0:0.3">
                     <DiscreteObjectKeyFrame.Value>
                         <Visibility>Collapsed</Visibility>
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Opacity)">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="topGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
                 <EasingDoubleKeyFrame KeyTime="0" Value="1" />
                 <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
             </DoubleAnimationUsingKeyFrames>
@@ -238,9 +238,6 @@
                 </VisualState>
                 <VisualState x:Name="Wide">
                     <VisualState.Setters>
-                        <Setter Target="searchBox.Visibility" Value="Visible" />
-                        <Setter Target="searchBox.Opacity" Value="1" />
-                        <Setter Target="searchButton.Visibility" Value="Collapsed" />
                         <Setter Target="searchBox.HorizontalAlignment" Value="Right" />
                         <Setter Target="searchBox.MinWidth" Value="300" />
                         <Setter Target="filterStackPanel.HorizontalAlignment" Value="Right" />
@@ -386,24 +383,36 @@
             </PivotItem>
             <PivotItem x:Uid="FavoritesPivotItem" Header="FAVORITES" />
             <PivotItem x:Uid="ArchivedPivotItem" Header="ARCHIVED" />
-            <PivotItem x:Uid="SearchPivotItem" Header="{x:Bind ViewModel.PageHeader, Mode=OneWay}" />
         </Pivot>
+        <AppBarButton
+            x:Name="searchButton"
+            Height="48"
+            HorizontalAlignment="Right"
+            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+            Click="searchButton_Click"
+            Icon="Find"
+            IsCompact="True" />
         <Grid
             x:Name="topGrid"
             Height="48"
-            VerticalAlignment="Top">
+            VerticalAlignment="Top"
+            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+            Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="{x:Bind ViewModel.PageHeader, Mode=OneWay}" />
             <AutoSuggestBox
                 x:Uid="SearchBox"
                 x:Name="searchBox"
                 Margin="8"
                 VerticalAlignment="Center"
-                x:DeferLoadStrategy="Lazy"
                 ItemsSource="{x:Bind ViewModel.SearchQuerySuggestions, Mode=OneWay}"
                 LostFocus="searchBox_LostFocus"
                 PlaceholderText="Search…"
                 QueryIcon="Find"
-                Text="{x:Bind ViewModel.CurrentSearchProperties.Query, Mode=TwoWay}"
-                Visibility="Collapsed">
+                Text="{x:Bind ViewModel.CurrentSearchProperties.Query, Mode=TwoWay}">
                 <interactivity:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="QuerySubmitted">
                         <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQuerySubmittedCommand}" />
@@ -413,13 +422,7 @@
                     </core:EventTriggerBehavior>
                 </interactivity:Interaction.Behaviors>
             </AutoSuggestBox>
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <AppBarButton
-                    x:Name="searchButton"
-                    Click="searchButton_Click"
-                    Icon="Find"
-                    IsCompact="True" />
-            </StackPanel>
+            <AppBarButton Grid.Column="1" Icon="Cancel" />
         </Grid>
         <Rectangle
             x:Name="overlayRectangle"
