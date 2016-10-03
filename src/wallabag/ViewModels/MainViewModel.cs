@@ -197,7 +197,10 @@ namespace wallabag.ViewModels
             }
 
             if (string.IsNullOrWhiteSpace(args.QueryText))
+            {
+                CurrentSearchProperties.InvokeSearchCanceledEvent();
                 return;
+            }
 
             UpdatePageHeader();
             UpdateView();
