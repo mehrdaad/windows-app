@@ -76,8 +76,6 @@ namespace wallabag.ViewModels
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
             CurrentSearchProperties.SearchStarted += p => StartSearch();
-            CurrentSearchProperties.SearchCanceled += p => EndSearch(null, null);
-            CurrentSearchProperties.SearchCanceled += p => UpdateView();
             CurrentSearchProperties.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName != nameof(CurrentSearchProperties.Query))
@@ -239,6 +237,8 @@ namespace wallabag.ViewModels
 
             if (e != null)
                 e.Handled = true;
+
+            CurrentSearchProperties.InvokeSearchCanceledEvent();
 
             if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
             {

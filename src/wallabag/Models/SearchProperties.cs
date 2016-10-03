@@ -29,9 +29,6 @@ namespace wallabag.Models
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Query)));
                 }
 
-                if (string.IsNullOrWhiteSpace(value) && !string.IsNullOrWhiteSpace(oldValue))
-                    SearchCanceled?.Invoke(this);
-
                 if (!string.IsNullOrWhiteSpace(value) && string.IsNullOrWhiteSpace(oldValue))
                     SearchStarted?.Invoke(this);
             }
@@ -77,5 +74,7 @@ namespace wallabag.Models
             Language = searchProperties.Language;
             Tag = searchProperties.Tag;
         }
+
+        internal void InvokeSearchCanceledEvent() => SearchCanceled?.Invoke(this);
     }
 }
