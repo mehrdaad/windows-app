@@ -273,23 +273,21 @@ namespace wallabag.ViewModels
                     var translatedLanguage = new Language(item.Model.Language);
 
                     if (!LanguageSuggestions.Contains(translatedLanguage))
-                        LanguageSuggestions.Add(translatedLanguage);
+                        LanguageSuggestions.AddSorted(translatedLanguage, sortAscending: true);
                 }
                 else
                 {
                     if (!LanguageSuggestions.Contains(Language.Unknown))
-                        LanguageSuggestions.Add(Language.Unknown);
+                        LanguageSuggestions.AddSorted(Language.Unknown, sortAscending: true);
                 }
 
                 foreach (var tag in item.Model.Tags)
                     if (!TagSuggestions.Contains(tag))
-                        TagSuggestions.Add(tag);
+                        TagSuggestions.AddSorted(tag, sortAscending: true);
             }
 
-            LanguageSuggestions.Replace(LanguageSuggestions.OrderBy(i => i.DisplayName).ToList());
-            TagSuggestions.Replace(TagSuggestions.OrderBy(i => i.Label).ToList());
-
-            LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.Unknown), 0);
+            if (LanguageSuggestions.Contains(Language.Unknown))
+                LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.Unknown), 0);
         }
         private List<Item> GetItemsForCurrentSearchProperties(int? offset = null, int? limit = null)
         {
