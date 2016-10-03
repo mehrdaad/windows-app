@@ -541,22 +541,25 @@
                 </StackPanel>
                 <StackPanel
                     Grid.Column="1"
-                    Margin="1,0,0,0"
-                    Orientation="Horizontal"
-                    Padding="5,0,0,0">
+                    Margin="4,0,0,0"
+                    Orientation="Horizontal">
                     <RadioButton
                         x:Uid="OrderAscendingRadioButton"
+                        Margin="0"
                         Command="{x:Bind ViewModel.SetSortOrderCommand}"
                         CommandParameter="asc"
                         Content="&#xE143;"
+                        FontSize="12"
                         IsChecked="{x:Bind ViewModel.CurrentSearchProperties.OrderAscending, Mode=OneWay}"
                         Style="{StaticResource IconRadioButtonStyle}"
                         Tag="order ascending" />
                     <RadioButton
                         x:Uid="OrderDescendingRadioButton"
+                        Margin="0"
                         Command="{x:Bind ViewModel.SetSortOrderCommand}"
                         CommandParameter="desc"
                         Content="&#xE143;"
+                        FontSize="12"
                         IsChecked="{x:Bind ViewModel.CurrentSearchProperties.OrderAscending, Mode=OneWay, Converter={StaticResource BooleanNegationConverter}}"
                         RenderTransformOrigin="0.5,0.5"
                         Style="{StaticResource IconRadioButtonStyle}"

@@ -197,10 +197,10 @@
     <Style x:Key="IconRadioButtonStyle" TargetType="RadioButton">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="Margin" Value="2,0" />
         <Setter Property="MaxHeight" Value="36" />
         <Setter Property="MinHeight" Value="36" />
-        <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinWidth" Value="36" />
         <Setter Property="Padding" Value="10" />
         <Setter Property="Template">
@@ -286,6 +286,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
     <Style
         x:Key="ExpandableIconRadioButtonStyle"
@@ -375,7 +376,8 @@
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             Content="{TemplateBinding Tag}"
-                            FontFamily="Segoe MDL2 Assets" />
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="12" />
                         <ContentPresenter
                             x:Name="ContentPresenter"
                             Grid.Column="1"
