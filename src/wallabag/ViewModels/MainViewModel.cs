@@ -201,7 +201,6 @@ namespace wallabag.ViewModels
             if (string.IsNullOrWhiteSpace(args.QueryText))
                 return;
 
-            CurrentSearchProperties.ItemTypeIndex = 3;
             UpdateView();
         }
         private void LanguageCodeChanged(SelectionChangedEventArgs args)
@@ -288,17 +287,14 @@ namespace wallabag.ViewModels
         {
             var items = App.Database.Table<Item>();
 
-            switch (CurrentSearchProperties.ItemTypeIndex)
+            if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
             {
-                case 0:
-                    items = items.Where(i => i.IsRead == false); break;
-                case 1:
-                    items = items.Where(i => i.IsStarred == true); break;
-                case 2:
-                    items = items.Where(i => i.IsRead == true); break;
-                case 3:
-                default:
-                    break;
+                if (CurrentSearchProperties.ItemTypeIndex == 0)
+                    items = items.Where(i => i.IsRead == false);
+                else if (CurrentSearchProperties.ItemTypeIndex == 1)
+                    items = items.Where(i => i.IsStarred == true);
+                else if (CurrentSearchProperties.ItemTypeIndex == 2)
+                    items = items.Where(i => i.IsRead == true);
             }
 
             if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))

@@ -41,7 +41,6 @@ namespace wallabag.Models
         /// 0: unread
         /// 1: favorites
         /// 2: archived
-        /// 3: all
         /// </summary>
         public int ItemTypeIndex { get; set; }
         public bool? OrderAscending { get; set; } = false;
