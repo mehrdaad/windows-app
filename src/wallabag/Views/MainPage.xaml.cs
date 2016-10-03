@@ -55,7 +55,7 @@ namespace wallabag.Views
                 if (_isSearchVisible)
                     HideSearchStoryboard.Begin();
             };
-        }     
+        }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -181,23 +181,13 @@ namespace wallabag.Views
         #region Search & Filter
 
         private bool _isSearchVisible;
-        private void searchButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isSearchVisible)
-                ShowSearchStoryboard.Begin();
-            else
-                HideSearchStoryboard.Begin();
-        }
+        private void searchButton_Click(object sender, RoutedEventArgs e) => ShowSearchStoryboard.Begin();
         private void filterButton_Checked(object sender, RoutedEventArgs e) => ShowFilterStoryboard.Begin();
         private void filterButton_Unchecked(object sender, RoutedEventArgs e) => HideFilterStoryboard.Begin();
 
         private void overlayRectangle_PointerPressed(object sender, PointerRoutedEventArgs e) => filterButton.IsChecked = false;
-
-        private void searchBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (Window.Current.Bounds.Width < 720)
-                HideSearchStoryboard.Begin();
-        }
+        private void searchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) => ShowSearchResultsStoryboard.Begin();
+        private void CloseSearchButton_Click(object sender, RoutedEventArgs e) => HideSearchStoryboard.Begin();
 
         #endregion
 
