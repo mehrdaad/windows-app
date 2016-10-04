@@ -1,7 +1,9 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Graphics.Canvas.Effects;
 using PropertyChanged;
+using System.Linq;
 using System.Numerics;
+using wallabag.Controls;
 using wallabag.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -26,7 +28,6 @@ namespace wallabag.Views
     public sealed partial class MainPage : Page
     {
         public MainViewModel ViewModel { get { return DataContext as MainViewModel; } }
-        public SearchPropertiesViewModel SearchPropertiesViewModel { get { return new SearchPropertiesViewModel(ViewModel.CurrentSearchProperties); } }
 
         public MainPage()
         {
@@ -46,73 +47,14 @@ namespace wallabag.Views
                 _isSearchVisible = true;
                 searchBox.Focus(FocusState.Programmatic);
             };
+            ShowSearchResultsStoryboard.Completed += (s, e) => ((MainPivot.SelectedItem as PivotItem).Content as AdaptiveGridView).Focus(FocusState.Programmatic);
             HideSearchStoryboard.Completed += (s, e) => _isSearchVisible = false;
-            ShowFilterStoryboard.Completed += (s, e) => _isFilterVisible = true;
-            HideFilterStoryboard.Completed += (s, e) => _isFilterVisible = false;
 
             ViewModel.CurrentSearchProperties.SearchCanceled += p =>
             {
                 if (_isSearchVisible)
                     HideSearchStoryboard.Begin();
             };
-
-            Loaded += MainPage_Loaded;
-            topGrid.SizeChanged += TopGrid_SizeChanged;
-        }
-
-        private void TopGrid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var effectVisual = ElementCompositionPreview.GetElementChildVisual(backdropRectangle);
-            if (effectVisual != null)
-                effectVisual.Size = e.NewSize.ToVector2();
-        }
-
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (!ApiInformation.IsTypePresent(typeof(CompositionBackdropBrush).FullName))
-            {
-                backdropRectangle.Fill = new SolidColorBrush((Color)Template10.Common.BootStrapper.Current.Resources["SystemChromeMediumColor"]);
-                return;
-            }
-
-            var gridVisual = ElementCompositionPreview.GetElementVisual(backdropRectangle);
-            var compositor = gridVisual.Compositor;
-
-            var effectVisual = compositor.CreateSpriteVisual();            
-            effectVisual.Size = new Vector2(
-              (float)this.topGrid.ActualWidth,
-              (float)this.topGrid.ActualHeight);
-
-            var colorEffect = new ColorSourceEffect()
-            {
-                Name = "ColorSource",
-                Color = (Color)Template10.Common.BootStrapper.Current.Resources["SystemChromeMediumColor"]
-            };
-
-            GaussianBlurEffect blurEffect = new GaussianBlurEffect()
-            {
-                BorderMode = EffectBorderMode.Hard,
-                Source = new CompositionEffectSourceParameter("source"),
-                BlurAmount = 15f,
-                Optimization = EffectOptimization.Balanced
-            };
-
-            var blendEffect = new BlendEffect()
-            {
-                Mode = BlendEffectMode.SoftLight,
-
-                Foreground = colorEffect,
-                Background = blurEffect
-            };
-
-
-            var effectFactory = compositor.CreateEffectFactory(blendEffect);
-            var effectBrush = effectFactory.CreateBrush();
-            effectBrush.SetSourceParameter("source", compositor.CreateBackdropBrush());
-
-            effectVisual.Brush = effectBrush;
-
-            ElementCompositionPreview.SetElementChildVisual(backdropRectangle, effectVisual);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -239,32 +181,28 @@ namespace wallabag.Views
         #region Search & Filter
 
         private bool _isSearchVisible;
-        private bool _isFilterVisible;
-        private void searchButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isSearchVisible)
-                ShowSearchStoryboard.Begin();
-            else
-                HideSearchStoryboard.Begin();
-        }
-        private void filterButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isFilterVisible)
-                ShowFilterStoryboard.Begin();
-            else
-                HideFilterStoryboard.Begin();
-        }
+        private void searchButton_Click(object sender, RoutedEventArgs e) => ShowSearchStoryboard.Begin();
+        private void filterButton_Checked(object sender, RoutedEventArgs e) => ShowFilterStoryboard.Begin();
+        private void filterButton_Unchecked(object sender, RoutedEventArgs e) => HideFilterStoryboard.Begin();
 
-        private void overlayRectangle_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            HideFilterStoryboard.Begin();
-        }
-        private void searchBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (Window.Current.Bounds.Width < 720)
-                HideSearchStoryboard.Begin();
-        }
+        private void overlayRectangle_PointerPressed(object sender, PointerRoutedEventArgs e) => filterButton.IsChecked = false;
+        private void searchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) => ShowSearchResultsStoryboard.Begin();
+        private void CloseSearchButton_Click(object sender, RoutedEventArgs e) => HideSearchStoryboard.Begin();
 
         #endregion
+
+        /// <summary>
+        /// Using only one ItemGridView at the time reduces the used amount of RAM
+        /// </summary>
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var lastPivotItem = (e.RemovedItems?.FirstOrDefault() ?? (sender as Pivot).Items.FirstOrDefault()) as PivotItem;
+            var currentPivotItem = e.AddedItems?.FirstOrDefault() as PivotItem;
+
+            var gridView = lastPivotItem.Content;
+
+            lastPivotItem.Content = null;
+            currentPivotItem.Content = gridView;
+        }
     }
 }

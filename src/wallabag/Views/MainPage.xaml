@@ -81,14 +81,14 @@
                 Text="Delete" />
         </MenuFlyout>
         <Storyboard x:Name="ShowSearchStoryboard">
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Visibility)">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="topGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
                 <DiscreteObjectKeyFrame KeyTime="0">
                     <DiscreteObjectKeyFrame.Value>
                         <Visibility>Visible</Visibility>
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Opacity)">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="topGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0" />
                 <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1" />
             </DoubleAnimationUsingKeyFrames>
@@ -105,19 +105,19 @@
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="filterButton" Storyboard.TargetProperty="(UIElement.Visibility)">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Visibility)">
                 <DiscreteObjectKeyFrame KeyTime="0">
                     <DiscreteObjectKeyFrame.Value>
                         <Visibility>Visible</Visibility>
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterButton" Storyboard.TargetProperty="(UIElement.Opacity)">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Opacity)">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0" />
                 <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1" />
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
-        <Storyboard x:Name="HideSearchStoryboard">
+        <Storyboard x:Name="ShowSearchResultsStoryboard">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Visibility)">
                 <DiscreteObjectKeyFrame KeyTime="0:0:0.3">
                     <DiscreteObjectKeyFrame.Value>
@@ -126,6 +126,19 @@
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="searchBox" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="HideSearchStoryboard">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="topGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.3">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="topGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
                 <EasingDoubleKeyFrame KeyTime="0" Value="1" />
                 <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
             </DoubleAnimationUsingKeyFrames>
@@ -142,17 +155,6 @@
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="filterButton" Storyboard.TargetProperty="(UIElement.Visibility)">
-                <DiscreteObjectKeyFrame KeyTime="0:0:0.3">
-                    <DiscreteObjectKeyFrame.Value>
-                        <Visibility>Collapsed</Visibility>
-                    </DiscreteObjectKeyFrame.Value>
-                </DiscreteObjectKeyFrame>
-            </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterButton" Storyboard.TargetProperty="(UIElement.Opacity)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="1" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
-            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Name="ShowFilterStoryboard">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterStackPanel" Storyboard.TargetProperty="(UIElement.Opacity)">
@@ -167,14 +169,14 @@
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterStackPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="-50">
+                <EasingDoubleKeyFrame KeyTime="0" Value="48">
                     <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
+                        <BackEase Amplitude="0.5" EasingMode="EaseOut" />
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
                 <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0">
                     <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
+                        <BackEase Amplitude="0.5" EasingMode="EaseOut" />
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
@@ -209,15 +211,16 @@
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="filterStackPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0">
                     <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
+                        <BackEase Amplitude="0.5" EasingMode="EaseIn" />
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="-50">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="48">
                     <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
+                        <BackEase Amplitude="0.5" EasingMode="EaseIn" />
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
+
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="overlayRectangle" Storyboard.TargetProperty="(UIElement.Visibility)">
                 <DiscreteObjectKeyFrame KeyTime="0">
                     <DiscreteObjectKeyFrame.Value>
@@ -251,6 +254,7 @@
                 <VisualState x:Name="Narrow">
                     <VisualState.Setters>
                         <Setter Target="ItemGridView.MinItemHeight" Value="75" />
+                        <Setter Target="filterStackPanel.VerticalAlignment" Value="Bottom" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="0" />
@@ -258,14 +262,10 @@
                 </VisualState>
                 <VisualState x:Name="Wide">
                     <VisualState.Setters>
-                        <Setter Target="searchBox.Visibility" Value="Visible" />
-                        <Setter Target="searchBox.Opacity" Value="1" />
-                        <Setter Target="searchButton.Visibility" Value="Collapsed" />
-                        <Setter Target="filterButton.Visibility" Value="Visible" />
-                        <Setter Target="filterButton.Opacity" Value="1" />
                         <Setter Target="searchBox.HorizontalAlignment" Value="Right" />
                         <Setter Target="searchBox.MinWidth" Value="300" />
                         <Setter Target="filterStackPanel.HorizontalAlignment" Value="Right" />
+                        <Setter Target="filterStackPanel.VerticalAlignment" Value="Bottom" />
                         <Setter Target="filterStackPanel.MinWidth" Value="300" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
@@ -308,115 +308,138 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <controls:AdaptiveGridView
-            x:Name="ItemGridView"
-            IsItemClickEnabled="True"
-            ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
-            MinItemHeight="175"
-            MinItemWidth="300"
-            Padding="4,52,4,4">
-            <controls:AdaptiveGridView.ItemTemplate>
-                <DataTemplate x:DataType="vm:ItemViewModel">
-                    <RelativePanel x:Name="RootPanel" RequestedTheme="Dark">
-                        <Image
-                            x:Name="image"
-                            RelativePanel.AlignBottomWithPanel="True"
-                            RelativePanel.AlignLeftWithPanel="True"
-                            RelativePanel.AlignRightWithPanel="True"
-                            RelativePanel.AlignTopWithPanel="True"
-                            Stretch="UniformToFill">
-                            <Image.Source>
-                                <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />
-                            </Image.Source>
-                        </Image>
-                        <Border
-                            Background="#4F000000"
-                            RelativePanel.AlignBottomWithPanel="True"
-                            RelativePanel.AlignLeftWithPanel="True"
-                            RelativePanel.AlignRightWithPanel="True"
-                            RelativePanel.AlignTopWithPanel="True">
-                            <StackPanel
-                                x:Name="ContentStackPanel"
-                                Margin="12"
-                                VerticalAlignment="Center">
-                                <TextBlock
-                                    x:Name="Title"
-                                    Margin="4,2"
-                                    MaxLines="2"
-                                    Text="{x:Bind Model.Title}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="Wrap" />
-                                <TextBlock
-                                    x:Name="Hostname"
-                                    Margin="4,2"
-                                    Opacity="0.7"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{x:Bind Model.Hostname}" />
-                            </StackPanel>
-                        </Border>
-                        <StackPanel
-                            x:Name="readingTimeIndicator"
-                            Margin="8"
-                            Orientation="Horizontal"
-                            RelativePanel.AlignRightWithPanel="True"
-                            RelativePanel.AlignTopWithPanel="True">
-                            <TextBlock
-                                Margin="0,0,4,0"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="&#xE2AD;" />
-                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.EstimatedReadingTime}" />
-                        </StackPanel>
-                        <StackPanel
-                            x:Name="tagsIndicator"
-                            Margin="8"
-                            Orientation="Horizontal"
-                            RelativePanel.AlignBottomWithPanel="True"
-                            RelativePanel.AlignRightWithPanel="True"
-                            Visibility="{x:Bind TagsAreExisting, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock
-                                Margin="0,0,4,0"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="&#xE1CB;" />
-                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind TagsString, Mode=OneWay}" />
-                        </StackPanel>
-                    </RelativePanel>
-                </DataTemplate>
-            </controls:AdaptiveGridView.ItemTemplate>
-            <interactivity:Interaction.Behaviors>
-                <core:EventTriggerBehavior EventName="ItemClick">
-                    <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickCommand}" />
-                </core:EventTriggerBehavior>
-            </interactivity:Interaction.Behaviors>
-        </controls:AdaptiveGridView>
-
         <Rectangle
-            x:Name="backdropRectangle"
             Height="48"
-            VerticalAlignment="Top" />
+            VerticalAlignment="Top"
+            Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
+        <Pivot
+            x:Name="MainPivot"
+            SelectedIndex="{x:Bind ViewModel.CurrentSearchProperties.ItemTypeIndex, Mode=TwoWay}"
+            SelectionChanged="Pivot_SelectionChanged">
+            <Pivot.Resources>
+                <Style TargetType="PivotHeaderItem">
+                    <Setter Property="FontSize" Value="15" />
+                    <Setter Property="FontWeight" Value="SemiBold" />
+                </Style>
+                <Style TargetType="PivotItem">
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="Padding" Value="0" />
+                </Style>
+            </Pivot.Resources>
+            <PivotItem x:Uid="UnreadPivotItem" Header="UNREAD">
+                <controls:AdaptiveGridView
+                    x:Name="ItemGridView"
+                    IsItemClickEnabled="True"
+                    ItemClick="{x:Bind ViewModel.ItemClick}"
+                    ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
+                    MinItemHeight="175"
+                    MinItemWidth="300"
+                    Padding="4">
+                    <controls:AdaptiveGridView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ItemViewModel">
+                            <RelativePanel x:Name="RootPanel" RequestedTheme="Dark">
+                                <Image
+                                    x:Name="image"
+                                    RelativePanel.AlignBottomWithPanel="True"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.AlignTopWithPanel="True"
+                                    Stretch="UniformToFill">
+                                    <Image.Source>
+                                        <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />
+                                    </Image.Source>
+                                </Image>
+                                <Border
+                                    Background="#4F000000"
+                                    RelativePanel.AlignBottomWithPanel="True"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.AlignTopWithPanel="True">
+                                    <StackPanel
+                                        x:Name="ContentStackPanel"
+                                        Margin="12"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            x:Name="Title"
+                                            Margin="4,2"
+                                            MaxLines="2"
+                                            Text="{x:Bind Model.Title}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="Wrap" />
+                                        <TextBlock
+                                            x:Name="Hostname"
+                                            Margin="4,2"
+                                            Opacity="0.7"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            Text="{x:Bind Model.Hostname}" />
+                                    </StackPanel>
+                                </Border>
+                                <StackPanel
+                                    x:Name="readingTimeIndicator"
+                                    Margin="8"
+                                    Orientation="Horizontal"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.AlignTopWithPanel="True">
+                                    <TextBlock
+                                        Margin="0,0,4,0"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="&#xE2AD;" />
+                                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.EstimatedReadingTime}" />
+                                </StackPanel>
+                                <StackPanel
+                                    x:Name="tagsIndicator"
+                                    Margin="8"
+                                    Orientation="Horizontal"
+                                    RelativePanel.AlignBottomWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    Visibility="{x:Bind TagsAreExisting, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock
+                                        Margin="0,0,4,0"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="&#xE1CB;" />
+                                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind TagsString, Mode=OneWay}" />
+                                </StackPanel>
+                            </RelativePanel>
+                        </DataTemplate>
+                    </controls:AdaptiveGridView.ItemTemplate>
+                </controls:AdaptiveGridView>
+            </PivotItem>
+            <PivotItem x:Uid="FavoritesPivotItem" Header="FAVORITES" />
+            <PivotItem x:Uid="ArchivedPivotItem" Header="ARCHIVED" />
+        </Pivot>
+        <AppBarButton
+            x:Name="searchButton"
+            Height="48"
+            HorizontalAlignment="Right"
+            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+            Click="searchButton_Click"
+            Icon="Find"
+            IsCompact="True" />
         <Grid
             x:Name="topGrid"
             Height="48"
-            VerticalAlignment="Top">
-            <TextBlock
-                x:Uid="UnreadPageTitleTextBlock"
-                Style="{StaticResource PageTitleTextBlockStyle}"
-                Text="{x:Bind ViewModel.PageHeader, Mode=OneWay}" />
+            VerticalAlignment="Top"
+            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+            Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="{x:Bind ViewModel.PageHeader, Mode=OneWay}" />
             <AutoSuggestBox
                 x:Uid="SearchBox"
                 x:Name="searchBox"
-                Margin="8,8,76,8"
+                Margin="8"
                 VerticalAlignment="Center"
-                x:DeferLoadStrategy="Lazy"
                 ItemsSource="{x:Bind ViewModel.SearchQuerySuggestions, Mode=OneWay}"
-                LostFocus="searchBox_LostFocus"
                 PlaceholderText="Search…"
                 QueryIcon="Find"
-                Text="{x:Bind ViewModel.CurrentSearchProperties.Query, Mode=TwoWay}"
-                Visibility="Collapsed">
+                QuerySubmitted="searchBox_QuerySubmitted"
+                Text="{x:Bind ViewModel.CurrentSearchProperties.Query, Mode=TwoWay}">
                 <interactivity:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="QuerySubmitted">
                         <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQuerySubmittedCommand}" />
@@ -426,20 +449,11 @@
                     </core:EventTriggerBehavior>
                 </interactivity:Interaction.Behaviors>
             </AutoSuggestBox>
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <AppBarButton
-                    x:Name="searchButton"
-                    Click="searchButton_Click"
-                    Icon="Find"
-                    IsCompact="True" />
-                <AppBarButton
-                    x:Name="filterButton"
-                    x:DeferLoadStrategy="Lazy"
-                    Click="filterButton_Click"
-                    Icon="Filter"
-                    IsCompact="True"
-                    Visibility="Collapsed" />
-            </StackPanel>
+            <AppBarButton
+                Grid.Column="1"
+                Click="CloseSearchButton_Click"
+                Command="{x:Bind ViewModel.CloseSearchCommand}"
+                Icon="Cancel" />
         </Grid>
         <Rectangle
             x:Name="overlayRectangle"
@@ -448,224 +462,161 @@
             PointerPressed="overlayRectangle_PointerPressed"
             Visibility="Collapsed" />
         <StackPanel
-            x:Name="filterStackPanel"
-            VerticalAlignment="Top"
-            x:DeferLoadStrategy="Lazy"
-            Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
-            RenderTransformOrigin="0.5,0.5"
-            Visibility="Collapsed">
-            <StackPanel.RenderTransform>
-                <CompositeTransform />
-            </StackPanel.RenderTransform>
-            <TextBlock
-                x:Uid="ItemTypeFilterTitleTextBlock"
-                Style="{StaticResource MenuHeaderTextBlockStyle}"
-                Text="ITEM TYPE" />
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                <RadioButton
-                    Background="#16a085"
-                    Content="&#xE138;"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.IsAllItemsFilterActive, Mode=OneWay}"
-                    Style="{StaticResource IconRadioButtonStyle}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="all" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-                <RadioButton
-                    Background="#2980b9"
-                    Content="&#xE052;"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.IsUnreadItemsFilterActive, Mode=OneWay}"
-                    Style="{StaticResource IconRadioButtonStyle}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="unread" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-                <RadioButton
-                    Background="#f39c12"
-                    Content="&#xE006;"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.IsStarredItemsFilterActive, Mode=OneWay}"
-                    Style="{StaticResource IconRadioButtonStyle}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="starred" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-                <RadioButton
-                    Background="#c0392b"
-                    Content="&#xE1D3;"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.IsArchivedItemsFilterActive, Mode=OneWay}"
-                    Style="{StaticResource IconRadioButtonStyle}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetItemTypeFilterCommand}" CommandParameter="archived" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-            </StackPanel>
-            <TextBlock
-                x:Uid="SortOrderFilterTitleTextBlock"
-                Style="{StaticResource MenuHeaderTextBlockStyle}"
-                Text="SORT BY" />
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <RadioButton
-                    HorizontalAlignment="Stretch"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.SortDescendingByCreationDate, Mode=OneWay}"
-                    Style="{StaticResource ToggleButtonRadioButtonStyle}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Margin="0,0,8,0"
-                            VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"
-                            Text="&#xE143;" />
-                        <TextBlock x:Uid="SortByNewestFirstTextBlock" Text="newest first" />
-                    </StackPanel>
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetCreationDateFilterCommand}" CommandParameter="desc" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-                <RadioButton
-                    Grid.Column="1"
-                    HorizontalAlignment="Stretch"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.SortAscendingByCreationDate, Mode=OneWay}"
-                    Style="{StaticResource ToggleButtonRadioButtonStyle}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Margin="0,0,8,0"
-                            VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"
-                            RenderTransformOrigin="0.5,0.5"
-                            Text="&#xE143;">
-                            <TextBlock.RenderTransform>
-                                <CompositeTransform ScaleY="-1" />
-                            </TextBlock.RenderTransform>
-                        </TextBlock>
-                        <TextBlock x:Uid="SortByOldestFirstTextBlock" Text="oldest first" />
-                    </StackPanel>
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetCreationDateFilterCommand}" CommandParameter="asc" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-                <RadioButton
-                    Grid.Row="1"
-                    Margin="0,4,0,0"
-                    HorizontalAlignment="Stretch"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.SortAscendingByEstimatedReadingTime, Mode=OneWay}"
-                    Style="{StaticResource ToggleButtonRadioButtonStyle}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Margin="0,0,8,0"
-                            VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"
-                            Text="&#xE143;" />
-                        <TextBlock x:Uid="SortByShortestFirstTextBlock" Text="shortest first" />
-                    </StackPanel>
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetEstimatedReadingTimeFilterCommand}" CommandParameter="asc" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-                <RadioButton
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Margin="0,4,0,0"
-                    HorizontalAlignment="Stretch"
-                    IsChecked="{x:Bind SearchPropertiesViewModel.SortDescendingByEstimatedReadingTime, Mode=OneWay}"
-                    Style="{StaticResource ToggleButtonRadioButtonStyle}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Margin="0,0,8,0"
-                            VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"
-                            RenderTransformOrigin="0.5,0.5"
-                            Text="&#xE143;">
-                            <TextBlock.RenderTransform>
-                                <CompositeTransform ScaleY="-1" />
-                            </TextBlock.RenderTransform>
-                        </TextBlock>
-                        <TextBlock x:Uid="SortByLongestFirstTextBlock" Text="longest first" />
-                    </StackPanel>
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Checked">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.SetEstimatedReadingTimeFilterCommand}" CommandParameter="desc" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </RadioButton>
-            </Grid>
-            <TextBlock
-                x:Uid="LanguageFilterTitleTextBlock"
-                Style="{StaticResource MenuHeaderTextBlockStyle}"
-                Text="LANGUAGE" />
-            <ComboBox
-                x:Uid="LanguageComboBox"
-                HorizontalAlignment="Stretch"
-                BorderThickness="0"
-                ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}"
-                PlaceholderText="select language…"
-                SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=OneWay}">
-                <interactivity:Interaction.Behaviors>
-                    <core:EventTriggerBehavior EventName="SelectionChanged">
-                        <core:InvokeCommandAction Command="{x:Bind ViewModel.LanguageCodeChangedCommand}" />
-                    </core:EventTriggerBehavior>
-                </interactivity:Interaction.Behaviors>
-            </ComboBox>
-            <TextBlock
-                x:Uid="TagFilterTitleTextBlock"
-                Style="{StaticResource MenuHeaderTextBlockStyle}"
-                Text="TAG" />
-            <ComboBox
-                x:Uid="TagComboBox"
-                HorizontalAlignment="Stretch"
-                BorderThickness="0"
-                ItemsSource="{x:Bind ViewModel.TagSuggestions, Mode=OneWay}"
-                PlaceholderText="select tag…"
-                SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=OneWay}">
-                <interactivity:Interaction.Behaviors>
-                    <core:EventTriggerBehavior EventName="SelectionChanged">
-                        <core:InvokeCommandAction Command="{x:Bind ViewModel.TagChangedCommand}" />
-                    </core:EventTriggerBehavior>
-                </interactivity:Interaction.Behaviors>
-            </ComboBox>
-
-            <Button
-                x:Uid="ResetFilterButton"
-                Margin="0,12,0,4"
-                HorizontalAlignment="Stretch"
-                Command="{x:Bind ViewModel.ResetFilterCommand}"
-                Content="Reset filter"
-                Style="{StaticResource TextBlockButtonStyle}" />
-        </StackPanel>
-        <StackPanel
             x:Name="noItemsOverlay"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Visibility="{x:Bind ViewModel.ItemsCountIsZero, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Visibility="{x:Bind ViewModel.ItemsCountIsZero, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
             <TextBlock
                 FontSize="60"
-                Text="&#x1F614;"
+                Text="😔"
                 TextAlignment="Center" />
             <TextBlock
                 x:Uid="NothingFoundTextBlock"
                 Margin="0,12,0,0"
                 Style="{StaticResource InfoTextBlockStyle}"
                 Text="Didn't found something for you. Sorry." />
+        </StackPanel>
+        <StackPanel
+            x:Name="filterStackPanel"
+            VerticalAlignment="Top"
+            x:DeferLoadStrategy="Lazy"
+            Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+            BorderBrush="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+            BorderThickness="1"
+            RenderTransformOrigin="0.5,0.5"
+            Visibility="Collapsed">
+            <StackPanel.RenderTransform>
+                <CompositeTransform />
+            </StackPanel.RenderTransform>
+            <StackPanel.Resources>
+                <Style TargetType="ComboBox">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Padding" Value="12,7,0,9" />
+                </Style>
+                <Style x:Key="ResetFilterTypeButtonStyle" TargetType="Button">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Content" Value="&#xE10A;" />
+                    <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+                    <Setter Property="FontSize" Value="12" />
+                    <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" />
+                    <Setter Property="VerticalAlignment" Value="Stretch" />
+                    <Setter Property="Width" Value="36" />
+                </Style>
+                <Style x:Key="RowGridStyle" TargetType="Grid">
+                    <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundAltMediumLowBrush}" />
+                    <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+                    <Setter Property="BorderThickness" Value="0,1" />
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock
+                x:Uid="SortOrderFilterTitleTextBlock"
+                Style="{StaticResource MenuHeaderTextBlockStyle}"
+                Text="SORT BY" />
+            <Grid Style="{StaticResource RowGridStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <RadioButton
+                        x:Uid="SortByDateRadioButton"
+                        Command="{x:Bind ViewModel.SetSortTypeFilterCommand}"
+                        CommandParameter="date"
+                        Content="by date"
+                        IsChecked="{x:Bind ViewModel.SortByCreationDate, Mode=OneWay}"
+                        Style="{StaticResource ExpandableIconRadioButtonStyle}"
+                        Tag="&#xE163;" />
+                    <RadioButton
+                        x:Uid="SortByReadingTimeRadioButton"
+                        Command="{x:Bind ViewModel.SetSortTypeFilterCommand}"
+                        CommandParameter="time"
+                        Content="by reading time"
+                        IsChecked="{x:Bind ViewModel.SortByReadingTime, Mode=OneWay}"
+                        Style="{StaticResource ExpandableIconRadioButtonStyle}"
+                        Tag="&#xE2AD;" />
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <RadioButton
+                        x:Uid="OrderAscendingRadioButton"
+                        Margin="0"
+                        Command="{x:Bind ViewModel.SetSortOrderCommand}"
+                        CommandParameter="asc"
+                        Content="&#xE0E4;"
+                        IsChecked="{x:Bind ViewModel.CurrentSearchProperties.OrderAscending, Mode=OneWay}"
+                        Style="{StaticResource IconRadioButtonStyle}"
+                        Tag="order ascending" />
+                    <RadioButton
+                        x:Uid="OrderDescendingRadioButton"
+                        Margin="0"
+                        Command="{x:Bind ViewModel.SetSortOrderCommand}"
+                        CommandParameter="desc"
+                        Content="&#xE0E5;"
+                        IsChecked="{x:Bind ViewModel.CurrentSearchProperties.OrderAscending, Mode=OneWay, Converter={StaticResource BooleanNegationConverter}}"
+                        Style="{StaticResource IconRadioButtonStyle}"
+                        Tag="order descending" />
+                </StackPanel>
+            </Grid>
+            <TextBlock
+                x:Uid="LanguageFilterTitleTextBlock"
+                Style="{StaticResource MenuHeaderTextBlockStyle}"
+                Text="LANGUAGE" />
+            <Grid Style="{StaticResource RowGridStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <ComboBox
+                    x:Uid="LanguageComboBox"
+                    ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}"
+                    PlaceholderText="select language…"
+                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=OneWay}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="SelectionChanged">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.LanguageCodeChangedCommand}" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </ComboBox>
+                <Button
+                    Grid.Column="1"
+                    Command="{x:Bind ViewModel.ResetFilterLanguageCommand}"
+                    Style="{StaticResource ResetFilterTypeButtonStyle}" />
+            </Grid>
+            <TextBlock
+                x:Uid="TagFilterTitleTextBlock"
+                Style="{StaticResource MenuHeaderTextBlockStyle}"
+                Text="TAG" />
+            <Grid Style="{StaticResource RowGridStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <ComboBox
+                    x:Uid="TagComboBox"
+                    ItemsSource="{x:Bind ViewModel.TagSuggestions, Mode=OneWay}"
+                    PlaceholderText="select tag…"
+                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=OneWay}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="SelectionChanged">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.TagChangedCommand}" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </ComboBox>
+                <Button
+                    Grid.Column="1"
+                    Command="{x:Bind ViewModel.ResetFilterTagCommand}"
+                    Style="{StaticResource ResetFilterTypeButtonStyle}" />
+            </Grid>
+
+            <Button
+                x:Uid="ResetFilterButton"
+                Margin="4,18,4,4"
+                Command="{x:Bind ViewModel.ResetFilterCommand}"
+                Content="Reset filter"
+                Style="{StaticResource TextBlockButtonStyle}" />
         </StackPanel>
         <CommandBar x:Name="MainCommandBar" Grid.Row="1">
             <AppBarButton
@@ -693,6 +644,13 @@
                 Click="EnableMultipleSelectionButtonClick"
                 Icon="Bullets"
                 Label="Select" />
+            <AppBarToggleButton
+                x:Uid="filterButton"
+                x:Name="filterButton"
+                Checked="filterButton_Checked"
+                Icon="Filter"
+                Label="Filter"
+                Unchecked="filterButton_Unchecked" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton
                     x:Uid="SettingsAppBarButton"
@@ -705,7 +663,7 @@
             Grid.Row="1"
             Width="16"
             Height="16"
-            Margin="0,0,132,6"
+            Margin="0,0,200,6"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Background="{ThemeResource SystemControlBackgroundAccentBrush}"

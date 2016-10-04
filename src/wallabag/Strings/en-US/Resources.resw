@@ -129,10 +129,7 @@
   <data name="AddItemContentDialog.Title" xml:space="preserve">
     <value>ADD ITEM</value>
   </data>
-  <data name="AllPageTitleTextBlock.Text" xml:space="preserve">
-    <value>ALL</value>
-  </data>
-  <data name="ArchivedPageTitleTextBlock.Text" xml:space="preserve">
+  <data name="ArchivedPivotItem.Header" xml:space="preserve">
     <value>ARCHIVED</value>
   </data>
   <data name="blackThemeButton.Label" xml:space="preserve">
@@ -318,7 +315,7 @@
   <data name="SpecialThanksInfoTextBlock.Text" xml:space="preserve">
     <value>Nicolas Lœuillet, Thomas Citharel and Jérémy Benoist for creating such a great software.</value>
   </data>
-  <data name="StarredPageTitleTextBlock.Text" xml:space="preserve">
+  <data name="FavoritesPivotItem.Header" xml:space="preserve">
     <value>FAVORITES</value>
   </data>
   <data name="SyncAppBarButton.Label" xml:space="preserve">
@@ -363,7 +360,7 @@
   <data name="UnmarkAsReadMenuFlyoutItem.Text" xml:space="preserve">
     <value>Unmark as read</value>
   </data>
-  <data name="UnreadPageTitleTextBlock.Text" xml:space="preserve">
+  <data name="UnreadPivotItem.Header" xml:space="preserve">
     <value>UNREAD</value>
   </data>
   <data name="UrlTextBox.Header" xml:space="preserve">
@@ -386,5 +383,23 @@
   </data>
   <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
     <value>Use custom settings</value>
+  </data>
+  <data name="OrderAscendingRadioButton.Tag" xml:space="preserve">
+    <value>order ascending</value>
+  </data>
+  <data name="OrderDescendingRadioButton.Tag" xml:space="preserve">
+    <value>order descending</value>
+  </data>
+  <data name="SortByDateRadioButton.Content" xml:space="preserve">
+    <value>by date</value>
+  </data>
+  <data name="SortByReadingTimeRadioButton.Content" xml:space="preserve">
+    <value>by reading time</value>
+  </data>
+  <data name="filterButton.Label" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="SearchPivotItem.Header" xml:space="preserve">
+    <value>Search results for: {0}</value>
   </data>
 </root>
