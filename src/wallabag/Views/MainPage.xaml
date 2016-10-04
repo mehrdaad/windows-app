@@ -521,7 +521,7 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel>
                     <RadioButton
                         x:Uid="SortByDateRadioButton"
                         Command="{x:Bind ViewModel.SetSortTypeFilterCommand}"
@@ -539,10 +539,7 @@
                         Style="{StaticResource ExpandableIconRadioButtonStyle}"
                         Tag="&#xE2AD;" />
                 </StackPanel>
-                <StackPanel
-                    Grid.Column="1"
-                    Margin="4,0,0,0"
-                    Orientation="Horizontal">
+                <StackPanel Grid.Column="1">
                     <RadioButton
                         x:Uid="OrderAscendingRadioButton"
                         Margin="0"
