@@ -548,8 +548,7 @@
                         Margin="0"
                         Command="{x:Bind ViewModel.SetSortOrderCommand}"
                         CommandParameter="asc"
-                        Content="&#xE143;"
-                        FontSize="12"
+                        Content="&#xE0E4;"
                         IsChecked="{x:Bind ViewModel.CurrentSearchProperties.OrderAscending, Mode=OneWay}"
                         Style="{StaticResource IconRadioButtonStyle}"
                         Tag="order ascending" />
@@ -558,16 +557,10 @@
                         Margin="0"
                         Command="{x:Bind ViewModel.SetSortOrderCommand}"
                         CommandParameter="desc"
-                        Content="&#xE143;"
-                        FontSize="12"
+                        Content="&#xE0E5;"
                         IsChecked="{x:Bind ViewModel.CurrentSearchProperties.OrderAscending, Mode=OneWay, Converter={StaticResource BooleanNegationConverter}}"
-                        RenderTransformOrigin="0.5,0.5"
                         Style="{StaticResource IconRadioButtonStyle}"
-                        Tag="order descending">
-                        <RadioButton.RenderTransform>
-                            <CompositeTransform Rotation="90" />
-                        </RadioButton.RenderTransform>
-                    </RadioButton>
+                        Tag="order descending" />
                 </StackPanel>
             </Grid>
             <TextBlock

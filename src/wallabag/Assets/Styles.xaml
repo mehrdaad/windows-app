@@ -197,6 +197,7 @@
     <Style x:Key="IconRadioButtonStyle" TargetType="RadioButton">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+        <Setter Property="FontSize" Value="12" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="Margin" Value="2,0" />
         <Setter Property="MaxHeight" Value="36" />
@@ -208,6 +209,7 @@
                 <ControlTemplate TargetType="RadioButton">
                     <Grid
                         x:Name="RootGrid"
+                        AutomationProperties.Name="{TemplateBinding Tag}"
                         Background="{TemplateBinding Background}"
                         ToolTipService.ToolTip="{TemplateBinding Tag}">
                         <VisualStateManager.VisualStateGroups>
@@ -293,6 +295,7 @@
         BasedOn="{StaticResource IconRadioButtonStyle}"
         TargetType="RadioButton">
         <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="15" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="Margin" Value="0" />
