@@ -33,7 +33,11 @@
         $(document).ready(function () {
             rightClickInitialize();
             setupVideoLazyLoading();
-            $("img").unveil();
+            $("img").unveil(200, function () {
+                $(this).load(function () {
+                    this.style.opacity = 1;
+                });
+            });
             $("article").fitVids({ customSelector: "iframe[src^='https://medium.com/media']" });
         });
     </script>

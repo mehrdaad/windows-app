@@ -132,6 +132,8 @@ img {
     height: auto;
     margin-bottom: 0.5em;
     max-width: 100%;
+    opacity: 0;
+    transition: opacity .3s ease-in;
 }
 
 figure {
