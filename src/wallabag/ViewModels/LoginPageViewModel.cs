@@ -214,27 +214,34 @@ namespace wallabag.ViewModels
             var token = await GetStringFromHtmlSequenceAsync(clientCreateUri, m_tokenStartString, m_htmlInputEndString);
 
             // Step 3: Create the new client
-            var addContent = new HttpStringContent($"client[redirect_uris]={GetRedirectUri()}&client[save]=&client[_token]={token}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+
+            var stringContent = string.Empty;
+            var useNewApi = (await App.Client.GetVersionNumberAsync()).StartsWith("2.1"); // TODO: Needs a fix in wallabag-api because the credentials aren't necessary.
+
+            stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
+
+            if (useNewApi)
+                stringContent = $"client[name]={new EasClientDeviceInformation().FriendlyName}&" + stringContent;
+
+            var addContent = new HttpStringContent(stringContent, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
             var addResponse = await _http.PostAsync(clientCreateUri, addContent);
 
             if (!addResponse.IsSuccessStatusCode)
                 return false;
 
-            var finalHtml = await addResponse.Content.ReadAsStringAsync();
+            var results = ParseResult(await addResponse.Content.ReadAsStringAsync());
 
-            var clientIdStartIndex = finalHtml.IndexOf(m_finalTokenStartString) + m_finalTokenStartString.Length;
-            var clientIdEndIndex = finalHtml.IndexOf(m_finalTokenEndString);
-            var clientSecretStartIndex = finalHtml.LastIndexOf(m_finalTokenStartString) + m_finalTokenStartString.Length;
-            var clientSecretEndIndex = finalHtml.LastIndexOf(m_finalTokenEndString);
-
-            this.ClientId = finalHtml.Substring(clientIdStartIndex, clientIdEndIndex - clientIdStartIndex);
-            this.ClientSecret = finalHtml.Substring(clientSecretStartIndex, clientSecretEndIndex - clientSecretStartIndex);
+            if (results.Count == 2)
+                this.ClientId = results[0];
+            else
+                this.ClientId = results[1];
+            this.ClientSecret = results[2];
 
             _http.Dispose();
             return true;
         }
 
-        private object GetRedirectUri() => new Uri(new Uri(Url), new EasClientDeviceInformation().FriendlyName);
+        private object GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(new Uri(Url), new EasClientDeviceInformation().FriendlyName);
         private Task<string> GetCsrfTokenAsync() => GetStringFromHtmlSequenceAsync(new Uri(new Uri(Url), "/login"), m_loginStartString, m_htmlInputEndString);
 
         private async Task<string> GetStringFromHtmlSequenceAsync(Uri uri, string startString, string endString)
@@ -245,6 +252,23 @@ namespace wallabag.ViewModels
             var endIndex = html.IndexOf(endString, startIndex);
 
             return html.Substring(startIndex, endIndex - startIndex);
+        }
+
+        private List<string> ParseResult(string html)
+        {
+            var results = new List<string>();
+
+            var lastIndex = 0;
+            do
+            {
+                var start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
+                lastIndex = html.IndexOf(m_finalTokenEndString, start);
+
+                results.Add(html.Substring(start, lastIndex - start));
+
+            } while (results.Count <= 3);
+
+            return results;
         }
 
         #endregion
