@@ -93,7 +93,7 @@ namespace wallabag.ViewModels
             FormattedHtml = _template.FormatWith(new
             {
                 title = Item.Model.Title,
-                content = SetupArticleForHtmlViewer(),
+                content = await SetupArticleForHtmlViewerAsync(),
                 articleUrl = Item.Model.Url,
                 hostname = Item.Model.Hostname,
                 color = ColorScheme,
@@ -107,7 +107,7 @@ namespace wallabag.ViewModels
             await FileIO.WriteTextAsync(await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("article.html", CreationCollisionOption.ReplaceExisting), FormattedHtml);
         }
 
-        private string SetupArticleForHtmlViewer()
+        private async Task<string> SetupArticleForHtmlViewerAsync()
         {
             var document = new HtmlDocument();
             document.LoadHtml(Item.Model.Content);
@@ -153,7 +153,7 @@ namespace wallabag.ViewModels
                     else if (videoProvider.Contains("player.vimeo.com"))
                         videoProvider = "vimeo";
 
-                    var newContainer = string.Format(containerString, GetPreviewImageForVideo(videoProvider, videoId), videoProvider, videoId);
+                    var newContainer = string.Format(containerString, await GetPreviewImageForVideoAsync(videoProvider, videoId), videoProvider, videoId);
 
                     node.ParentNode.InsertAfter(HtmlNode.CreateNode(newContainer), node);
                     node.ParentNode.RemoveChild(node);
@@ -185,7 +185,7 @@ namespace wallabag.ViewModels
             return document.DocumentNode.OuterHtml;
         }
 
-        private async Task<string> GetPreviewImageForVideo(string videoProvider, string videoId)
+        private async Task<string> GetPreviewImageForVideoAsync(string videoProvider, string videoId)
         {
             if (videoProvider == "youtube")
                 return $"http://img.youtube.com/vi/{videoId}/0.jpg";
