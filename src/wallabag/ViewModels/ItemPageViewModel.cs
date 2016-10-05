@@ -133,7 +133,9 @@ namespace wallabag.ViewModels
             }
 
             var c = "/"[0];
-            var containerString = "<div class='wallabag-video' style='background-image: url({0})' data-inline='true' data-provider='{1}' data-video-id='{2}'><span></span></div>";
+
+            var dataOpenMode = SettingsService.Instance.VideoOpenMode.ToString().ToLower();
+            var containerString = "<div class='wallabag-video' style='background-image: url({0})' data-open-mode='" + dataOpenMode + "' data-provider='{1}' data-video-id='{2}'><span></span></div>";
 
             // Replace videos (YouTube & Vimeo) by static thumbnails                  
             var iframeNodes = document.DocumentNode.Descendants("iframe").ToList();

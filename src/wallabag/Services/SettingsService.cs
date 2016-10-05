@@ -82,6 +82,26 @@ namespace wallabag.Services
             set { _helper.Write(nameof(SyncReadingProgress), value); }
         }
 
+        public WallabagVideoOpenMode VideoOpenMode
+        {
+            get { return _helper.Read(nameof(VideoOpenMode), WallabagVideoOpenMode.Inline); }
+            set { _helper.Write(nameof(VideoOpenMode), value); }
+        }
+
+        /// <summary>
+        /// Sets how videos should be opened.
+        /// 
+        /// Short explanation:
+        /// - Inline: Replace videos by static thumbnails, clicking them will load the video
+        /// - Browser: Open the browser displaying the video
+        /// - App: In case a YouTube app is installed, it will be opened, otherwise use inline as fallback
+        /// </summary>
+        public enum WallabagVideoOpenMode
+        {
+            Inline,
+            Browser,
+            App
+        }
         #endregion
 
         #region Appereance
@@ -106,7 +126,7 @@ namespace wallabag.Services
             get { return _helper.Read(nameof(TextAlignment), "left"); }
             set { _helper.Write(nameof(TextAlignment), value); }
         }
-        
+
         #endregion
     }
 }

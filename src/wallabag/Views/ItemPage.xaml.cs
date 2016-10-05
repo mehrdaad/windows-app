@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using wallabag.Services;
 using wallabag.ViewModels;
-using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -60,7 +60,7 @@ namespace wallabag.Views
 
         private MenuFlyout _rightClickMenuFlyout;
         private Grid _rightClickMenuGrid;
-        private void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
+        private async void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
         {
             if (e.Value == "finishedReading")
             {
@@ -93,10 +93,47 @@ namespace wallabag.Views
                         }
                         catch { }
                         break;
+                    case "video-app":
+                    case "video-browser":
+                        var provider = notify[1];
+                        var videoId = notify[2];
+
+                        var launcherOptions = new LauncherOptions();
+
+                        if (notify[0] == "video-app")
+                            launcherOptions = new LauncherOptions()
+                            {
+                                FallbackUri = GetVideoUri(provider, videoId, true),
+                                DisplayApplicationPicker = true
+                            };
+
+                        await Launcher.LaunchUriAsync(GetVideoUri(provider, videoId), launcherOptions);
+                        break;
                     default:
                         break;
                 }
             }
+        }
+
+        private Uri GetVideoUri(string provider, string videoId, bool returnFallbackUri = false)
+        {
+            var uriString = string.Empty;
+            var openMode = SettingsService.Instance.VideoOpenMode;
+
+            if (provider == "youtube")
+                if (openMode == SettingsService.WallabagVideoOpenMode.App && returnFallbackUri == false)
+                    uriString = $"vnd.youtube:{videoId}";
+                else
+                    uriString = $"https://youtu.be/{videoId}";
+            else if (provider == "vimeo")
+                if (openMode == SettingsService.WallabagVideoOpenMode.App && returnFallbackUri == false)
+                    uriString = $"vimeo://v/{videoId}";
+                else
+                    uriString = $"https://vimeo.com/{videoId}";
+            else
+                uriString = videoId;
+
+            return new Uri(uriString);
         }
 
         private void ShowRightClickContextMenu(int x, int y)
