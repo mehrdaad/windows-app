@@ -55,7 +55,7 @@
                 </Style>
             </FlipView.Resources>
             <FlipViewItem>
-                <StackPanel>
+                <StackPanel VerticalAlignment="Center">
                     <Image
                         Width="150"
                         Height="150"
@@ -79,7 +79,7 @@
             </FlipViewItem>
             <FlipViewItem>
                 <Grid>
-                    <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer VerticalAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="TextBox">
