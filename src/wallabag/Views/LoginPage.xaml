@@ -27,7 +27,7 @@
             Opacity="0.15"
             Source="ms-appx:///Assets/books.jpg"
             Stretch="UniformToFill" />
-        <FlipView Background="Transparent">
+        <FlipView MaxWidth="500" Background="Transparent">
             <FlipView.Resources>
                 <Style TargetType="TextBlock">
                     <Setter Property="Margin" Value="12,6" />
@@ -165,7 +165,10 @@
                 </StackPanel>
             </FlipViewItem>
         </FlipView>
-        <Grid Grid.Row="1" VerticalAlignment="Bottom">
+        <Grid
+            Grid.Row="1"
+            MaxWidth="500"
+            VerticalAlignment="Bottom">
             <Grid.Resources>
                 <Style TargetType="Button">
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
