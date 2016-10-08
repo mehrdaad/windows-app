@@ -153,6 +153,17 @@
                         TextAlignment="Center" />
                 </StackPanel>
             </FlipViewItem>
+            <FlipViewItem>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource CustomTitleTextBlockStyle}" Text="One last question." />
+                    <TextBlock Style="{StaticResource CustomSubTitleTextBlockStyle}" Text="Do you allow this app to send anonymous usage and crash reports? Don't worry, you can disable it at any time. And no, it's not necessary for the app." />
+
+                    <CheckBox
+                        Margin="12,0"
+                        Content="Allow collection of telemetry data"
+                        IsChecked="True" />
+                </StackPanel>
+            </FlipViewItem>
         </FlipView>
         <Grid Grid.Row="1" VerticalAlignment="Bottom">
             <Grid.Resources>
