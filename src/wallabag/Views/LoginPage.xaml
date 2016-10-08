@@ -28,6 +28,37 @@
             Source="ms-appx:///Assets/books.jpg"
             Stretch="UniformToFill" />
         <FlipView MaxWidth="500" Background="Transparent">
+            <FlipView.Template>
+                <ControlTemplate TargetType="FlipView">
+                    <Grid
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ScrollViewer
+                            x:Name="ScrollingHost"
+                            AutomationProperties.AccessibilityView="Raw"
+                            BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                            HorizontalScrollMode="Disabled"
+                            HorizontalSnapPointsType="MandatorySingle"
+                            IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                            IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                            IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
+                            IsTabStop="False"
+                            IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                            IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
+                            Padding="{TemplateBinding Padding}"
+                            PointerWheelChanged="IgnorePointerWheel"
+                            TabNavigation="{TemplateBinding TabNavigation}"
+                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                            VerticalScrollMode="Disabled"
+                            VerticalSnapPointsType="MandatorySingle"
+                            ZoomMode="Disabled">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </Grid>
+                </ControlTemplate>
+            </FlipView.Template>
             <FlipView.Resources>
                 <Style TargetType="TextBlock">
                     <Setter Property="Margin" Value="12,6" />

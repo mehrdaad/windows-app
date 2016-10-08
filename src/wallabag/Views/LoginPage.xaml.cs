@@ -29,5 +29,7 @@ namespace wallabag.Views
         {
             this.InitializeComponent();
         }
+
+        private void IgnorePointerWheel(object sender, PointerRoutedEventArgs e) => e.Handled = true;
     }
 }
