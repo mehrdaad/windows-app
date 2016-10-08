@@ -140,7 +140,7 @@
                 </Grid>
             </FlipViewItem>
             <FlipViewItem>
-                <StackPanel>
+                <StackPanel VerticalAlignment="Center">
                     <ProgressRing
                         Width="64"
                         Height="64"
