@@ -39,6 +39,17 @@
                     <Setter Property="Opacity" Value="0.8" />
                     <Setter Property="TextWrapping" Value="Wrap" />
                 </Style>
+                <Style
+                    x:Key="CustomTitleTextBlockStyle"
+                    BasedOn="{StaticResource TitleTextBlockStyle}"
+                    TargetType="TextBlock">
+                    <Setter Property="Margin" Value="12,24,12,0" />
+                    <Setter Property="TextAlignment" Value="Center" />
+                </Style>
+                <Style x:Key="CustomSubTitleTextBlockStyle" TargetType="TextBlock">
+                    <Setter Property="Margin" Value="12,6,12,16" />
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                </Style>
                 <Style TargetType="RadioButton">
                     <Setter Property="Margin" Value="12,0" />
                 </Style>
@@ -48,15 +59,12 @@
                     <Image
                         Width="150"
                         Height="150"
-                        Margin="0,32"
+                        Margin="0,32,0,0"
                         Source="ms-appx:///Assets/Square150x150Logo/Square150x150Logo.png" />
-                    <TextBlock
-                        Style="{StaticResource TitleTextBlockStyle}"
-                        Text="Hi!"
-                        TextAlignment="Center" />
-                    <TextBlock Text="Before you can send links to my bag, I need to ask you: Where should I save them?" />
+                    <TextBlock Style="{StaticResource CustomTitleTextBlockStyle}" Text="Hi!" />
+                    <TextBlock Style="{StaticResource CustomSubTitleTextBlockStyle}" Text="Before you can send links to my bag, I need to ask you: Where should I save them?" />
 
-                    <RadioButton Margin="12,12,12,0" Content="framabag.org" />
+                    <RadioButton Content="framabag.org" />
                     <TextBlock Style="{StaticResource RadioButtonDescriptionTextBlockStyle}" Text="Welcome, dear framabag user!" />
                     <RadioButton Content="v2.wallabag.org" />
                     <TextBlock Style="{StaticResource RadioButtonDescriptionTextBlockStyle}" Text="You're always testing the latest wallabag versions?" />
@@ -71,12 +79,7 @@
             </FlipViewItem>
             <FlipViewItem>
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="48" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="BASIC CONFIGURATION" />
-                    <ScrollViewer Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="TextBox">
@@ -88,6 +91,10 @@
                                     <Setter Property="Margin" Value="12,8" />
                                 </Style>
                             </StackPanel.Resources>
+
+                            <TextBlock Style="{StaticResource CustomTitleTextBlockStyle}" Text="Let's continue!" />
+                            <TextBlock Style="{StaticResource CustomSubTitleTextBlockStyle}" Text="Now we continue with the configuration. In the simplest case you just need to enter your usename and your password." />
+
                             <TextBox
                                 x:Uid="WallabagUrlTextBox"
                                 Header="wallabag URL"
