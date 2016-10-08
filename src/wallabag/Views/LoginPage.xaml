@@ -70,59 +70,67 @@
                 </StackPanel>
             </FlipViewItem>
             <FlipViewItem>
-                <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <StackPanel.Resources>
-                            <Style TargetType="TextBox">
-                                <Setter Property="Margin" Value="8,4" />
-                            </Style>
-                            <Style TargetType="PasswordBox">
-                                <Setter Property="Margin" Value="8,4" />
-                            </Style>
-                        </StackPanel.Resources>
-
-                        <TextBox
-                            x:Uid="WallabagUrlTextBox"
-                            Header="Wallabag URL"
-                            InputScope="Url"
-                            PlaceholderText="https://"
-                            Text="{x:Bind ViewModel.Url, Mode=TwoWay}" />
-                        <TextBox
-                            x:Uid="UsernameTextBox"
-                            Header="Username"
-                            IsSpellCheckEnabled="False"
-                            Text="{x:Bind ViewModel.Username, Mode=TwoWay}" />
-                        <PasswordBox
-                            x:Uid="PasswordBox"
-                            Header="Password"
-                            Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
-                        <CheckBox
-                            x:Uid="UseCustomSettingsCheckBox"
-                            Margin="8,4"
-                            Content="Use custom settings"
-                            IsChecked="{x:Bind ViewModel.UseCustomSettings, Mode=TwoWay}" />
-                        <TextBlock
-                            x:Uid="MultipleDevicesAlertTextBlock"
-                            Margin="8,32,8,12"
-                            FontSize="13.333"
-                            Opacity="0.8"
-                            Text="A usage of the same ID/secret combination on multiple devices isn't recommended and could cause (a lot of) frustration."
-                            TextWrapping="Wrap"
-                            Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <TextBox
-                            x:Uid="ClientIdTextBox"
-                            Header="Client Id"
-                            IsSpellCheckEnabled="False"
-                            Text="{x:Bind ViewModel.ClientId, Mode=TwoWay}"
-                            Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <TextBox
-                            x:Uid="ClientSecretTextBox"
-                            Header="Client Secret"
-                            IsSpellCheckEnabled="False"
-                            Text="{x:Bind ViewModel.ClientSecret, Mode=TwoWay}"
-                            Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    </StackPanel>
-                </ScrollViewer>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="48" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource PageTitleTextBlockStyle}" Text="BASIC CONFIGURATION" />
+                    <ScrollViewer Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="BorderThickness" Value="1" />
+                                    <Setter Property="Margin" Value="12,8" />
+                                </Style>
+                                <Style TargetType="PasswordBox">
+                                    <Setter Property="BorderThickness" Value="1" />
+                                    <Setter Property="Margin" Value="12,8" />
+                                </Style>
+                            </StackPanel.Resources>
+                            <TextBox
+                                x:Uid="WallabagUrlTextBox"
+                                Header="wallabag URL"
+                                InputScope="Url"
+                                PlaceholderText="https://"
+                                Text="{x:Bind ViewModel.Url, Mode=TwoWay}" />
+                            <TextBox
+                                x:Uid="UsernameTextBox"
+                                Header="Username"
+                                IsSpellCheckEnabled="False"
+                                Text="{x:Bind ViewModel.Username, Mode=TwoWay}" />
+                            <PasswordBox
+                                x:Uid="PasswordBox"
+                                Header="Password"
+                                Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
+                            <CheckBox
+                                x:Uid="UseCustomSettingsCheckBox"
+                                Margin="12,6"
+                                Content="Use custom settings"
+                                IsChecked="{x:Bind ViewModel.UseCustomSettings, Mode=TwoWay}" />
+                            <TextBlock
+                                x:Uid="MultipleDevicesAlertTextBlock"
+                                Margin="8,32,8,12"
+                                FontSize="13.333"
+                                Opacity="0.8"
+                                Text="A usage of the same ID/secret combination on multiple devices isn't recommended and could cause (a lot of) frustration."
+                                TextWrapping="Wrap"
+                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBox
+                                x:Uid="ClientIdTextBox"
+                                Header="Client Id"
+                                IsSpellCheckEnabled="False"
+                                Text="{x:Bind ViewModel.ClientId, Mode=TwoWay}"
+                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBox
+                                x:Uid="ClientSecretTextBox"
+                                Header="Client Secret"
+                                IsSpellCheckEnabled="False"
+                                Text="{x:Bind ViewModel.ClientSecret, Mode=TwoWay}"
+                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
             </FlipViewItem>
             <FlipViewItem>
                 <StackPanel>
