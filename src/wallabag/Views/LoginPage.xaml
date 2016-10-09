@@ -5,6 +5,7 @@
     xmlns:common="using:wallabag.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:wallabag.Views"
+    xmlns:m="using:wallabag.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:wallabag.ViewModels"
     common:TitleBarExtensions.ButtonBackgroundColor="Transparent"
@@ -64,11 +65,17 @@
                     <Setter Property="Margin" Value="12,6" />
                     <Setter Property="TextWrapping" Value="Wrap" />
                 </Style>
-                <Style x:Key="RadioButtonDescriptionTextBlockStyle" TargetType="TextBlock">
-                    <Setter Property="FontSize" Value="13.333" />
-                    <Setter Property="Margin" Value="40,0,12,12" />
-                    <Setter Property="Opacity" Value="0.8" />
+                <Style x:Key="ProviderNameTextBlockStyle" TargetType="TextBlock">
+                    <Setter Property="Margin" Value="12,6,12,0" />
                     <Setter Property="TextWrapping" Value="Wrap" />
+                </Style>
+                <Style
+                    x:Key="ProviderDescriptionTextBlockStyle"
+                    BasedOn="{StaticResource ProviderNameTextBlockStyle}"
+                    TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="13.333" />
+                    <Setter Property="Margin" Value="12,2,12,6" />
+                    <Setter Property="Opacity" Value="0.8" />
                 </Style>
                 <Style
                     x:Key="CustomTitleTextBlockStyle"
@@ -95,13 +102,16 @@
                     <TextBlock Style="{StaticResource CustomTitleTextBlockStyle}" Text="Hi!" />
                     <TextBlock Style="{StaticResource CustomSubTitleTextBlockStyle}" Text="Before you can send links to my bag, I need to ask you: Where should I save them?" />
 
-                    <RadioButton Content="framabag.org" />
-                    <TextBlock Style="{StaticResource RadioButtonDescriptionTextBlockStyle}" Text="Welcome, dear framabag user!" />
-                    <RadioButton Content="v2.wallabag.org" />
-                    <TextBlock Style="{StaticResource RadioButtonDescriptionTextBlockStyle}" Text="You're always testing the latest wallabag versions?" />
-                    <RadioButton Content="other" />
-                    <TextBlock Style="{StaticResource RadioButtonDescriptionTextBlockStyle}" Text="Check this, if you're using another wallabag provider." />
-
+                    <ListView ItemsSource="{x:Bind ViewModel.Providers}" SelectedItem="{x:Bind ViewModel.SelectedProvider, Mode=TwoWay}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="m:WallabagProvider">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource ProviderNameTextBlockStyle}" Text="{x:Bind Name}" />
+                                    <TextBlock Style="{StaticResource ProviderDescriptionTextBlockStyle}" Text="{x:Bind ShortDescription}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                     <Button
                         Margin="4,12"
                         Content="Don't have an account yet? Create one!"

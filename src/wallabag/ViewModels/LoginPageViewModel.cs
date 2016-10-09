@@ -24,11 +24,21 @@ namespace wallabag.ViewModels
         public string ClientSecret { get; set; } = string.Empty;
         public bool? UseCustomSettings { get; set; } = false;
 
+        public int CurrentStep { get; set; } = 0;
+
+        public List<WallabagProvider> Providers { get; set; }
+        public object SelectedProvider { get; set; }
+
         public LoginPageViewModel()
         {
-         
+            Providers = new List<WallabagProvider>()
+            {
+                new WallabagProvider(new Uri("https://framabag.org"), "framabag", "Still not on wallabag 2.x, sorry. :("),
+                new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", "Always testing the latest beta versions?"),
+                new WallabagProvider(default(Uri), "other", "If you're using another provider, this option is for you.")
+            };
         }
-       
+
         private async Task<bool> TestConfigurationAsync()
         {
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
