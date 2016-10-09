@@ -29,6 +29,9 @@ namespace wallabag.ViewModels
         public List<WallabagProvider> Providers { get; set; }
         public object SelectedProvider { get; set; }
 
+        public DelegateCommand PreviousCommand { get; private set; }
+        public DelegateCommand NextCommand { get; private set; }
+
         public LoginPageViewModel()
         {
             Providers = new List<WallabagProvider>()
@@ -37,6 +40,24 @@ namespace wallabag.ViewModels
                 new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", "Always testing the latest beta versions?"),
                 new WallabagProvider(default(Uri), "other", "If you're using another provider, this option is for you.")
             };
+
+            PreviousCommand = new DelegateCommand(async () => await PreviousAsync(), () => CurrentStep > 0);
+            NextCommand = new DelegateCommand(async () => await NextAsync(), () => CurrentStep <= 3);
+        }
+
+        private async Task PreviousAsync()
+        {
+            PreviousCommand.RaiseCanExecuteChanged();
+            NextCommand.RaiseCanExecuteChanged();
+
+            CurrentStep -= 1;
+        }
+        private async Task NextAsync()
+        {
+            PreviousCommand.RaiseCanExecuteChanged();
+            NextCommand.RaiseCanExecuteChanged();
+
+            CurrentStep += 1;
         }
 
         private async Task<bool> TestConfigurationAsync()

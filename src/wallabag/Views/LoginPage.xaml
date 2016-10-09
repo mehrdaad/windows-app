@@ -219,10 +219,14 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Margin="8,8,4,8" Content="previous" />
+            <Button
+                Margin="8,8,4,8"
+                Command="{x:Bind ViewModel.PreviousCommand, Mode=OneWay}"
+                Content="previous" />
             <Button
                 Grid.Column="1"
                 Margin="4,8,8,8"
+                Command="{x:Bind ViewModel.NextCommand, Mode=OneWay}"
                 Content="next" />
         </Grid>
     </Grid>
