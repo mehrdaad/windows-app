@@ -24,53 +24,13 @@ namespace wallabag.ViewModels
         public string ClientSecret { get; set; } = string.Empty;
         public bool? UseCustomSettings { get; set; } = false;
 
-        public bool IsTestRunning { get; set; }
-        public bool TestWasSuccessful { get; set; } = false;
-
-        public event EventHandler ConfigurationTestFailed;
-        public event EventHandler ConfigurationTestSucceeded;
-        public event EventHandler ContinueStarted;
-        public event EventHandler ContinueCompleted;
-
-        public DelegateCommand TestConfigurationCommand { get; private set; }
-        public DelegateCommand ContinueCommand { get; private set; }
-
         public LoginPageViewModel()
         {
-            TestConfigurationCommand = new DelegateCommand(async () =>
-            {
-                TestWasSuccessful = await TestConfigurationAsync();
-
-                if (TestWasSuccessful)
-                    ConfigurationTestSucceeded?.Invoke(this, new EventArgs());
-                else
-                    ConfigurationTestFailed?.Invoke(this, new EventArgs());
-
-                ContinueCommand.RaiseCanExecuteChanged();
-            }, () => TestConfigurationCanExecute());
-            ContinueCommand = new DelegateCommand(async () => await ContinueAsync(), () => TestWasSuccessful);
-
-            PropertyChanged += (s, e) => TestConfigurationCommand.RaiseCanExecuteChanged();
+         
         }
-
-        private bool TestConfigurationCanExecute()
-        {
-            if (!string.IsNullOrWhiteSpace(Username) &&
-                !string.IsNullOrWhiteSpace(Password) &&
-                !string.IsNullOrWhiteSpace(Url))
-                if ((UseCustomSettings == true &&
-                    !string.IsNullOrWhiteSpace(ClientId) &&
-                    !string.IsNullOrWhiteSpace(ClientSecret)) ||
-                    UseCustomSettings == false)
-                    return true;
-                else
-                    return false;
-            else return false;
-        }
+       
         private async Task<bool> TestConfigurationAsync()
         {
-            IsTestRunning = true;
-
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
                 Url = "https://" + Url;
 
@@ -94,7 +54,6 @@ namespace wallabag.ViewModels
 
             var result = await App.Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
             {
-                IsTestRunning = false;
                 if (x.Exception == null)
                     return x.Result;
                 else
@@ -108,7 +67,6 @@ namespace wallabag.ViewModels
 
                 result = await App.Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
                 {
-                    IsTestRunning = false;
                     if (x.Exception == null)
                         return x.Result;
                     else
@@ -120,8 +78,6 @@ namespace wallabag.ViewModels
         }
         private async Task ContinueAsync(bool credentialsExist = false)
         {
-            ContinueStarted?.Invoke(this, new EventArgs());
-
             if (!credentialsExist)
             {
                 Services.SettingsService.Instance.ClientId = ClientId;
@@ -148,8 +104,6 @@ namespace wallabag.ViewModels
                 App.Database.InsertOrReplaceAll(tags, typeof(Tag));
             });
 
-            ContinueCompleted?.Invoke(this, new EventArgs());
-
             await TitleBarExtensions.ResetAsync();
 
             NavigationService.Navigate(typeof(Views.MainPage));
@@ -173,7 +127,6 @@ namespace wallabag.ViewModels
                 ClientSecret = state[nameof(ClientSecret)] as string;
             }
         }
-
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
             if (suspending)
