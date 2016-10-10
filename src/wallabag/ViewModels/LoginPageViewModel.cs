@@ -42,7 +42,21 @@ namespace wallabag.ViewModels
             };
 
             PreviousCommand = new DelegateCommand(async () => await PreviousAsync(), () => CurrentStep > 0);
-            NextCommand = new DelegateCommand(async () => await NextAsync(), () => CurrentStep <= 3);
+            NextCommand = new DelegateCommand(async () => await NextAsync(), () => NextCanBeExecuted());
+
+            this.PropertyChanged += this_PropertyChanged;
+        }
+
+        private void this_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            PreviousCommand.RaiseCanExecuteChanged();
+            NextCommand.RaiseCanExecuteChanged();
+        }
+
+        private bool NextCanBeExecuted()
+        {
+            return SelectedProvider != null &&
+                   CurrentStep <= 3;
         }
 
         private async Task PreviousAsync()
