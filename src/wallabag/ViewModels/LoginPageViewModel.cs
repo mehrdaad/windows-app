@@ -1,10 +1,12 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Messaging;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Api.Models;
 using wallabag.Common;
+using wallabag.Common.Messages;
 using wallabag.Models;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.UI.Xaml.Navigation;
@@ -70,6 +72,16 @@ namespace wallabag.ViewModels
         {
             PreviousCommand.RaiseCanExecuteChanged();
             NextCommand.RaiseCanExecuteChanged();
+
+            var selectedProvider = SelectedProvider as WallabagProvider;
+
+            if (CurrentStep == 0)
+            {
+                if (selectedProvider.Url == null)
+                    Messenger.Default.Send(new ShowUrlFieldMessage());
+                else
+                    Url = selectedProvider.Url.ToString();
+            }
 
             CurrentStep += 1;
         }
