@@ -28,7 +28,10 @@
             Opacity="0.15"
             Source="ms-appx:///Assets/books.jpg"
             Stretch="UniformToFill" />
-        <FlipView MaxWidth="500" Background="Transparent">
+        <FlipView
+            MaxWidth="500"
+            Background="Transparent"
+            SelectedIndex="{x:Bind ViewModel.CurrentStep, Mode=OneWay}">
             <FlipView.Template>
                 <ControlTemplate TargetType="FlipView">
                     <Grid
