@@ -27,6 +27,7 @@ namespace wallabag.ViewModels
         public bool? UseCustomSettings { get; set; } = false;
 
         public int CurrentStep { get; set; } = 0;
+        public string ProgressDescription { get; set; }
 
         public List<WallabagProvider> Providers { get; set; }
         public object SelectedProvider { get; set; }
@@ -91,6 +92,8 @@ namespace wallabag.ViewModels
 
         private async Task<bool> TestConfigurationAsync()
         {
+            ProgressDescription = "Testing the configuration…"; // TODO: translation
+
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
                 Url = "https://" + Url;
 
@@ -147,16 +150,22 @@ namespace wallabag.ViewModels
                 Services.SettingsService.Instance.RefreshToken = App.Client.RefreshToken;
                 Services.SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
             }
+            ProgressDescription = "Downloading items…";
 
             var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(ItemsPerPage: 1000);
             var items = itemResponse.Items as List<WallabagItem>;
 
             // For users with a lot of items
             if (itemResponse.Pages > 1)
-                for (int i = 1; i < itemResponse.Pages; i++)
-                    items.AddRange(await App.Client.GetItemsAsync(ItemsPerPage: 1000));
+                for (int i = 2; i <= itemResponse.Pages; i++)
+                {
+                    ProgressDescription = $"Downloading items… ({items.Count}/{itemResponse.TotalNumberOfItems})";
+                    items.AddRange(await App.Client.GetItemsAsync(ItemsPerPage: 1000, PageNumber: i));
+                }
 
             var tags = await App.Client.GetTagsAsync();
+
+            ProgressDescription = "Saving items in the database…";
 
             await Task.Run(() =>
             {
@@ -212,6 +221,8 @@ namespace wallabag.ViewModels
 
         public async Task<bool> CreateApiClientAsync()
         {
+            ProgressDescription = "Creating a client for you…"; // TODO: Translation
+
             _http = new HttpClient();
             var instanceUri = new Uri(Url);
 
