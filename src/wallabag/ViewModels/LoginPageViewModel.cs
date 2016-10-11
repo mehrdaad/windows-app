@@ -151,8 +151,9 @@ namespace wallabag.ViewModels
                 Services.SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
             }
             ProgressDescription = "Downloading items…";
+            int itemsPerPage = 100;
 
-            var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(ItemsPerPage: 1000);
+            var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(ItemsPerPage: itemsPerPage);
             var items = itemResponse.Items as List<WallabagItem>;
 
             // For users with a lot of items
@@ -160,7 +161,7 @@ namespace wallabag.ViewModels
                 for (int i = 2; i <= itemResponse.Pages; i++)
                 {
                     ProgressDescription = $"Downloading items… ({items.Count}/{itemResponse.TotalNumberOfItems})";
-                    items.AddRange(await App.Client.GetItemsAsync(ItemsPerPage: 1000, PageNumber: i));
+                    items.AddRange(await App.Client.GetItemsAsync(ItemsPerPage: itemsPerPage, PageNumber: i));
                 }
 
             var tags = await App.Client.GetTagsAsync();
