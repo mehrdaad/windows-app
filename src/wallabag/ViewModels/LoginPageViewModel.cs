@@ -87,6 +87,24 @@ namespace wallabag.ViewModels
                     Url = selectedProvider.Url.ToString();
             }
 
+            if (CurrentStep == 1)
+            {
+                try { var x = new Uri(Url); }
+                catch (UriFormatException)
+                {
+                    Messenger.Default.Send(new UriFormatExceptionMessage());
+                    return;
+                }
+
+                CurrentStep += 1;
+
+                if (await TestConfigurationAsync())
+                    await DownloadAndSaveItemsAndTags();
+
+                CurrentStep += 1;
+
+            }
+
             CurrentStep += 1;
         }
 
@@ -139,17 +157,8 @@ namespace wallabag.ViewModels
 
             return result;
         }
-        private async Task ContinueAsync(bool credentialsExist = false)
+        private async Task DownloadAndSaveItemsAndTags()
         {
-            if (!credentialsExist)
-            {
-                Services.SettingsService.Instance.ClientId = ClientId;
-                Services.SettingsService.Instance.ClientSecret = ClientSecret;
-                Services.SettingsService.Instance.WallabagUrl = new Uri(Url);
-                Services.SettingsService.Instance.AccessToken = App.Client.AccessToken;
-                Services.SettingsService.Instance.RefreshToken = App.Client.RefreshToken;
-                Services.SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
-            }
             ProgressDescription = "Downloading items…";
             int itemsPerPage = 100;
 
