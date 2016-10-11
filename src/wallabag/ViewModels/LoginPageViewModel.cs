@@ -21,7 +21,7 @@ namespace wallabag.ViewModels
 
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string Url { get; set; } = string.Empty;
+        public string Url { get; set; } = "https://";
         public string ClientId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
         public bool? UseCustomSettings { get; set; } = false;
@@ -78,7 +78,10 @@ namespace wallabag.ViewModels
             if (CurrentStep == 0)
             {
                 if (selectedProvider.Url == null)
+                {
                     Messenger.Default.Send(new ShowUrlFieldMessage());
+                    Url = "https://";
+                }
                 else
                     Url = selectedProvider.Url.ToString();
             }
