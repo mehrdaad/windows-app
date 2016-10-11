@@ -2,4 +2,5 @@
 {
     class SelectProviderMessage { }
     class ShowUrlFieldMessage { }
+    class UriFormatExceptionMessage { }
 }

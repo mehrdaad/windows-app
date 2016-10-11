@@ -105,6 +105,15 @@ namespace wallabag.ViewModels
 
             }
 
+            if (CurrentStep == 3)
+            {
+                await TitleBarExtensions.ResetAsync();
+
+                NavigationService.Navigate(typeof(Views.MainPage));
+                NavigationService.ClearHistory();
+
+                return;
+            }
             CurrentStep += 1;
         }
 
@@ -182,11 +191,6 @@ namespace wallabag.ViewModels
                 App.Database.InsertOrReplaceAll(items, typeof(Item));
                 App.Database.InsertOrReplaceAll(tags, typeof(Tag));
             });
-
-            await TitleBarExtensions.ResetAsync();
-
-            NavigationService.Navigate(typeof(Views.MainPage));
-            NavigationService.ClearHistory();
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
