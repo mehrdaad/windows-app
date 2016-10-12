@@ -12,6 +12,42 @@
     common:TitleBarExtensions.ButtonForegroundColor="White"
     common:TitleBarExtensions.IsVisible="false"
     mc:Ignorable="d">
+    <Page.Resources>
+        <Storyboard x:Name="ShowAlertGridStoryboard">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="-48" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1" />
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="HideAlertGridStoryboard" BeginTime="0:0:2">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="-48" />
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.3">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
 
     <Page.DataContext>
         <vm:LoginPageViewModel />
@@ -210,6 +246,33 @@
                 </StackPanel>
             </FlipViewItem>
         </FlipView>
+        <Grid
+            x:Name="AlertGrid"
+            MaxWidth="500"
+            VerticalAlignment="Top"
+            x:DeferLoadStrategy="Lazy"
+            Background="#FFFFA200"
+            RenderTransformOrigin="0.5,0.5"
+            RequestedTheme="Light"
+            Visibility="Collapsed">
+            <Grid.RenderTransform>
+                <CompositeTransform />
+            </Grid.RenderTransform>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <FontIcon
+                Margin="12"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="24"
+                Glyph="&#xE814;" />
+            <TextBlock
+                x:Name="AlertDescriptionTextBlock"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                TextWrapping="Wrap" />
+        </Grid>
         <Grid
             Grid.Row="1"
             MaxWidth="500"

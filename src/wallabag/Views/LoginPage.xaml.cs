@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Messaging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,8 +29,22 @@ namespace wallabag.Views
         public LoginPage()
         {
             this.InitializeComponent();
+
+            ShowAlertGridStoryboard.Completed += (s, e) => HideAlertGridStoryboard.Begin();
         }
 
         private void IgnorePointerWheel(object sender, PointerRoutedEventArgs e) => e.Handled = true;
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            Messenger.Default.Register<NotificationMessage>(this, message =>
+            {
+                ShowAlertGridStoryboard.Begin();
+                AlertDescriptionTextBlock.Text = message.Notification;
+            });
+        }
+        protected override void OnNavigatedFrom(NavigationEventArgs e) => Messenger.Default.Unregister(this);
     }
 }
