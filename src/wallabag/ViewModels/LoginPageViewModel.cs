@@ -18,7 +18,7 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class LoginPageViewModel : ViewModelBase
     {
-        public bool CredentialsAreExisting { get; set; }
+        private bool _credentialsAreExisting = false;
 
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
@@ -76,8 +76,8 @@ namespace wallabag.ViewModels
         }
         private async Task NextAsync()
         {
-            PreviousCommand.RaiseCanExecuteChanged();
-            NextCommand.RaiseCanExecuteChanged();
+            if (_credentialsAreExisting && CurrentStep == 0)
+                CurrentStep = 2;
 
             var selectedProvider = SelectedProvider as WallabagProvider;
 
@@ -90,6 +90,9 @@ namespace wallabag.ViewModels
                 }
                 else
                     Url = selectedProvider.Url.ToString();
+
+                CurrentStep += 1;
+                return;
             }
 
             if (CurrentStep == 1)
@@ -102,12 +105,15 @@ namespace wallabag.ViewModels
                 }
 
                 CurrentStep += 1;
+            }
 
+            if (CurrentStep == 2)
+            {
                 if (await TestConfigurationAsync())
                     await DownloadAndSaveItemsAndTags();
 
                 CurrentStep += 1;
-
+                return;
             }
 
             if (CurrentStep == 3)
@@ -123,14 +129,14 @@ namespace wallabag.ViewModels
                 NavigationService.ClearHistory();
 
                 await TitleBarExtensions.ResetAsync();
-
-                return;
             }
-            CurrentStep += 1;
         }
 
         private async Task<bool> TestConfigurationAsync()
         {
+            if (_credentialsAreExisting)
+                return true;
+
             ProgressDescription = "Testing the configuration…"; // TODO: translation
 
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
@@ -215,11 +221,7 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            if (parameter is bool)
-            {
-                CredentialsAreExisting = (bool)parameter;
-                //await DownloadAndSaveItemsAndTags();
-            }
+            _credentialsAreExisting = parameter != null && (bool)parameter;
 
             if (state.Count == 5)
             {
@@ -229,6 +231,9 @@ namespace wallabag.ViewModels
                 ClientId = state[nameof(ClientId)] as string;
                 ClientSecret = state[nameof(ClientSecret)] as string;
             }
+
+            if (_credentialsAreExisting)
+                await NextAsync();
         }
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
