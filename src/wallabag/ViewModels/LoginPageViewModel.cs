@@ -174,6 +174,9 @@ namespace wallabag.ViewModels
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
                 Url = "https://" + Url;
 
+            try { await new HttpClient().GetAsync(new Uri(Url)); }
+            catch { return false; }
+
             if (UseCustomSettings == false)
             {
                 App.Client.InstanceUri = new Uri(Url);
