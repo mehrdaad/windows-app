@@ -191,9 +191,8 @@
                         Foreground="White"
                         IsActive="True" />
                     <TextBlock
-                        x:Uid="DownloadingItemsTextBlock"
                         Margin="0,16,0,0"
-                        Text="Downloading items…"
+                        Text="{x:Bind ViewModel.ProgressDescription, Mode=OneWay}"
                         TextAlignment="Center" />
                 </StackPanel>
             </FlipViewItem>
