@@ -190,8 +190,14 @@ namespace wallabag.ViewModels
 
             await Task.Run(() =>
             {
-                App.Database.InsertOrReplaceAll(items, typeof(Item));
-                App.Database.InsertOrReplaceAll(tags, typeof(Tag));
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var item in items)
+                        App.Database.InsertOrReplace((Item)item);
+
+                    foreach (var tag in tags)
+                        App.Database.InsertOrReplace((Tag)tag);
+                });
             });
         }
 
@@ -200,7 +206,7 @@ namespace wallabag.ViewModels
             if (parameter is bool)
             {
                 CredentialsAreExisting = (bool)parameter;
-                await ContinueAsync(true);
+                //await DownloadAndSaveItemsAndTags();
             }
 
             if (state.Count == 5)
