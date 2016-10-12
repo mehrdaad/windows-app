@@ -435,6 +435,9 @@
   <data name="OtherProviderName" xml:space="preserve">
     <value>Andere</value>
   </data>
+  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
+    <value>Sammeln von Telemetrie-Daten erlauben</value>
+  </data>
   <data name="V2WallabagOrgProviderDescription" xml:space="preserve">
     <value>Immer auf dem neuesten Stand?</value>
   </data>

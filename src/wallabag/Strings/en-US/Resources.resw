@@ -429,6 +429,9 @@
   <data name="SavingItemsInDatabaseMessage" xml:space="preserve">
     <value>Saving items in the database…</value>
   </data>
+  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
+    <value>Allow collection of telemetry data</value>
+  </data>
   <data name="TestingConfigurationMessage" xml:space="preserve">
     <value>Testing the configuration…</value>
   </data>
