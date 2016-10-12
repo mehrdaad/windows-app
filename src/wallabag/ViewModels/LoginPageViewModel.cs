@@ -30,7 +30,9 @@ namespace wallabag.ViewModels
 
         public int CurrentStep { get; set; } = 0;
         public string ProgressDescription { get; set; }
-        public Visibility UrlFieldVisibility { get; set; } = Visibility.Collapsed;
+
+        [DependsOn(nameof(SelectedProvider))]
+        public Visibility UrlFieldVisibility { get { return (SelectedProvider as WallabagProvider)?.Url == null ? Visibility.Visible : Visibility.Collapsed; } }
 
         public List<WallabagProvider> Providers { get; set; }
         public object SelectedProvider { get; set; }
@@ -106,16 +108,7 @@ namespace wallabag.ViewModels
 
             if (CurrentStep == 0)
             {
-                if (selectedProvider.Url == null)
-                {
-                    Url = "https://";
-                    UrlFieldVisibility = Visibility.Visible;
-                }
-                else
-                {
-                    Url = selectedProvider.Url.ToString();
-                    UrlFieldVisibility = Visibility.Collapsed;
-                }
+                Url = selectedProvider?.Url == null ? "https://" : selectedProvider.Url.ToString();
 
                 CurrentStep += 1;
                 return;
