@@ -137,6 +137,11 @@ namespace wallabag.ViewModels
             {
                 if (await TestConfigurationAsync())
                     await DownloadAndSaveItemsAndTags();
+                else
+                {
+                    CurrentStep -= 1;
+                    Messenger.Default.Send(new NotificationMessage("The credentials seem to be false. Please check them again."));
+                }
 
                 CurrentStep += 1;
                 return;
