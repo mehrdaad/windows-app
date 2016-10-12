@@ -44,7 +44,7 @@ namespace wallabag.ViewModels
                 new WallabagProvider(default(Uri), "other", "If you're using another provider, this option is for you.")
             };
 
-            PreviousCommand = new DelegateCommand(async () => await PreviousAsync(), () => CurrentStep > 0);
+            PreviousCommand = new DelegateCommand(() => Previous(), () => CurrentStep > 0 && CurrentStep != 2);
             NextCommand = new DelegateCommand(async () => await NextAsync(), () => NextCanBeExecuted());
 
             this.PropertyChanged += this_PropertyChanged;
@@ -62,12 +62,15 @@ namespace wallabag.ViewModels
                    CurrentStep <= 3;
         }
 
-        private async Task PreviousAsync()
+        private void Previous()
         {
             PreviousCommand.RaiseCanExecuteChanged();
             NextCommand.RaiseCanExecuteChanged();
 
-            CurrentStep -= 1;
+            if (CurrentStep != 3)
+                CurrentStep -= 1;
+            else
+                CurrentStep = 1;
         }
         private async Task NextAsync()
         {
