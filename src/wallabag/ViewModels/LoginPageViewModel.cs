@@ -59,7 +59,8 @@ namespace wallabag.ViewModels
         private bool NextCanBeExecuted()
         {
             return SelectedProvider != null &&
-                   CurrentStep <= 3;
+                   CurrentStep <= 3 &&
+                   CurrentStep != 2;
         }
 
         private void Previous()
