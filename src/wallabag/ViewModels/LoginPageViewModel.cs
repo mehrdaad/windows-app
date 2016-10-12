@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Api.Models;
 using wallabag.Common;
-using wallabag.Common.Messages;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.Security.ExchangeActiveSyncProvisioning;
@@ -127,7 +126,7 @@ namespace wallabag.ViewModels
                 try { var x = new Uri(Url); }
                 catch (UriFormatException)
                 {
-                    Messenger.Default.Send(new UriFormatExceptionMessage());
+                    Messenger.Default.Send(new NotificationMessage("The URL was not in a correct format."));
                     return;
                 }
 
