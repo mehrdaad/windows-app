@@ -116,9 +116,9 @@ namespace wallabag.ViewModels
             int syncLimit = 30;
 
             var items = await App.Client.GetItemsAsync(
-                DateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
-                SortOrder: Api.WallabagClient.WallabagSortOrder.Descending,
-                ItemsPerPage: syncLimit);
+                dateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
+                sortOrder: Api.WallabagClient.WallabagSortOrder.Descending,
+                itemsPerPage: syncLimit);
 
             if (items != null)
             {

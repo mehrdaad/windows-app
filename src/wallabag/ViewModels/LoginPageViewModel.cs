@@ -171,7 +171,7 @@ namespace wallabag.ViewModels
             ProgressDescription = "Downloading items…";
             int itemsPerPage = 100;
 
-            var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(ItemsPerPage: itemsPerPage);
+            var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: itemsPerPage);
             var items = itemResponse.Items as List<WallabagItem>;
 
             // For users with a lot of items
@@ -179,7 +179,7 @@ namespace wallabag.ViewModels
                 for (int i = 2; i <= itemResponse.Pages; i++)
                 {
                     ProgressDescription = $"Downloading items… ({items.Count}/{itemResponse.TotalNumberOfItems})";
-                    items.AddRange(await App.Client.GetItemsAsync(ItemsPerPage: itemsPerPage, PageNumber: i));
+                    items.AddRange(await App.Client.GetItemsAsync(itemsPerPage: itemsPerPage, pageNumber: i));
                 }
 
             var tags = await App.Client.GetTagsAsync();
@@ -254,7 +254,7 @@ namespace wallabag.ViewModels
             // Step 3: Create the new client
 
             var stringContent = string.Empty;
-            var useNewApi = (await App.Client.GetVersionNumberAsync()).StartsWith("2.1"); // TODO: Needs a fix in wallabag-api because the credentials aren't necessary.
+            var useNewApi = (await App.Client.GetVersionNumberAsync()).StartsWith("2.0") == false;
 
             stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
 
