@@ -28,6 +28,7 @@ namespace wallabag.ViewModels
         public string ClientId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
         public bool? UseCustomSettings { get; set; } = false;
+        public bool AllowCollectionOfTelemetryData { get; set; }
 
         public int CurrentStep { get; set; } = 0;
         public string ProgressDescription { get; set; }
@@ -150,6 +151,7 @@ namespace wallabag.ViewModels
                 SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
                 SettingsService.Instance.ClientId = App.Client.ClientId;
                 SettingsService.Instance.ClientSecret = App.Client.ClientSecret;
+                SettingsService.Instance.AllowCollectionOfTelemetryData = AllowCollectionOfTelemetryData;
 
                 NavigationService.Navigate(typeof(Views.MainPage));
                 NavigationService.ClearHistory();

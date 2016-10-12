@@ -262,7 +262,7 @@
                         x:Uid="TelemetryDataCheckBox"
                         Margin="12,0"
                         Content="Allow collection of telemetry data"
-                        IsChecked="True" />
+                        IsChecked="{x:Bind ViewModel.AllowCollectionOfTelemetryData, Mode=TwoWay}" />
                 </StackPanel>
             </FlipViewItem>
         </FlipView>
