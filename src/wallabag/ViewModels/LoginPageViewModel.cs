@@ -46,9 +46,9 @@ namespace wallabag.ViewModels
         {
             Providers = new List<WallabagProvider>()
             {
-                new WallabagProvider(new Uri("https://framabag.org"), "framabag", "Still not on wallabag 2.x, sorry. :("),
-                new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", "Always testing the latest beta versions?"),
-                new WallabagProvider(default(Uri), "other", "If you're using another provider, this option is for you.")
+                new WallabagProvider(new Uri("https://framabag.org"), "framabag", Helpers.LocalizedResource("FramabagProviderDescription")),
+                new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", Helpers.LocalizedResource("V2WallabagOrgProviderDescription")),
+                new WallabagProvider(default(Uri), Helpers.LocalizedResource("OtherProviderName"),  Helpers.LocalizedResource("OtherProviderDescription"))
             };
 
             PreviousCommand = new DelegateCommand(() => Previous(), () => PreviousCanBeExecuted());

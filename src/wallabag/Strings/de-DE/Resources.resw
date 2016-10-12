@@ -426,4 +426,16 @@
   <data name="RegisterButton.Content" xml:space="preserve">
     <value>Noch keinen Account erstellt?</value>
   </data>
+  <data name="FramabagProviderDescription" xml:space="preserve">
+    <value>Willkommen Framabag-Nutzer!</value>
+  </data>
+  <data name="OtherProviderDescription" xml:space="preserve">
+    <value>Falls du einen anderen Provider nutzt, wähle diese Option.</value>
+  </data>
+  <data name="OtherProviderName" xml:space="preserve">
+    <value>Andere</value>
+  </data>
+  <data name="V2WallabagOrgProviderDescription" xml:space="preserve">
+    <value>Immer auf dem neuesten Stand?</value>
+  </data>
 </root>

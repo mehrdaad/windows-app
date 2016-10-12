@@ -411,6 +411,15 @@
   <data name="FirstStartWelcomeTitleTextBlock.Text" xml:space="preserve">
     <value>Hi!</value>
   </data>
+  <data name="FramabagProviderDescription" xml:space="preserve">
+    <value>Framabag users are always welcome!</value>
+  </data>
+  <data name="OtherProviderDescription" xml:space="preserve">
+    <value>If you're using another provider, this option is for you.</value>
+  </data>
+  <data name="OtherProviderName" xml:space="preserve">
+    <value>other</value>
+  </data>
   <data name="PreviousButton.Content" xml:space="preserve">
     <value>Go back</value>
   </data>
@@ -425,5 +434,8 @@
   </data>
   <data name="UrlFormatWrongMessage" xml:space="preserve">
     <value>The URL is not in a correct format.</value>
+  </data>
+  <data name="V2WallabagOrgProviderDescription" xml:space="preserve">
+    <value>Testing the latest beta versions?</value>
   </data>
 </root>
