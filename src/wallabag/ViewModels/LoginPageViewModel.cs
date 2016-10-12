@@ -45,7 +45,7 @@ namespace wallabag.ViewModels
                 new WallabagProvider(default(Uri), "other", "If you're using another provider, this option is for you.")
             };
 
-            PreviousCommand = new DelegateCommand(() => Previous(), () => CurrentStep > 0 && CurrentStep != 2);
+            PreviousCommand = new DelegateCommand(() => Previous(), () => PreviousCanBeExecuted());
             NextCommand = new DelegateCommand(async () => await NextAsync(), () => NextCanBeExecuted());
 
             this.PropertyChanged += this_PropertyChanged;
@@ -57,11 +57,22 @@ namespace wallabag.ViewModels
             NextCommand.RaiseCanExecuteChanged();
         }
 
+        private bool PreviousCanBeExecuted()
+        {
+            if (_credentialsAreExisting)
+                return false;
+            else
+                return CurrentStep > 0 &&
+                       CurrentStep != 2;
+        }
         private bool NextCanBeExecuted()
         {
-            return SelectedProvider != null &&
-                   CurrentStep <= 3 &&
-                   CurrentStep != 2;
+            if (_credentialsAreExisting)
+                return CurrentStep > 2;
+            else
+                return SelectedProvider != null &&
+                       CurrentStep <= 3 &&
+                       CurrentStep != 2;
         }
 
         private void Previous()
