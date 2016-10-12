@@ -337,9 +337,9 @@
     <value>TAG</value>
   </data>
   <data name="TelemetryCollectionInfoTextBlock.Text" xml:space="preserve">
-    <value>To improve the general stability of this app, it's recommended to turn on the automatic submission of anonymous telemetry data. However, if you want to turn it off, because you care of your privacy, you can do it too. Changes will be applied after the next restart.</value>
+    <value>To improve the general stability of this app, it's recommended to turn on the automatic submission of anonymous telemetry data. However, if you want to turn it off, because you care of your privacy, you can do it too. Changes will be applied after the next restart. Do you want to allow it?</value>
   </data>
-  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
+  <data name="TelemetryDataCheckBox.Content" xml:space="preserve">
     <value>Allow collection of telemetry data</value>
   </data>
   <data name="TellFriendsButton.Content" xml:space="preserve">
@@ -386,5 +386,44 @@
   </data>
   <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
     <value>Use custom settings</value>
+  </data>
+  <data name="CreatingClientMessage" xml:space="preserve">
+    <value>Creating a client…</value>
+  </data>
+  <data name="CredentialsWrongMessage" xml:space="preserve">
+    <value>The connection could not be established. Please check your credentials.</value>
+  </data>
+  <data name="DownloadingItemsWithProgress" xml:space="preserve">
+    <value>Downloading items… ({0}/{1})</value>
+  </data>
+  <data name="FirstStartContinueDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Now we continue with the configuration. In the simplest case you just need to enter your usename and your password.</value>
+  </data>
+  <data name="FirstStartContinueTextBlock.Text" xml:space="preserve">
+    <value>Let's continue!</value>
+  </data>
+  <data name="FirstStartLastQuestionTextBlock.Text" xml:space="preserve">
+    <value>One last question…</value>
+  </data>
+  <data name="FirstStartWelcomeDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Before you can send links to my bag, I need to ask you: Where should I save them?</value>
+  </data>
+  <data name="FirstStartWelcomeTitleTextBlock.Text" xml:space="preserve">
+    <value>Hi!</value>
+  </data>
+  <data name="PreviousButton.Content" xml:space="preserve">
+    <value>Go back</value>
+  </data>
+  <data name="RegisterButton.Content" xml:space="preserve">
+    <value>Don't have an account yet? Create one!</value>
+  </data>
+  <data name="SavingItemsInDatabaseMessage" xml:space="preserve">
+    <value>Saving items in the database…</value>
+  </data>
+  <data name="TestingConfigurationMessage" xml:space="preserve">
+    <value>Testing the configuration…</value>
+  </data>
+  <data name="UrlFormatWrongMessage" xml:space="preserve">
+    <value>The URL is not in a correct format.</value>
   </data>
 </root>

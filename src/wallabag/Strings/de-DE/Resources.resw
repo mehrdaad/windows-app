@@ -337,9 +337,9 @@
     <value>SCHLAGWORT</value>
   </data>
   <data name="TelemetryCollectionInfoTextBlock.Text" xml:space="preserve">
-    <value>Um die allgemeine Stabilität der App zu verbessern, ist es ratsam, das automatische Sammeln von Telemetrie-Daten zu erlauben. Diese sind anonymisiert und erlauben keine Rückschlüsse auf die einzelne Person. Falls allerdings Bedenken aufgrund der Privatsphäre existieren, kann dies abgeschaltet werden. Änderungen werden nach einem Neustart übernommen.</value>
+    <value>Um die allgemeine Stabilität der App zu verbessern, ist es ratsam, das automatische Sammeln von Telemetrie-Daten zu erlauben. Diese sind anonymisiert und erlauben keine Rückschlüsse auf die einzelne Person. Falls allerdings Bedenken aufgrund der Privatsphäre existieren, kann dies abgeschaltet werden. Änderungen werden nach einem Neustart übernommen. Dürfen Telemetrie-Daten gesammelt werden?</value>
   </data>
-  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
+  <data name="TelemetryDataCheckBox.Content" xml:space="preserve">
     <value>Sammeln von Telemetrie-Daten erlauben</value>
   </data>
   <data name="TellFriendsButton.Content" xml:space="preserve">
@@ -386,5 +386,44 @@
   </data>
   <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
     <value>Einstellungen anpassen</value>
+  </data>
+  <data name="CreatingClientMessage" xml:space="preserve">
+    <value>Client wird erstellt…</value>
+  </data>
+  <data name="CredentialsWrongMessage" xml:space="preserve">
+    <value>Die Verbindung konnte nicht aufgebaut werden. Bitte überprüfe die Login-Daten.</value>
+  </data>
+  <data name="DownloadingItemsWithProgress" xml:space="preserve">
+    <value>Einträge werden heruntergeladen… ({0}/{1})</value>
+  </data>
+  <data name="SavingItemsInDatabaseMessage" xml:space="preserve">
+    <value>Einträge werden in der Datenbank gespeichert…</value>
+  </data>
+  <data name="TestingConfigurationMessage" xml:space="preserve">
+    <value>Konfiguration wird getestet…</value>
+  </data>
+  <data name="UrlFormatWrongMessage" xml:space="preserve">
+    <value>Die URL ist nicht in einem korrekten Format.</value>
+  </data>
+  <data name="FirstStartContinueDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Nun fahren wir mit der Konfiguration fort. Im einfachsten Falle musst du nur deinen Benutzernamen und dein Kennwort eingeben.</value>
+  </data>
+  <data name="FirstStartContinueTextBlock.Text" xml:space="preserve">
+    <value>Weiter geht's!</value>
+  </data>
+  <data name="FirstStartLastQuestionTextBlock.Text" xml:space="preserve">
+    <value>Eine letzte Frage…</value>
+  </data>
+  <data name="FirstStartWelcomeDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Bevor du Links an meine Tasche senden kannst, muss ich dir eine Frage stellen: Wo soll ich diese speichern?</value>
+  </data>
+  <data name="FirstStartWelcomeTitleTextBlock.Text" xml:space="preserve">
+    <value>Hi!</value>
+  </data>
+  <data name="PreviousButton.Content" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="RegisterButton.Content" xml:space="preserve">
+    <value>Noch keinen Account erstellt?</value>
   </data>
 </root>

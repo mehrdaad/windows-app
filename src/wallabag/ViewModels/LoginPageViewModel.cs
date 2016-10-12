@@ -120,7 +120,7 @@ namespace wallabag.ViewModels
                 try { var x = new Uri(Url); }
                 catch (UriFormatException)
                 {
-                    Messenger.Default.Send(new NotificationMessage("The URL was not in a correct format."));
+                    Messenger.Default.Send(new NotificationMessage(Helpers.LocalizedResource("UrlFormatWrongMessage")));
                     return;
                 }
 
@@ -134,7 +134,7 @@ namespace wallabag.ViewModels
                 else
                 {
                     CurrentStep = 1;
-                    Messenger.Default.Send(new NotificationMessage("The credentials seem to be false. Please check them again."));
+                    Messenger.Default.Send(new NotificationMessage(Helpers.LocalizedResource("CredentialsWrongMessage")));
                     return;
                 }
 
@@ -163,7 +163,7 @@ namespace wallabag.ViewModels
             if (_credentialsAreExisting)
                 return true;
 
-            ProgressDescription = "Testing the configuration…"; // TODO: translation
+            ProgressDescription = Helpers.LocalizedResource("TestingConfigurationMessage");
 
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
                 Url = "https://" + Url;
@@ -217,7 +217,7 @@ namespace wallabag.ViewModels
         }
         private async Task DownloadAndSaveItemsAndTags()
         {
-            ProgressDescription = "Downloading items…";
+            ProgressDescription = Helpers.LocalizedResource("DownloadingItemsTextBlock.Text");
             int itemsPerPage = 100;
 
             var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: itemsPerPage);
@@ -227,13 +227,13 @@ namespace wallabag.ViewModels
             if (itemResponse.Pages > 1)
                 for (int i = 2; i <= itemResponse.Pages; i++)
                 {
-                    ProgressDescription = $"Downloading items… ({items.Count}/{itemResponse.TotalNumberOfItems})";
+                    ProgressDescription = string.Format(Helpers.LocalizedResource("DownloadingItemsWithProgress"), items.Count, itemResponse.TotalNumberOfItems);
                     items.AddRange(await App.Client.GetItemsAsync(itemsPerPage: itemsPerPage, pageNumber: i));
                 }
 
             var tags = await App.Client.GetTagsAsync();
 
-            ProgressDescription = "Saving items in the database…";
+            ProgressDescription = Helpers.LocalizedResource("SavingItemsInDatabaseMessage");
 
             await Task.Run(() =>
             {
@@ -297,7 +297,7 @@ namespace wallabag.ViewModels
 
         public async Task<bool> CreateApiClientAsync()
         {
-            ProgressDescription = "Creating a client for you…"; // TODO: Translation
+            ProgressDescription = Helpers.LocalizedResource("CreatingClientMessage");
 
             _http = new HttpClient();
             var instanceUri = new Uri(Url);

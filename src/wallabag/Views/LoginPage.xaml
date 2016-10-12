@@ -138,8 +138,14 @@
                         Height="150"
                         Margin="0,32,0,0"
                         Source="ms-appx:///Assets/Square150x150Logo/Square150x150Logo.png" />
-                    <TextBlock Style="{StaticResource CustomTitleTextBlockStyle}" Text="Hi!" />
-                    <TextBlock Style="{StaticResource CustomSubTitleTextBlockStyle}" Text="Before you can send links to my bag, I need to ask you: Where should I save them?" />
+                    <TextBlock
+                        x:Uid="FirstStartWelcomeTitleTextBlock"
+                        Style="{StaticResource CustomTitleTextBlockStyle}"
+                        Text="Hi!" />
+                    <TextBlock
+                        x:Uid="FirstStartWelcomeDescriptionTextBlock"
+                        Style="{StaticResource CustomSubTitleTextBlockStyle}"
+                        Text="Before you can send links to my bag, I need to ask you: Where should I save them?" />
 
                     <ListView ItemsSource="{x:Bind ViewModel.Providers}" SelectedItem="{x:Bind ViewModel.SelectedProvider, Mode=TwoWay}">
                         <ListView.ItemTemplate>
@@ -152,6 +158,7 @@
                         </ListView.ItemTemplate>
                     </ListView>
                     <Button
+                        x:Uid="RegisterButton"
                         Margin="4,12"
                         Command="{x:Bind ViewModel.RegisterCommand, Mode=OneWay}"
                         Content="Don't have an account yet? Create one!"
@@ -173,8 +180,14 @@
                                 </Style>
                             </StackPanel.Resources>
 
-                            <TextBlock Style="{StaticResource CustomTitleTextBlockStyle}" Text="Let's continue!" />
-                            <TextBlock Style="{StaticResource CustomSubTitleTextBlockStyle}" Text="Now we continue with the configuration. In the simplest case you just need to enter your usename and your password." />
+                            <TextBlock
+                                x:Uid="FirstStartContinueTextBlock"
+                                Style="{StaticResource CustomTitleTextBlockStyle}"
+                                Text="Let's continue!" />
+                            <TextBlock
+                                x:Uid="FirstStartContinueDescriptionTextBlock"
+                                Style="{StaticResource CustomSubTitleTextBlockStyle}"
+                                Text="Now we continue with the configuration. In the simplest case you just need to enter your usename and your password." />
 
                             <TextBox
                                 x:Uid="WallabagUrlTextBox"
@@ -236,10 +249,17 @@
             </FlipViewItem>
             <FlipViewItem>
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Style="{StaticResource CustomTitleTextBlockStyle}" Text="One last question." />
-                    <TextBlock Style="{StaticResource CustomSubTitleTextBlockStyle}" Text="Do you allow this app to send anonymous usage and crash reports? Don't worry, you can disable it at any time. And no, it's not necessary for the app." />
+                    <TextBlock
+                        x:Uid="FirstStartLastQuestionTextBlock"
+                        Style="{StaticResource CustomTitleTextBlockStyle}"
+                        Text="One last question." />
+                    <TextBlock
+                        x:Uid="TelemetryCollectionInfoTextBlock"
+                        Style="{StaticResource CustomSubTitleTextBlockStyle}"
+                        Text="Do you allow this app to send anonymous usage and crash reports? Don't worry, you can disable it at any time. And no, it's not necessary for the app." />
 
                     <CheckBox
+                        x:Uid="TelemetryDataCheckBox"
                         Margin="12,0"
                         Content="Allow collection of telemetry data"
                         IsChecked="True" />
@@ -287,10 +307,12 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Button
+                x:Uid="PreviousButton"
                 Margin="8,8,4,8"
                 Command="{x:Bind ViewModel.PreviousCommand, Mode=OneWay}"
                 Content="previous" />
             <Button
+                x:Uid="ContinueButton"
                 Grid.Column="1"
                 Margin="4,8,8,8"
                 Command="{x:Bind ViewModel.NextCommand, Mode=OneWay}"
