@@ -139,8 +139,9 @@ namespace wallabag.ViewModels
                     await DownloadAndSaveItemsAndTags();
                 else
                 {
-                    CurrentStep -= 1;
+                    CurrentStep = 1;
                     Messenger.Default.Send(new NotificationMessage("The credentials seem to be false. Please check them again."));
+                    return;
                 }
 
                 CurrentStep += 1;
