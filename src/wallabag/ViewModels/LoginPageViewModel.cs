@@ -11,6 +11,7 @@ using wallabag.Models;
 using wallabag.Services;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
@@ -30,6 +31,7 @@ namespace wallabag.ViewModels
 
         public int CurrentStep { get; set; } = 0;
         public string ProgressDescription { get; set; }
+        public Visibility UrlFieldVisibility { get; set; } = Visibility.Collapsed;
 
         public List<WallabagProvider> Providers { get; set; }
         public object SelectedProvider { get; set; }
@@ -45,7 +47,7 @@ namespace wallabag.ViewModels
                 new WallabagProvider(new Uri("https://framabag.org"), "framabag", "Still not on wallabag 2.x, sorry. :("),
                 new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", "Always testing the latest beta versions?"),
                 new WallabagProvider(default(Uri), "other", "If you're using another provider, this option is for you.")
-            };            
+            };
 
             PreviousCommand = new DelegateCommand(() => Previous(), () => PreviousCanBeExecuted());
             NextCommand = new DelegateCommand(async () => await NextAsync(), () => NextCanBeExecuted());
@@ -107,11 +109,14 @@ namespace wallabag.ViewModels
             {
                 if (selectedProvider.Url == null)
                 {
-                    Messenger.Default.Send(new ShowUrlFieldMessage());
                     Url = "https://";
+                    UrlFieldVisibility = Visibility.Visible;
                 }
                 else
+                {
                     Url = selectedProvider.Url.ToString();
+                    UrlFieldVisibility = Visibility.Collapsed;
+                }
 
                 CurrentStep += 1;
                 return;
