@@ -71,7 +71,7 @@ namespace wallabag.ViewModels
 
             if (CurrentStep != 3)
                 CurrentStep -= 1;
-            else
+            else if (CurrentStep == 3 && _credentialsAreExisting == false)
                 CurrentStep = 1;
         }
         private async Task NextAsync()
