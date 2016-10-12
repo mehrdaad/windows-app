@@ -8,6 +8,7 @@ using wallabag.Api.Models;
 using wallabag.Common;
 using wallabag.Common.Messages;
 using wallabag.Models;
+using wallabag.Services;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
@@ -111,10 +112,17 @@ namespace wallabag.ViewModels
 
             if (CurrentStep == 3)
             {
-                await TitleBarExtensions.ResetAsync();
+                SettingsService.Instance.AccessToken = App.Client.AccessToken;
+                SettingsService.Instance.RefreshToken = App.Client.RefreshToken;
+                SettingsService.Instance.WallabagUrl = App.Client.InstanceUri;
+                SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
+                SettingsService.Instance.ClientId = App.Client.ClientId;
+                SettingsService.Instance.ClientSecret = App.Client.ClientSecret;
 
                 NavigationService.Navigate(typeof(Views.MainPage));
                 NavigationService.ClearHistory();
+
+                await TitleBarExtensions.ResetAsync();
 
                 return;
             }
