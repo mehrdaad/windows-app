@@ -251,13 +251,16 @@ namespace wallabag.ViewModels
         {
             _credentialsAreExisting = parameter != null && (bool)parameter;
 
-            if (state.Count == 5)
+            if (state.Count > 0)
             {
                 Username = state[nameof(Username)] as string;
                 Password = state[nameof(Password)] as string;
                 Url = state[nameof(Url)] as string;
                 ClientId = state[nameof(ClientId)] as string;
                 ClientSecret = state[nameof(ClientSecret)] as string;
+
+                CurrentStep = (int)state[nameof(CurrentStep)];
+                UseCustomSettings = (bool?)state[nameof(UseCustomSettings)];
             }
 
             if (_credentialsAreExisting)
@@ -272,6 +275,9 @@ namespace wallabag.ViewModels
                 pageState[nameof(Url)] = Url;
                 pageState[nameof(ClientId)] = ClientId;
                 pageState[nameof(ClientSecret)] = ClientSecret;
+
+                pageState[nameof(CurrentStep)] = CurrentStep;
+                pageState[nameof(UseCustomSettings)] = UseCustomSettings;
             }
             return Task.CompletedTask;
         }
