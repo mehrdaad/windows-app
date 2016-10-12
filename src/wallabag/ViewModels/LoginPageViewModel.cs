@@ -126,12 +126,14 @@ namespace wallabag.ViewModels
 
             if (UseCustomSettings == false)
             {
+                App.Client.InstanceUri = new Uri(Url);
                 var clientCreationIsSuccessful = await CreateApiClientAsync();
 
                 if (clientCreationIsSuccessful == false &&
                     Url.StartsWith("https://"))
                 {
                     Url = Url.Replace("https://", "http://");
+                    App.Client.InstanceUri = new Uri(Url);
 
                     if (await CreateApiClientAsync() == false)
                         return false;
