@@ -20,6 +20,7 @@ namespace wallabag.ViewModels
     public class LoginPageViewModel : ViewModelBase
     {
         private bool _credentialsAreExisting = false;
+        private bool _restoredFromPageState = false;
 
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
@@ -78,7 +79,7 @@ namespace wallabag.ViewModels
             if (_credentialsAreExisting)
                 return CurrentStep > 2;
             else
-                return SelectedProvider != null &&
+                return (SelectedProvider != null || _restoredFromPageState) &&
                        CurrentStep <= 3 &&
                        CurrentStep != 2;
         }
@@ -261,6 +262,8 @@ namespace wallabag.ViewModels
 
                 CurrentStep = (int)state[nameof(CurrentStep)];
                 UseCustomSettings = (bool?)state[nameof(UseCustomSettings)];
+
+                _restoredFromPageState = true;
             }
 
             if (_credentialsAreExisting)
