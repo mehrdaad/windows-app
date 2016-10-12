@@ -117,6 +117,7 @@
                     </ListView>
                     <Button
                         Margin="4,12"
+                        Command="{x:Bind ViewModel.RegisterCommand, Mode=OneWay}"
                         Content="Don't have an account yet? Create one!"
                         Style="{StaticResource TextBlockButtonStyle}" />
                 </StackPanel>

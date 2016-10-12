@@ -10,6 +10,7 @@ using wallabag.Common.Messages;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.Security.ExchangeActiveSyncProvisioning;
+using Windows.System;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
@@ -35,6 +36,7 @@ namespace wallabag.ViewModels
 
         public DelegateCommand PreviousCommand { get; private set; }
         public DelegateCommand NextCommand { get; private set; }
+        public DelegateCommand RegisterCommand { get; private set; }
 
         public LoginPageViewModel()
         {
@@ -43,10 +45,12 @@ namespace wallabag.ViewModels
                 new WallabagProvider(new Uri("https://framabag.org"), "framabag", "Still not on wallabag 2.x, sorry. :("),
                 new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", "Always testing the latest beta versions?"),
                 new WallabagProvider(default(Uri), "other", "If you're using another provider, this option is for you.")
-            };
+            };            
 
             PreviousCommand = new DelegateCommand(() => Previous(), () => PreviousCanBeExecuted());
             NextCommand = new DelegateCommand(async () => await NextAsync(), () => NextCanBeExecuted());
+            RegisterCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri((SelectedProvider as WallabagProvider).Url, "/register")),
+                () => RegistrationCanBeExecuted());
 
             this.PropertyChanged += this_PropertyChanged;
         }
@@ -55,6 +59,7 @@ namespace wallabag.ViewModels
         {
             PreviousCommand.RaiseCanExecuteChanged();
             NextCommand.RaiseCanExecuteChanged();
+            RegisterCommand.RaiseCanExecuteChanged();
         }
 
         private bool PreviousCanBeExecuted()
@@ -73,6 +78,12 @@ namespace wallabag.ViewModels
                 return SelectedProvider != null &&
                        CurrentStep <= 3 &&
                        CurrentStep != 2;
+        }
+        private bool RegistrationCanBeExecuted()
+        {
+            var selectedProvider = SelectedProvider as WallabagProvider;
+
+            return selectedProvider != null && selectedProvider.Url != null;
         }
 
         private void Previous()
