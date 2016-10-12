@@ -1,11 +1,12 @@
 ﻿using PropertyChanged;
 using SQLite.Net.Attributes;
+using System;
 using wallabag.Api.Models;
 
 namespace wallabag.Models
 {
     [ImplementPropertyChanged]
-    public class Tag
+    public class Tag : IComparable
     {
         [PrimaryKey]
         public int Id { get; set; }
@@ -16,6 +17,14 @@ namespace wallabag.Models
         public override string ToString() => Label;
         public override int GetHashCode() => Id;
         public override bool Equals(object obj) => Label == (obj as Tag).Label;
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Tag)
+                return ((IComparable)Label).CompareTo((obj as Tag).Label);
+            else
+                return 0;
+        }
 
         public static implicit operator WallabagTag(Tag t)
         {
