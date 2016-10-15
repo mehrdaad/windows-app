@@ -438,4 +438,7 @@
   <data name="V2WallabagOrgProviderDescription" xml:space="preserve">
     <value>Testing the latest beta versions?</value>
   </data>
+  <data name="WhatIsWallabagButton.Content" xml:space="preserve">
+    <value>What is wallabag?</value>
+  </data>
 </root>

@@ -159,9 +159,15 @@
                     </ListView>
                     <Button
                         x:Uid="RegisterButton"
-                        Margin="4,12"
+                        Margin="4,12,4,4"
                         Command="{x:Bind ViewModel.RegisterCommand, Mode=OneWay}"
                         Content="Don't have an account yet? Create one!"
+                        Style="{StaticResource TextBlockButtonStyle}" />
+                    <Button
+                        x:Uid="WhatIsWallabagButton"
+                        Margin="4,0,4,4"
+                        Command="{x:Bind ViewModel.WhatIsWallabagCommand}"
+                        Content="What is wallabag?"
                         Style="{StaticResource TextBlockButtonStyle}" />
                 </StackPanel>
             </FlipViewItem>

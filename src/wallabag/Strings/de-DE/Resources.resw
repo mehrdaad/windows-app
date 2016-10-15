@@ -441,4 +441,7 @@
   <data name="V2WallabagOrgProviderDescription" xml:space="preserve">
     <value>Immer auf dem neuesten Stand?</value>
   </data>
+  <data name="WhatIsWallabagButton.Content" xml:space="preserve">
+    <value>Was ist wallabag?</value>
+  </data>
 </root>

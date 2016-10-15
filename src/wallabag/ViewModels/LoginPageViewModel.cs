@@ -42,6 +42,7 @@ namespace wallabag.ViewModels
         public DelegateCommand PreviousCommand { get; private set; }
         public DelegateCommand NextCommand { get; private set; }
         public DelegateCommand RegisterCommand { get; private set; }
+        public DelegateCommand WhatIsWallabagCommand { get; private set; }
 
         public LoginPageViewModel()
         {
@@ -56,6 +57,7 @@ namespace wallabag.ViewModels
             NextCommand = new DelegateCommand(async () => await NextAsync(), () => NextCanBeExecuted());
             RegisterCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri((SelectedProvider as WallabagProvider).Url, "/register")),
                 () => RegistrationCanBeExecuted());
+            WhatIsWallabagCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
 
             this.PropertyChanged += this_PropertyChanged;
         }
