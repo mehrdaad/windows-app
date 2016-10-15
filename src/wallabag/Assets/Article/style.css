@@ -299,32 +299,19 @@ article {
             text-decoration: none !important;
         }
 
-.with-image {
-    background-size: cover;
-    background-repeat: no-repeat;
-    margin: 0 0 1em 0 !important;
-    padding: 15vh 0 0;
-    max-width: inherit;
+.wallabag-preview-image {
+    max-height: 50vh;
+    overflow: hidden;
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: center;
 }
 
-    .with-image > div {
-        background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
-        padding: 4em 0 1em;
+    .wallabag-preview-image img {
+        height: 100%;
+        margin: 0;
+        align-self: center;
     }
-
-    .with-image h1,
-    .with-image h2 {
-        text-align: center;
-        opacity: 0.8;
-        text-shadow: 1px 1px rgba(0, 0, 0, 0.3);
-    }
-
-        .with-image h1,
-        .with-image h2,
-        .with-image h2 a,
-        .with-image h2 span {
-            color: white !important;
-        }
 
 .wallabag-header ul {
     list-style: none;
@@ -512,7 +499,7 @@ article {
         padding: 0 1.25em;
     }
 
-    header:not(.with-image) {
+    header {
         max-width: 43.75em;
         margin: 0 auto;
         margin-top: 32px;

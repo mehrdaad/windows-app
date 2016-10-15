@@ -16,12 +16,15 @@
 </head>
 
 <body onscroll="updateReadingProgress()">
-    <header class="wallabag-header {{containsHeader}}">
+    <header class="wallabag-header">
         <div>
             <h1>{{title}}</h1>
             <h2><a href="{{articleUrl}}">{{hostname}}</a>|<span>{{publishDate}}</span></h2>
         </div>
     </header>
+    <div class="wallabag-preview-image">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{imageHeader}}" class="lazy" alt="Header image" />
+    </div>
     <article>{{content}}</article>
     <script>
         var root = document.getElementsByTagName("html")[0];

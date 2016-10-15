@@ -83,11 +83,6 @@ namespace wallabag.ViewModels
             styleSheetBuilder.Append("body {");
             styleSheetBuilder.Append($"font-size: {FontSize}px;");
             styleSheetBuilder.Append($"text-align: {TextAlignment};}}");
-            if (Item.Model.PreviewImageUri != null)
-            {
-                styleSheetBuilder.Append(".with-image {");
-                styleSheetBuilder.Append($"background-image: url(\"{Item.Model.PreviewImageUri}\")}}");
-            }
             styleSheetBuilder.Append("</style>");
 
             FormattedHtml = _template.FormatWith(new
@@ -101,7 +96,7 @@ namespace wallabag.ViewModels
                 progress = Item.Model.ReadingProgress,
                 publishDate = string.Format("{0:d}", Item.Model.CreationDate),
                 stylesheet = styleSheetBuilder.ToString(),
-                containsHeader = Item.Model.PreviewImageUri == null ? string.Empty : "with-image"
+                imageHeader = Item.Model.PreviewImageUri
             });
 
             await FileIO.WriteTextAsync(await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("article.html", CreationCollisionOption.ReplaceExisting), FormattedHtml);
