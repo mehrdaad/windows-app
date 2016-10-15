@@ -141,9 +141,9 @@ namespace wallabag.ViewModels
                 if (node.HasAttributes &&
                     node.Attributes.Contains("src"))
                 {
-                    var videoSource = node.Attributes["src"].Value;
-                    var videoId = videoSource.TrimEnd(c).Split(c).Last();
-                    var videoProvider = new Uri(videoSource).Host;
+                    var videoSourceUri = new Uri(node.Attributes["src"].Value);
+                    var videoId = videoSourceUri.Segments.Last();
+                    var videoProvider = videoSourceUri.Host;
 
                     if (videoProvider.Contains("youtube.com"))
                         videoProvider = "youtube";
