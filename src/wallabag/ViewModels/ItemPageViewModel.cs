@@ -85,6 +85,11 @@ namespace wallabag.ViewModels
             styleSheetBuilder.Append($"text-align: {TextAlignment};}}");
             styleSheetBuilder.Append("</style>");
 
+            var imageHeader = string.Empty;
+            if (Item.Model.Hostname.Contains("youtube.com") == false &&
+                Item.Model.Hostname.Contains("vimeo.com") == false)
+                imageHeader = Item.Model.PreviewImageUri.ToString();
+
             FormattedHtml = _template.FormatWith(new
             {
                 title = Item.Model.Title,
@@ -96,7 +101,7 @@ namespace wallabag.ViewModels
                 progress = Item.Model.ReadingProgress,
                 publishDate = string.Format("{0:d}", Item.Model.CreationDate),
                 stylesheet = styleSheetBuilder.ToString(),
-                imageHeader = Item.Model.PreviewImageUri
+                imageHeader = imageHeader
             });
 
             await FileIO.WriteTextAsync(await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("article.html", CreationCollisionOption.ReplaceExisting), FormattedHtml);
