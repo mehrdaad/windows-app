@@ -36,10 +36,10 @@ namespace wallabag.ViewModels
                     case SettingsService.WallabagVideoOpenMode.Browser:
                         return Helpers.LocalizedResource("VideoOpenModeDescriptionBrowser");
                     case SettingsService.WallabagVideoOpenMode.App:
-                        return Helpers.LocalizedResource("VideoOpenModeDescriptionInline");
+                        return Helpers.LocalizedResource("VideoOpenModeDescriptionApp");
                     default:
                     case SettingsService.WallabagVideoOpenMode.Inline:
-                        return Helpers.LocalizedResource("VideoOpenModeDescriptionApp");
+                        return Helpers.LocalizedResource("VideoOpenModeDescriptionInline");
                 }
             }
         }
