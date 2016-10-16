@@ -124,8 +124,14 @@
         </Storyboard>
 
         <MenuFlyout x:Name="RightClickMenuFlyout">
-            <MenuFlyoutItem Command="{Binding SaveRightClickLinkCommand}" Text="Save in wallabag" />
-            <MenuFlyoutItem Command="{Binding OpenRightClickLinkInBrowserCommand}" Text="Open in browser" />
+            <MenuFlyoutItem
+                x:Uid="SaveInWallabagMenuFlyoutItem"
+                Command="{Binding SaveRightClickLinkCommand}"
+                Text="Save in wallabag" />
+            <MenuFlyoutItem
+                x:Uid="OpenInBrowserMenuFlyoutItem"
+                Command="{Binding OpenRightClickLinkInBrowserCommand}"
+                Text="Open in browser" />
         </MenuFlyout>
     </Page.Resources>
 

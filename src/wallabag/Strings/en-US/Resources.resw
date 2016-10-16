@@ -411,4 +411,7 @@
   <data name="VideoOpenModeDescriptionInline" xml:space="preserve">
     <value>The video will be opened right in the article.</value>
   </data>
+  <data name="SaveInWallabagMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Save in wallabag</value>
+  </data>
 </root>
