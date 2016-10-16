@@ -113,7 +113,7 @@
                         x:Uid="SyncReadingProgressToggleSwitch"
                         Header="Sync the reading progress"
                         IsOn="{x:Bind ViewModel.SyncReadingProgress, Mode=TwoWay}" />
-                    <TextBlock Text="Video open mode" x:Uid="VideoOpenModeHeaderTextBlock" />
+                    <TextBlock x:Uid="VideoOpenModeHeaderTextBlock" Text="Video open mode" />
                     <Grid x:Name="VideoOpenModeGrid" Margin="0,4,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
@@ -133,17 +133,19 @@
                             Command="{x:Bind ViewModel.VideoOpenModeRadioButtonCheckedCommand}"
                             CommandParameter="inline"
                             Content="Inline"
-                            IsChecked="True" />
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsInline, Mode=OneWay}" />
                         <RadioButton
                             Grid.Column="1"
                             Command="{x:Bind ViewModel.VideoOpenModeRadioButtonCheckedCommand}"
                             CommandParameter="app"
-                            Content="App" />
+                            Content="App"
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsApp, Mode=OneWay}" />
                         <RadioButton
                             Grid.Column="2"
                             Command="{x:Bind ViewModel.VideoOpenModeRadioButtonCheckedCommand}"
                             CommandParameter="browser"
-                            Content="Browser" />
+                            Content="Browser"
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsBrowser, Mode=OneWay}" />
                         <TextBlock
                             Grid.Row="1"
                             Grid.ColumnSpan="3"

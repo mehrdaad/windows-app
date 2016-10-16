@@ -44,6 +44,10 @@ namespace wallabag.ViewModels
             }
         }
 
+        public bool? VideoOpenModeIsInline { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Inline; } }
+        public bool? VideoOpenModeIsApp { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.App; } }
+        public bool? VideoOpenModeIsBrowser { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Browser; } }
+
         public DelegateCommand OpenChangelogCommand { get; private set; }
         public DelegateCommand OpenDocumentationCommand { get; private set; }
         public DelegateCommand OpenWallabagTwitterAccountCommand { get; set; }
@@ -140,6 +144,9 @@ namespace wallabag.ViewModels
             }
 
             RaisePropertyChanged(nameof(VideoOpenModeDescription));
+            RaisePropertyChanged(nameof(VideoOpenModeIsApp));
+            RaisePropertyChanged(nameof(VideoOpenModeIsBrowser));
+            RaisePropertyChanged(nameof(VideoOpenModeIsInline));
         }
     }
 }
