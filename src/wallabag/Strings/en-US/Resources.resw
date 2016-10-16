@@ -382,7 +382,7 @@
     <value>Welcome!</value>
   </data>
   <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
-    <value>Use custom settings</value>
+    <value>Use custom client settings</value>
   </data>
   <data name="CreatingClientMessage" xml:space="preserve">
     <value>Creating a client…</value>

@@ -385,7 +385,7 @@
     <value>Willkommen!</value>
   </data>
   <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
-    <value>Einstellungen anpassen</value>
+    <value>Client-Daten anpassen</value>
   </data>
   <data name="CreatingClientMessage" xml:space="preserve">
     <value>Client wird erstellt…</value>
