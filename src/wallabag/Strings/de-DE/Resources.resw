@@ -387,4 +387,13 @@
   <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
     <value>Einstellungen anpassen</value>
   </data>
+  <data name="VideoOpenModeDescriptionApp" xml:space="preserve">
+    <value>Das Video wird in einer nativen App geöffnet, sofern installiert. Ansonsten wird auf den Browser ausgewichen.</value>
+  </data>
+  <data name="VideoOpenModeDescriptionBrowser" xml:space="preserve">
+    <value>Das Video wird im Browser geöffnet.</value>
+  </data>
+  <data name="VideoOpenModeDescriptionInline" xml:space="preserve">
+    <value>Das Video wird im Artikel geladen.</value>
+  </data>
 </root>
