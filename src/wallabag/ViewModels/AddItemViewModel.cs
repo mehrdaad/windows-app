@@ -41,19 +41,22 @@ namespace wallabag.ViewModels
         {
             AddingStarted?.Invoke(this, new EventArgs());
 
-            OfflineTask.Add(UriString, Tags.ToStringArray());
-
-            var uri = new Uri(UriString);
-            App.Database.Insert(new Item()
+            if (UriString.IsValidUri())
             {
-                Id = App.Database.Table<Item>().OrderByDescending(i => i.Id).FirstOrDefault().Id + 1,
-                Title = uri.Host,
-                Url = UriString,
-                Hostname = uri.Host
-            });
+                OfflineTask.Add(UriString, Tags.ToStringArray());
 
-            _shareOperation?.ReportCompleted();
-            Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
+                var uri = new Uri(UriString);
+                App.Database.Insert(new Item()
+                {
+                    Id = App.Database.Table<Item>().OrderByDescending(i => i.Id).FirstOrDefault().Id + 1,
+                    Title = uri.Host,
+                    Url = UriString,
+                    Hostname = uri.Host
+                });
+
+                _shareOperation?.ReportCompleted();
+                Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
+            }
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
