@@ -27,6 +27,26 @@ namespace wallabag.ViewModels
         public bool NavigateBackAfterReadingAnArticle { get; set; } = SettingsService.Instance.NavigateBackAfterReadingAnArticle;
         public bool SyncReadingProgress { get; set; } = SettingsService.Instance.SyncReadingProgress;
         public string VersionNumber { get; set; }
+        public string VideoOpenModeDescription
+        {
+            get
+            {
+                switch (SettingsService.Instance.VideoOpenMode)
+                {
+                    case SettingsService.WallabagVideoOpenMode.Browser:
+                        return Helpers.LocalizedResource("VideoOpenModeDescriptionBrowser");
+                    case SettingsService.WallabagVideoOpenMode.App:
+                        return Helpers.LocalizedResource("VideoOpenModeDescriptionApp");
+                    default:
+                    case SettingsService.WallabagVideoOpenMode.Inline:
+                        return Helpers.LocalizedResource("VideoOpenModeDescriptionInline");
+                }
+            }
+        }
+
+        public bool? VideoOpenModeIsInline { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Inline; } }
+        public bool? VideoOpenModeIsApp { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.App; } }
+        public bool? VideoOpenModeIsBrowser { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Browser; } }
 
         public DelegateCommand OpenChangelogCommand { get; private set; }
         public DelegateCommand OpenDocumentationCommand { get; private set; }
@@ -37,6 +57,7 @@ namespace wallabag.ViewModels
         public DelegateCommand TellFriendsCommand { get; private set; }
         public DelegateCommand LogoutCommand { get; private set; }
         public DelegateCommand DeleteDatabaseCommand { get; private set; }
+        public DelegateCommand<string> VideoOpenModeRadioButtonCheckedCommand { get; private set; }
 
         public SettingsPageViewModel()
         {
@@ -51,6 +72,7 @@ namespace wallabag.ViewModels
             TellFriendsCommand = new DelegateCommand(() => TellFriends());
             LogoutCommand = new DelegateCommand(() => Logout());
             DeleteDatabaseCommand = new DelegateCommand(() => DeleteDatabase());
+            VideoOpenModeRadioButtonCheckedCommand = new DelegateCommand<string>(mode => VideoOpenModeRadioButtonChecked(mode));
 
             PropertyChanged += (s, e) =>
             {
@@ -103,6 +125,28 @@ namespace wallabag.ViewModels
             File.Delete(path);
 
             Application.Current.Exit();
+        }
+
+        private void VideoOpenModeRadioButtonChecked(string mode)
+        {
+            switch (mode)
+            {
+                case "app":
+                    SettingsService.Instance.VideoOpenMode = SettingsService.WallabagVideoOpenMode.App;
+                    break;
+                case "browser":
+                    SettingsService.Instance.VideoOpenMode = SettingsService.WallabagVideoOpenMode.Browser;
+                    break;
+                case "inline":
+                default:
+                    SettingsService.Instance.VideoOpenMode = SettingsService.WallabagVideoOpenMode.Inline;
+                    break;
+            }
+
+            RaisePropertyChanged(nameof(VideoOpenModeDescription));
+            RaisePropertyChanged(nameof(VideoOpenModeIsApp));
+            RaisePropertyChanged(nameof(VideoOpenModeIsBrowser));
+            RaisePropertyChanged(nameof(VideoOpenModeIsInline));
         }
     }
 }

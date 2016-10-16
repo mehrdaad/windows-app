@@ -1,6 +1,8 @@
-﻿using PropertyChanged;
+﻿using HtmlAgilityPack;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template10.Mvvm;
@@ -9,11 +11,13 @@ using wallabag.Common;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.Storage;
+using Windows.System;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Web.Http;
 
 namespace wallabag.ViewModels
 {
@@ -50,6 +54,7 @@ namespace wallabag.ViewModels
 
         public Uri RightClickUri { get; set; }
         public DelegateCommand SaveRightClickLinkCommand { get; private set; }
+        public DelegateCommand OpenRightClickLinkInBrowserCommand { get; private set; }
 
         public ItemPageViewModel()
         {
@@ -65,6 +70,7 @@ namespace wallabag.ViewModels
             });
 
             SaveRightClickLinkCommand = new DelegateCommand(() => OfflineTask.Add(RightClickUri.ToString(), new List<string>()));
+            OpenRightClickLinkInBrowserCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(RightClickUri));
         }
 
         private async Task GenerateFormattedHtmlAsync()
@@ -79,21 +85,125 @@ namespace wallabag.ViewModels
             styleSheetBuilder.Append("::selection,mark {background: " + accentColor + " !important}");
             styleSheetBuilder.Append("body {");
             styleSheetBuilder.Append($"font-size: {FontSize}px;");
-            styleSheetBuilder.Append($"text-align: {TextAlignment};");
-            styleSheetBuilder.Append("}</style>");
+            styleSheetBuilder.Append($"text-align: {TextAlignment};}}");
+            styleSheetBuilder.Append("</style>");
+
+            var imageHeader = string.Empty;
+            if (Item.Model.Hostname.Contains("youtube.com") == false &&
+                Item.Model.Hostname.Contains("vimeo.com") == false)
+                imageHeader = Item.Model.PreviewImageUri.ToString();
 
             FormattedHtml = _template.FormatWith(new
             {
                 title = Item.Model.Title,
-                content = Item.Model.Content,
+                content = await SetupArticleForHtmlViewerAsync(),
                 articleUrl = Item.Model.Url,
                 hostname = Item.Model.Hostname,
                 color = ColorScheme,
                 font = FontFamily,
                 progress = Item.Model.ReadingProgress,
                 publishDate = string.Format("{0:d}", Item.Model.CreationDate),
-                stylesheet = styleSheetBuilder.ToString()
+                stylesheet = styleSheetBuilder.ToString(),
+                imageHeader = imageHeader
             });
+
+            await FileIO.WriteTextAsync(await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("article.html", CreationCollisionOption.ReplaceExisting), FormattedHtml);
+        }
+
+        private async Task<string> SetupArticleForHtmlViewerAsync()
+        {
+            var document = new HtmlDocument();
+            document.LoadHtml(Item.Model.Content);
+            document.OptionCheckSyntax = false;
+
+            // Implement lazy-loading for images
+            foreach (var node in document.DocumentNode.Descendants("img"))
+            {
+                if (node.HasAttributes && node.Attributes["src"] != null)
+                {
+                    var oldSource = node.Attributes["src"].Value;
+                    node.Attributes.RemoveAll();
+
+                    if (!oldSource.Equals(Item.Model.PreviewImageUri.ToString()))
+                    {
+                        node.Attributes.Add("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+                        node.Attributes.Add("data-src", oldSource);
+                        node.Attributes.Add("class", "lazy");
+                    }
+
+                    node.InnerHtml = " "; // dirty hack to let HtmlAgilityPack close the <img> tag
+                }
+            }
+
+            var c = "/"[0];
+
+            var dataOpenMode = SettingsService.Instance.VideoOpenMode.ToString().ToLower();
+            var containerString = "<div class='wallabag-video' style='background-image: url({0})' data-open-mode='" + dataOpenMode + "' data-provider='{1}' data-video-id='{2}'><span></span></div>";
+
+            // Replace videos (YouTube & Vimeo) by static thumbnails                  
+            var iframeNodes = document.DocumentNode.Descendants("iframe").ToList();
+            var videoNodes = document.DocumentNode.Descendants("video").ToList();
+
+            foreach (var node in iframeNodes)
+            {
+                if (node.HasAttributes &&
+                    node.Attributes.Contains("src"))
+                {
+                    var videoSourceUri = new Uri(node.Attributes["src"].Value);
+                    var videoId = videoSourceUri.Segments.Last();
+                    var videoProvider = videoSourceUri.Host;
+
+                    if (videoProvider.Contains("youtube.com"))
+                        videoProvider = "youtube";
+                    else if (videoProvider.Contains("player.vimeo.com"))
+                        videoProvider = "vimeo";
+
+                    var newContainer = string.Format(containerString, await GetPreviewImageForVideoAsync(videoProvider, videoId), videoProvider, videoId);
+
+                    node.ParentNode.InsertAfter(HtmlNode.CreateNode(newContainer), node);
+                    node.ParentNode.RemoveChild(node);
+                }
+            }
+
+            // This loop is for HTML5 videos using the <video> tag
+            foreach (var node in videoNodes)
+            {
+                var videoSource = string.Empty;
+
+                videoSource = node.GetAttributeValue("src", string.Empty);
+
+                if (string.IsNullOrEmpty(videoSource) && node.HasChildNodes)
+                    videoSource = node.ChildNodes
+                          .Where(i => i.Name.Equals("source") && i.GetAttributeValue("type", string.Empty).Equals("video/mp4"))
+                          .FirstOrDefault()
+                          ?.GetAttributeValue("src", string.Empty);
+
+                if (!string.IsNullOrEmpty(videoSource))
+                {
+                    var newContainer = string.Format(containerString, string.Empty, "html", videoSource);
+
+                    node.ParentNode.InsertAfter(HtmlNode.CreateNode(newContainer), node);
+                    node.ParentNode.RemoveChild(node);
+                }
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        private async Task<string> GetPreviewImageForVideoAsync(string videoProvider, string videoId)
+        {
+            if (videoProvider == "youtube")
+                return $"http://img.youtube.com/vi/{videoId}/0.jpg";
+            else
+            {
+                var link = $"http://vimeo.com/api/v2/video/{videoId}.json";
+                using (HttpClient client = new HttpClient())
+                {
+                    var resp = await client.GetAsync(new Uri(link));
+                    dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(await resp.Content.ReadAsStringAsync());
+                    return json[0].thumbnail_large.Value;
+                }
+            }
         }
 
         private void ChangeReadStatus()

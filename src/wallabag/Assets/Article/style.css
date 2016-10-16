@@ -7,7 +7,6 @@ body {
     font-family: Georgia;
     line-height: 1.7;
     -ms-content-zooming: none;
-    margin-top: 32px;
     margin-bottom: 64px;
 }
 
@@ -53,11 +52,13 @@ p {
     margin-bottom: 0.75em;
 }
 
-b, strong {
+b,
+strong {
     font-weight: bold;
 }
 
-i, em {
+i,
+em {
     font-style: italic;
 }
 
@@ -106,7 +107,6 @@ mark {
         text-decoration: none;
     }
 
-
 blockquote {
     font-style: italic;
     border-left: 0.25em solid black;
@@ -132,6 +132,8 @@ img {
     height: auto;
     margin-bottom: 0.5em;
     max-width: 100%;
+    opacity: 0;
+    transition: opacity .3s ease-in;
 }
 
 figure {
@@ -218,11 +220,13 @@ code {
     overflow: auto;
 }
 
-audio, video {
+audio,
+video {
     max-width: 43.75em;
 }
 
-::selection, mark {
+::selection,
+mark {
     background: #666;
     color: white;
 }
@@ -233,7 +237,8 @@ table {
     width: 100%;
 }
 
-th, td {
+th,
+td {
     padding: .25em;
     text-align: left;
 }
@@ -263,35 +268,50 @@ article {
 /*------------------------------ Header ---------------------------*/
 /*-----------------------------------------------------------------*/
 
-.wallabag-header {        
+.wallabag-header {
     padding: 0 1em;
+    margin-top: 32px;
 }
 
-.wallabag-header h1 {
-    font-size: 1.3em;
-    font-weight: 600;
-    line-height: 1.4;
-    margin-top: 0.75em;
-    margin-bottom: 0.4em;
-}
-
-.wallabag-header h2 {
-    color: #808080;
-    display: block;
-    font-size: 0.9em;
-    font-weight: 400;
-    line-height: 1.3;
-    margin-bottom: 1.5em;
-}
-
-    .wallabag-header h2 a,
-    .wallabag-header h2 span {
-        margin: 0 0.25em;
+    .wallabag-header h1 {
+        font-size: 1.3em;
+        font-weight: 600;
+        line-height: 1.4;
+        margin-top: 0.75em;
+        margin-bottom: 0.4em;
     }
 
-    .wallabag-header h2 a {
-        color: #808080 !important;
-        text-decoration: none !important;
+    .wallabag-header h2 {
+        color: #808080;
+        display: block;
+        font-size: 0.9em;
+        font-weight: 400;
+        line-height: 1.3;
+        margin-bottom: 1.5em;
+    }
+
+        .wallabag-header h2 a,
+        .wallabag-header h2 span {
+            margin: 0 0.25em;
+        }
+
+        .wallabag-header h2 a {
+            color: #808080;
+            text-decoration: none !important;
+        }
+
+.wallabag-preview-image {
+    max-height: 50vh;
+    overflow: hidden;
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: center;
+}
+
+    .wallabag-preview-image img {
+        height: 100%;
+        margin: 0;
+        align-self: center;
     }
 
 .wallabag-header ul {
@@ -306,11 +326,77 @@ article {
 
     .wallabag-header ul li {
         display: inline-block;
-        background: rgba(0,0,0,0.1);
+        background: rgba(0, 0, 0, 0.1);
         border-radius: 1px;
         padding: .1em .3em;
         margin: 0 0.2em;
         font-size: 0.9em;
+    }
+
+/* Lazy loading */
+
+.wallabag-video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+    .wallabag-video-container iframe,
+    .wallabag-video-container object,
+    .wallabag-video-container embed {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+.wallabag-video {
+    position: relative;
+    background: #222;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 0;
+    margin: 0 0 0.7em 0;
+    padding: 28.125% 0;
+    background-color: #222;
+    background-size: cover;
+    background-position: center center;
+}
+
+    .wallabag-video:hover span {
+        padding: 8px;
+        background-color: black;
+    }
+
+    .wallabag-video span {
+        width: 50px;
+        height: 50px;
+        align-self: center;
+        border-radius: 100%;
+        font-family: "Segoe MDL2 Assets";
+        font-size: 25px;
+        padding: 4px;
+        line-height: 50px;
+        font-style: normal !important;
+        text-decoration: none !important;
+        color: white;
+        background: rgba(0,0,0,0.8);
+        transition: all linear 0.1s;
+    }
+
+    .wallabag-video[data-transformed] {
+        width: auto;
+        height: auto;
+        display: block;
+        padding: 0;
+        background: none !important;
     }
 
 /*-----------------------------------------------------------------*/
@@ -353,33 +439,11 @@ article {
 }
 
     [data-color="sepia"] .wallabag-header h2 a {
-        color: maroon !important;
+        color: maroon;
     }
 
 [data-color="sepia"] blockquote {
     border-color: #670000;
-}
-
-[data-color="gray"] body {
-    background: gray;
-    color: lightgray;
-}
-
-[data-color="gray"] a {
-    color: #e6e6e6;
-}
-
-[data-color="gray"] .wallabag-header h2 {
-    border-color: #b3b3b3;
-    color: #808080;
-}
-
-    [data-color="gray"] .wallabag-header h2 a {
-        color: #808080 !important;
-    }
-
-[data-color="gray"] blockquote {
-    border-color: #e6e6e6;
 }
 
 [data-color="dark"] body {
@@ -397,7 +461,7 @@ article {
 }
 
     [data-color="dark"] .wallabag-header h2 a {
-        color: #808080 !important;
+        color: #808080;
     }
 
 [data-color="dark"] blockquote {
@@ -419,7 +483,7 @@ article {
 }
 
     [data-color="black"] .wallabag-header h2 a {
-        color: #808080 !important;
+        color: #808080;
     }
 
 [data-color="black"] blockquote {
@@ -442,9 +506,10 @@ article {
         padding: 0 1.25em;
     }
 
-    .wallabag-header {
+    header {
         max-width: 43.75em;
         margin: 0 auto;
+        margin-top: 32px;
         text-align: center;
     }
 }

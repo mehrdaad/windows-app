@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using wallabag.Services;
 using wallabag.ViewModels;
-using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -60,7 +60,7 @@ namespace wallabag.Views
 
         private MenuFlyout _rightClickMenuFlyout;
         private Grid _rightClickMenuGrid;
-        private void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
+        private async void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
         {
             if (e.Value == "finishedReading")
             {
@@ -93,22 +93,49 @@ namespace wallabag.Views
                         }
                         catch { }
                         break;
+                    case "video-app":
+                    case "video-browser":
+                        var provider = notify[1];
+                        var videoId = notify[2];
+
+                        var launcherOptions = new LauncherOptions();
+
+                        if (notify[0] == "video-app")
+                            launcherOptions = new LauncherOptions() { FallbackUri = GetVideoUri(provider, videoId, true) };
+
+                        await Launcher.LaunchUriAsync(GetVideoUri(provider, videoId), launcherOptions);
+                        break;
                     default:
                         break;
                 }
             }
         }
 
+        private Uri GetVideoUri(string provider, string videoId, bool returnFallbackUri = false)
+        {
+            var uriString = string.Empty;
+            var openMode = SettingsService.Instance.VideoOpenMode;
+
+            if (provider == "youtube")
+                if (openMode == SettingsService.WallabagVideoOpenMode.App && returnFallbackUri == false)
+                    uriString = $"vnd.youtube:{videoId}";
+                else
+                    uriString = $"https://youtu.be/{videoId}";
+            else if (provider == "vimeo")
+                if (openMode == SettingsService.WallabagVideoOpenMode.App && returnFallbackUri == false)
+                    uriString = $"vimeo://v/{videoId}";
+                else
+                    uriString = $"https://vimeo.com/{videoId}";
+            else
+                uriString = videoId;
+
+            return new Uri(uriString);
+        }
+
         private void ShowRightClickContextMenu(int x, int y)
         {
             if (_rightClickMenuFlyout == null)
-            {
                 _rightClickMenuFlyout = Resources["RightClickMenuFlyout"] as MenuFlyout;
-                _rightClickMenuFlyout.Closed += (s, e) =>
-                {
-                    (_rightClickMenuGrid.Resources["ResetRightClickLinkStoryboard"] as Storyboard).Begin();
-                };
-            }
 
             _rightClickMenuFlyout.ShowAt(HtmlViewer, new Point(x, y));
         }
@@ -147,8 +174,6 @@ namespace wallabag.Views
                 ViewModel.ColorScheme = "light";
             else if (button == sepiaThemeButton)
                 ViewModel.ColorScheme = "sepia";
-            else if (button == grayThemeButton)
-                ViewModel.ColorScheme = "gray";
             else if (button == darkThemeButton)
                 ViewModel.ColorScheme = "dark";
             else if (button == blackThemeButton)
@@ -200,6 +225,14 @@ namespace wallabag.Views
                 ShowFullCommandBarStoryboard.Begin();
             else
                 HideCommandBarStoryboard.Begin();
+
+            if (Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent(nameof(AppBarButton), nameof(AppBarButton.LabelPosition)))
+            {
+                lightThemeButton.LabelPosition = CommandBarLabelPosition.Default;
+                sepiaThemeButton.LabelPosition = CommandBarLabelPosition.Default;
+                darkThemeButton.LabelPosition = CommandBarLabelPosition.Default;
+                blackThemeButton.LabelPosition = CommandBarLabelPosition.Default;
+            }
         }
 
         private void HtmlViewer_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)

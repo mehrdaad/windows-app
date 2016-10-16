@@ -444,4 +444,19 @@
   <data name="WhatIsWallabagButton.Content" xml:space="preserve">
     <value>Was ist wallabag?</value>
   </data>
+  <data name="VideoOpenModeDescriptionApp" xml:space="preserve">
+    <value>Das Video wird in einer nativen App geöffnet, sofern installiert. Ansonsten wird auf den Browser ausgewichen.</value>
+  </data>
+  <data name="VideoOpenModeDescriptionBrowser" xml:space="preserve">
+    <value>Das Video wird im Browser geöffnet.</value>
+  </data>
+  <data name="VideoOpenModeDescriptionInline" xml:space="preserve">
+    <value>Das Video wird im Artikel geladen.</value>
+  </data>
+  <data name="SaveInWallabagMenuFlyoutItem.Text" xml:space="preserve">
+    <value>In wallabag speichern</value>
+  </data>
+  <data name="VideoOpenModeHeaderTextBlock.Text" xml:space="preserve">
+    <value>Wie sollen Videos geöffnet werden?</value>
+  </data>
 </root>

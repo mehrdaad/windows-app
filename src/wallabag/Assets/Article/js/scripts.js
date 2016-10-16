@@ -32,6 +32,36 @@ function getSelectionText() {
     return text;
 }
 
+function setupVideoLazyLoading() {
+    var videos = document.querySelectorAll(".wallabag-video");
+
+    if (videos.length > 0)
+        for (var video, l = 0; l < videos.length; l++) {
+            video = videos[l];
+
+            video.addEventListener("click", function (video) {
+                var provider = this.getAttribute("data-provider");
+                var videoId = this.getAttribute("data-video-id");
+
+                var openMode = this.getAttribute("data-open-mode");
+
+                if (openMode == "browser" || openMode == "app")
+                    window.external.notify("video-" + openMode + "|" + provider + "|" + videoId);
+                else {
+                    this.setAttribute("data-transformed", "true");
+                    if (provider == "youtube") {
+                        this.innerHTML = "<div class='wallabag-video-container'><iframe type='text/html' src='https://www.youtube-nocookie.com/embed/" + videoId + "?rel=0&showinfo=0&color=white' frameborder='0' allowfullscreen></iframe></div>";
+                    }
+                    else if (provider == "vimeo") {
+                        this.innerHTML = "<div class='wallabag-video-container'><iframe type='text/html' src='http://player.vimeo.com/video/" + videoId + "?portrait=0' frameborder='0' allowfullscreen></iframe></div>";
+                    }
+                    else
+                        this.innerHTML = "<video src='" + videoId + "' preload controls></video>";
+                }
+            })
+        }
+}
+
 function rightClickInitialize() {
     var nodes = document.getElementsByTagName("a");
     var longpress = false;
@@ -61,6 +91,7 @@ function rightClickInitialize() {
         if (e.type === "click" && e.button !== 0) {
             return;
         }
+        
         if (e.button === 2) {
             window.external.notify("RC|" + e.srcElement.href + "|" + x + "|" + y);
             return;
@@ -76,7 +107,7 @@ function rightClickInitialize() {
         return false;
     };
 
-    for (i = 0; i < nodes.length; i++) {
+    for (i = 1; i < nodes.length; i++) {
         nodes[i].addEventListener("mousedown", start);
         nodes[i].addEventListener("touchstart", start);
         nodes[i].addEventListener("mouseout", cancel);

@@ -35,6 +35,20 @@
             <RowDefinition Height="48" />
             <RowDefinition />
         </Grid.RowDefinitions>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveStates">
+                <VisualState x:Name="Narrow" />
+                <VisualState x:Name="Wide">
+                    <VisualState.Setters>
+                        <Setter Target="VideoOpenModeGrid.HorizontalAlignment" Value="Left" />
+                        <Setter Target="VideoOpenModeGrid.Width" Value="420" />
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="720" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <TextBlock
                 x:Uid="SettingsPageTitleTextBlock"
@@ -99,6 +113,46 @@
                         x:Uid="SyncReadingProgressToggleSwitch"
                         Header="Sync the reading progress"
                         IsOn="{x:Bind ViewModel.SyncReadingProgress, Mode=TwoWay}" />
+                    <TextBlock x:Uid="VideoOpenModeHeaderTextBlock" Text="Video open mode" />
+                    <Grid x:Name="VideoOpenModeGrid" Margin="0,4,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style BasedOn="{StaticResource ToggleButtonRadioButtonStyle}" TargetType="RadioButton">
+                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            </Style>
+                        </Grid.Resources>
+                        <RadioButton
+                            Command="{x:Bind ViewModel.VideoOpenModeRadioButtonCheckedCommand}"
+                            CommandParameter="inline"
+                            Content="Inline"
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsInline, Mode=OneWay}" />
+                        <RadioButton
+                            Grid.Column="1"
+                            Command="{x:Bind ViewModel.VideoOpenModeRadioButtonCheckedCommand}"
+                            CommandParameter="app"
+                            Content="App"
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsApp, Mode=OneWay}" />
+                        <RadioButton
+                            Grid.Column="2"
+                            Command="{x:Bind ViewModel.VideoOpenModeRadioButtonCheckedCommand}"
+                            CommandParameter="browser"
+                            Content="Browser"
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsBrowser, Mode=OneWay}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            Margin="0,8,0,0"
+                            Style="{StaticResource InfoTextBlockStyle}"
+                            Text="{x:Bind ViewModel.VideoOpenModeDescription, Mode=OneWay}" />
+                    </Grid>
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="InfoPivotItem" Header="Info">
