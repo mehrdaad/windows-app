@@ -1,14 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.HockeyApp;
+using Newtonsoft.Json;
 using SQLite.Net;
 using SQLite.Net.Platform.WinRT;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Template10.Common;
 using wallabag.Models;
 using wallabag.Services;
-using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
-using System.IO;
+using Windows.ApplicationModel.Activation;
 
 namespace wallabag
 {
@@ -17,7 +18,7 @@ namespace wallabag
         public static Api.WallabagClient Client { get; private set; }
         public static SQLiteConnection Database { get; private set; }
         public static SettingsService Settings { get; private set; }
-        
+
         public static EventHandler<OfflineTask> OfflineTaskAdded;
         public static EventHandler<OfflineTask> OfflineTaskRemoved;
 
@@ -29,7 +30,7 @@ namespace wallabag
 
 #if DEBUG == false
             if (Settings.AllowCollectionOfTelemetryData)
-                Microsoft.HockeyApp.HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
+                HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
 #endif
 
             CreateClientAndDatabase();
