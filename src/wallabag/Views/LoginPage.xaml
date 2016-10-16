@@ -5,6 +5,7 @@
     xmlns:common="using:wallabag.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:wallabag.Views"
+    xmlns:m="using:wallabag.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:wallabag.ViewModels"
     common:TitleBarExtensions.ButtonBackgroundColor="Transparent"
@@ -12,136 +13,39 @@
     common:TitleBarExtensions.IsVisible="false"
     mc:Ignorable="d">
     <Page.Resources>
-        <Storyboard x:Name="GoToStep1Storyboard">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="textBlock" Storyboard.TargetProperty="(UIElement.Opacity)">
+        <Storyboard x:Name="ShowAlertGridStoryboard">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="-48" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1" />
             </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="textBlock" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="-50" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0" />
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="step1Grid" Storyboard.TargetProperty="(UIElement.Opacity)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1" />
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="buttonGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="50" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0" />
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="buttonGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1" />
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="step1Grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0.8">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="step1Grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0.8">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Name="GoToStep2Storyboard">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="textBlock" Storyboard.TargetProperty="(UIElement.Opacity)">
-                <SplineDoubleKeyFrame KeyTime="0" Value="1" />
-                <SplineDoubleKeyFrame KeyTime="0:0:0.5" Value="0" />
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="textBlock" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                <SplineDoubleKeyFrame KeyTime="0" Value="0" />
-                <SplineDoubleKeyFrame KeyTime="0:0:0.5" Value="-50" />
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="step1Grid" Storyboard.TargetProperty="(UIElement.Opacity)">
-                <SplineDoubleKeyFrame KeyTime="0" Value="1" />
-                <SplineDoubleKeyFrame KeyTime="0:0:0.5" Value="0" />
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="step2Grid" Storyboard.TargetProperty="(UIElement.Opacity)">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0" />
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1" />
-            </DoubleAnimationUsingKeyFrames>
-            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="step2Grid" Storyboard.TargetProperty="(UIElement.Visibility)">
-                <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0">
                     <DiscreteObjectKeyFrame.Value>
                         <Visibility>Visible</Visibility>
                     </DiscreteObjectKeyFrame.Value>
                 </DiscreteObjectKeyFrame>
             </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="step2Grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.8">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
+        </Storyboard>
+        <Storyboard x:Name="HideAlertGridStoryboard" BeginTime="0:0:2">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="-48" />
             </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="step2Grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.8">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
             </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="step1Grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="1">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseIn" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.8">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseIn" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="step1Grid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
-                <EasingDoubleKeyFrame KeyTime="0" Value="1">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseIn" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.8">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <BackEase EasingMode="EaseIn" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimation
-                d:IsOptimized="True"
-                Duration="0:0:0.5"
-                Storyboard.TargetName="buttonGrid"
-                Storyboard.TargetProperty="(UIElement.Opacity)"
-                To="0" />
-            <DoubleAnimation
-                d:IsOptimized="True"
-                Duration="0:0:0.5"
-                Storyboard.TargetName="buttonGrid"
-                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
-                To="50" />
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.3">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
         </Storyboard>
     </Page.Resources>
 
@@ -151,196 +55,274 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="AdaptiveStates">
-                <VisualState x:Name="Wide">
-                    <VisualState.Setters>
-                        <Setter Target="step1Grid.Width" Value="400" />
-                        <Setter Target="buttonGrid.(FrameworkElement.Width)" Value="500" />
-                        <Setter Target="buttonGrid.(FrameworkElement.Margin)">
-                            <Setter.Value>
-                                <Thickness>0,48</Thickness>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Target="textBlock.(FrameworkElement.Margin)">
-                            <Setter.Value>
-                                <Thickness>0,48</Thickness>
-                            </Setter.Value>
-                        </Setter>
-                    </VisualState.Setters>
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="720" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-            </VisualStateGroup>
-            <VisualStateGroup x:Name="VisualStateGroup">
-                <VisualState x:Name="TestWasSuccessfulState">
-                    <Storyboard x:Name="TestWasSuccessfulStoryboard" AutoReverse="True">
-                        <DoubleAnimation
-                            d:IsOptimized="True"
-                            Duration="0:0:0.3"
-                            Storyboard.TargetName="button"
-                            Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
-                            To="1.05">
-                            <DoubleAnimation.EasingFunction>
-                                <ExponentialEase EasingMode="EaseIn" />
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                        <DoubleAnimation
-                            d:IsOptimized="True"
-                            Duration="0:0:0.3"
-                            Storyboard.TargetName="button"
-                            Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
-                            To="1.05">
-                            <DoubleAnimation.EasingFunction>
-                                <ExponentialEase EasingMode="EaseIn" />
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                    </Storyboard>
-                    <VisualState.StateTriggers>
-                        <StateTrigger IsActive="{x:Bind ViewModel.TestWasSuccessful, Mode=OneWay}" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
         <Image
-            Grid.RowSpan="3"
+            Grid.RowSpan="2"
             d:IsLocked="True"
-            Opacity="0.3"
+            Opacity="0.15"
             Source="ms-appx:///Assets/books.jpg"
             Stretch="UniformToFill" />
-        <TextBlock
-            x:Uid="WelcomeTextBlock"
-            x:Name="textBlock"
-            Margin="0,24"
-            VerticalAlignment="Center"
-            RenderTransformOrigin="0.5,0.5"
-            Style="{StaticResource HeaderTextBlockStyle}"
-            Text="Welcome!"
-            TextAlignment="Center">
-            <TextBlock.RenderTransform>
-                <CompositeTransform />
-            </TextBlock.RenderTransform>
-        </TextBlock>
-        <StackPanel
-            x:Name="step2Grid"
-            Grid.Row="1"
-            VerticalAlignment="Center"
-            x:DeferLoadStrategy="Lazy"
-            RenderTransformOrigin="0.5,0.5"
-            Visibility="Collapsed">
-            <StackPanel.RenderTransform>
-                <CompositeTransform />
-            </StackPanel.RenderTransform>
-            <ProgressRing
-                Width="64"
-                Height="64"
-                Foreground="White"
-                IsActive="True" />
-            <TextBlock
-                x:Uid="DownloadingItemsTextBlock"
-                Margin="0,16,0,0"
-                Text="Downloading items…"
-                TextAlignment="Center" />
-        </StackPanel>
-        <ScrollViewer
-            x:Name="step1Grid"
-            Grid.Row="1"
-            VerticalAlignment="Center"
-            RenderTransformOrigin="0.5,0.5"
-            ScrollViewer.VerticalScrollBarVisibility="Auto">
-            <ScrollViewer.RenderTransform>
-                <CompositeTransform />
-            </ScrollViewer.RenderTransform>
-            <StackPanel>
-                <StackPanel.Resources>
-                    <Style TargetType="TextBox">
-                        <Setter Property="Margin" Value="8,4" />
-                    </Style>
-                    <Style TargetType="PasswordBox">
-                        <Setter Property="Margin" Value="8,4" />
-                    </Style>
-                </StackPanel.Resources>
-                <TextBox
-                    x:Uid="WallabagUrlTextBox"
-                    Header="Wallabag URL"
-                    InputScope="Url"
-                    PlaceholderText="https://"
-                    Text="{x:Bind ViewModel.Url, Mode=TwoWay}" />
-                <TextBox
-                    x:Uid="UsernameTextBox"
-                    Header="Username"
-                    IsSpellCheckEnabled="False"
-                    Text="{x:Bind ViewModel.Username, Mode=TwoWay}" />
-                <PasswordBox
-                    x:Uid="PasswordBox"
-                    Header="Password"
-                    Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
-                <CheckBox
-                    x:Uid="UseCustomSettingsCheckBox"
-                    Margin="8,4"
-                    Content="Use custom settings"
-                    IsChecked="{x:Bind ViewModel.UseCustomSettings, Mode=TwoWay}" />
-                <TextBlock
-                    x:Uid="MultipleDevicesAlertTextBlock"
-                    Margin="8,32,8,12"
-                    FontSize="13.333"
-                    Opacity="0.8"
-                    Text="A usage of the same ID/secret combination on multiple devices isn't recommended and could cause (a lot of) frustration."
-                    TextWrapping="Wrap"
-                    Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <TextBox
-                    x:Uid="ClientIdTextBox"
-                    Header="Client Id"
-                    IsSpellCheckEnabled="False"
-                    Text="{x:Bind ViewModel.ClientId, Mode=TwoWay}"
-                    Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <TextBox
-                    x:Uid="ClientSecretTextBox"
-                    Header="Client Secret"
-                    IsSpellCheckEnabled="False"
-                    Text="{x:Bind ViewModel.ClientSecret, Mode=TwoWay}"
-                    Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            </StackPanel>
-        </ScrollViewer>
+        <FlipView
+            MaxWidth="500"
+            Background="Transparent"
+            SelectedIndex="{x:Bind ViewModel.CurrentStep, Mode=OneWay}">
+            <FlipView.Template>
+                <ControlTemplate TargetType="FlipView">
+                    <Grid
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ScrollViewer
+                            x:Name="ScrollingHost"
+                            AutomationProperties.AccessibilityView="Raw"
+                            BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                            HorizontalScrollMode="Disabled"
+                            HorizontalSnapPointsType="MandatorySingle"
+                            IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                            IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                            IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
+                            IsTabStop="False"
+                            IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                            IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
+                            Padding="{TemplateBinding Padding}"
+                            PointerWheelChanged="IgnorePointerWheel"
+                            TabNavigation="{TemplateBinding TabNavigation}"
+                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                            VerticalScrollMode="Disabled"
+                            VerticalSnapPointsType="MandatorySingle"
+                            ZoomMode="Disabled">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </Grid>
+                </ControlTemplate>
+            </FlipView.Template>
+            <FlipView.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="12,6" />
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                </Style>
+                <Style x:Key="ProviderNameTextBlockStyle" TargetType="TextBlock">
+                    <Setter Property="Margin" Value="12,6,12,0" />
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                </Style>
+                <Style
+                    x:Key="ProviderDescriptionTextBlockStyle"
+                    BasedOn="{StaticResource ProviderNameTextBlockStyle}"
+                    TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="13.333" />
+                    <Setter Property="Margin" Value="12,2,12,6" />
+                    <Setter Property="Opacity" Value="0.8" />
+                </Style>
+                <Style
+                    x:Key="CustomTitleTextBlockStyle"
+                    BasedOn="{StaticResource TitleTextBlockStyle}"
+                    TargetType="TextBlock">
+                    <Setter Property="Margin" Value="12,24,12,0" />
+                    <Setter Property="TextAlignment" Value="Center" />
+                </Style>
+                <Style x:Key="CustomSubTitleTextBlockStyle" TargetType="TextBlock">
+                    <Setter Property="Margin" Value="12,6,12,16" />
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                </Style>
+                <Style TargetType="RadioButton">
+                    <Setter Property="Margin" Value="12,0" />
+                </Style>
+            </FlipView.Resources>
+            <FlipViewItem>
+                <StackPanel VerticalAlignment="Center">
+                    <Image
+                        Width="150"
+                        Height="150"
+                        Margin="0,32,0,0"
+                        Source="ms-appx:///Assets/Square150x150Logo/Square150x150Logo.png" />
+                    <TextBlock
+                        x:Uid="FirstStartWelcomeTitleTextBlock"
+                        Style="{StaticResource CustomTitleTextBlockStyle}"
+                        Text="Hi!" />
+                    <TextBlock
+                        x:Uid="FirstStartWelcomeDescriptionTextBlock"
+                        Style="{StaticResource CustomSubTitleTextBlockStyle}"
+                        Text="Before you can send links to my bag, I need to ask you: Where should I save them?" />
+
+                    <ListView ItemsSource="{x:Bind ViewModel.Providers}" SelectedItem="{x:Bind ViewModel.SelectedProvider, Mode=TwoWay}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="m:WallabagProvider">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource ProviderNameTextBlockStyle}" Text="{x:Bind Name}" />
+                                    <TextBlock Style="{StaticResource ProviderDescriptionTextBlockStyle}" Text="{x:Bind ShortDescription}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button
+                        x:Uid="RegisterButton"
+                        Margin="4,12,4,4"
+                        Command="{x:Bind ViewModel.RegisterCommand, Mode=OneWay}"
+                        Content="Don't have an account yet? Create one!"
+                        Style="{StaticResource TextBlockButtonStyle}" />
+                    <Button
+                        x:Uid="WhatIsWallabagButton"
+                        Margin="4,0,4,4"
+                        Command="{x:Bind ViewModel.WhatIsWallabagCommand}"
+                        Content="What is wallabag?"
+                        Style="{StaticResource TextBlockButtonStyle}" />
+                </StackPanel>
+            </FlipViewItem>
+            <FlipViewItem>
+                <Grid>
+                    <ScrollViewer VerticalAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="BorderThickness" Value="1" />
+                                    <Setter Property="Margin" Value="12,8" />
+                                </Style>
+                                <Style TargetType="PasswordBox">
+                                    <Setter Property="BorderThickness" Value="1" />
+                                    <Setter Property="Margin" Value="12,8" />
+                                </Style>
+                            </StackPanel.Resources>
+
+                            <TextBlock
+                                x:Uid="FirstStartContinueTextBlock"
+                                Style="{StaticResource CustomTitleTextBlockStyle}"
+                                Text="Let's continue!" />
+                            <TextBlock
+                                x:Uid="FirstStartContinueDescriptionTextBlock"
+                                Style="{StaticResource CustomSubTitleTextBlockStyle}"
+                                Text="Now we continue with the configuration. In the simplest case you just need to enter your usename and your password." />
+
+                            <TextBox
+                                x:Uid="WallabagUrlTextBox"
+                                Header="wallabag URL"
+                                InputScope="Url"
+                                PlaceholderText="https://"
+                                Text="{x:Bind ViewModel.Url, Mode=TwoWay}"
+                                Visibility="{x:Bind ViewModel.UrlFieldVisibility, Mode=OneWay}" />
+                            <TextBox
+                                x:Uid="UsernameTextBox"
+                                Header="Username"
+                                IsSpellCheckEnabled="False"
+                                Text="{x:Bind ViewModel.Username, Mode=TwoWay}" />
+                            <PasswordBox
+                                x:Uid="PasswordBox"
+                                Header="Password"
+                                Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
+                            <CheckBox
+                                x:Uid="UseCustomSettingsCheckBox"
+                                Margin="12,6"
+                                Content="Use custom settings"
+                                IsChecked="{x:Bind ViewModel.UseCustomSettings, Mode=TwoWay}" />
+                            <TextBlock
+                                x:Uid="MultipleDevicesAlertTextBlock"
+                                Margin="8,32,8,12"
+                                FontSize="13.333"
+                                Opacity="0.8"
+                                Text="A usage of the same ID/secret combination on multiple devices isn't recommended and could cause (a lot of) frustration."
+                                TextWrapping="Wrap"
+                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBox
+                                x:Uid="ClientIdTextBox"
+                                Header="Client Id"
+                                IsSpellCheckEnabled="False"
+                                Text="{x:Bind ViewModel.ClientId, Mode=TwoWay}"
+                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBox
+                                x:Uid="ClientSecretTextBox"
+                                Header="Client Secret"
+                                IsSpellCheckEnabled="False"
+                                Text="{x:Bind ViewModel.ClientSecret, Mode=TwoWay}"
+                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </FlipViewItem>
+            <FlipViewItem>
+                <StackPanel VerticalAlignment="Center">
+                    <ProgressRing
+                        Width="64"
+                        Height="64"
+                        Foreground="White"
+                        IsActive="True" />
+                    <TextBlock
+                        Margin="0,16,0,0"
+                        Text="{x:Bind ViewModel.ProgressDescription, Mode=OneWay}"
+                        TextAlignment="Center" />
+                </StackPanel>
+            </FlipViewItem>
+            <FlipViewItem>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock
+                        x:Uid="FirstStartLastQuestionTextBlock"
+                        Style="{StaticResource CustomTitleTextBlockStyle}"
+                        Text="One last question." />
+                    <TextBlock
+                        x:Uid="TelemetryCollectionInfoTextBlock"
+                        Style="{StaticResource CustomSubTitleTextBlockStyle}"
+                        Text="Do you allow this app to send anonymous usage and crash reports? Don't worry, you can disable it at any time. And no, it's not necessary for the app." />
+
+                    <CheckBox
+                        x:Uid="TelemetryDataCheckBox"
+                        Margin="12,0"
+                        Content="Allow collection of telemetry data"
+                        IsChecked="{x:Bind ViewModel.AllowCollectionOfTelemetryData, Mode=TwoWay}" />
+                </StackPanel>
+            </FlipViewItem>
+        </FlipView>
         <Grid
-            x:Name="buttonGrid"
-            Grid.Row="2"
-            Margin="0,24"
-            RenderTransformOrigin="0.5,0.5">
+            x:Name="AlertGrid"
+            MaxWidth="500"
+            VerticalAlignment="Top"
+            x:DeferLoadStrategy="Lazy"
+            Background="#FFFFA200"
+            RenderTransformOrigin="0.5,0.5"
+            RequestedTheme="Light"
+            Visibility="Collapsed">
             <Grid.RenderTransform>
                 <CompositeTransform />
             </Grid.RenderTransform>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <FontIcon
+                Margin="12"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="24"
+                Glyph="&#xE814;" />
+            <TextBlock
+                x:Name="AlertDescriptionTextBlock"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                TextWrapping="Wrap" />
+        </Grid>
+        <Grid
+            Grid.Row="1"
+            MaxWidth="500"
+            VerticalAlignment="Bottom">
+            <Grid.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.TestConfigurationCommand}">
-                <StackPanel Orientation="Horizontal">
-                    <ProgressRing
-                        Margin="0,0,8,0"
-                        Foreground="White"
-                        IsActive="{x:Bind ViewModel.IsTestRunning, Mode=OneWay}"
-                        Visibility="{x:Bind ViewModel.IsTestRunning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <TextBlock x:Uid="TestConfigurationTextBlock" Text="Test configuration" />
-                </StackPanel>
-            </Button>
+            <Button
+                x:Uid="PreviousButton"
+                Margin="8,8,4,8"
+                Command="{x:Bind ViewModel.PreviousCommand, Mode=OneWay}"
+                Content="previous" />
             <Button
                 x:Uid="ContinueButton"
-                x:Name="button"
                 Grid.Column="1"
-                HorizontalAlignment="Stretch"
-                Command="{x:Bind ViewModel.ContinueCommand}"
-                Content="Continue"
-                RenderTransformOrigin="0.5,0.5">
-                <Button.RenderTransform>
-                    <CompositeTransform />
-                </Button.RenderTransform>
-            </Button>
+                Margin="4,8,8,8"
+                Command="{x:Bind ViewModel.NextCommand, Mode=OneWay}"
+                Content="next" />
         </Grid>
     </Grid>
 </Page>

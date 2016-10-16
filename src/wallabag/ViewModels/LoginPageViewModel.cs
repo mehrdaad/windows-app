@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Messaging;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -6,7 +7,10 @@ using Template10.Mvvm;
 using wallabag.Api.Models;
 using wallabag.Common;
 using wallabag.Models;
+using wallabag.Services;
 using Windows.Security.ExchangeActiveSyncProvisioning;
+using Windows.System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
@@ -15,73 +19,172 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class LoginPageViewModel : ViewModelBase
     {
-        public bool CredentialsAreExisting { get; set; }
+        private bool _credentialsAreExisting = false;
+        private bool _restoredFromPageState = false;
 
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string Url { get; set; } = string.Empty;
+        public string Url { get; set; } = "https://";
         public string ClientId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
         public bool? UseCustomSettings { get; set; } = false;
+        public bool? AllowCollectionOfTelemetryData { get; set; } = true;
 
-        public bool IsTestRunning { get; set; }
-        public bool TestWasSuccessful { get; set; } = false;
+        public int CurrentStep { get; set; } = 0;
+        public string ProgressDescription { get; set; }
 
-        public event EventHandler ConfigurationTestFailed;
-        public event EventHandler ConfigurationTestSucceeded;
-        public event EventHandler ContinueStarted;
-        public event EventHandler ContinueCompleted;
+        [DependsOn(nameof(SelectedProvider))]
+        public Visibility UrlFieldVisibility { get { return (SelectedProvider as WallabagProvider)?.Url == null ? Visibility.Visible : Visibility.Collapsed; } }
 
-        public DelegateCommand TestConfigurationCommand { get; private set; }
-        public DelegateCommand ContinueCommand { get; private set; }
+        public List<WallabagProvider> Providers { get; set; }
+        public object SelectedProvider { get; set; }
+
+        public DelegateCommand PreviousCommand { get; private set; }
+        public DelegateCommand NextCommand { get; private set; }
+        public DelegateCommand RegisterCommand { get; private set; }
+        public DelegateCommand WhatIsWallabagCommand { get; private set; }
 
         public LoginPageViewModel()
         {
-            TestConfigurationCommand = new DelegateCommand(async () =>
+            Providers = new List<WallabagProvider>()
             {
-                TestWasSuccessful = await TestConfigurationAsync();
+                //new WallabagProvider(new Uri("https://framabag.org"), "framabag", Helpers.LocalizedResource("FramabagProviderDescription")),
+                new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", Helpers.LocalizedResource("V2WallabagOrgProviderDescription")),
+                new WallabagProvider(default(Uri), Helpers.LocalizedResource("OtherProviderName"),  Helpers.LocalizedResource("OtherProviderDescription"))
+            };
 
-                if (TestWasSuccessful)
-                    ConfigurationTestSucceeded?.Invoke(this, new EventArgs());
-                else
-                    ConfigurationTestFailed?.Invoke(this, new EventArgs());
+            PreviousCommand = new DelegateCommand(() => Previous(), () => PreviousCanBeExecuted());
+            NextCommand = new DelegateCommand(async () => await NextAsync(), () => NextCanBeExecuted());
+            RegisterCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri((SelectedProvider as WallabagProvider).Url, "/register")),
+                () => RegistrationCanBeExecuted());
+            WhatIsWallabagCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
 
-                ContinueCommand.RaiseCanExecuteChanged();
-            }, () => TestConfigurationCanExecute());
-            ContinueCommand = new DelegateCommand(async () => await ContinueAsync(), () => TestWasSuccessful);
-
-            PropertyChanged += (s, e) => TestConfigurationCommand.RaiseCanExecuteChanged();
+            this.PropertyChanged += this_PropertyChanged;
         }
 
-        private bool TestConfigurationCanExecute()
+        private void this_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(Username) &&
-                !string.IsNullOrWhiteSpace(Password) &&
-                !string.IsNullOrWhiteSpace(Url))
-                if ((UseCustomSettings == true &&
-                    !string.IsNullOrWhiteSpace(ClientId) &&
-                    !string.IsNullOrWhiteSpace(ClientSecret)) ||
-                    UseCustomSettings == false)
-                    return true;
-                else
-                    return false;
-            else return false;
+            PreviousCommand.RaiseCanExecuteChanged();
+            NextCommand.RaiseCanExecuteChanged();
+            RegisterCommand.RaiseCanExecuteChanged();
         }
+
+        private bool PreviousCanBeExecuted()
+        {
+            if (_credentialsAreExisting)
+                return false;
+            else
+                return CurrentStep > 0 &&
+                       CurrentStep != 2;
+        }
+        private bool NextCanBeExecuted()
+        {
+            if (_credentialsAreExisting)
+                return CurrentStep > 2;
+            else
+                return (SelectedProvider != null || _restoredFromPageState) &&
+                       CurrentStep <= 3 &&
+                       CurrentStep != 2;
+        }
+        private bool RegistrationCanBeExecuted()
+        {
+            var selectedProvider = SelectedProvider as WallabagProvider;
+
+            return selectedProvider != null && selectedProvider.Url != null;
+        }
+
+        private void Previous()
+        {
+            PreviousCommand.RaiseCanExecuteChanged();
+            NextCommand.RaiseCanExecuteChanged();
+
+            if (CurrentStep != 3)
+                CurrentStep -= 1;
+            else if (CurrentStep == 3 && _credentialsAreExisting == false)
+                CurrentStep = 1;
+        }
+        private async Task NextAsync()
+        {
+            if (_credentialsAreExisting && CurrentStep == 0)
+                CurrentStep = 2;
+
+            var selectedProvider = SelectedProvider as WallabagProvider;
+
+            if (CurrentStep == 0)
+            {
+                Url = selectedProvider?.Url == null ? "https://" : selectedProvider.Url.ToString();
+
+                CurrentStep += 1;
+                return;
+            }
+
+            if (CurrentStep == 1)
+            {
+                try { var x = new Uri(Url); }
+                catch (UriFormatException)
+                {
+                    Messenger.Default.Send(new NotificationMessage(Helpers.LocalizedResource("UrlFormatWrongMessage")));
+                    return;
+                }
+
+                CurrentStep += 1;
+            }
+
+            if (CurrentStep == 2)
+            {
+                if (await TestConfigurationAsync())
+                    await DownloadAndSaveItemsAndTags();
+                else
+                {
+                    CurrentStep = 1;
+                    Messenger.Default.Send(new NotificationMessage(Helpers.LocalizedResource("CredentialsWrongMessage")));
+                    return;
+                }
+
+                CurrentStep += 1;
+                return;
+            }
+
+            if (CurrentStep == 3)
+            {
+                SettingsService.Instance.AccessToken = App.Client.AccessToken;
+                SettingsService.Instance.RefreshToken = App.Client.RefreshToken;
+                SettingsService.Instance.WallabagUrl = App.Client.InstanceUri;
+                SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
+                SettingsService.Instance.ClientId = App.Client.ClientId;
+                SettingsService.Instance.ClientSecret = App.Client.ClientSecret;
+                SettingsService.Instance.AllowCollectionOfTelemetryData = (bool)AllowCollectionOfTelemetryData;
+
+                NavigationService.Navigate(typeof(Views.MainPage));
+                NavigationService.ClearHistory();
+
+                await TitleBarExtensions.ResetAsync();
+            }
+        }
+
         private async Task<bool> TestConfigurationAsync()
         {
-            IsTestRunning = true;
+            if (_credentialsAreExisting)
+                return true;
+
+            ProgressDescription = Helpers.LocalizedResource("TestingConfigurationMessage");
 
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
                 Url = "https://" + Url;
 
+            try { await new HttpClient().GetAsync(new Uri(Url)); }
+            catch { return false; }
+
             if (UseCustomSettings == false)
             {
+                App.Client.InstanceUri = new Uri(Url);
                 var clientCreationIsSuccessful = await CreateApiClientAsync();
 
                 if (clientCreationIsSuccessful == false &&
                     Url.StartsWith("https://"))
                 {
                     Url = Url.Replace("https://", "http://");
+                    App.Client.InstanceUri = new Uri(Url);
 
                     if (await CreateApiClientAsync() == false)
                         return false;
@@ -94,7 +197,6 @@ namespace wallabag.ViewModels
 
             var result = await App.Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
             {
-                IsTestRunning = false;
                 if (x.Exception == null)
                     return x.Result;
                 else
@@ -108,7 +210,6 @@ namespace wallabag.ViewModels
 
                 result = await App.Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
                 {
-                    IsTestRunning = false;
                     if (x.Exception == null)
                         return x.Result;
                     else
@@ -118,65 +219,60 @@ namespace wallabag.ViewModels
 
             return result;
         }
-        private async Task ContinueAsync(bool credentialsExist = false)
+        private async Task DownloadAndSaveItemsAndTags()
         {
-            ContinueStarted?.Invoke(this, new EventArgs());
+            ProgressDescription = Helpers.LocalizedResource("DownloadingItemsTextBlock.Text");
+            int itemsPerPage = 100;
 
-            if (!credentialsExist)
-            {
-                Services.SettingsService.Instance.ClientId = ClientId;
-                Services.SettingsService.Instance.ClientSecret = ClientSecret;
-                Services.SettingsService.Instance.WallabagUrl = new Uri(Url);
-                Services.SettingsService.Instance.AccessToken = App.Client.AccessToken;
-                Services.SettingsService.Instance.RefreshToken = App.Client.RefreshToken;
-                Services.SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
-            }
-
-            var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(ItemsPerPage: 1000);
+            var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: itemsPerPage);
             var items = itemResponse.Items as List<WallabagItem>;
 
             // For users with a lot of items
             if (itemResponse.Pages > 1)
-                for (int i = 1; i < itemResponse.Pages; i++)
-                    items.AddRange(await App.Client.GetItemsAsync(ItemsPerPage: 1000));
+                for (int i = 2; i <= itemResponse.Pages; i++)
+                {
+                    ProgressDescription = string.Format(Helpers.LocalizedResource("DownloadingItemsWithProgress"), items.Count, itemResponse.TotalNumberOfItems);
+                    items.AddRange(await App.Client.GetItemsAsync(itemsPerPage: itemsPerPage, pageNumber: i));
+                }
 
             var tags = await App.Client.GetTagsAsync();
 
+            ProgressDescription = Helpers.LocalizedResource("SavingItemsInDatabaseMessage");
+
             await Task.Run(() =>
             {
-                foreach (var item in items)
-                    App.Database.Insert((Item)item);
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var item in items)
+                        App.Database.InsertOrReplace((Item)item);
 
-                foreach (var tag in tags)
-                    App.Database.Insert((Tag)tag);
+                    foreach (var tag in tags)
+                        App.Database.InsertOrReplace((Tag)tag);
+                });
             });
-
-            ContinueCompleted?.Invoke(this, new EventArgs());
-
-            await TitleBarExtensions.ResetAsync();
-
-            NavigationService.Navigate(typeof(Views.MainPage));
-            NavigationService.ClearHistory();
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            if (parameter is bool)
-            {
-                CredentialsAreExisting = (bool)parameter;
-                await ContinueAsync(true);
-            }
+            _credentialsAreExisting = parameter != null && (bool)parameter;
 
-            if (state.Count == 5)
+            if (state.Count > 0)
             {
                 Username = state[nameof(Username)] as string;
                 Password = state[nameof(Password)] as string;
                 Url = state[nameof(Url)] as string;
                 ClientId = state[nameof(ClientId)] as string;
                 ClientSecret = state[nameof(ClientSecret)] as string;
-            }
-        }
 
+                CurrentStep = (int)state[nameof(CurrentStep)];
+                UseCustomSettings = (bool?)state[nameof(UseCustomSettings)];
+
+                _restoredFromPageState = true;
+            }
+
+            if (_credentialsAreExisting)
+                await NextAsync();
+        }
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
             if (suspending)
@@ -186,6 +282,9 @@ namespace wallabag.ViewModels
                 pageState[nameof(Url)] = Url;
                 pageState[nameof(ClientId)] = ClientId;
                 pageState[nameof(ClientSecret)] = ClientSecret;
+
+                pageState[nameof(CurrentStep)] = CurrentStep;
+                pageState[nameof(UseCustomSettings)] = UseCustomSettings;
             }
             return Task.CompletedTask;
         }
@@ -202,6 +301,8 @@ namespace wallabag.ViewModels
 
         public async Task<bool> CreateApiClientAsync()
         {
+            ProgressDescription = Helpers.LocalizedResource("CreatingClientMessage");
+
             _http = new HttpClient();
             var instanceUri = new Uri(Url);
 
@@ -217,27 +318,34 @@ namespace wallabag.ViewModels
             var token = await GetStringFromHtmlSequenceAsync(clientCreateUri, m_tokenStartString, m_htmlInputEndString);
 
             // Step 3: Create the new client
-            var addContent = new HttpStringContent($"client[redirect_uris]={GetRedirectUri()}&client[save]=&client[_token]={token}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+
+            var stringContent = string.Empty;
+            var useNewApi = (await App.Client.GetVersionNumberAsync()).StartsWith("2.0") == false;
+
+            stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
+
+            if (useNewApi)
+                stringContent = $"client[name]={new EasClientDeviceInformation().FriendlyName}&" + stringContent;
+
+            var addContent = new HttpStringContent(stringContent, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
             var addResponse = await _http.PostAsync(clientCreateUri, addContent);
 
             if (!addResponse.IsSuccessStatusCode)
                 return false;
 
-            var finalHtml = await addResponse.Content.ReadAsStringAsync();
+            var results = ParseResult(await addResponse.Content.ReadAsStringAsync());
 
-            var clientIdStartIndex = finalHtml.IndexOf(m_finalTokenStartString) + m_finalTokenStartString.Length;
-            var clientIdEndIndex = finalHtml.IndexOf(m_finalTokenEndString);
-            var clientSecretStartIndex = finalHtml.LastIndexOf(m_finalTokenStartString) + m_finalTokenStartString.Length;
-            var clientSecretEndIndex = finalHtml.LastIndexOf(m_finalTokenEndString);
-
-            this.ClientId = finalHtml.Substring(clientIdStartIndex, clientIdEndIndex - clientIdStartIndex);
-            this.ClientSecret = finalHtml.Substring(clientSecretStartIndex, clientSecretEndIndex - clientSecretStartIndex);
+            if (results.Count == 2)
+                this.ClientId = results[0];
+            else
+                this.ClientId = results[1];
+            this.ClientSecret = results[2];
 
             _http.Dispose();
             return true;
         }
 
-        private object GetRedirectUri() => new Uri(new Uri(Url), new EasClientDeviceInformation().FriendlyName);
+        private object GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(new Uri(Url), new EasClientDeviceInformation().FriendlyName);
         private Task<string> GetCsrfTokenAsync() => GetStringFromHtmlSequenceAsync(new Uri(new Uri(Url), "/login"), m_loginStartString, m_htmlInputEndString);
 
         private async Task<string> GetStringFromHtmlSequenceAsync(Uri uri, string startString, string endString)
@@ -248,6 +356,23 @@ namespace wallabag.ViewModels
             var endIndex = html.IndexOf(endString, startIndex);
 
             return html.Substring(startIndex, endIndex - startIndex);
+        }
+
+        private List<string> ParseResult(string html)
+        {
+            var results = new List<string>();
+
+            var lastIndex = 0;
+            do
+            {
+                var start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
+                lastIndex = html.IndexOf(m_finalTokenEndString, start);
+
+                results.Add(html.Substring(start, lastIndex - start));
+
+            } while (results.Count <= 3);
+
+            return results;
         }
 
         #endregion
