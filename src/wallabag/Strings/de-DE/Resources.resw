@@ -129,9 +129,6 @@
   <data name="AddItemContentDialog.Title" xml:space="preserve">
     <value>EINTRAG HINZUFÜGEN</value>
   </data>
-  <data name="AllPageTitleTextBlock.Text" xml:space="preserve">
-    <value>ALLE</value>
-  </data>
   <data name="ArchivedPivotItem.Header" xml:space="preserve">
     <value>ARCHIVIERT</value>
   </data>
