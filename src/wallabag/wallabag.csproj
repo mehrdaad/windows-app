@@ -155,6 +155,7 @@
     </AppxManifest>
     <PRIResource Include="Strings\de-DE\Resources.resw" />
     <PRIResource Include="Strings\en-US\Resources.resw" />
+    <PRIResource Include="Strings\fr-FR\Resources.resw" />
     <None Include="wallabag_StoreKey.pfx" />
     <None Include="wallabag_TemporaryKey.pfx" />
   </ItemGroup>
