@@ -139,13 +139,7 @@ namespace wallabag.Views
         private void ShowRightClickContextMenu(int x, int y)
         {
             if (_rightClickMenuFlyout == null)
-            {
                 _rightClickMenuFlyout = Resources["RightClickMenuFlyout"] as MenuFlyout;
-                _rightClickMenuFlyout.Closed += (s, e) =>
-                {
-                    (_rightClickMenuGrid.Resources["ResetRightClickLinkStoryboard"] as Storyboard).Begin();
-                };
-            }
 
             _rightClickMenuFlyout.ShowAt(HtmlViewer, new Point(x, y));
         }

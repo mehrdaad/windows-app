@@ -11,6 +11,7 @@ using wallabag.Common;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.Storage;
+using Windows.System;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -53,6 +54,7 @@ namespace wallabag.ViewModels
 
         public Uri RightClickUri { get; set; }
         public DelegateCommand SaveRightClickLinkCommand { get; private set; }
+        public DelegateCommand OpenRightClickLinkInBrowserCommand { get; private set; }
 
         public ItemPageViewModel()
         {
@@ -68,6 +70,7 @@ namespace wallabag.ViewModels
             });
 
             SaveRightClickLinkCommand = new DelegateCommand(() => OfflineTask.Add(RightClickUri.ToString(), new List<string>()));
+            OpenRightClickLinkInBrowserCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(RightClickUri));
         }
 
         private async Task GenerateFormattedHtmlAsync()
