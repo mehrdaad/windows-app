@@ -107,7 +107,7 @@ function rightClickInitialize() {
         return false;
     };
 
-    for (i = 1; i <= nodes.length; i++) {
+    for (i = 1; i < nodes.length; i++) {
         nodes[i].addEventListener("mousedown", start);
         nodes[i].addEventListener("touchstart", start);
         nodes[i].addEventListener("mouseout", cancel);
