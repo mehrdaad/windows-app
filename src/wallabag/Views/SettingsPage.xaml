@@ -113,7 +113,7 @@
                         x:Uid="SyncReadingProgressToggleSwitch"
                         Header="Sync the reading progress"
                         IsOn="{x:Bind ViewModel.SyncReadingProgress, Mode=TwoWay}" />
-                    <TextBlock Text="Video open mode" />
+                    <TextBlock Text="Video open mode" x:Uid="VideoOpenModeHeaderTextBlock" />
                     <Grid x:Name="VideoOpenModeGrid" Margin="0,4,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />

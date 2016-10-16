@@ -417,4 +417,7 @@
   <data name="SaveInWallabagMenuFlyoutItem.Text" xml:space="preserve">
     <value>In wallabag speichern</value>
   </data>
+  <data name="VideoOpenModeHeaderTextBlock.Text" xml:space="preserve">
+    <value>Wie sollen Videos geöffnet werden?</value>
+  </data>
 </root>
