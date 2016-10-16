@@ -63,6 +63,16 @@ namespace wallabag.Common
             });
             return rewrittenFormat;
         }
+
+        public static bool IsValidUri(this string uriString)
+        {
+            try
+            {
+                Uri x = new Uri(uriString, UriKind.RelativeOrAbsolute);
+                return true;
+            }
+            catch (UriFormatException) { return false; }
+        }
     }
 
     public static class WebViewExtensions
