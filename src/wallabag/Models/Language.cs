@@ -10,7 +10,7 @@ using wallabag.Common;
 namespace wallabag.Models
 {
     [ImplementPropertyChanged]
-    public class Language
+    public class Language : IComparable
     {
         public string wallabagLanguageCode { get; set; }
         public string LanguageCode { get; set; }
@@ -49,5 +49,13 @@ namespace wallabag.Models
                 return false;
         }
         public override int GetHashCode() => LanguageCode.GetHashCode();
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Language)
+                return ((IComparable)DisplayName).CompareTo((obj as Language).DisplayName);
+            else
+                return 0;
+        }
     }
 }
