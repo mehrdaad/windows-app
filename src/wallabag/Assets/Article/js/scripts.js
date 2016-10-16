@@ -91,6 +91,7 @@ function rightClickInitialize() {
         if (e.type === "click" && e.button !== 0) {
             return;
         }
+        
         if (e.button === 2) {
             window.external.notify("RC|" + e.srcElement.href + "|" + x + "|" + y);
             return;
@@ -106,7 +107,7 @@ function rightClickInitialize() {
         return false;
     };
 
-    for (i = 0; i < nodes.length; i++) {
+    for (i = 1; i <= nodes.length; i++) {
         nodes[i].addEventListener("mousedown", start);
         nodes[i].addEventListener("touchstart", start);
         nodes[i].addEventListener("mouseout", cancel);
