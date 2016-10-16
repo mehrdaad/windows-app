@@ -14,8 +14,7 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class SettingsPageViewModel : ViewModelBase
     {
-        // TODO: Change after merged into master branch.
-        private Uri _changelogUri = new Uri("https://github.com/wallabag/windows-app/blob/v2/CHANGELOG.md");
+        private Uri _changelogUri = new Uri("https://github.com/wallabag/windows-app/blob/master/README.md");
         private Uri _documentationUri = new Uri("http://doc.wallabag.org/");
         private Uri _twitterAccountUri = new Uri("https://twitter.com/wallabagapp");
         private Uri _mailUri = new Uri("mailto:wallabag@jlnostr.de");
