@@ -101,11 +101,7 @@ namespace wallabag.Views
                         var launcherOptions = new LauncherOptions();
 
                         if (notify[0] == "video-app")
-                            launcherOptions = new LauncherOptions()
-                            {
-                                FallbackUri = GetVideoUri(provider, videoId, true),
-                                DisplayApplicationPicker = true
-                            };
+                            launcherOptions = new LauncherOptions() { FallbackUri = GetVideoUri(provider, videoId, true) };
 
                         await Launcher.LaunchUriAsync(GetVideoUri(provider, videoId), launcherOptions);
                         break;
