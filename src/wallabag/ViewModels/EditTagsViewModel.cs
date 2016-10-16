@@ -39,7 +39,7 @@ namespace wallabag.ViewModels
             {
                 foreach (var item in Items)
                 {
-                    OfflineTask.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
+                    OfflineTask.Add(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
 
                     foreach (var tag in Tags)
                         item.Tags.Add(tag);
