@@ -198,9 +198,6 @@
   <data name="GeneralSettingsPivotItem.Header" xml:space="preserve">
     <value>General</value>
   </data>
-  <data name="grayThemeButton.Label" xml:space="preserve">
-    <value>Gray</value>
-  </data>
   <data name="InfoPivotItem.Header" xml:space="preserve">
     <value>Info</value>
   </data>
@@ -296,18 +293,6 @@
   </data>
   <data name="ShareMenuFlyoutItem.Text" xml:space="preserve">
     <value>Share</value>
-  </data>
-  <data name="SortByLongestFirstTextBlock.Text" xml:space="preserve">
-    <value>longest first</value>
-  </data>
-  <data name="SortByNewestFirstTextBlock.Text" xml:space="preserve">
-    <value>newest first</value>
-  </data>
-  <data name="SortByOldestFirstTextBlock.Text" xml:space="preserve">
-    <value>oldest first</value>
-  </data>
-  <data name="SortByShortestFirstTextBlock.Text" xml:space="preserve">
-    <value>shortest first</value>
   </data>
   <data name="SortOrderFilterTitleTextBlock.Text" xml:space="preserve">
     <value>SORT ORDER</value>
@@ -455,5 +440,17 @@
   </data>
   <data name="VideoOpenModeHeaderTextBlock.Text" xml:space="preserve">
     <value>How should videos be opened?</value>
+  </data>
+  <data name="OrderAscendingRadioButton.Tag" xml:space="preserve">
+    <value>order ascending</value>
+  </data>
+  <data name="OrderDescendingRadioButton.Tag" xml:space="preserve">
+    <value>order descending</value>
+  </data>
+  <data name="SortByDateRadioButton.Content" xml:space="preserve">
+    <value>by date</value>
+  </data>
+  <data name="SortByReadingTimeRadioButton.Content" xml:space="preserve">
+    <value>by reading time</value>
   </data>
 </root>

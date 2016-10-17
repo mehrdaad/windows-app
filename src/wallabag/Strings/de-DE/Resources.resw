@@ -456,4 +456,16 @@
   <data name="VideoOpenModeHeaderTextBlock.Text" xml:space="preserve">
     <value>Wie sollen Videos geöffnet werden?</value>
   </data>
+  <data name="OrderAscendingRadioButton.Tag" xml:space="preserve">
+    <value>aufsteigend sortieren</value>
+  </data>
+  <data name="OrderDescendingRadioButton.Tag" xml:space="preserve">
+    <value>absteigend sortieren</value>
+  </data>
+  <data name="SortByDateRadioButton.Content" xml:space="preserve">
+    <value>nach Datum</value>
+  </data>
+  <data name="SortByReadingTimeRadioButton.Content" xml:space="preserve">
+    <value>nach Lesezeit</value>
+  </data>
 </root>
