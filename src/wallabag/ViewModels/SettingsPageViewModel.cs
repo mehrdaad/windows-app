@@ -17,7 +17,7 @@ namespace wallabag.ViewModels
         private Uri _changelogUri = new Uri("https://github.com/wallabag/windows-app/blob/master/README.md");
         private Uri _documentationUri = new Uri("http://doc.wallabag.org/");
         private Uri _twitterAccountUri = new Uri("https://twitter.com/wallabagapp");
-        private Uri _mailUri = new Uri("mailto:wallabag@jlnostr.de");
+        private Uri _mailUri = new Uri("mailto:jlnostr@outlook.de");
         private Uri _githubIssueUri = new Uri("https://github.com/wallabag/windows-app/issues/new");
         private Uri _rateAppUri = new Uri("ms-windows-store://review/?ProductId=" + Package.Current.Id.FamilyName);
 
