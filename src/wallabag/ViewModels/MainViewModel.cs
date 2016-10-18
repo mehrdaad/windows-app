@@ -101,19 +101,18 @@ namespace wallabag.ViewModels
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
         }
 
-        private Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
+        private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
         {
-
             var result = new List<ItemViewModel>();
 
-            var database = GetItemsForCurrentSearchProperties(Items.Count, (int)count);
+            var database = await GetItemsForCurrentSearchPropertiesAsync(Items.Count, (int)count);
 
             foreach (var item in database)
                 result.Add(new ItemViewModel(item));
 
             GetMetadataForItems(result);
 
-            return Task.FromResult(result);
+            return result;
         }
 
         private async Task ExecuteOfflineTasksAsync()
@@ -257,13 +256,12 @@ namespace wallabag.ViewModels
             UpdatePageHeader();
         }
 
-        private Task UpdateViewAsync()
+        private async Task UpdateViewAsync()
         {
-            return CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(() =>
+            var databaseItems = await GetItemsForCurrentSearchPropertiesAsync(limit: 24);
+            await CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(() =>
             {
                 Items.Clear();
-
-                var databaseItems = GetItemsForCurrentSearchProperties(limit: 24);
 
                 foreach (var item in databaseItems)
                     Items.Add(new ItemViewModel(item));
@@ -298,57 +296,60 @@ namespace wallabag.ViewModels
             if (LanguageSuggestions.Contains(Language.Unknown))
                 LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.Unknown), 0);
         }
-        private List<Item> GetItemsForCurrentSearchProperties(int? offset = null, int? limit = null)
+        private Task<List<Item>> GetItemsForCurrentSearchPropertiesAsync(int? offset = null, int? limit = null)
         {
-            var items = App.Database.Table<Item>();
-
-            if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+            return Task.Factory.StartNew(() =>
             {
-                if (CurrentSearchProperties.ItemTypeIndex == 0)
-                    items = items.Where(i => i.IsRead == false);
-                else if (CurrentSearchProperties.ItemTypeIndex == 1)
-                    items = items.Where(i => i.IsStarred == true);
-                else if (CurrentSearchProperties.ItemTypeIndex == 2)
-                    items = items.Where(i => i.IsRead == true);
-            }
+                var items = App.Database.Table<Item>();
 
-            if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
-                items = items.Where(i => i.Title.ToLower().Contains(CurrentSearchProperties.Query));
+                if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+                {
+                    if (CurrentSearchProperties.ItemTypeIndex == 0)
+                        items = items.Where(i => i.IsRead == false);
+                    else if (CurrentSearchProperties.ItemTypeIndex == 1)
+                        items = items.Where(i => i.IsStarred == true);
+                    else if (CurrentSearchProperties.ItemTypeIndex == 2)
+                        items = items.Where(i => i.IsRead == true);
+                }
 
-            if (CurrentSearchProperties.Language?.IsUnknown == false)
-                items = items.Where(i => i.Language.Equals(CurrentSearchProperties.Language.wallabagLanguageCode));
-            else if (CurrentSearchProperties.Language?.IsUnknown == true)
-                items = items.Where(i => i.Language == null);
+                if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+                    items = items.Where(i => i.Title.ToLower().Contains(CurrentSearchProperties.Query));
 
-            if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime)
-            {
-                if (CurrentSearchProperties.OrderAscending == true)
-                    items = items.OrderBy(i => i.EstimatedReadingTime);
+                if (CurrentSearchProperties.Language?.IsUnknown == false)
+                    items = items.Where(i => i.Language.Equals(CurrentSearchProperties.Language.wallabagLanguageCode));
+                else if (CurrentSearchProperties.Language?.IsUnknown == true)
+                    items = items.Where(i => i.Language == null);
+
+                if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime)
+                {
+                    if (CurrentSearchProperties.OrderAscending == true)
+                        items = items.OrderBy(i => i.EstimatedReadingTime);
+                    else
+                        items = items.OrderByDescending(i => i.EstimatedReadingTime);
+                }
                 else
-                    items = items.OrderByDescending(i => i.EstimatedReadingTime);
-            }
-            else
-            {
-                if (CurrentSearchProperties.OrderAscending == true)
-                    items = items.OrderBy(i => i.CreationDate);
-                else
-                    items = items.OrderByDescending(i => i.CreationDate);
-            }
+                {
+                    if (CurrentSearchProperties.OrderAscending == true)
+                        items = items.OrderBy(i => i.CreationDate);
+                    else
+                        items = items.OrderByDescending(i => i.CreationDate);
+                }
 
-            Items.MaxItems = items.Count();
+                Items.MaxItems = items.Count();
 
-            if (offset != null)
-                items = items.Skip((int)offset);
+                if (offset != null)
+                    items = items.Skip((int)offset);
 
-            if (limit != null)
-                items = items.Take((int)limit);
+                if (limit != null)
+                    items = items.Take((int)limit);
 
-            var list = items.ToList();
+                var list = items.ToList();
 
-            if (CurrentSearchProperties.Tag != null)
-                list = list.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag)).ToList();
+                if (CurrentSearchProperties.Tag != null)
+                    list = list.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag)).ToList();
 
-            return list;
+                return list;
+            });
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
