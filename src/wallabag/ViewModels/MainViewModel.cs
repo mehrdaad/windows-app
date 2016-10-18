@@ -71,8 +71,8 @@ namespace wallabag.ViewModels
             SetSortTypeFilterCommand = new DelegateCommand<string>(filter => SetSortTypeFilter(filter));
             SetSortOrderCommand = new DelegateCommand<string>(order => SetSortOrder(order));
             SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
-            SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
-            CloseSearchCommand = new DelegateCommand(() => EndSearch(this, null));
+            SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(async args => await SearchQuerySubmittedAsync(args));
+            CloseSearchCommand = new DelegateCommand(() => EndSearchAsync(this, null));
             LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
             TagChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => TagChanged(args));
             ResetFilterLanguageCommand = new DelegateCommand(() => CurrentSearchProperties.Language = null);
@@ -80,10 +80,10 @@ namespace wallabag.ViewModels
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
             CurrentSearchProperties.SearchStarted += p => StartSearch();
-            CurrentSearchProperties.PropertyChanged += (s, e) =>
+            CurrentSearchProperties.PropertyChanged += async (s, e) =>
             {
                 if (e.PropertyName != nameof(CurrentSearchProperties.Query))
-                    UpdateView();
+                    await UpdateViewAsync();
 
                 RaisePropertyChanged(nameof(SortByCreationDate));
                 RaisePropertyChanged(nameof(SortByReadingTime));
@@ -95,7 +95,7 @@ namespace wallabag.ViewModels
             {
                 OfflineTaskCount += 1;
                 await e.ExecuteAsync();
-                UpdateView();
+                await UpdateViewAsync();
             };
             App.OfflineTaskRemoved += (s, e) => OfflineTaskCount -= 1;
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
@@ -103,6 +103,7 @@ namespace wallabag.ViewModels
 
         private Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
         {
+
             var result = new List<ItemViewModel>();
 
             var database = GetItemsForCurrentSearchProperties(Items.Count, (int)count);
@@ -122,7 +123,7 @@ namespace wallabag.ViewModels
 
             OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
 
-            UpdateView();
+            await UpdateViewAsync();
         }
         private async Task SyncAsync()
         {
@@ -158,7 +159,7 @@ namespace wallabag.ViewModels
                     App.Database.InsertOrReplaceAll(itemList);
                 });
 
-                UpdateView();
+                await UpdateViewAsync();
             }
             IsSyncing = false;
         }
@@ -188,7 +189,7 @@ namespace wallabag.ViewModels
                 SearchQuerySuggestions.Replace(suggestions.ToList());
             }
         }
-        private void SearchQuerySubmitted(AutoSuggestBoxQuerySubmittedEventArgs args)
+        private async Task SearchQuerySubmittedAsync(AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             if (args.ChosenSuggestion != null)
             {
@@ -203,7 +204,7 @@ namespace wallabag.ViewModels
             }
 
             UpdatePageHeader();
-            UpdateView();
+            await UpdateViewAsync();
         }
         private void LanguageCodeChanged(SelectionChangedEventArgs args)
         {
@@ -231,15 +232,15 @@ namespace wallabag.ViewModels
         {
             IsSearchActive = true;
             _previousItemTypeIndex = CurrentSearchProperties.ItemTypeIndex;
-            SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => EndSearch(s, e);
+            SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => EndSearchAsync(s, e);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
         }
-        private void EndSearch(object sender, BackRequestedEventArgs e)
+        private async void EndSearchAsync(object sender, BackRequestedEventArgs e)
         {
             IsSearchActive = false;
             CurrentSearchProperties.ItemTypeIndex = _previousItemTypeIndex;
 
-            SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearch(s, args);
+            SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearchAsync(s, args);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
             if (e != null)
@@ -250,27 +251,27 @@ namespace wallabag.ViewModels
             if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
             {
                 CurrentSearchProperties.Query = string.Empty;
-                UpdateView();
+                await UpdateViewAsync();
             }
 
             UpdatePageHeader();
         }
 
-        private Task UpdateView()
+        private Task UpdateViewAsync()
         {
             return CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(() =>
-             {
-                 Items.Clear();
+            {
+                Items.Clear();
 
-                 var databaseItems = GetItemsForCurrentSearchProperties(limit: 24);
+                var databaseItems = GetItemsForCurrentSearchProperties(limit: 24);
 
-                 foreach (var item in databaseItems)
-                     Items.Add(new ItemViewModel(item));
+                foreach (var item in databaseItems)
+                    Items.Add(new ItemViewModel(item));
 
-                 GetMetadataForItems(Items);
+                GetMetadataForItems(Items);
 
-                 return Task.CompletedTask;
-             });
+                return Task.CompletedTask;
+            });
         }
         private void GetMetadataForItems(IEnumerable<ItemViewModel> items)
         {
@@ -360,15 +361,15 @@ namespace wallabag.ViewModels
                 CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
             }
 
-            UpdateView();
+            await UpdateViewAsync();
 
             if (SettingsService.Instance.SyncOnStartup)
                 await SyncAsync();
 
-            Messenger.Default.Register<NotificationMessage>(this, message =>
+            Messenger.Default.Register<NotificationMessage>(this, async message =>
             {
                 if (message.Notification.Equals("FetchFromDatabase"))
-                    UpdateView();
+                    await UpdateViewAsync();
             });
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
