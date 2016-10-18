@@ -320,35 +320,34 @@ namespace wallabag.ViewModels
                 else if (CurrentSearchProperties.Language?.IsUnknown == true)
                     items = items.Where(i => i.Language == null);
 
-                if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime)
-                {
-                    if (CurrentSearchProperties.OrderAscending == true)
-                        items = items.OrderBy(i => i.EstimatedReadingTime);
-                    else
-                        items = items.OrderByDescending(i => i.EstimatedReadingTime);
-                }
-                else
-                {
-                    if (CurrentSearchProperties.OrderAscending == true)
-                        items = items.OrderBy(i => i.CreationDate);
-                    else
-                        items = items.OrderByDescending(i => i.CreationDate);
-                }
-
-                Items.MaxItems = items.Count();
-
                 if (offset != null)
                     items = items.Skip((int)offset);
 
                 if (limit != null)
                     items = items.Take((int)limit);
 
-                var list = items.ToList();
+                var databaseItems = items.ToList();
+                IEnumerable<Item> filteredList;
+
+                if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime)
+                {
+                    if (CurrentSearchProperties.OrderAscending == true)
+                        filteredList = databaseItems.OrderBy(i => i.EstimatedReadingTime);
+                    else
+                        filteredList = databaseItems.OrderByDescending(i => i.EstimatedReadingTime);
+                }
+                else
+                {
+                    if (CurrentSearchProperties.OrderAscending == true)
+                        filteredList = databaseItems.OrderBy(i => i.CreationDate);
+                    else
+                        filteredList = databaseItems.OrderByDescending(i => i.CreationDate);
+                }
 
                 if (CurrentSearchProperties.Tag != null)
-                    list = list.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag)).ToList();
+                    filteredList = filteredList.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag));                               
 
-                return list;
+                return filteredList.ToList();
             });
         }
 
