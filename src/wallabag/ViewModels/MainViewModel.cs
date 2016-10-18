@@ -256,16 +256,21 @@ namespace wallabag.ViewModels
             UpdatePageHeader();
         }
 
-        private void UpdateView()
+        private Task UpdateView()
         {
-            Items.Clear();
+            return CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(() =>
+             {
+                 Items.Clear();
 
-            var databaseItems = GetItemsForCurrentSearchProperties(limit: 24);
+                 var databaseItems = GetItemsForCurrentSearchProperties(limit: 24);
 
-            foreach (var item in databaseItems)
-                Items.Add(new ItemViewModel(item));
+                 foreach (var item in databaseItems)
+                     Items.Add(new ItemViewModel(item));
 
-            GetMetadataForItems(Items);
+                 GetMetadataForItems(Items);
+
+                 return Task.CompletedTask;
+             });
         }
         private void GetMetadataForItems(IEnumerable<ItemViewModel> items)
         {
