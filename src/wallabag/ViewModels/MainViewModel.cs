@@ -345,7 +345,9 @@ namespace wallabag.ViewModels
                 }
 
                 if (CurrentSearchProperties.Tag != null)
-                    filteredList = filteredList.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag));                               
+                    filteredList = filteredList.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag));
+
+                Items.MaxItems = App.Database.ExecuteScalar<int>("select count(*) from 'Item'", new object[0]);
 
                 return filteredList.ToList();
             });
