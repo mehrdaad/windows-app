@@ -17,7 +17,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>wallabag_StoreKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>B0DA14A859734D587A63AC500DDE37267F7250F9</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>490A45772D9DECAA218B374589AE1936A6A34A7E</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
@@ -94,6 +94,8 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <None Include="wallabag_StoreKey.pfx" />
+    <None Include="wallabag_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -156,8 +158,6 @@
     <PRIResource Include="Strings\de-DE\Resources.resw" />
     <PRIResource Include="Strings\en-US\Resources.resw" />
     <PRIResource Include="Strings\fr-FR\Resources.resw" />
-    <None Include="wallabag_StoreKey.pfx" />
-    <None Include="wallabag_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Article\article.html" />
