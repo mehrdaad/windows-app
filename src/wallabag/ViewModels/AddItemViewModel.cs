@@ -56,7 +56,9 @@ namespace wallabag.ViewModels
                 });
 
                 _shareOperation?.ReportCompleted();
-                Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
+
+                if (shareOperationIsNull)
+                    Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
             }
         }
 
