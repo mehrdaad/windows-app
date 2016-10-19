@@ -95,7 +95,7 @@ namespace wallabag.Models
                 App.OfflineTaskRemoved?.Invoke(this, this);
             }
         }
-        public static void Add(string url, IEnumerable<string> newTags, string title = "")
+        public static void Add(string url, IEnumerable<string> newTags, string title = "", bool invokeAddedEvent = true)
         {
             var newTask = new OfflineTask();
 
@@ -104,7 +104,9 @@ namespace wallabag.Models
             newTask.Tags = newTags.ToList();
 
             App.Database.Insert(newTask);
-            App.OfflineTaskAdded?.Invoke(null, newTask);
+
+            if (invokeAddedEvent)
+                App.OfflineTaskAdded?.Invoke(null, newTask);
         }
         public static void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {

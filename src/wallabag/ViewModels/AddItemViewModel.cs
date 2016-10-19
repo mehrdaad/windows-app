@@ -40,10 +40,11 @@ namespace wallabag.ViewModels
         private void Add()
         {
             AddingStarted?.Invoke(this, new EventArgs());
+            var shareOperationIsNull = _shareOperation == null;
 
             if (UriString.IsValidUri())
             {
-                OfflineTask.Add(UriString, Tags.ToStringArray());
+                OfflineTask.Add(UriString, Tags.ToStringArray(), invokeAddedEvent: shareOperationIsNull);
 
                 var uri = new Uri(UriString);
                 App.Database.Insert(new Item()
