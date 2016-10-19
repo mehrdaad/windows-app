@@ -83,7 +83,7 @@ namespace wallabag.ViewModels
             CurrentSearchProperties.PropertyChanged += async (s, e) =>
             {
                 if (e.PropertyName != nameof(CurrentSearchProperties.Query))
-                    await UpdateViewAsync();
+                    await ReloadViewAsync();
 
                 RaisePropertyChanged(nameof(SortByCreationDate));
                 RaisePropertyChanged(nameof(SortByReadingTime));
@@ -95,7 +95,7 @@ namespace wallabag.ViewModels
             {
                 OfflineTaskCount += 1;
                 await e.ExecuteAsync();
-                await UpdateViewAsync();
+                await ReloadViewAsync();
             };
             App.OfflineTaskRemoved += (s, e) => OfflineTaskCount -= 1;
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
@@ -122,7 +122,7 @@ namespace wallabag.ViewModels
 
             OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
 
-            await UpdateViewAsync();
+            await ReloadViewAsync();
         }
         private async Task SyncAsync()
         {
@@ -158,7 +158,7 @@ namespace wallabag.ViewModels
                     App.Database.InsertOrReplaceAll(itemList);
                 });
 
-                await UpdateViewAsync();
+                await ReloadViewAsync();
             }
             IsSyncing = false;
         }
@@ -203,7 +203,7 @@ namespace wallabag.ViewModels
             }
 
             UpdatePageHeader();
-            await UpdateViewAsync();
+            await ReloadViewAsync();
         }
         private void LanguageCodeChanged(SelectionChangedEventArgs args)
         {
@@ -250,13 +250,13 @@ namespace wallabag.ViewModels
             if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
             {
                 CurrentSearchProperties.Query = string.Empty;
-                await UpdateViewAsync();
+                await ReloadViewAsync();
             }
 
             UpdatePageHeader();
         }
 
-        private async Task UpdateViewAsync()
+        private async Task ReloadViewAsync()
         {
             var databaseItems = await GetItemsForCurrentSearchPropertiesAsync();
             await CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(() =>
@@ -361,7 +361,7 @@ namespace wallabag.ViewModels
                     CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
                 }
 
-                await UpdateViewAsync();
+                await ReloadViewAsync();
 
                 if (SettingsService.Instance.SyncOnStartup)
                     await SyncAsync();
@@ -370,7 +370,7 @@ namespace wallabag.ViewModels
             Messenger.Default.Register<NotificationMessage>(this, async message =>
             {
                 if (message.Notification.Equals("FetchFromDatabase"))
-                    await UpdateViewAsync();
+                    await ReloadViewAsync();
             });
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
