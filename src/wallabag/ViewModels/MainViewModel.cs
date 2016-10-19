@@ -258,7 +258,7 @@ namespace wallabag.ViewModels
 
         private async Task UpdateViewAsync()
         {
-            var databaseItems = await GetItemsForCurrentSearchPropertiesAsync(limit: 24);
+            var databaseItems = await GetItemsForCurrentSearchPropertiesAsync();
             await CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(() =>
             {
                 Items.Clear();
@@ -296,7 +296,7 @@ namespace wallabag.ViewModels
             if (LanguageSuggestions.Contains(Language.Unknown))
                 LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.Unknown), 0);
         }
-        private Task<List<Item>> GetItemsForCurrentSearchPropertiesAsync(int? offset = null, int? limit = null)
+        private Task<List<Item>> GetItemsForCurrentSearchPropertiesAsync(int offset = 0, int limit = 24)
         {
             return Task.Factory.StartNew(() =>
             {
@@ -320,11 +320,7 @@ namespace wallabag.ViewModels
                 else if (CurrentSearchProperties.Language?.IsUnknown == true)
                     items = items.Where(i => i.Language == null);
 
-                if (offset != null)
-                    items = items.Skip((int)offset);
-
-                if (limit != null)
-                    items = items.Take((int)limit);
+                items = items.Skip(offset).Take(limit);
 
                 var databaseItems = items.ToList();
                 IEnumerable<Item> filteredList;
