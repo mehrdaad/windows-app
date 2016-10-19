@@ -357,16 +357,19 @@ namespace wallabag.ViewModels
         {
             await TitleBarExtensions.ResetAsync();
 
-            if (state.ContainsKey(nameof(CurrentSearchProperties)))
+            if (mode != NavigationMode.Back && mode != NavigationMode.Forward)
             {
-                var stateValue = state[nameof(CurrentSearchProperties)] as string;
-                CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
+                if (state.ContainsKey(nameof(CurrentSearchProperties)))
+                {
+                    var stateValue = state[nameof(CurrentSearchProperties)] as string;
+                    CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
+                }
+
+                await UpdateViewAsync();
+
+                if (SettingsService.Instance.SyncOnStartup)
+                    await SyncAsync();
             }
-
-            await UpdateViewAsync();
-
-            if (SettingsService.Instance.SyncOnStartup)
-                await SyncAsync();
 
             Messenger.Default.Register<NotificationMessage>(this, async message =>
             {

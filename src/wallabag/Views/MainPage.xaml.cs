@@ -32,6 +32,8 @@ namespace wallabag.Views
         public MainPage()
         {
             this.InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Enabled;
+
             ItemGridView.SelectionChanged += (s, e) =>
             {
                 foreach (ItemViewModel item in e.AddedItems)
