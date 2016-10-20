@@ -127,7 +127,7 @@ namespace wallabag.ViewModels
                 case OfflineTask.OfflineTaskAction.EditTags: break;
                 case OfflineTask.OfflineTaskAction.AddItem:
                     if (CurrentSearchProperties.ItemTypeIndex == 0)
-                        Items.AddSorted(item);
+                        Items.AddSorted(item, sortAscending: orderAscending);
                     break;
                 case OfflineTask.OfflineTaskAction.Delete:
                     Items.Remove(Items.Where(i => i.Model.Id.Equals(e.ItemId)).First());

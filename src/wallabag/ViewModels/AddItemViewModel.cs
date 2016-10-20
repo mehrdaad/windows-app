@@ -43,16 +43,16 @@ namespace wallabag.ViewModels
 
             if (UriString.IsValidUri())
             {
-                OfflineTask.Add(UriString, Tags.ToStringArray());
-
                 var uri = new Uri(UriString);
                 App.Database.Insert(new Item()
                 {
-                    Id = App.Database.Table<Item>().OrderByDescending(i => i.Id).FirstOrDefault().Id + 1,
+                    Id = OfflineTask.LastItemId + 1,
                     Title = uri.Host,
                     Url = UriString,
                     Hostname = uri.Host
                 });
+
+                OfflineTask.Add(UriString, Tags.ToStringArray());
 
                 _shareOperation?.ReportCompleted();
                 Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
