@@ -31,9 +31,9 @@ namespace wallabag.Models
         public string Hostname { get; set; }
         [Indexed]
         public string Language { get; set; }
-        [Indexed]
         public string Mimetype { get; set; }
         public Uri PreviewImageUri { get; set; }
+        [Indexed]
         public double ReadingProgress { get; set; }
 
         public static implicit operator WallabagItem(Item i)
