@@ -109,35 +109,38 @@ namespace wallabag.ViewModels
             if (e.Action != OfflineTask.OfflineTaskAction.Delete)
                 item = new ItemViewModel(Item.FromId(e.ItemId));
 
-            switch (e.Action)
+            await CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(() =>
             {
-                case OfflineTask.OfflineTaskAction.MarkAsRead:
-                    if (CurrentSearchProperties.ItemTypeIndex == 2)
-                        Items.AddSorted(item, sortAscending: orderAscending);
-                    else
-                        Items.Remove(item);
-                    break;
-                case OfflineTask.OfflineTaskAction.UnmarkAsRead:
-                    if (CurrentSearchProperties.ItemTypeIndex == 2)
-                        Items.Remove(item);
-                    else
-                        Items.AddSorted(item, sortAscending: orderAscending);
-                    break;
-                case OfflineTask.OfflineTaskAction.MarkAsStarred: break;
-                case OfflineTask.OfflineTaskAction.UnmarkAsStarred:
-                    if (CurrentSearchProperties.ItemTypeIndex == 1)
-                        Items.Remove(item);
-                    break;
-                case OfflineTask.OfflineTaskAction.EditTags: break;
-                case OfflineTask.OfflineTaskAction.AddItem:
-                    if (CurrentSearchProperties.ItemTypeIndex == 0)
-                        Items.AddSorted(item, sortAscending: orderAscending);
-                    break;
-                case OfflineTask.OfflineTaskAction.Delete:
-                    Items.Remove(Items.Where(i => i.Model.Id.Equals(e.ItemId)).First());
-                    break;
-            }
-
+                switch (e.Action)
+                {
+                    case OfflineTask.OfflineTaskAction.MarkAsRead:
+                        if (CurrentSearchProperties.ItemTypeIndex == 2)
+                            Items.AddSorted(item, sortAscending: orderAscending);
+                        else
+                            Items.Remove(item);
+                        break;
+                    case OfflineTask.OfflineTaskAction.UnmarkAsRead:
+                        if (CurrentSearchProperties.ItemTypeIndex == 2)
+                            Items.Remove(item);
+                        else
+                            Items.AddSorted(item, sortAscending: orderAscending);
+                        break;
+                    case OfflineTask.OfflineTaskAction.MarkAsStarred: break;
+                    case OfflineTask.OfflineTaskAction.UnmarkAsStarred:
+                        if (CurrentSearchProperties.ItemTypeIndex == 1)
+                            Items.Remove(item);
+                        break;
+                    case OfflineTask.OfflineTaskAction.EditTags: break;
+                    case OfflineTask.OfflineTaskAction.AddItem:
+                        if (CurrentSearchProperties.ItemTypeIndex == 0)
+                            Items.AddSorted(item, sortAscending: orderAscending);
+                        break;
+                    case OfflineTask.OfflineTaskAction.Delete:
+                        Items.Remove(Items.Where(i => i.Model.Id.Equals(e.ItemId)).First());
+                        break;
+                }
+                return Task.CompletedTask;
+            });
             await e.ExecuteAsync();
         }
 
