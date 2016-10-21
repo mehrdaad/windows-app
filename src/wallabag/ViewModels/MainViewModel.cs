@@ -219,16 +219,19 @@ namespace wallabag.ViewModels
                 PageHeader = Helpers.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
         }
 
-        private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
+        private async void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
         {
             if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
                 return;
 
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
-                var suggestions = App.Database.Table<Item>().Where(i => i.Title.ToLower().Contains(CurrentSearchProperties.Query)).Take(5);
-                SearchQuerySuggestions.Replace(suggestions.ToList());
-            }
+                if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+                {
+                    var suggestions = App.Database.Query<Item>($"SELECT Id,Title FROM Item WHERE Title LIKE '%{CurrentSearchProperties.Query}%' LIMIT 5");
+                    SearchQuerySuggestions.Replace(suggestions);
+                }
+            });
         }
         private async Task SearchQuerySubmittedAsync(AutoSuggestBoxQuerySubmittedEventArgs args)
         {
