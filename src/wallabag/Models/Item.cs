@@ -95,7 +95,7 @@ namespace wallabag.Models
             if (obj != null && obj.GetType().Equals(typeof(Item)))
             {
                 var comparedItem = obj as Item;
-                return Id.Equals(comparedItem.Id) && LastModificationDate.Equals(comparedItem.LastModificationDate);
+                return Id.Equals(comparedItem.Id);
             }
             return false;
         }
