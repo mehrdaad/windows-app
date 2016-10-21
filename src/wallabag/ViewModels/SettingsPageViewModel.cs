@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using Template10.Mvvm;
-using wallabag.Common;
+using wallabag.Common.Helpers;
 using wallabag.Services;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
@@ -33,12 +33,12 @@ namespace wallabag.ViewModels
                 switch (SettingsService.Instance.VideoOpenMode)
                 {
                     case SettingsService.WallabagVideoOpenMode.Browser:
-                        return Helpers.LocalizedResource("VideoOpenModeDescriptionBrowser");
+                        return GeneralHelper.LocalizedResource("VideoOpenModeDescriptionBrowser");
                     case SettingsService.WallabagVideoOpenMode.App:
-                        return Helpers.LocalizedResource("VideoOpenModeDescriptionApp");
+                        return GeneralHelper.LocalizedResource("VideoOpenModeDescriptionApp");
                     default:
                     case SettingsService.WallabagVideoOpenMode.Inline:
-                        return Helpers.LocalizedResource("VideoOpenModeDescriptionInline");
+                        return GeneralHelper.LocalizedResource("VideoOpenModeDescriptionInline");
                 }
             }
         }
@@ -104,7 +104,7 @@ namespace wallabag.ViewModels
             {
                 e.Request.Data.SetWebLink(new Uri("https://www.wallabag.org/"));
                 e.Request.Data.Properties.ApplicationName = Package.Current.DisplayName;
-                e.Request.Data.Properties.Title = Helpers.LocalizedResource("TellFriendsQuestion");
+                e.Request.Data.Properties.Title = GeneralHelper.LocalizedResource("TellFriendsQuestion");
             };
             DataTransferManager.ShowShareUI();
         }

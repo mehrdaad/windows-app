@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using Template10.Utils;
-using wallabag.Common;
+using wallabag.Common.Helpers;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.Storage;
@@ -288,13 +288,13 @@ namespace wallabag.ViewModels
             {
                 FailureHasHappened = true;
                 FailureEmoji = "😶";
-                FailureDescription = Helpers.LocalizedResource("NoContentAvailableErrorMessage");
+                FailureDescription = GeneralHelper.LocalizedResource("NoContentAvailableErrorMessage");
             }
             if (Item.Model.Content.Contains("wallabag can't retrieve contents for this article."))
             {
                 FailureHasHappened = true;
                 FailureEmoji = "😈";
-                FailureDescription = Helpers.LocalizedResource("CantRetrieveContentsErrorMessage");
+                FailureDescription = GeneralHelper.LocalizedResource("CantRetrieveContentsErrorMessage");
             }
 
             UpdateReadIcon();
@@ -325,7 +325,7 @@ namespace wallabag.ViewModels
                 readingSettingsContainer.Values[Item.Model.Id.ToString()] = Item.Model.ReadingProgress;
             }
 
-            await TitleBarExtensions.ResetAsync();
+            await TitleBarHelper.ResetAsync();
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common;
+using wallabag.Common.Helpers;
 using wallabag.Common.Messages;
 using wallabag.Models;
 using wallabag.Services;
@@ -31,7 +32,7 @@ namespace wallabag.ViewModels
 
         public bool ItemsCountIsZero { get { return Items.Count == 0; } }
         public bool IsSearchActive { get; set; } = false;
-        public string PageHeader { get; set; } = Helpers.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
+        public string PageHeader { get; set; } = GeneralHelper.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
 
         public bool? SortByCreationDate
         {
@@ -169,7 +170,7 @@ namespace wallabag.ViewModels
         }
         private async Task SyncAsync()
         {
-            if (Helpers.InternetConnectionIsAvailable == false)
+            if (GeneralHelper.InternetConnectionIsAvailable == false)
                 return;
 
             IsSyncing = true;
@@ -214,9 +215,9 @@ namespace wallabag.ViewModels
         private void UpdatePageHeader()
         {
             if (IsSearchActive)
-                PageHeader = string.Format(Helpers.LocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
+                PageHeader = string.Format(GeneralHelper.LocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
             else
-                PageHeader = Helpers.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
+                PageHeader = GeneralHelper.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
         }
 
         private async void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
@@ -429,7 +430,7 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            await TitleBarExtensions.ResetAsync();
+            await TitleBarHelper.ResetAsync();
 
             if (mode != NavigationMode.Back && mode != NavigationMode.Forward)
             {

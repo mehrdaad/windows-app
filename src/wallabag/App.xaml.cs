@@ -1,5 +1,4 @@
-﻿using Microsoft.HockeyApp;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SQLite.Net;
 using SQLite.Net.Platform.WinRT;
 using System;

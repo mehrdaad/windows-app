@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using wallabag.Api.Models;
-using wallabag.Common;
+using wallabag.Common.Helpers;
 using wallabag.Common.Messages;
 
 namespace wallabag.Models
@@ -28,7 +28,7 @@ namespace wallabag.Models
 
         public async Task ExecuteAsync()
         {
-            if (Helpers.InternetConnectionIsAvailable == false)
+            if (GeneralHelper.InternetConnectionIsAvailable == false)
                 return;
 
             bool executionIsSuccessful = false;

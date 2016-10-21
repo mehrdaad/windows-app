@@ -101,8 +101,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\Extensions.cs" />
-    <Compile Include="Common\Helpers.cs" />
+    <Compile Include="Common\Helpers\GeneralHelper.cs" />
+    <Compile Include="Common\Helpers\DispatcherHelper.cs" />
+    <Compile Include="Common\Helpers\ListHelper.cs" />
+    <Compile Include="Common\Helpers\StringHelper.cs" />
+    <Compile Include="Common\Helpers\TitleBarHelper.cs" />
+    <Compile Include="Common\Helpers\WebViewHelper.cs" />
     <Compile Include="Common\IncrementalObservableCollection.cs" />
     <Compile Include="Common\Messages\UpdateItemMessage.cs" />
     <Compile Include="Common\Messages\BlockOfflineTaskExecutionMessage.cs" />

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Api.Models;
-using wallabag.Common;
+using wallabag.Common.Helpers;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.Security.ExchangeActiveSyncProvisioning;
@@ -43,14 +43,15 @@ namespace wallabag.ViewModels
         public DelegateCommand NextCommand { get; private set; }
         public DelegateCommand RegisterCommand { get; private set; }
         public DelegateCommand WhatIsWallabagCommand { get; private set; }
+        public Task TitleBarExtensions { get; private set; }
 
         public LoginPageViewModel()
         {
             Providers = new List<WallabagProvider>()
             {
-                //new WallabagProvider(new Uri("https://framabag.org"), "framabag", Helpers.LocalizedResource("FramabagProviderDescription")),
-                new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", Helpers.LocalizedResource("V2WallabagOrgProviderDescription")),
-                new WallabagProvider(default(Uri), Helpers.LocalizedResource("OtherProviderName"),  Helpers.LocalizedResource("OtherProviderDescription"))
+                //new WallabagProvider(new Uri("https://framabag.org"), "framabag", GeneralHelper.LocalizedResource("FramabagProviderDescription")),
+                new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", GeneralHelper.LocalizedResource("V2WallabagOrgProviderDescription")),
+                new WallabagProvider(default(Uri), GeneralHelper.LocalizedResource("OtherProviderName"),  GeneralHelper.LocalizedResource("OtherProviderDescription"))
             };
 
             PreviousCommand = new DelegateCommand(() => Previous(), () => PreviousCanBeExecuted());
@@ -120,7 +121,7 @@ namespace wallabag.ViewModels
                 try { var x = new Uri(Url); }
                 catch (UriFormatException)
                 {
-                    Messenger.Default.Send(new NotificationMessage(Helpers.LocalizedResource("UrlFormatWrongMessage")));
+                    Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("UrlFormatWrongMessage")));
                     return;
                 }
 
@@ -134,7 +135,7 @@ namespace wallabag.ViewModels
                 else
                 {
                     CurrentStep = 1;
-                    Messenger.Default.Send(new NotificationMessage(Helpers.LocalizedResource("CredentialsWrongMessage")));
+                    Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("CredentialsWrongMessage")));
                     return;
                 }
 
@@ -155,13 +156,13 @@ namespace wallabag.ViewModels
                 NavigationService.Navigate(typeof(Views.MainPage));
                 NavigationService.ClearHistory();
 
-                await TitleBarExtensions.ResetAsync();
+                await TitleBarHelper.ResetAsync();
             }
         }
 
         private async Task<bool> TestConfigurationAsync()
         {
-            ProgressDescription = Helpers.LocalizedResource("TestingConfigurationMessage");
+            ProgressDescription = GeneralHelper.LocalizedResource("TestingConfigurationMessage");
 
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
                 Url = "https://" + Url;
@@ -215,7 +216,7 @@ namespace wallabag.ViewModels
         }
         private async Task DownloadAndSaveItemsAndTags()
         {
-            ProgressDescription = Helpers.LocalizedResource("DownloadingItemsTextBlock.Text");
+            ProgressDescription = GeneralHelper.LocalizedResource("DownloadingItemsTextBlock.Text");
             int itemsPerPage = 100;
 
             var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: itemsPerPage);
@@ -225,13 +226,13 @@ namespace wallabag.ViewModels
             if (itemResponse.Pages > 1)
                 for (int i = 2; i <= itemResponse.Pages; i++)
                 {
-                    ProgressDescription = string.Format(Helpers.LocalizedResource("DownloadingItemsWithProgress"), items.Count, itemResponse.TotalNumberOfItems);
+                    ProgressDescription = string.Format(GeneralHelper.LocalizedResource("DownloadingItemsWithProgress"), items.Count, itemResponse.TotalNumberOfItems);
                     items.AddRange(await App.Client.GetItemsAsync(itemsPerPage: itemsPerPage, pageNumber: i));
                 }
 
             var tags = await App.Client.GetTagsAsync();
 
-            ProgressDescription = Helpers.LocalizedResource("SavingItemsInDatabaseMessage");
+            ProgressDescription = GeneralHelper.LocalizedResource("SavingItemsInDatabaseMessage");
 
             await Task.Run(() =>
             {
@@ -303,7 +304,7 @@ namespace wallabag.ViewModels
 
         public async Task<bool> CreateApiClientAsync()
         {
-            ProgressDescription = Helpers.LocalizedResource("CreatingClientMessage");
+            ProgressDescription = GeneralHelper.LocalizedResource("CreatingClientMessage");
 
             _http = new HttpClient();
             var instanceUri = new Uri(Url);

@@ -1,11 +1,10 @@
-﻿using GalaSoft.MvvmLight.Messaging;
-using PropertyChanged;
+﻿using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Template10.Mvvm;
-using wallabag.Common;
+using wallabag.Common.Helpers;
 using wallabag.Models;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;

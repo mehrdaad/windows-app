@@ -2,18 +2,18 @@
     x:Class="wallabag.Views.ItemPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:common="using:wallabag.Common"
     xmlns:controls="using:wallabag.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:wallabag.Common.Helpers"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:local="using:wallabag.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:t10b="using:Template10.Behaviors"
     xmlns:vm="using:wallabag.ViewModels"
     xmlns:wst="using:WindowsStateTriggers"
-    common:TitleBarExtensions.ButtonBackgroundColor="Transparent"
-    common:TitleBarExtensions.ButtonForegroundColor="{x:Bind ViewModel.ForegroundBrush.Color, Mode=OneWay}"
-    common:TitleBarExtensions.IsVisible="false"
+    helpers:TitleBarHelper.ButtonBackgroundColor="Transparent"
+    helpers:TitleBarHelper.ButtonForegroundColor="{x:Bind ViewModel.ForegroundBrush.Color, Mode=OneWay}"
+    helpers:TitleBarHelper.IsVisible="false"
     mc:Ignorable="d">
     <Page.Resources>
         <Storyboard x:Name="ShowMinimalCommandBarStoryboard">
@@ -165,7 +165,7 @@
         </VisualStateManager.VisualStateGroups>
         <WebView
             x:Name="HtmlViewer"
-            common:WebViewExtensions.Html="{x:Bind ViewModel.FormattedHtml}"
+            helpers:WebViewHelper.Html="{x:Bind ViewModel.FormattedHtml}"
             NavigationCompleted="HtmlViewer_NavigationCompleted"
             Opacity="0"
             RenderTransformOrigin="0.5,0.5">

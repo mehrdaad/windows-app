@@ -2,15 +2,15 @@
     x:Class="wallabag.Views.LoginPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:common="using:wallabag.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:wallabag.Common.Helpers"
     xmlns:local="using:wallabag.Views"
     xmlns:m="using:wallabag.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:wallabag.ViewModels"
-    common:TitleBarExtensions.ButtonBackgroundColor="Transparent"
-    common:TitleBarExtensions.ButtonForegroundColor="White"
-    common:TitleBarExtensions.IsVisible="false"
+    helpers:TitleBarHelper.ButtonBackgroundColor="Transparent"
+    helpers:TitleBarHelper.ButtonForegroundColor="White"
+    helpers:TitleBarHelper.IsVisible="false"
     mc:Ignorable="d">
     <Page.Resources>
         <Storyboard x:Name="ShowAlertGridStoryboard">

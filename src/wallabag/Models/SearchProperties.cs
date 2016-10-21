@@ -1,6 +1,5 @@
 ﻿using PropertyChanged;
 using System.ComponentModel;
-using System;
 
 namespace wallabag.Models
 {

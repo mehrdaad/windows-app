@@ -1,129 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
-namespace wallabag.Common
+namespace wallabag.Common.Helpers
 {
-    public static class IListExtensions
-    {
-        public static void AddSorted<T>(this IList<T> list, T item, Comparer<T> comparer = null, bool sortAscending = false)
-        {
-            if (comparer == null)
-                comparer = Comparer<T>.Default;
-
-            int i = 0;
-
-            if (sortAscending)
-                while (i < list.Count && comparer.Compare(list[i], item) < 0)
-                    i++;
-            else
-                while (i < list.Count && comparer.Compare(list[i], item) > 0)
-                    i++;
-
-            list.Insert(i, item);
-        }
-        public static void Replace<T>(this IList<T> oldList, IList<T> newList)
-        {
-            oldList.Clear();
-            foreach (var item in newList)
-                oldList.Add(item);
-        }
-        public static string[] ToStringArray<T>(this IEnumerable<T> list) => string.Join(",", list).Split(","[0]);
-    }
-
-    public static class StringExtensions
-    {
-        public static string FormatWith(this string format, object source)
-        {
-            if (format == null)
-                throw new ArgumentNullException(nameof(format));
-
-            Regex r = new Regex(@"(?<start>\{)+(?<property>[\w\.\[\]]+)(?<format>:[^}]+)?(?<end>\})+",
-                    RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-
-            string rewrittenFormat = r.Replace(format, delegate (Match m)
-            {
-                Group startGroup = m.Groups["start"];
-                Group propertyGroup = m.Groups["property"];
-                Group formatGroup = m.Groups["format"];
-                Group endGroup = m.Groups["end"];
-
-                var value = (propertyGroup.Value == null)
-                           ? source
-                           : source.GetType().GetRuntimeProperty(propertyGroup.Value).GetValue(source);
-
-                return value.ToString();
-            });
-            return rewrittenFormat;
-        }
-
-        public static bool IsValidUri(this string uriString)
-        {
-            try
-            {
-                Uri x = new Uri(uriString, UriKind.RelativeOrAbsolute);
-                return true;
-            }
-            catch (UriFormatException) { return false; }
-        }
-    }
-
-    public static class DispatcherTaskExtensions
-    {
-        public static async Task<T> RunTaskAsync<T>(this CoreDispatcher dispatcher,
-            Func<Task<T>> func, CoreDispatcherPriority priority = CoreDispatcherPriority.Normal)
-        {
-            var taskCompletionSource = new TaskCompletionSource<T>();
-            await dispatcher.RunAsync(priority, async () =>
-            {
-                try
-                {
-                    taskCompletionSource.SetResult(await func());
-                }
-                catch (Exception ex)
-                {
-                    taskCompletionSource.SetException(ex);
-                }
-            });
-            return await taskCompletionSource.Task;
-        }
-
-        // There is no TaskCompletionSource<void> so we use a bool that we throw away.
-        public static async Task RunTaskAsync(this CoreDispatcher dispatcher,
-            Func<Task> func, CoreDispatcherPriority priority = CoreDispatcherPriority.Normal) =>
-            await RunTaskAsync(dispatcher, async () => { await func(); return false; }, priority);
-    }
-
-    public static class WebViewExtensions
-    {
-        // Using a DependencyProperty as the backing store for Html.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty HtmlProperty =
-            DependencyProperty.RegisterAttached("Html", typeof(string), typeof(WebViewExtensions), new PropertyMetadata(string.Empty, new PropertyChangedCallback(OnHtmlChanged)));
-
-        public static string GetHtml(DependencyObject obj) => (string)obj.GetValue(HtmlProperty);
-        public static void SetHtml(DependencyObject obj, string value) => obj.SetValue(HtmlProperty, value);
-
-        private static void OnHtmlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            WebView wv = d as WebView;
-            if (e.NewValue != null)
-                wv?.NavigateToString((string)e.NewValue);
-        }
-    }
-
-    public static class TitleBarExtensions
+    public static class TitleBarHelper
     {
         public static readonly DependencyProperty ForegroundColorProperty =
           DependencyProperty.RegisterAttached("ForegroundColor", typeof(Color),
-          typeof(TitleBarExtensions),
+          typeof(TitleBarHelper),
           new PropertyMetadata(null, OnForegroundColorPropertyChanged));
 
         public static Color GetForegroundColor(DependencyObject d)
@@ -143,7 +31,7 @@ namespace wallabag.Common
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
             titleBar.ForegroundColor = color;
 
-            if (Helpers.IsPhone)
+            if (GeneralHelper.IsPhone)
             {
                 StatusBar statusBar = StatusBar.GetForCurrentView();
                 statusBar.ForegroundColor = color;
@@ -152,7 +40,7 @@ namespace wallabag.Common
 
         public static readonly DependencyProperty BackgroundColorProperty =
             DependencyProperty.RegisterAttached("BackgroundColor", typeof(Color),
-            typeof(TitleBarExtensions),
+            typeof(TitleBarHelper),
             new PropertyMetadata(null, OnBackgroundColorPropertyChanged));
 
         public static Color GetBackgroundColor(DependencyObject d)
@@ -172,7 +60,7 @@ namespace wallabag.Common
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
             titleBar.BackgroundColor = color;
 
-            if (Helpers.IsPhone)
+            if (GeneralHelper.IsPhone)
             {
                 StatusBar statusBar = StatusBar.GetForCurrentView();
                 statusBar.BackgroundColor = color;
@@ -182,7 +70,7 @@ namespace wallabag.Common
 
         public static readonly DependencyProperty ButtonForegroundColorProperty =
             DependencyProperty.RegisterAttached("ButtonForegroundColor", typeof(Color),
-            typeof(TitleBarExtensions),
+            typeof(TitleBarHelper),
             new PropertyMetadata(null, OnButtonForegroundColorPropertyChanged));
 
         public static Color GetButtonForegroundColor(DependencyObject d)
@@ -205,7 +93,7 @@ namespace wallabag.Common
 
         public static readonly DependencyProperty ButtonBackgroundColorProperty =
             DependencyProperty.RegisterAttached("ButtonBackgroundColor", typeof(Color),
-            typeof(TitleBarExtensions),
+            typeof(TitleBarHelper),
             new PropertyMetadata(null, OnButtonBackgroundColorPropertyChanged));
 
         public static Color GetButtonBackgroundColor(DependencyObject d)
@@ -228,7 +116,7 @@ namespace wallabag.Common
 
         public static readonly DependencyProperty IsVisibleProperty =
          DependencyProperty.RegisterAttached("IsVisible", typeof(bool),
-         typeof(TitleBarExtensions),
+         typeof(TitleBarHelper),
          new PropertyMetadata(true, OnIsVisiblePropertyChanged));
 
         public static bool GetIsVisible(DependencyObject d)
@@ -249,7 +137,7 @@ namespace wallabag.Common
             CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.ExtendViewIntoTitleBar = isExtended;
 
-            if (Helpers.IsPhone)
+            if (GeneralHelper.IsPhone)
             {
                 StatusBar statusBar = StatusBar.GetForCurrentView();
                 if (isExtended)
@@ -270,12 +158,11 @@ namespace wallabag.Common
             titleBar.ForegroundColor = null;
             titleBar.ButtonForegroundColor = null;
 
-            if (Helpers.IsPhone)
+            if (GeneralHelper.IsPhone)
             {
                 StatusBar statusBar = StatusBar.GetForCurrentView();
                 await statusBar.ShowAsync();
             }
         }
     }
-
 }

@@ -1,11 +1,7 @@
 ﻿using PropertyChanged;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using wallabag.Common;
+using wallabag.Common.Helpers;
 
 namespace wallabag.Models
 {
@@ -35,7 +31,7 @@ namespace wallabag.Models
                 {
                     wallabagLanguageCode = null,
                     LanguageCode = null,
-                    DisplayName = Helpers.LocalizedResource("UnknownLanguageDisplayName")
+                    DisplayName = GeneralHelper.LocalizedResource("UnknownLanguageDisplayName")
                 };
             }
         }

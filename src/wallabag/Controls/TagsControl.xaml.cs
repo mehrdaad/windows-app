@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using wallabag.Common;
+using wallabag.Common.Helpers;
 using wallabag.Models;
-using wallabag.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 

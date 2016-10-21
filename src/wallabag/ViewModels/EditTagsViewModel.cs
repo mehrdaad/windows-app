@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Template10.Mvvm;
-using wallabag.Common;
+using wallabag.Common.Helpers;
 using wallabag.Models;
 
 namespace wallabag.ViewModels
