@@ -1,4 +1,5 @@
-﻿using SQLite.Net.Attributes;
+﻿using GalaSoft.MvvmLight.Messaging;
+using SQLite.Net.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using wallabag.Api.Models;
 using wallabag.Common;
+using wallabag.Common.Messages;
 
 namespace wallabag.Models
 {
@@ -78,7 +80,10 @@ namespace wallabag.Models
                     var newItem = await App.Client.AddAsync(new Uri(Url), Tags);
 
                     if (newItem != null)
+                    {
                         App.Database.InsertOrReplace((Item)newItem);
+                        Messenger.Default.Send(new UpdateItemMessage(newItem.Id));
+                    }
 
                     executionIsSuccessful = newItem != null;
                     break;

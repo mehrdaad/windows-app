@@ -457,6 +457,16 @@ namespace wallabag.ViewModels
                     }
                 }
             });
+            Messenger.Default.Register<UpdateItemMessage>(this, message =>
+            {
+                var viewModel = new ItemViewModel(Item.FromId(message.ItemId));
+
+                if (Items.Contains(viewModel))
+                {
+                    Items.Remove(viewModel); // This is only working because the app is just comparing the ID's
+                    Items.AddSorted(viewModel, sortAscending: CurrentSearchProperties.OrderAscending == true);
+                }
+            });
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {

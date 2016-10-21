@@ -104,6 +104,7 @@
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\Helpers.cs" />
     <Compile Include="Common\IncrementalObservableCollection.cs" />
+    <Compile Include="Common\Messages\UpdateItemMessage.cs" />
     <Compile Include="Common\Messages\BlockOfflineTaskExecutionMessage.cs" />
     <Compile Include="Controls\AdaptiveGridView.cs" />
     <Compile Include="Controls\TagsControl.xaml.cs">
