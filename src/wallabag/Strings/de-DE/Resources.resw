@@ -468,4 +468,7 @@
   <data name="SortByReadingTimeRadioButton.Content" xml:space="preserve">
     <value>nach Lesezeit</value>
   </data>
+  <data name="SearchHeaderWithQuery" xml:space="preserve">
+    <value>Suchergebnisse für: {0}</value>
+  </data>
 </root>

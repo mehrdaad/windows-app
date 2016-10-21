@@ -214,7 +214,7 @@ namespace wallabag.ViewModels
         private void UpdatePageHeader()
         {
             if (IsSearchActive)
-                PageHeader = string.Format(Helpers.LocalizedResource("SearchPivotItem.Header").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
+                PageHeader = string.Format(Helpers.LocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
             else
                 PageHeader = Helpers.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
         }
