@@ -55,7 +55,6 @@ namespace wallabag.ViewModels
                 OfflineTask.Add(UriString, Tags.ToStringArray());
 
                 _shareOperation?.ReportCompleted();
-                Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
             }
         }
 

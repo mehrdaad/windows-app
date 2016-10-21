@@ -435,12 +435,6 @@ namespace wallabag.ViewModels
                 if (SettingsService.Instance.SyncOnStartup)
                     await SyncAsync();
             }
-
-            Messenger.Default.Register<NotificationMessage>(this, async message =>
-            {
-                if (message.Notification.Equals("FetchFromDatabase"))
-                    await ReloadViewAsync();
-            });
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
