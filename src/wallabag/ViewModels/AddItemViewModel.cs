@@ -40,25 +40,21 @@ namespace wallabag.ViewModels
         private void Add()
         {
             AddingStarted?.Invoke(this, new EventArgs());
-            var shareOperationIsNull = _shareOperation == null;
 
             if (UriString.IsValidUri())
             {
-                OfflineTask.Add(UriString, Tags.ToStringArray(), invokeAddedEvent: shareOperationIsNull);
-
                 var uri = new Uri(UriString);
                 App.Database.Insert(new Item()
                 {
-                    Id = App.Database.Table<Item>().OrderByDescending(i => i.Id).FirstOrDefault().Id + 1,
+                    Id = OfflineTask.LastItemId + 1,
                     Title = uri.Host,
                     Url = UriString,
                     Hostname = uri.Host
                 });
 
-                _shareOperation?.ReportCompleted();
+                OfflineTask.Add(UriString, Tags.ToStringArray());
 
-                if (shareOperationIsNull)
-                    Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
+                _shareOperation?.ReportCompleted();
             }
         }
 

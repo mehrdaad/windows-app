@@ -1,12 +1,14 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using PropertyChanged;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common;
+using wallabag.Common.Messages;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.UI.Core;
@@ -71,8 +73,8 @@ namespace wallabag.ViewModels
             SetSortTypeFilterCommand = new DelegateCommand<string>(filter => SetSortTypeFilter(filter));
             SetSortOrderCommand = new DelegateCommand<string>(order => SetSortOrder(order));
             SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
-            SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args => SearchQuerySubmitted(args));
-            CloseSearchCommand = new DelegateCommand(() => EndSearch(this, null));
+            SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(async args => await SearchQuerySubmittedAsync(args));
+            CloseSearchCommand = new DelegateCommand(() => EndSearchAsync(this, null));
             LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
             TagChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => TagChanged(args));
             ResetFilterLanguageCommand = new DelegateCommand(() => CurrentSearchProperties.Language = null);
@@ -80,10 +82,10 @@ namespace wallabag.ViewModels
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
             CurrentSearchProperties.SearchStarted += p => StartSearch();
-            CurrentSearchProperties.PropertyChanged += (s, e) =>
+            CurrentSearchProperties.PropertyChanged += async (s, e) =>
             {
                 if (e.PropertyName != nameof(CurrentSearchProperties.Query))
-                    UpdateView();
+                    await ReloadViewAsync();
 
                 RaisePropertyChanged(nameof(SortByCreationDate));
                 RaisePropertyChanged(nameof(SortByReadingTime));
@@ -91,38 +93,79 @@ namespace wallabag.ViewModels
 
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
 
-            App.OfflineTaskAdded += async (s, e) =>
-            {
-                OfflineTaskCount += 1;
-                await e.ExecuteAsync();
-                UpdateView();
-            };
+            App.OfflineTaskAdded += App_OfflineTaskAdded;
             App.OfflineTaskRemoved += (s, e) => OfflineTaskCount -= 1;
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
         }
 
-        private Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
+        private async void App_OfflineTaskAdded(object sender, OfflineTask e)
+        {
+            if (_offlineTaskAreBlocked)
+                return;
+
+            ItemViewModel item = default(ItemViewModel);
+            var orderAscending = CurrentSearchProperties.OrderAscending ?? false;
+
+            if (e.Action != OfflineTask.OfflineTaskAction.Delete)
+                item = new ItemViewModel(Item.FromId(e.ItemId));
+
+            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+            {
+                switch (e.Action)
+                {
+                    case OfflineTask.OfflineTaskAction.MarkAsRead:
+                        if (CurrentSearchProperties.ItemTypeIndex == 2)
+                            Items.AddSorted(item, sortAscending: orderAscending);
+                        else
+                            Items.Remove(item);
+                        break;
+                    case OfflineTask.OfflineTaskAction.UnmarkAsRead:
+                        if (CurrentSearchProperties.ItemTypeIndex == 2)
+                            Items.Remove(item);
+                        else
+                            Items.AddSorted(item, sortAscending: orderAscending);
+                        break;
+                    case OfflineTask.OfflineTaskAction.MarkAsStarred: break;
+                    case OfflineTask.OfflineTaskAction.UnmarkAsStarred:
+                        if (CurrentSearchProperties.ItemTypeIndex == 1)
+                            Items.Remove(item);
+                        break;
+                    case OfflineTask.OfflineTaskAction.EditTags: break;
+                    case OfflineTask.OfflineTaskAction.AddItem:
+                        if (CurrentSearchProperties.ItemTypeIndex == 0)
+                            Items.AddSorted(item, sortAscending: orderAscending);
+                        break;
+                    case OfflineTask.OfflineTaskAction.Delete:
+                        Items.Remove(Items.Where(i => i.Model.Id.Equals(e.ItemId)).First());
+                        break;
+                }
+            });
+            await e.ExecuteAsync();
+        }
+
+        private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
         {
             var result = new List<ItemViewModel>();
 
-            var database = GetItemsForCurrentSearchProperties(Items.Count, (int)count);
+            var database = await GetItemsForCurrentSearchPropertiesAsync(Items.Count, (int)count);
 
             foreach (var item in database)
                 result.Add(new ItemViewModel(item));
 
             GetMetadataForItems(result);
 
-            return Task.FromResult(result);
+            return result;
         }
 
         private async Task ExecuteOfflineTasksAsync()
         {
-            foreach (var task in App.Database.Table<OfflineTask>())
-                await task.ExecuteAsync();
+            OfflineTaskCount = App.Database.ExecuteScalar<int>("SELECT COUNT(*) FROM OfflineTask");
 
-            OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
-
-            UpdateView();
+            if (OfflineTaskCount > 0)
+            {
+                foreach (var task in App.Database.Table<OfflineTask>())
+                    await task.ExecuteAsync();
+            }
         }
         private async Task SyncAsync()
         {
@@ -131,7 +174,7 @@ namespace wallabag.ViewModels
 
             IsSyncing = true;
             await ExecuteOfflineTasksAsync();
-            int syncLimit = 30;
+            int syncLimit = 24;
 
             var items = await App.Client.GetItemsAsync(
                 dateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
@@ -145,9 +188,7 @@ namespace wallabag.ViewModels
                 foreach (var item in items)
                     itemList.Add(item);
 
-                var databaseList = App.Database.Table<Item>()
-                    .OrderByDescending(i => i.LastModificationDate)
-                    .Take(syncLimit).ToList();
+                var databaseList = App.Database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{syncLimit}", Array.Empty<object>());
                 var deletedItems = databaseList.Except(itemList);
 
                 App.Database.RunInTransaction(() =>
@@ -158,7 +199,8 @@ namespace wallabag.ViewModels
                     App.Database.InsertOrReplaceAll(itemList);
                 });
 
-                UpdateView();
+                if (databaseList[0].Equals(Items[0].Model) == false)
+                    await ReloadViewAsync();
             }
             IsSyncing = false;
         }
@@ -172,23 +214,26 @@ namespace wallabag.ViewModels
         private void UpdatePageHeader()
         {
             if (IsSearchActive)
-                PageHeader = string.Format(Helpers.LocalizedResource("SearchPivotItem.Header").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
+                PageHeader = string.Format(Helpers.LocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
             else
                 PageHeader = Helpers.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
         }
 
-        private void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
+        private async void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
         {
             if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
                 return;
 
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
-                var suggestions = App.Database.Table<Item>().Where(i => i.Title.ToLower().Contains(CurrentSearchProperties.Query)).Take(5);
-                SearchQuerySuggestions.Replace(suggestions.ToList());
-            }
+                if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+                {
+                    var suggestions = App.Database.Query<Item>($"SELECT Id,Title FROM Item WHERE Title LIKE '%{CurrentSearchProperties.Query}%' LIMIT 5");
+                    SearchQuerySuggestions.Replace(suggestions);
+                }
+            });
         }
-        private void SearchQuerySubmitted(AutoSuggestBoxQuerySubmittedEventArgs args)
+        private async Task SearchQuerySubmittedAsync(AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             if (args.ChosenSuggestion != null)
             {
@@ -203,7 +248,7 @@ namespace wallabag.ViewModels
             }
 
             UpdatePageHeader();
-            UpdateView();
+            await ReloadViewAsync();
         }
         private void LanguageCodeChanged(SelectionChangedEventArgs args)
         {
@@ -227,19 +272,21 @@ namespace wallabag.ViewModels
         private void SetSortOrder(string order) => CurrentSearchProperties.OrderAscending = order == "asc";
 
         private int _previousItemTypeIndex;
+        private bool _offlineTaskAreBlocked;
+
         private void StartSearch()
         {
             IsSearchActive = true;
             _previousItemTypeIndex = CurrentSearchProperties.ItemTypeIndex;
-            SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => EndSearch(s, e);
+            SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => EndSearchAsync(s, e);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
         }
-        private void EndSearch(object sender, BackRequestedEventArgs e)
+        private async void EndSearchAsync(object sender, BackRequestedEventArgs e)
         {
             IsSearchActive = false;
             CurrentSearchProperties.ItemTypeIndex = _previousItemTypeIndex;
 
-            SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearch(s, args);
+            SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearchAsync(s, args);
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
             if (e != null)
@@ -250,22 +297,24 @@ namespace wallabag.ViewModels
             if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
             {
                 CurrentSearchProperties.Query = string.Empty;
-                UpdateView();
+                await ReloadViewAsync();
             }
 
             UpdatePageHeader();
         }
 
-        private void UpdateView()
+        private async Task ReloadViewAsync()
         {
-            Items.Clear();
+            var databaseItems = await GetItemsForCurrentSearchPropertiesAsync();
+            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+             {
+                 Items.Clear();
 
-            var databaseItems = GetItemsForCurrentSearchProperties(limit: 24);
+                 foreach (var item in databaseItems)
+                     Items.Add(new ItemViewModel(item));
 
-            foreach (var item in databaseItems)
-                Items.Add(new ItemViewModel(item));
-
-            GetMetadataForItems(Items);
+                 GetMetadataForItems(Items);
+             });
         }
         private void GetMetadataForItems(IEnumerable<ItemViewModel> items)
         {
@@ -292,84 +341,139 @@ namespace wallabag.ViewModels
             if (LanguageSuggestions.Contains(Language.Unknown))
                 LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.Unknown), 0);
         }
-        private List<Item> GetItemsForCurrentSearchProperties(int? offset = null, int? limit = null)
+        private Task<List<Item>> GetItemsForCurrentSearchPropertiesAsync(int offset = 0, int limit = 24)
         {
-            var items = App.Database.Table<Item>();
-
-            if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+            return Task.Factory.StartNew(() =>
             {
-                if (CurrentSearchProperties.ItemTypeIndex == 0)
-                    items = items.Where(i => i.IsRead == false);
-                else if (CurrentSearchProperties.ItemTypeIndex == 1)
-                    items = items.Where(i => i.IsStarred == true);
-                else if (CurrentSearchProperties.ItemTypeIndex == 2)
-                    items = items.Where(i => i.IsRead == true);
-            }
+                var queryStart = "SELECT Id,Title,PreviewImageUri,Hostname,EstimatedReadingTime,Tags FROM Item";
+                var queryParts = new List<string>();
+                var queryParameters = new List<object>();
 
-            if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
-                items = items.Where(i => i.Title.ToLower().Contains(CurrentSearchProperties.Query));
+                if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+                {
+                    if (CurrentSearchProperties.ItemTypeIndex == 0)
+                    {
+                        queryParts.Add("IsRead=?");
+                        queryParameters.Add(0);
+                    }
+                    else if (CurrentSearchProperties.ItemTypeIndex == 1)
+                    {
+                        queryParts.Add("IsStarred=?");
+                        queryParameters.Add(0);
+                    }
+                    else if (CurrentSearchProperties.ItemTypeIndex == 2)
+                    {
+                        queryParts.Add("IsRead=?");
+                        queryParameters.Add(1);
+                    }
+                }
 
-            if (CurrentSearchProperties.Language?.IsUnknown == false)
-                items = items.Where(i => i.Language.Equals(CurrentSearchProperties.Language.wallabagLanguageCode));
-            else if (CurrentSearchProperties.Language?.IsUnknown == true)
-                items = items.Where(i => i.Language == null);
+                if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+                    queryParts.Add($"Title LIKE '%{CurrentSearchProperties.Query}%'");
 
-            if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime)
-            {
-                if (CurrentSearchProperties.OrderAscending == true)
-                    items = items.OrderBy(i => i.EstimatedReadingTime);
+                if (CurrentSearchProperties.Language?.IsUnknown == false)
+                {
+                    queryParts.Add("Language=?");
+                    queryParameters.Add(CurrentSearchProperties.Language.wallabagLanguageCode);
+                }
+                else if (CurrentSearchProperties.Language?.IsUnknown == true)
+                    queryParts.Add("Language IS NULL");
+
+                if (CurrentSearchProperties.Tag != null)
+                    queryParts.Add($"Tags LIKE '%{CurrentSearchProperties.Tag.Label}%'");
+
+                var query = BuildSQLQuery(queryStart, queryParts);
+
+                if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime)
+                {
+                    if (CurrentSearchProperties.OrderAscending == true)
+                        query += " ORDER BY EstimatedReadingTime ASC";
+                    else
+                        query += " ORDER BY EstimatedReadingTime DESC";
+                }
                 else
-                    items = items.OrderByDescending(i => i.EstimatedReadingTime);
-            }
-            else
+                {
+                    if (CurrentSearchProperties.OrderAscending == true)
+                        query += " ORDER BY CreationDate ASC";
+                    else
+                        query += " ORDER BY CreationDate DESC";
+                }
+
+                query += " LIMIT ?,?";
+                queryParameters.Add(offset);
+                queryParameters.Add(limit);
+
+                Items.MaxItems = App.Database.ExecuteScalar<int>(query.Replace(queryStart, "SELECT count(*) FROM Item"), queryParameters.ToArray());
+                return App.Database.Query<Item>(query, queryParameters.ToArray());
+            });
+        }
+
+        private string BuildSQLQuery(string start, List<string> queries)
+        {
+            string result = start;
+            if (start.EndsWith(" ") == false)
+                result += " ";
+
+            foreach (var item in queries)
             {
-                if (CurrentSearchProperties.OrderAscending == true)
-                    items = items.OrderBy(i => i.CreationDate);
+                var queryIndex = queries.IndexOf(item);
+                if (queryIndex == 0)
+                    result += "WHERE " + item;
                 else
-                    items = items.OrderByDescending(i => i.CreationDate);
+                    result += "AND " + item;
+                result += " ";
             }
 
-            Items.MaxItems = items.Count();
-
-            if (offset != null)
-                items = items.Skip((int)offset);
-
-            if (limit != null)
-                items = items.Take((int)limit);
-
-            var list = items.ToList();
-
-            if (CurrentSearchProperties.Tag != null)
-                list = list.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag)).ToList();
-
-            return list;
+            return result;
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             await TitleBarExtensions.ResetAsync();
 
-            if (state.ContainsKey(nameof(CurrentSearchProperties)))
+            if (mode != NavigationMode.Back && mode != NavigationMode.Forward)
             {
-                var stateValue = state[nameof(CurrentSearchProperties)] as string;
-                CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
+                if (state.ContainsKey(nameof(CurrentSearchProperties)))
+                {
+                    var stateValue = state[nameof(CurrentSearchProperties)] as string;
+                    CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
+                }
+
+                await ReloadViewAsync();
+
+                if (SettingsService.Instance.SyncOnStartup)
+                    await SyncAsync();
             }
 
-            UpdateView();
-
-            if (SettingsService.Instance.SyncOnStartup)
-                await SyncAsync();
-
-            Messenger.Default.Register<NotificationMessage>(this, message =>
+            Messenger.Default.Register<BlockOfflineTaskExecutionMessage>(this, message =>
             {
-                if (message.Notification.Equals("FetchFromDatabase"))
-                    UpdateView();
+                _offlineTaskAreBlocked = message.IsBlocked;
+                if (_offlineTaskAreBlocked == false)
+                {
+                    var tasks = App.Database.Table<OfflineTask>().ToList();
+                    foreach (var task in tasks)
+                    {
+                        App_OfflineTaskAdded(this, task);
+                    }
+                }
+            });
+            Messenger.Default.Register<UpdateItemMessage>(this, message =>
+            {
+                var viewModel = new ItemViewModel(Item.FromId(message.ItemId));
+
+                if (Items.Contains(viewModel))
+                {
+                    Items.Remove(viewModel); // This is only working because the app is just comparing the ID's
+                    Items.AddSorted(viewModel, sortAscending: CurrentSearchProperties.OrderAscending == true);
+                }
             });
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
             var serializedSearchProperties = await Task.Run(() => JsonConvert.SerializeObject(CurrentSearchProperties));
             pageState[nameof(CurrentSearchProperties)] = serializedSearchProperties;
+
+            Messenger.Default.Unregister(this);
         }
     }
 }

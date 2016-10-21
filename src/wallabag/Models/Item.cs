@@ -31,9 +31,9 @@ namespace wallabag.Models
         public string Hostname { get; set; }
         [Indexed]
         public string Language { get; set; }
-        [Indexed]
         public string Mimetype { get; set; }
         public Uri PreviewImageUri { get; set; }
+        [Indexed]
         public double ReadingProgress { get; set; }
 
         public static implicit operator WallabagItem(Item i)
@@ -95,10 +95,12 @@ namespace wallabag.Models
             if (obj != null && obj.GetType().Equals(typeof(Item)))
             {
                 var comparedItem = obj as Item;
-                return Id.Equals(comparedItem.Id) && LastModificationDate.Equals(comparedItem.LastModificationDate);
+                return Id.Equals(comparedItem.Id);
             }
             return false;
         }
         public override int GetHashCode() => Id;
+
+        internal static Item FromId(int itemId) => App.Database.Get<Item>(itemId);
     }
 }

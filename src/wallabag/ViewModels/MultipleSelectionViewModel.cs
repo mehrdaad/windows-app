@@ -1,7 +1,9 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
+using System;
 using System.Collections.Generic;
 using Template10.Mvvm;
+using wallabag.Common.Messages;
 
 namespace wallabag.ViewModels
 {
@@ -22,47 +24,39 @@ namespace wallabag.ViewModels
         {
             Items = new List<ItemViewModel>();
 
-            MarkAsReadCommand = new DelegateCommand(() =>
+            MarkAsReadCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
+                App.Database.RunInTransaction(() =>
                 {
-                    item.BlockUpdateMessage = true;
-                    item.MarkAsReadCommand.Execute();
-                    item.BlockUpdateMessage = false;
-                }
-                CompleteMultipleSelection();
-            });
-            UnmarkAsReadCommand = new DelegateCommand(() =>
+                    foreach (var item in Items)
+                        item.MarkAsReadCommand.Execute();
+                });
+            }));
+            UnmarkAsReadCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
+                App.Database.RunInTransaction(() =>
                 {
-                    item.BlockUpdateMessage = true;
-                    item.UnmarkAsReadCommand.Execute();
-                    item.BlockUpdateMessage = false;
-                }
-                CompleteMultipleSelection();
-            });
-            MarkAsFavoriteCommand = new DelegateCommand(() =>
+                    foreach (var item in Items)
+                        item.UnmarkAsReadCommand.Execute();
+                });
+            }));
+            MarkAsFavoriteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
+                App.Database.RunInTransaction(() =>
                 {
-                    item.BlockUpdateMessage = true;
-                    item.MarkAsStarredCommand.Execute();
-                    item.BlockUpdateMessage = false;
-                }
-                CompleteMultipleSelection();
-            });
-            UnmarkAsFavoriteCommand = new DelegateCommand(() =>
+                    foreach (var item in Items)
+                        item.MarkAsStarredCommand.Execute();
+                });
+            }));
+            UnmarkAsFavoriteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
+                App.Database.RunInTransaction(() =>
                 {
-                    item.BlockUpdateMessage = true;
-                    item.UnmarkAsStarredCommand.Execute();
-                    item.BlockUpdateMessage = false;
-                }
-                CompleteMultipleSelection();
-            });
-            EditTagsCommand = new DelegateCommand(async () =>
+                    foreach (var item in Items)
+                        item.UnmarkAsStarredCommand.Execute();
+                });
+            }));
+            EditTagsCommand = new DelegateCommand(() => BlockOfflineTaskExecution(async () =>
             {
                 var viewModel = new EditTagsViewModel();
 
@@ -70,27 +64,30 @@ namespace wallabag.ViewModels
                     viewModel.Items.Add(item.Model);
 
                 await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, viewModel);
-            });
-            OpenInBrowserCommand = new DelegateCommand(() =>
+            }));
+            OpenInBrowserCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
-                    item.OpenInBrowserCommand.Execute();
-            });
-            DeleteCommand = new DelegateCommand(() =>
-            {
-                foreach (var item in Items)
+                App.Database.RunInTransaction(() =>
                 {
-                    item.BlockUpdateMessage = true;
-                    item.DeleteCommand.Execute();
-                    item.BlockUpdateMessage = false;
-                }
-                CompleteMultipleSelection();
-            });
+                    foreach (var item in Items)
+                        item.OpenInBrowserCommand.Execute();
+                });
+            }));
+            DeleteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
+            {
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var item in Items)
+                        item.DeleteCommand.Execute();
+                });
+            }));
         }
 
-        public void CompleteMultipleSelection()
+        private void BlockOfflineTaskExecution(Action a)
         {
-            Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
+            Messenger.Default.Send(new BlockOfflineTaskExecutionMessage(true));
+            a.Invoke();
+            Messenger.Default.Send(new BlockOfflineTaskExecutionMessage(false));
             Messenger.Default.Send(new NotificationMessage("CompleteMultipleSelection"));
         }
     }

@@ -1,5 +1,4 @@
-﻿using GalaSoft.MvvmLight.Messaging;
-using PropertyChanged;
+﻿using PropertyChanged;
 using System;
 using System.ComponentModel;
 using Template10.Mvvm;
@@ -25,7 +24,6 @@ namespace wallabag.ViewModels
         public DelegateCommand ShareCommand { get; private set; }
         public DelegateCommand EditTagsCommand { get; private set; }
         public DelegateCommand OpenInBrowserCommand { get; private set; }
-        public bool BlockUpdateMessage { get; internal set; }
 
         public ItemViewModel(Item Model)
         {
@@ -65,7 +63,6 @@ namespace wallabag.ViewModels
             DeleteCommand = new DelegateCommand(() =>
             {
                 App.Database.Delete(Model);
-                SendUpdateMessage();
                 OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
             });
             ShareCommand = new DelegateCommand(() =>
@@ -87,12 +84,6 @@ namespace wallabag.ViewModels
         {
             Model.LastModificationDate = DateTime.UtcNow;
             App.Database.Update(Model);
-            SendUpdateMessage();
-        }
-        public void SendUpdateMessage()
-        {
-            if (!BlockUpdateMessage)
-                Messenger.Default.Send(new NotificationMessage("FetchFromDatabase"));
         }
 
         public int CompareTo(object obj) => ((IComparable)Model).CompareTo((obj as ItemViewModel).Model);
