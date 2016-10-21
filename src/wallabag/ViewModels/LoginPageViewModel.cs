@@ -34,7 +34,7 @@ namespace wallabag.ViewModels
         public string ProgressDescription { get; set; }
 
         [DependsOn(nameof(SelectedProvider))]
-        public Visibility UrlFieldVisibility { get { return (SelectedProvider as WallabagProvider)?.Url == null ? Visibility.Visible : Visibility.Collapsed; } }
+        public Visibility UrlFieldVisibility { get { return (_credentialsAreExisting == false && (SelectedProvider as WallabagProvider)?.Url == null) ? Visibility.Visible : Visibility.Collapsed; } }
 
         public List<WallabagProvider> Providers { get; set; }
         public object SelectedProvider { get; set; }
@@ -79,12 +79,9 @@ namespace wallabag.ViewModels
         }
         private bool NextCanBeExecuted()
         {
-            if (_credentialsAreExisting)
-                return CurrentStep > 2;
-            else
-                return (SelectedProvider != null || _restoredFromPageState) &&
-                       CurrentStep <= 3 &&
-                       CurrentStep != 2;
+            return ((_credentialsAreExisting || SelectedProvider != null) || _restoredFromPageState) &&
+                    CurrentStep <= 3 &&
+                    CurrentStep != 2;
         }
         private bool RegistrationCanBeExecuted()
         {
@@ -164,9 +161,6 @@ namespace wallabag.ViewModels
 
         private async Task<bool> TestConfigurationAsync()
         {
-            if (_credentialsAreExisting)
-                return true;
-
             ProgressDescription = Helpers.LocalizedResource("TestingConfigurationMessage");
 
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
@@ -175,7 +169,7 @@ namespace wallabag.ViewModels
             try { await new HttpClient().GetAsync(new Uri(Url)); }
             catch { return false; }
 
-            if (UseCustomSettings == false)
+            if (UseCustomSettings == false && _credentialsAreExisting == false)
             {
                 App.Client.InstanceUri = new Uri(Url);
                 var clientCreationIsSuccessful = await CreateApiClientAsync();
@@ -271,7 +265,15 @@ namespace wallabag.ViewModels
             }
 
             if (_credentialsAreExisting)
+            {
+                UseCustomSettings = true;
+                ClientId = App.Client.ClientId;
+                ClientSecret = App.Client.ClientSecret;
+                SelectedProvider = new WallabagProvider(App.Client.InstanceUri, string.Empty);
+                Url = App.Client.InstanceUri.ToString();
+
                 await NextAsync();
+            }
         }
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
