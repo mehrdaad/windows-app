@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common;
+using wallabag.Common.Messages;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.UI.Core;
@@ -99,6 +100,9 @@ namespace wallabag.ViewModels
 
         private async void App_OfflineTaskAdded(object sender, OfflineTask e)
         {
+            if (_offlineTaskAreBlocked)
+                return;
+
             ItemViewModel item = default(ItemViewModel);
             var orderAscending = CurrentSearchProperties.OrderAscending ?? false;
 
@@ -263,6 +267,8 @@ namespace wallabag.ViewModels
         private void SetSortOrder(string order) => CurrentSearchProperties.OrderAscending = order == "asc";
 
         private int _previousItemTypeIndex;
+        private bool _offlineTaskAreBlocked;
+
         private void StartSearch()
         {
             IsSearchActive = true;
@@ -435,11 +441,26 @@ namespace wallabag.ViewModels
                 if (SettingsService.Instance.SyncOnStartup)
                     await SyncAsync();
             }
+
+            Messenger.Default.Register<BlockOfflineTaskExecutionMessage>(this, message =>
+            {
+                _offlineTaskAreBlocked = message.IsBlocked;
+                if (_offlineTaskAreBlocked == false)
+                {
+                    var tasks = App.Database.Table<OfflineTask>().ToList();
+                    foreach (var task in tasks)
+                    {
+                        App_OfflineTaskAdded(this, task);
+                    }
+                }
+            });
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
             var serializedSearchProperties = await Task.Run(() => JsonConvert.SerializeObject(CurrentSearchProperties));
             pageState[nameof(CurrentSearchProperties)] = serializedSearchProperties;
+
+            Messenger.Default.Unregister(this);
         }
     }
 }

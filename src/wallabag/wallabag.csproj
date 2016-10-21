@@ -106,6 +106,7 @@
     <Compile Include="Common\IncrementalObservableCollection.cs" />
     <Compile Include="Common\ItemByIdEqualityComparer.cs" />
     <Compile Include="Common\ItemByModificationDateEqualityComparer.cs" />
+    <Compile Include="Common\Messages\BlockOfflineTaskExecutionMessage.cs" />
     <Compile Include="Controls\AdaptiveGridView.cs" />
     <Compile Include="Controls\TagsControl.xaml.cs">
       <DependentUpon>TagsControl.xaml</DependentUpon>

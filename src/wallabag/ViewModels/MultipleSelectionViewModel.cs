@@ -1,7 +1,9 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
+using System;
 using System.Collections.Generic;
 using Template10.Mvvm;
+using wallabag.Common.Messages;
 
 namespace wallabag.ViewModels
 {
@@ -22,35 +24,27 @@ namespace wallabag.ViewModels
         {
             Items = new List<ItemViewModel>();
 
-            MarkAsReadCommand = new DelegateCommand(() =>
+            MarkAsReadCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
                 foreach (var item in Items)
                     item.MarkAsReadCommand.Execute();
-
-                CompleteMultipleSelection();
-            });
-            UnmarkAsReadCommand = new DelegateCommand(() =>
+            }));
+            UnmarkAsReadCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
                 foreach (var item in Items)
                     item.UnmarkAsReadCommand.Execute();
-
-                CompleteMultipleSelection();
-            });
-            MarkAsFavoriteCommand = new DelegateCommand(() =>
+            }));
+            MarkAsFavoriteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
                 foreach (var item in Items)
                     item.MarkAsStarredCommand.Execute();
-
-                CompleteMultipleSelection();
-            });
-            UnmarkAsFavoriteCommand = new DelegateCommand(() =>
+            }));
+            UnmarkAsFavoriteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
                 foreach (var item in Items)
                     item.UnmarkAsStarredCommand.Execute();
-
-                CompleteMultipleSelection();
-            });
-            EditTagsCommand = new DelegateCommand(async () =>
+            }));
+            EditTagsCommand = new DelegateCommand(() => BlockOfflineTaskExecution(async () =>
             {
                 var viewModel = new EditTagsViewModel();
 
@@ -58,21 +52,24 @@ namespace wallabag.ViewModels
                     viewModel.Items.Add(item.Model);
 
                 await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, viewModel);
-            });
-            OpenInBrowserCommand = new DelegateCommand(() =>
+            }));
+            OpenInBrowserCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
                 foreach (var item in Items)
                     item.OpenInBrowserCommand.Execute();
-            });
-            DeleteCommand = new DelegateCommand(() =>
+            }));
+            DeleteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
                 foreach (var item in Items)
                     item.DeleteCommand.Execute();
-
-                CompleteMultipleSelection();
-            });
+            }));
         }
 
-        public void CompleteMultipleSelection() => Messenger.Default.Send(new NotificationMessage("CompleteMultipleSelection"));
+        private void BlockOfflineTaskExecution(Action a)
+        {
+            Messenger.Default.Send(new BlockOfflineTaskExecutionMessage(true));
+            a.Invoke();
+            Messenger.Default.Send(new BlockOfflineTaskExecutionMessage(false));
+        }
     }
 }
