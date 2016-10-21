@@ -160,12 +160,13 @@ namespace wallabag.ViewModels
 
         private async Task ExecuteOfflineTasksAsync()
         {
-            foreach (var task in App.Database.Table<OfflineTask>())
-                await task.ExecuteAsync();
+            OfflineTaskCount = App.Database.ExecuteScalar<int>("SELECT COUNT(*) FROM OfflineTask");
 
-            OfflineTaskCount = App.Database.Table<OfflineTask>().Count();
-
-            await ReloadViewAsync();
+            if (OfflineTaskCount > 0)
+            {
+                foreach (var task in App.Database.Table<OfflineTask>())
+                    await task.ExecuteAsync();
+            }
         }
         private async Task SyncAsync()
         {
