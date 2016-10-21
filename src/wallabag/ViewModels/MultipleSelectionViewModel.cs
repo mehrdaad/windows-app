@@ -26,23 +26,35 @@ namespace wallabag.ViewModels
 
             MarkAsReadCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
-                    item.MarkAsReadCommand.Execute();
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var item in Items)
+                        item.MarkAsReadCommand.Execute();
+                });
             }));
             UnmarkAsReadCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
-                    item.UnmarkAsReadCommand.Execute();
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var item in Items)
+                        item.UnmarkAsReadCommand.Execute();
+                });
             }));
             MarkAsFavoriteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
-                    item.MarkAsStarredCommand.Execute();
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var item in Items)
+                        item.MarkAsStarredCommand.Execute();
+                });
             }));
             UnmarkAsFavoriteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
-                    item.UnmarkAsStarredCommand.Execute();
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var item in Items)
+                        item.UnmarkAsStarredCommand.Execute();
+                });
             }));
             EditTagsCommand = new DelegateCommand(() => BlockOfflineTaskExecution(async () =>
             {
@@ -55,13 +67,19 @@ namespace wallabag.ViewModels
             }));
             OpenInBrowserCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
-                    item.OpenInBrowserCommand.Execute();
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var item in Items)
+                        item.OpenInBrowserCommand.Execute();
+                });
             }));
             DeleteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                foreach (var item in Items)
-                    item.DeleteCommand.Execute();
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var item in Items)
+                        item.DeleteCommand.Execute();
+                });
             }));
         }
 
