@@ -175,7 +175,7 @@ namespace wallabag.ViewModels
 
             IsSyncing = true;
             await ExecuteOfflineTasksAsync();
-            int syncLimit = 30;
+            int syncLimit = 24;
 
             var items = await App.Client.GetItemsAsync(
                 dateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
@@ -189,9 +189,7 @@ namespace wallabag.ViewModels
                 foreach (var item in items)
                     itemList.Add(item);
 
-                var databaseList = App.Database.Table<Item>()
-                    .OrderByDescending(i => i.LastModificationDate)
-                    .Take(syncLimit).ToList();
+                var databaseList = App.Database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{syncLimit}", Array.Empty<object>());
                 var deletedItems = databaseList.Except(itemList);
 
                 App.Database.RunInTransaction(() =>
@@ -202,7 +200,8 @@ namespace wallabag.ViewModels
                     App.Database.InsertOrReplaceAll(itemList);
                 });
 
-                await ReloadViewAsync();
+                if (databaseList[0].Equals(Items[0].Model) == false)
+                    await ReloadViewAsync();
             }
             IsSyncing = false;
         }
