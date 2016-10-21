@@ -336,53 +336,86 @@ namespace wallabag.ViewModels
         {
             return Task.Factory.StartNew(() =>
             {
-                var items = App.Database.Table<Item>();
+                var queryStart = "SELECT Id,Title,PreviewImageUri,Hostname,EstimatedReadingTime,Tags FROM Item";
+                var queryParts = new List<string>();
+                var queryParameters = new List<object>();
 
                 if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
                 {
                     if (CurrentSearchProperties.ItemTypeIndex == 0)
-                        items = items.Where(i => i.IsRead == false);
+                    {
+                        queryParts.Add("IsRead=?");
+                        queryParameters.Add(0);
+                    }
                     else if (CurrentSearchProperties.ItemTypeIndex == 1)
-                        items = items.Where(i => i.IsStarred == true);
+                    {
+                        queryParts.Add("IsStarred=?");
+                        queryParameters.Add(0);
+                    }
                     else if (CurrentSearchProperties.ItemTypeIndex == 2)
-                        items = items.Where(i => i.IsRead == true);
+                    {
+                        queryParts.Add("IsRead=?");
+                        queryParameters.Add(1);
+                    }
                 }
 
                 if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
-                    items = items.Where(i => i.Title.ToLower().Contains(CurrentSearchProperties.Query));
+                    queryParts.Add($"Title LIKE '%{CurrentSearchProperties.Query}%'");
 
                 if (CurrentSearchProperties.Language?.IsUnknown == false)
-                    items = items.Where(i => i.Language.Equals(CurrentSearchProperties.Language.wallabagLanguageCode));
+                {
+                    queryParts.Add("Language=?");
+                    queryParameters.Add(CurrentSearchProperties.Language.wallabagLanguageCode);
+                }
                 else if (CurrentSearchProperties.Language?.IsUnknown == true)
-                    items = items.Where(i => i.Language == null);
+                    queryParts.Add("Language IS NULL");
 
-                items = items.Skip(offset).Take(limit);
+                if (CurrentSearchProperties.Tag != null)
+                    queryParts.Add($"Tags LIKE '%{CurrentSearchProperties.Tag.Label}%'");
 
-                var databaseItems = items.ToList();
-                IEnumerable<Item> filteredList;
+                var query = BuildSQLQuery(queryStart, queryParts);
 
                 if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime)
                 {
                     if (CurrentSearchProperties.OrderAscending == true)
-                        filteredList = databaseItems.OrderBy(i => i.EstimatedReadingTime);
+                        query += " ORDER BY EstimatedReadingTime ASC";
                     else
-                        filteredList = databaseItems.OrderByDescending(i => i.EstimatedReadingTime);
+                        query += " ORDER BY EstimatedReadingTime DESC";
                 }
                 else
                 {
                     if (CurrentSearchProperties.OrderAscending == true)
-                        filteredList = databaseItems.OrderBy(i => i.CreationDate);
+                        query += " ORDER BY CreationDate ASC";
                     else
-                        filteredList = databaseItems.OrderByDescending(i => i.CreationDate);
+                        query += " ORDER BY CreationDate DESC";
                 }
 
-                if (CurrentSearchProperties.Tag != null)
-                    filteredList = filteredList.Where(i => i.Tags.Contains(CurrentSearchProperties.Tag));
+                query += " LIMIT ?,?";
+                queryParameters.Add(offset);
+                queryParameters.Add(limit);
 
-                Items.MaxItems = App.Database.ExecuteScalar<int>("select count(*) from 'Item'", new object[0]);
-
-                return filteredList.ToList();
+                Items.MaxItems = App.Database.ExecuteScalar<int>(query.Replace(queryStart, "SELECT count(*) FROM Item"), queryParameters.ToArray());
+                return App.Database.Query<Item>(query, queryParameters.ToArray());
             });
+        }
+
+        private string BuildSQLQuery(string start, List<string> queries)
+        {
+            string result = start;
+            if (start.EndsWith(" ") == false)
+                result += " ";
+
+            foreach (var item in queries)
+            {
+                var queryIndex = queries.IndexOf(item);
+                if (queryIndex == 0)
+                    result += "WHERE " + item;
+                else
+                    result += "AND " + item;
+                result += " ";
+            }
+
+            return result;
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
