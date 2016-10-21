@@ -109,7 +109,7 @@ namespace wallabag.ViewModels
             if (e.Action != OfflineTask.OfflineTaskAction.Delete)
                 item = new ItemViewModel(Item.FromId(e.ItemId));
 
-            await CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(() =>
+            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
                 switch (e.Action)
                 {
@@ -139,7 +139,6 @@ namespace wallabag.ViewModels
                         Items.Remove(Items.Where(i => i.Model.Id.Equals(e.ItemId)).First());
                         break;
                 }
-                return Task.CompletedTask;
             });
             await e.ExecuteAsync();
         }
@@ -304,17 +303,15 @@ namespace wallabag.ViewModels
         private async Task ReloadViewAsync()
         {
             var databaseItems = await GetItemsForCurrentSearchPropertiesAsync();
-            await CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(() =>
-            {
-                Items.Clear();
+            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+             {
+                 Items.Clear();
 
-                foreach (var item in databaseItems)
-                    Items.Add(new ItemViewModel(item));
+                 foreach (var item in databaseItems)
+                     Items.Add(new ItemViewModel(item));
 
-                GetMetadataForItems(Items);
-
-                return Task.CompletedTask;
-            });
+                 GetMetadataForItems(Items);
+             });
         }
         private void GetMetadataForItems(IEnumerable<ItemViewModel> items)
         {
