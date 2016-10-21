@@ -10,6 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:t10b="using:Template10.Behaviors"
     xmlns:vm="using:wallabag.ViewModels"
+    xmlns:wst="using:WindowsStateTriggers"
     common:TitleBarExtensions.ButtonBackgroundColor="Transparent"
     common:TitleBarExtensions.ButtonForegroundColor="{x:Bind ViewModel.ForegroundBrush.Color, Mode=OneWay}"
     common:TitleBarExtensions.IsVisible="false"
@@ -150,6 +151,17 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <wst:DeviceFamilyStateTrigger DeviceFamily="Desktop" />
+                        <wst:FullScreenModeTrigger IsFullScreen="False" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="TitleBarBackgroundRectangle.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <WebView
             x:Name="HtmlViewer"
@@ -161,6 +173,16 @@
                 <CompositeTransform />
             </WebView.RenderTransform>
         </WebView>
+
+        <Rectangle
+            x:Name="TitleBarBackgroundRectangle"
+            Height="32"
+            VerticalAlignment="Top"
+            x:DeferLoadStrategy="Lazy"
+            Fill="{x:Bind ViewModel.BackgroundBrush, Mode=OneWay}"
+            Opacity="0.9"
+            Visibility="Collapsed" />
+
         <ProgressRing
             x:Name="progressRing"
             Width="64"
