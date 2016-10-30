@@ -1,16 +1,17 @@
 version: 2.0.{build}
-skip_tags: true
 platform: x86
 before_build:
 - ps: >-
     $vsixPath = "$($env:USERPROFILE)\sqlite-uwp-3150000.vsix"
+
     (New-Object Net.WebClient).DownloadFile('https://visualstudiogallery.msdn.microsoft.com/4913e7d5-96c9-4dde-a1a1-69820d615936/file/161586/20/sqlite-uwp-3150000.vsix', $vsixPath)
+
     "`"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\VSIXInstaller.exe`" /q /a $vsixPath" | out-file ".\install-vsix.cmd" -Encoding ASCII
+
     & .\install-vsix.cmd
 
     nuget restore
 
     Write-Host "Installed." -ForegroundColor green
 build:
-  parallel: true
   verbosity: minimal
