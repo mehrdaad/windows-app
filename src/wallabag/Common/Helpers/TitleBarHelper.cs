@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 
@@ -147,22 +148,25 @@ namespace wallabag.Common.Helpers
             }
         }
 
-        public static async Task ResetAsync()
+        public static Task ResetAsync()
         {
-            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-
-            coreTitleBar.ExtendViewIntoTitleBar = false;
-            titleBar.BackgroundColor = null;
-            titleBar.ButtonBackgroundColor = null;
-            titleBar.ForegroundColor = null;
-            titleBar.ButtonForegroundColor = null;
-
-            if (GeneralHelper.IsPhone)
+            return CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(async () =>
             {
-                StatusBar statusBar = StatusBar.GetForCurrentView();
-                await statusBar.ShowAsync();
-            }
+                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+                var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+
+                coreTitleBar.ExtendViewIntoTitleBar = false;
+                titleBar.BackgroundColor = null;
+                titleBar.ButtonBackgroundColor = null;
+                titleBar.ForegroundColor = null;
+                titleBar.ButtonForegroundColor = null;
+
+                if (GeneralHelper.IsPhone)
+                {
+                    StatusBar statusBar = StatusBar.GetForCurrentView();
+                    await statusBar.ShowAsync();
+                }
+            });
         }
     }
 }
