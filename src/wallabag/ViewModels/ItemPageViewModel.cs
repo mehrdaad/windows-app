@@ -90,7 +90,8 @@ namespace wallabag.ViewModels
 
             var imageHeader = string.Empty;
             if (Item.Model.Hostname.Contains("youtube.com") == false &&
-                Item.Model.Hostname.Contains("vimeo.com") == false)
+                Item.Model.Hostname.Contains("vimeo.com") == false &&
+                Item.Model.PreviewImageUri != null)
                 imageHeader = Item.Model.PreviewImageUri.ToString();
 
             FormattedHtml = _template.FormatWith(new
@@ -106,8 +107,6 @@ namespace wallabag.ViewModels
                 stylesheet = styleSheetBuilder.ToString(),
                 imageHeader = imageHeader
             });
-
-            await FileIO.WriteTextAsync(await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("article.html", CreationCollisionOption.ReplaceExisting), FormattedHtml);
         }
 
         private async Task<string> SetupArticleForHtmlViewerAsync()
@@ -124,7 +123,7 @@ namespace wallabag.ViewModels
                     var oldSource = node.Attributes["src"].Value;
                     node.Attributes.RemoveAll();
 
-                    if (!oldSource.Equals(Item.Model.PreviewImageUri.ToString()))
+                    if (!oldSource.Equals(Item.Model.PreviewImageUri?.ToString()))
                     {
                         node.Attributes.Add("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
                         node.Attributes.Add("data-src", oldSource);
