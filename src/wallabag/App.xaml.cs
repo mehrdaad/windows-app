@@ -113,7 +113,8 @@ namespace wallabag
                 {
                     var items = await Client.GetItemsAsync(
                         dateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
-                        sortOrder: Api.WallabagClient.WallabagSortOrder.Descending);
+                        sortOrder: Api.WallabagClient.WallabagSortOrder.Descending,
+                        since: SettingsService.Instance.LastSuccessfulSyncDateTime);
 
                     if (items != null)
                     {
@@ -132,6 +133,8 @@ namespace wallabag
 
                             Database.InsertOrReplaceAll(itemList);
                         });
+
+                        SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;
                     }
                 }
             }

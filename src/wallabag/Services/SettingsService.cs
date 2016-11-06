@@ -67,6 +67,12 @@ namespace wallabag.Services
             set { _helper.Write(nameof(AllowCollectionOfTelemetryData), value); }
         }
 
+        public DateTime LastSuccessfulSyncDateTime
+        {
+            get { return _helper.Read(nameof(LastSuccessfulSyncDateTime), DateTime.MinValue); }
+            set { _helper.Write(nameof(LastSuccessfulSyncDateTime), value); }
+        }
+
         #endregion
 
         #region Reading
