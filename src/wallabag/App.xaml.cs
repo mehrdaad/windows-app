@@ -135,6 +135,8 @@ namespace wallabag
                     }
                 }
             }
+
+            SettingsService.Instance.LastExecutionOfBackgroundTask = DateTime.Now;
         }
 
         private void CreateClientAndDatabase()

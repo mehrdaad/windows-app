@@ -151,6 +151,11 @@ namespace wallabag.Services
             get { return _helper.Read(nameof(DownloadNewItemsDuringExecutionOfBackgroundTask), false); }
             set { _helper.Write(nameof(DownloadNewItemsDuringExecutionOfBackgroundTask), value); }
         }
+        public DateTime LastExecutionOfBackgroundTask
+        {
+            get { return _helper.Read(nameof(LastExecutionOfBackgroundTask), DateTime.MinValue); }
+            set { _helper.Write(nameof(LastExecutionOfBackgroundTask), value); }
+        }
 
         #endregion
     }
