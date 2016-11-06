@@ -133,5 +133,25 @@ namespace wallabag.Services
         }
 
         #endregion
+
+        #region Background task
+
+        public bool IsBackgroundTaskActivated
+        {
+            get { return _helper.Read(nameof(IsBackgroundTaskActivated), true); }
+            set { _helper.Write(nameof(IsBackgroundTaskActivated), value); }
+        }
+        public int BackgroundTaskExecutionInterval
+        {
+            get { return _helper.Read(nameof(BackgroundTaskExecutionInterval), 15); }
+            set { _helper.Write(nameof(BackgroundTaskExecutionInterval), value); }
+        }
+        public bool DownloadNewItemsDuringExecutionOfBackgroundTask
+        {
+            get { return _helper.Read(nameof(DownloadNewItemsDuringExecutionOfBackgroundTask), false); }
+            set { _helper.Write(nameof(DownloadNewItemsDuringExecutionOfBackgroundTask), value); }
+        }
+
+        #endregion
     }
 }
