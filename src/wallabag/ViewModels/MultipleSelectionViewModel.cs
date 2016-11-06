@@ -88,7 +88,7 @@ namespace wallabag.ViewModels
             Messenger.Default.Send(new BlockOfflineTaskExecutionMessage(true));
             a.Invoke();
             Messenger.Default.Send(new BlockOfflineTaskExecutionMessage(false));
-            Messenger.Default.Send(new NotificationMessage("CompleteMultipleSelection"));
+            Messenger.Default.Send(new CompleteMultipleSelectionMessage());
         }
     }
 }

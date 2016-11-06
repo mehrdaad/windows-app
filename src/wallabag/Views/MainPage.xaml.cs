@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
 using System.Linq;
+using wallabag.Common.Messages;
 using wallabag.Controls;
 using wallabag.ViewModels;
 using Windows.Foundation;
@@ -55,11 +56,7 @@ namespace wallabag.Views
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Messenger.Default.Register<NotificationMessage>(this, message =>
-            {
-                if (message.Notification.Equals("CompleteMultipleSelection"))
-                    DisableMultipleSelection(true);
-            });
+            Messenger.Default.Register<CompleteMultipleSelectionMessage>(this, message => DisableMultipleSelection(true));
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
