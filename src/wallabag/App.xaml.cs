@@ -2,7 +2,9 @@
 using SQLite.Net;
 using SQLite.Net.Platform.WinRT;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Template10.Common;
 using wallabag.Models;
@@ -106,6 +108,32 @@ namespace wallabag
                 taskInstance.GetDeferral();
                 foreach (var item in offlineTasks)
                     await item.ExecuteAsync();
+
+                if (SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask)
+                {
+                    var items = await Client.GetItemsAsync(
+                        dateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
+                        sortOrder: Api.WallabagClient.WallabagSortOrder.Descending);
+
+                    if (items != null)
+                    {
+                        var itemList = new List<Item>();
+
+                        foreach (var item in items)
+                            itemList.Add(item);
+
+                        var databaseList = Database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{itemList.Count}", Array.Empty<object>());
+                        var deletedItems = databaseList.Except(itemList);
+
+                        Database.RunInTransaction(() =>
+                        {
+                            foreach (var item in deletedItems)
+                                Database.Delete(item);
+
+                            Database.InsertOrReplaceAll(itemList);
+                        });
+                    }
+                }
             }
         }
 
