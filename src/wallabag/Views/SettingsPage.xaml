@@ -169,11 +169,11 @@
                         x:Name="TitleBarVisibilityToggleSwitch"
                         Margin="0,32,0,0"
                         x:DeferLoadStrategy="Lazy"
-                        Visibility="Collapsed"
                         Header="Visibility of the title bar"
                         IsOn="{x:Bind ViewModel.WhiteOverlayForTitleBar, Mode=TwoWay}"
                         OffContent="Hidden"
-                        OnContent="Visible" />
+                        OnContent="Visible"
+                        Visibility="Collapsed" />
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="InfoPivotItem" Header="Info">
