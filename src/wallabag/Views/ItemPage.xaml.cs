@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using wallabag.Common.Helpers;
 using wallabag.Services;
 using wallabag.ViewModels;
 using Windows.Foundation;
@@ -10,6 +11,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
+using WindowsStateTriggers;
 
 // Die Elementvorlage "Leere Seite" ist unter http://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
@@ -56,6 +59,18 @@ namespace wallabag.Views
             };
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var titleBarBackgroundRectangle = FindName(nameof(TitleBarBackgroundRectangle)) as Rectangle;
+            System.Diagnostics.Debug.WriteLine(GeneralHelper.DeviceFamilyOfCurrentDevice);
+            if (SettingsService.Instance.WhiteOverlayForTitleBar &&
+                GeneralHelper.DeviceFamilyOfCurrentDevice == DeviceFamily.Desktop)
+            {
+                titleBarBackgroundRectangle.Visibility = Visibility.Visible;
+            }
+            else
+                titleBarBackgroundRectangle.Visibility = Visibility.Collapsed;
+        }
         protected override void OnNavigatedFrom(NavigationEventArgs e) => HtmlViewer.NavigateToString("<p></p>");
 
         private MenuFlyout _rightClickMenuFlyout;

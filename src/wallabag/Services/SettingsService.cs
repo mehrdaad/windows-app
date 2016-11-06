@@ -126,6 +126,11 @@ namespace wallabag.Services
             get { return _helper.Read(nameof(TextAlignment), "left"); }
             set { _helper.Write(nameof(TextAlignment), value); }
         }
+        public bool WhiteOverlayForTitleBar
+        {
+            get { return _helper.Read(nameof(WhiteOverlayForTitleBar), true); }
+            set { _helper.Write(nameof(WhiteOverlayForTitleBar), value); }
+        }
 
         #endregion
     }

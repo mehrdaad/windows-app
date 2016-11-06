@@ -1,19 +1,13 @@
-﻿using Windows.ApplicationModel.Resources;
+﻿using System;
+using Windows.ApplicationModel.Resources;
+using Windows.System.Profile;
+using WindowsStateTriggers;
 
 namespace wallabag.Common.Helpers
 {
     class GeneralHelper
     {
-        public static bool IsPhone
-        {
-            get
-            {
-                var qualifiers = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().QualifierValues;
-                if (qualifiers.ContainsKey("DeviceFamily") && qualifiers["DeviceFamily"] == "Mobile")
-                    return true;
-                else return false;
-            }
-        }
+        public static bool IsPhone { get { return DeviceFamilyOfCurrentDevice == DeviceFamily.Mobile; } }
 
         public static string LocalizedResource(string resourceName)
         {
@@ -26,6 +20,14 @@ namespace wallabag.Common.Helpers
             {
                 var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
                 return profile?.GetNetworkConnectivityLevel() == Windows.Networking.Connectivity.NetworkConnectivityLevel.InternetAccess;
+            }
+        }
+
+        public static DeviceFamily DeviceFamilyOfCurrentDevice
+        {
+            get
+            {
+                return (DeviceFamily)Enum.Parse(typeof(DeviceFamily), AnalyticsInfo.VersionInfo.DeviceFamily.Replace("Windows.", string.Empty));
             }
         }
     }

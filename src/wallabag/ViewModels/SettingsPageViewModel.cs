@@ -42,6 +42,7 @@ namespace wallabag.ViewModels
                 }
             }
         }
+        public bool WhiteOverlayForTitleBar { get; set; } = SettingsService.Instance.WhiteOverlayForTitleBar;
 
         public bool? VideoOpenModeIsInline { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Inline; } }
         public bool? VideoOpenModeIsApp { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.App; } }
@@ -86,6 +87,8 @@ namespace wallabag.ViewModels
                         settings.NavigateBackAfterReadingAnArticle = NavigateBackAfterReadingAnArticle; break;
                     case nameof(SyncReadingProgress):
                         settings.SyncReadingProgress = SyncReadingProgress; break;
+                    case nameof(WhiteOverlayForTitleBar):
+                        settings.WhiteOverlayForTitleBar = WhiteOverlayForTitleBar; break;
                 }
             };
         }

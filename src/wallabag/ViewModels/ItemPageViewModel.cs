@@ -123,7 +123,8 @@ namespace wallabag.ViewModels
                     var oldSource = node.Attributes["src"].Value;
                     node.Attributes.RemoveAll();
 
-                    if (!oldSource.Equals(Item.Model.PreviewImageUri?.ToString()))
+                    if (!oldSource.Equals(Item.Model.PreviewImageUri?.ToString()) &&
+                        GeneralHelper.InternetConnectionIsAvailable)
                     {
                         node.Attributes.Add("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
                         node.Attributes.Add("data-src", oldSource);

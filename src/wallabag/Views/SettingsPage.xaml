@@ -6,6 +6,7 @@
     xmlns:local="using:wallabag.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:wallabag.ViewModels"
+    xmlns:wst="using:WindowsStateTriggers"
     mc:Ignorable="d">
 
     <Page.DataContext>
@@ -46,6 +47,16 @@
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="720" />
                     </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <wst:DeviceFamilyStateTrigger DeviceFamily="Desktop" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="TitleBarVisibilityToggleSwitch.Visibility" Value="Visible" />
+                    </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
@@ -153,6 +164,16 @@
                             Style="{StaticResource InfoTextBlockStyle}"
                             Text="{x:Bind ViewModel.VideoOpenModeDescription, Mode=OneWay}" />
                     </Grid>
+                    <ToggleSwitch
+                        x:Uid="TitleBarVisibilityToggleSwitch"
+                        x:Name="TitleBarVisibilityToggleSwitch"
+                        Margin="0,32,0,0"
+                        x:DeferLoadStrategy="Lazy"
+                        Visibility="Collapsed"
+                        Header="Visibility of the title bar"
+                        IsOn="{x:Bind ViewModel.WhiteOverlayForTitleBar, Mode=TwoWay}"
+                        OffContent="Hidden"
+                        OnContent="Visible" />
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="InfoPivotItem" Header="Info">

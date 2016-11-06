@@ -456,4 +456,13 @@
   <data name="SearchHeaderWithQuery" xml:space="preserve">
     <value>Search results for: {0}</value>
   </data>
+  <data name="TitleBarVisibilityToggleSwitch.Header" xml:space="preserve">
+    <value>Visibility of the title bar</value>
+  </data>
+  <data name="TitleBarVisibilityToggleSwitch.OffContent" xml:space="preserve">
+    <value>Hidden</value>
+  </data>
+  <data name="TitleBarVisibilityToggleSwitch.OnContent" xml:space="preserve">
+    <value>Visible</value>
+  </data>
 </root>
