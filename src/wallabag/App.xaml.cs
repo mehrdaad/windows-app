@@ -93,6 +93,22 @@ namespace wallabag
                 await NavigationService.RestoreSavedNavigationAsync();
         }
 
+        protected override async void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        {
+            base.OnBackgroundActivated(args);
+
+            var taskInstance = args.TaskInstance;
+            var offlineTaskCount = Database.ExecuteScalar<int>("select count(*) from OfflineTask");
+            var offlineTasks = Database.Table<OfflineTask>();
+
+            if (offlineTaskCount > 0)
+            {
+                taskInstance.GetDeferral();
+                foreach (var item in offlineTasks)
+                    await item.ExecuteAsync();
+            }
+        }
+
         private void CreateClientAndDatabase()
         {
             if (Client == null)
