@@ -80,17 +80,17 @@ namespace wallabag
 
         public override Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
-            return NavigationService.SaveNavigationAsync();
+            return NavigationService.SaveAsync();
         }
 
-        public override async void OnResuming(object s, object e, AppExecutionState previousExecutionState)
+        public override void OnResuming(object s, object e, AppExecutionState previousExecutionState)
         {
             Client.AccessToken = Settings.AccessToken;
             Client.RefreshToken = Settings.RefreshToken;
             Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
 
             if (previousExecutionState == AppExecutionState.Suspended)
-                await NavigationService.RestoreSavedNavigationAsync();
+                NavigationService.Resuming();
         }
 
         private void CreateClientAndDatabase()
