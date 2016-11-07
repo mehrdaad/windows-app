@@ -465,4 +465,25 @@
   <data name="TitleBarVisibilityToggleSwitch.OnContent" xml:space="preserve">
     <value>Visible</value>
   </data>
+  <data name="BackgroundTaskDownloadNewItemsDescriptionTextBlock.Text" xml:space="preserve">
+    <value>With this setting you can tell the app that it also should download new items from the server. Otherwise only local changes will be sent from the app to the server.</value>
+  </data>
+  <data name="BackgroundTaskDownloadNewItemsToggleSwitch.Header" xml:space="preserve">
+    <value>Download new items</value>
+  </data>
+  <data name="BackgroundTaskExecutionIntervalInMinutesTextBlock.Text" xml:space="preserve">
+    <value>every {0} minutes</value>
+  </data>
+  <data name="BackgroundTaskExecutionIntervalSlider.Header" xml:space="preserve">
+    <value>Execution frequency</value>
+  </data>
+  <data name="BackgroundTaskPivotItem.Header" xml:space="preserve">
+    <value>Background sync</value>
+  </data>
+  <data name="EnableBackgroundTaskToggleSwitch.Header" xml:space="preserve">
+    <value>Enable background synchronisation</value>
+  </data>
+  <data name="LastExecutionOfBackgroundTaskTextBlock.Text" xml:space="preserve">
+    <value>Last execution at: {0}</value>
+  </data>
 </root>

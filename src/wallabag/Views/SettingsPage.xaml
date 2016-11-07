@@ -185,6 +185,7 @@
                         Header="Enable background task"
                         IsOn="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=TwoWay}" />
                     <TextBlock
+                        x:Uid="LastExecutionOfBackgroundTaskTextBlock"
                         Margin="0,0,0,32"
                         Style="{StaticResource InfoTextBlockStyle}"
                         Text="{x:Bind ViewModel.BackgroundTaskLastExecution}" />
@@ -193,6 +194,7 @@
                             x:Uid="BackgroundTaskExecutionIntervalSlider"
                             x:Name="BackgroundTaskExecutionIntervalSlider"
                             Header="Execution frequency"
+                            IsThumbToolTipEnabled="False"
                             Maximum="120"
                             Minimum="15"
                             RelativePanel.AlignLeftWithPanel="True"
@@ -210,8 +212,14 @@
                             Style="{StaticResource InfoTextBlockStyle}"
                             Text="{x:Bind ViewModel.BackgroundTaskExecutionIntervalDescription, Mode=OneWay}" />
                     </RelativePanel>
-                    <ToggleSwitch Header="Download new items" IsOn="{x:Bind ViewModel.DownloadNewItemsDuringExecutionOfBackgroundTask, Mode=TwoWay}" />
-                    <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="Setting the above value to On will download new items from the server. Otherwise the app will only sync local changes to the server." />
+                    <ToggleSwitch
+                        x:Uid="BackgroundTaskDownloadNewItemsToggleSwitch"
+                        Header="Download new items"
+                        IsOn="{x:Bind ViewModel.DownloadNewItemsDuringExecutionOfBackgroundTask, Mode=TwoWay}" />
+                    <TextBlock
+                        x:Uid="BackgroundTaskDownloadNewItemsDescriptionTextBlock"
+                        Style="{StaticResource InfoTextBlockStyle}"
+                        Text="Setting the above value to On will download new items from the server. Otherwise the app will only sync local changes to the server." />
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="InfoPivotItem" Header="Info">
