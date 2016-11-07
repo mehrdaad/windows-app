@@ -18,7 +18,7 @@ namespace wallabag
     {
         public static Api.WallabagClient Client { get; private set; }
         public static SQLiteConnection Database { get; private set; }
-        public static SettingsService Settings { get; private set; }
+        public static SettingsService Settings { get { return SettingsService.Instance; } }
 
         public static EventHandler<OfflineTask> OfflineTaskAdded;
         public static EventHandler<OfflineTask> OfflineTaskRemoved;
@@ -27,12 +27,10 @@ namespace wallabag
 
         public override Task OnInitializeAsync(IActivatedEventArgs args)
         {
-            Settings = SettingsService.Instance;
-
 #if DEBUG == false
             if (Settings.AllowCollectionOfTelemetryData)
                 HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
-#endif
+#endif          
 
             CreateClientAndDatabase();
 
@@ -44,10 +42,6 @@ namespace wallabag
                 Settings.RefreshToken = Client.RefreshToken;
                 Settings.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
             };
-
-            Client.AccessToken = Settings.AccessToken;
-            Client.RefreshToken = Settings.RefreshToken;
-            Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
 
             return Task.CompletedTask;
         }
@@ -99,6 +93,8 @@ namespace wallabag
         {
             base.OnBackgroundActivated(args);
 
+            CreateClientAndDatabase();
+
             var taskInstance = args.TaskInstance;
             var offlineTaskCount = Database.ExecuteScalar<int>("select count(*) from OfflineTask");
             var offlineTasks = Database.Table<OfflineTask>();
@@ -146,6 +142,14 @@ namespace wallabag
         {
             if (Client == null)
                 Client = new Api.WallabagClient(Settings.WallabagUrl, Settings.ClientId, Settings.ClientSecret);
+
+            if (!string.IsNullOrEmpty(Settings.AccessToken) &&
+                !string.IsNullOrEmpty(Settings.RefreshToken))
+            {
+                Client.AccessToken = Settings.AccessToken;
+                Client.RefreshToken = Settings.RefreshToken;
+                Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
+            }
 
             if (Database == null)
             {
