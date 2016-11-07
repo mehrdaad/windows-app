@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using wallabag.Services;
 using Windows.ApplicationModel.Background;
 
 namespace wallabag.Common.Helpers
@@ -17,7 +18,7 @@ namespace wallabag.Common.Helpers
             var builder = new BackgroundTaskBuilder();
             builder.Name = _backgroundTaskName;
             builder.IsNetworkRequested = true;
-            builder.SetTrigger(new TimeTrigger(15, false));
+            builder.SetTrigger(new TimeTrigger((uint)SettingsService.Instance.BackgroundTaskExecutionInterval, false));
             builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
 
             _backgroundTask = builder.Register();
