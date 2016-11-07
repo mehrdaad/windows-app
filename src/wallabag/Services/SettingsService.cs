@@ -142,10 +142,10 @@ namespace wallabag.Services
 
         #region Background task
 
-        public bool IsBackgroundTaskActivated
+        public bool BackgroundTaskIsEnabled
         {
-            get { return _helper.Read(nameof(IsBackgroundTaskActivated), true); }
-            set { _helper.Write(nameof(IsBackgroundTaskActivated), value); }
+            get { return _helper.Read(nameof(BackgroundTaskIsEnabled), true); }
+            set { _helper.Write(nameof(BackgroundTaskIsEnabled), value); }
         }
         public int BackgroundTaskExecutionInterval
         {

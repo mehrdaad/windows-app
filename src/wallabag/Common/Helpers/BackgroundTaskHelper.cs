@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using wallabag.Services;
+﻿using wallabag.Services;
 using Windows.ApplicationModel.Background;
 
 namespace wallabag.Common.Helpers
@@ -25,23 +20,26 @@ namespace wallabag.Common.Helpers
         }
         public static void UnregisterBackgroundTask()
         {
-            if (BackgroundTaskIsRegistered())
+            if (BackgroundTaskIsRegistered)
                 _backgroundTask.Unregister(false);
         }
 
-        public static bool BackgroundTaskIsRegistered()
+        public static bool BackgroundTaskIsRegistered
         {
-            bool taskRegistered = false;
-            foreach (var task in BackgroundTaskRegistration.AllTasks)
+            get
             {
-                if (task.Value.Name == _backgroundTaskName)
+                bool taskRegistered = false;
+                foreach (var task in BackgroundTaskRegistration.AllTasks)
                 {
-                    taskRegistered = true;
-                    _backgroundTask = task.Value;
-                    break;
+                    if (task.Value.Name == _backgroundTaskName)
+                    {
+                        taskRegistered = true;
+                        _backgroundTask = task.Value;
+                        break;
+                    }
                 }
+                return taskRegistered;
             }
-            return taskRegistered;
         }
     }
 }
