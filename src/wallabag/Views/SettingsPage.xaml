@@ -27,7 +27,9 @@
             </Setter>
         </Style>
         <Style TargetType="PivotItem">
+            <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Margin" Value="12,4" />
+            <Setter Property="MaxWidth" Value="400" />
         </Style>
     </Page.Resources>
 
@@ -169,11 +171,47 @@
                         x:Name="TitleBarVisibilityToggleSwitch"
                         Margin="0,32,0,0"
                         x:DeferLoadStrategy="Lazy"
-                        Visibility="Collapsed"
                         Header="Visibility of the title bar"
                         IsOn="{x:Bind ViewModel.WhiteOverlayForTitleBar, Mode=TwoWay}"
                         OffContent="Hidden"
-                        OnContent="Visible" />
+                        OnContent="Visible"
+                        Visibility="Collapsed" />
+                </StackPanel>
+            </PivotItem>
+            <PivotItem x:Uid="BackgroundTaskPivotItem" Header="Background task">
+                <StackPanel>
+                    <ToggleSwitch
+                        x:Uid="EnableBackgroundTaskToggleSwitch"
+                        Header="Enable background task"
+                        IsOn="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=TwoWay}" />
+                    <TextBlock
+                        Margin="0,0,0,32"
+                        Style="{StaticResource InfoTextBlockStyle}"
+                        Text="{x:Bind ViewModel.BackgroundTaskLastExecution}" />
+                    <RelativePanel>
+                        <Slider
+                            x:Uid="BackgroundTaskExecutionIntervalSlider"
+                            x:Name="BackgroundTaskExecutionIntervalSlider"
+                            Header="Execution frequency"
+                            Maximum="120"
+                            Minimum="15"
+                            RelativePanel.AlignLeftWithPanel="True"
+                            RelativePanel.LeftOf="BackgroundTaskExecutionIntervalInMinutesTextBlock"
+                            StepFrequency="15"
+                            TickFrequency="15"
+                            Value="{x:Bind ViewModel.BackgroundTaskExecutionInterval, Mode=TwoWay}" />
+                        <TextBlock
+                            x:Uid="BackgroundTaskExecutionIntervalInMinutesTextBlock"
+                            x:Name="BackgroundTaskExecutionIntervalInMinutesTextBlock"
+                            Margin="12,10,0,0"
+                            HorizontalAlignment="Right"
+                            RelativePanel.AlignRightWithPanel="True"
+                            RelativePanel.AlignVerticalCenterWithPanel="True"
+                            Style="{StaticResource InfoTextBlockStyle}"
+                            Text="{x:Bind ViewModel.BackgroundTaskExecutionIntervalDescription, Mode=OneWay}" />
+                    </RelativePanel>
+                    <ToggleSwitch Header="Download new items" IsOn="{x:Bind ViewModel.DownloadNewItemsDuringExecutionOfBackgroundTask, Mode=TwoWay}" />
+                    <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="Setting the above value to On will download new items from the server. Otherwise the app will only sync local changes to the server." />
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="InfoPivotItem" Header="Info">

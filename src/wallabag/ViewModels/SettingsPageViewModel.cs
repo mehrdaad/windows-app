@@ -43,10 +43,17 @@ namespace wallabag.ViewModels
             }
         }
         public bool WhiteOverlayForTitleBar { get; set; } = SettingsService.Instance.WhiteOverlayForTitleBar;
+        public bool BackgroundTaskIsEnabled { get; set; } = SettingsService.Instance.BackgroundTaskIsEnabled;
+        public double BackgroundTaskExecutionInterval { get; set; } = (double)SettingsService.Instance.BackgroundTaskExecutionInterval;
+        public bool DownloadNewItemsDuringExecutionOfBackgroundTask { get; set; } = SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask;
 
         public bool? VideoOpenModeIsInline { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Inline; } }
         public bool? VideoOpenModeIsApp { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.App; } }
         public bool? VideoOpenModeIsBrowser { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Browser; } }
+
+        [DependsOn(nameof(BackgroundTaskExecutionInterval))]
+        public string BackgroundTaskExecutionIntervalDescription { get { return $"{BackgroundTaskExecutionInterval} minutes"; } }
+        public string BackgroundTaskLastExecution { get { return $"Last execution: {SettingsService.Instance.LastExecutionOfBackgroundTask}"; } }
 
         public DelegateCommand OpenChangelogCommand { get; private set; }
         public DelegateCommand OpenDocumentationCommand { get; private set; }
@@ -89,6 +96,19 @@ namespace wallabag.ViewModels
                         settings.SyncReadingProgress = SyncReadingProgress; break;
                     case nameof(WhiteOverlayForTitleBar):
                         settings.WhiteOverlayForTitleBar = WhiteOverlayForTitleBar; break;
+                    case nameof(BackgroundTaskIsEnabled):
+                        {
+                            if (BackgroundTaskIsEnabled)
+                                BackgroundTaskHelper.RegisterBackgroundTask();
+                            else
+                                BackgroundTaskHelper.UnregisterBackgroundTask();
+
+                            settings.BackgroundTaskIsEnabled = BackgroundTaskIsEnabled; break;
+                        }
+                    case nameof(BackgroundTaskExecutionInterval):
+                        settings.BackgroundTaskExecutionInterval = (int)BackgroundTaskExecutionInterval; break;
+                    case nameof(DownloadNewItemsDuringExecutionOfBackgroundTask):
+                        settings.DownloadNewItemsDuringExecutionOfBackgroundTask = DownloadNewItemsDuringExecutionOfBackgroundTask; break;
                 }
             };
         }
