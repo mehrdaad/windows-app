@@ -18,7 +18,6 @@ namespace wallabag.Common.Helpers
             builder.Name = _backgroundTaskName;
             builder.IsNetworkRequested = true;
             builder.SetTrigger(new TimeTrigger((uint)SettingsService.Instance.BackgroundTaskExecutionInterval, false));
-            builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
 
             _backgroundTask = builder.Register();
         }
