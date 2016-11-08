@@ -55,7 +55,14 @@ namespace wallabag.ViewModels
 
         [DependsOn(nameof(BackgroundTaskExecutionInterval))]
         public string BackgroundTaskExecutionIntervalDescription { get { return string.Format(GeneralHelper.LocalizedResource("BackgroundTaskExecutionIntervalInMinutesTextBlock.Text"), BackgroundTaskExecutionInterval); } }
-        public string BackgroundTaskLastExecution { get { return string.Format(GeneralHelper.LocalizedResource("LastExecutionOfBackgroundTaskTextBlock.Text"), SettingsService.Instance.LastExecutionOfBackgroundTask); } }
+        public string BackgroundTaskLastExecutionDescription
+        {
+            get
+            {
+                return string.Format(GeneralHelper.LocalizedResource("LastExecutionOfBackgroundTaskTextBlock.Text"),
+                    SettingsService.Instance.LastExecutionOfBackgroundTask == DateTime.MinValue ? GeneralHelper.LocalizedResource("Never") : SettingsService.Instance.LastExecutionOfBackgroundTask.ToString());
+            }
+        }
         private bool _backgroundTaskOptionsChanged = false;
 
         public DelegateCommand OpenChangelogCommand { get; private set; }
@@ -104,7 +111,10 @@ namespace wallabag.ViewModels
                     case nameof(BackgroundTaskExecutionInterval):
                     case nameof(BackgroundTaskIsEnabled):
                         if (BackgroundTaskIsEnabled == false)
+                        {
                             SettingsService.Instance.LastExecutionOfBackgroundTask = DateTime.MinValue;
+                            RaisePropertyChanged(nameof(BackgroundTaskLastExecutionDescription));
+                        }
 
                         _backgroundTaskOptionsChanged = true;
                         break;

@@ -187,7 +187,7 @@
                         x:Uid="LastExecutionOfBackgroundTaskTextBlock"
                         Margin="0,0,0,32"
                         Style="{StaticResource InfoTextBlockStyle}"
-                        Text="{x:Bind ViewModel.BackgroundTaskLastExecution}"
+                        Text="{x:Bind ViewModel.BackgroundTaskLastExecutionDescription, Mode=OneWay}"
                         Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <RelativePanel Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Slider

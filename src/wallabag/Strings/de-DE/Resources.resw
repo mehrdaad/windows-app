@@ -499,6 +499,9 @@
     <value>Synchronisation im Hintergrund aktivieren</value>
   </data>
   <data name="LastExecutionOfBackgroundTaskTextBlock.Text" xml:space="preserve">
-    <value>Letzte Ausführung am: {0}</value>
+    <value>Letzte Ausführung: {0}</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>niemals</value>
   </data>
 </root>
