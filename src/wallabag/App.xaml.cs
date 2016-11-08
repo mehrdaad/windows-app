@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Template10.Common;
+using wallabag.Common.Helpers;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.ApplicationModel;
@@ -42,6 +43,9 @@ namespace wallabag
                 Settings.RefreshToken = Client.RefreshToken;
                 Settings.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
             };
+
+            if (Settings.BackgroundTaskIsEnabled && BackgroundTaskHelper.BackgroundTaskIsRegistered == false)
+                return BackgroundTaskHelper.RegisterBackgroundTaskAsync();
 
             return Task.CompletedTask;
         }
