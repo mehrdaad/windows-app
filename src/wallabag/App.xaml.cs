@@ -57,6 +57,21 @@ namespace wallabag
                 SessionState["shareTarget"] = args;
                 NavigationService.Navigate(typeof(Views.ShareTargetPage));
             }
+            else if (args.Kind == ActivationKind.Protocol)
+            {
+                var a = args as ProtocolActivatedEventArgs;
+                var uriString = a.Uri.ToString().Replace("wallabag://", string.Empty);
+
+                var split = uriString.Split("@"[0]);
+
+                if (split.Length == 2)
+                {
+                    var username = split[0];
+                    var server = split[1].Replace("https//", "https://").Replace("http//", "http://");
+
+                    NavigationService.Navigate(typeof(Views.LoginPage), new ProtocolSetupNavigationParameter(username, server));
+                }
+            }
             else
             {
                 if (string.IsNullOrEmpty(Settings.AccessToken) || string.IsNullOrEmpty(Settings.RefreshToken))
