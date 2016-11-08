@@ -99,7 +99,7 @@ namespace wallabag.ViewModels
                     case nameof(BackgroundTaskIsEnabled):
                         {
                             if (BackgroundTaskIsEnabled)
-                                BackgroundTaskHelper.RegisterBackgroundTask();
+                                BackgroundTaskHelper.RegisterBackgroundTaskAsync();
                             else
                                 BackgroundTaskHelper.UnregisterBackgroundTask();
 

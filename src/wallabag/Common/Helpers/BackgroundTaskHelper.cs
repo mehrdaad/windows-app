@@ -1,4 +1,6 @@
-﻿using wallabag.Services;
+﻿using System;
+using System.Threading.Tasks;
+using wallabag.Services;
 using Windows.ApplicationModel.Background;
 
 namespace wallabag.Common.Helpers
@@ -8,8 +10,10 @@ namespace wallabag.Common.Helpers
         private const string _backgroundTaskName = "wallabagBackgroundSync";
         private static IBackgroundTaskRegistration _backgroundTask;
 
-        public static void RegisterBackgroundTask()
+        public static async Task RegisterBackgroundTaskAsync()
         {
+            await BackgroundExecutionManager.RequestAccessAsync();
+
             var builder = new BackgroundTaskBuilder();
             builder.Name = _backgroundTaskName;
             builder.IsNetworkRequested = true;
