@@ -110,7 +110,8 @@ namespace wallabag.ViewModels
 
             if (CurrentStep == 0)
             {
-                Url = selectedProvider?.Url == null ? "https://" : selectedProvider.Url.ToString();
+                if (Url.IsValidUri() == false)
+                    Url = selectedProvider?.Url == null ? "https://" : selectedProvider.Url.ToString();
 
                 CurrentStep += 1;
                 return;
@@ -249,7 +250,7 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            _credentialsAreExisting = parameter != null && (bool)parameter;
+            _credentialsAreExisting = parameter != null && parameter is bool && (bool)parameter;
 
             if (state.Count > 0)
             {
@@ -274,6 +275,19 @@ namespace wallabag.ViewModels
                 Url = App.Client.InstanceUri.ToString();
 
                 await NextAsync();
+                return;
+            }
+
+            if (parameter is ProtocolSetupNavigationParameter)
+            {
+                var np = parameter as ProtocolSetupNavigationParameter;
+                Username = np.Username;
+                Url = np.Server;
+
+                SelectedProvider = new WallabagProvider(new Uri(Url), string.Empty);
+
+                CurrentStep = 1;
+                return;
             }
         }
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
