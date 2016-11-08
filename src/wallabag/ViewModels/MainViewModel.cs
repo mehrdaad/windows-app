@@ -202,6 +202,8 @@ namespace wallabag.ViewModels
 
                 if (databaseList[0].Equals(Items[0].Model) == false)
                     await ReloadViewAsync();
+
+                SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;                    
             }
             IsSyncing = false;
         }

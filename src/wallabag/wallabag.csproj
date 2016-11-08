@@ -101,6 +101,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\Helpers\BackgroundTaskHelper.cs" />
     <Compile Include="Common\Helpers\GeneralHelper.cs" />
     <Compile Include="Common\Helpers\DispatcherHelper.cs" />
     <Compile Include="Common\Helpers\ListHelper.cs" />

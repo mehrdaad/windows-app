@@ -67,6 +67,12 @@ namespace wallabag.Services
             set { _helper.Write(nameof(AllowCollectionOfTelemetryData), value); }
         }
 
+        public DateTime LastSuccessfulSyncDateTime
+        {
+            get { return _helper.Read(nameof(LastSuccessfulSyncDateTime), DateTime.MinValue); }
+            set { _helper.Write(nameof(LastSuccessfulSyncDateTime), value); }
+        }
+
         #endregion
 
         #region Reading
@@ -130,6 +136,31 @@ namespace wallabag.Services
         {
             get { return _helper.Read(nameof(WhiteOverlayForTitleBar), true); }
             set { _helper.Write(nameof(WhiteOverlayForTitleBar), value); }
+        }
+
+        #endregion
+
+        #region Background task
+
+        public bool BackgroundTaskIsEnabled
+        {
+            get { return _helper.Read(nameof(BackgroundTaskIsEnabled), true); }
+            set { _helper.Write(nameof(BackgroundTaskIsEnabled), value); }
+        }
+        public int BackgroundTaskExecutionInterval
+        {
+            get { return _helper.Read(nameof(BackgroundTaskExecutionInterval), 15); }
+            set { _helper.Write(nameof(BackgroundTaskExecutionInterval), value); }
+        }
+        public bool DownloadNewItemsDuringExecutionOfBackgroundTask
+        {
+            get { return _helper.Read(nameof(DownloadNewItemsDuringExecutionOfBackgroundTask), false); }
+            set { _helper.Write(nameof(DownloadNewItemsDuringExecutionOfBackgroundTask), value); }
+        }
+        public DateTime LastExecutionOfBackgroundTask
+        {
+            get { return _helper.Read(nameof(LastExecutionOfBackgroundTask), DateTime.MinValue); }
+            set { _helper.Write(nameof(LastExecutionOfBackgroundTask), value); }
         }
 
         #endregion

@@ -2,9 +2,12 @@
 using SQLite.Net;
 using SQLite.Net.Platform.WinRT;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Template10.Common;
+using wallabag.Common.Helpers;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.ApplicationModel;
@@ -16,7 +19,7 @@ namespace wallabag
     {
         public static Api.WallabagClient Client { get; private set; }
         public static SQLiteConnection Database { get; private set; }
-        public static SettingsService Settings { get; private set; }
+        public static SettingsService Settings { get { return SettingsService.Instance; } }
 
         public static EventHandler<OfflineTask> OfflineTaskAdded;
         public static EventHandler<OfflineTask> OfflineTaskRemoved;
@@ -25,12 +28,10 @@ namespace wallabag
 
         public override Task OnInitializeAsync(IActivatedEventArgs args)
         {
-            Settings = SettingsService.Instance;
-
 #if DEBUG == false
             if (Settings.AllowCollectionOfTelemetryData)
                 HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
-#endif
+#endif          
 
             CreateClientAndDatabase();
 
@@ -43,9 +44,8 @@ namespace wallabag
                 Settings.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
             };
 
-            Client.AccessToken = Settings.AccessToken;
-            Client.RefreshToken = Settings.RefreshToken;
-            Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
+            if (Settings.BackgroundTaskIsEnabled && BackgroundTaskHelper.BackgroundTaskIsRegistered == false)
+                return BackgroundTaskHelper.RegisterBackgroundTaskAsync();
 
             return Task.CompletedTask;
         }
@@ -93,10 +93,67 @@ namespace wallabag
                 NavigationService.Resuming();
         }
 
+        protected override async void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        {
+            base.OnBackgroundActivated(args);
+
+            CreateClientAndDatabase();
+
+            var taskInstance = args.TaskInstance;
+            var offlineTaskCount = Database.ExecuteScalar<int>("select count(*) from OfflineTask");
+            var offlineTasks = Database.Table<OfflineTask>();
+
+            if (offlineTaskCount > 0)
+            {
+                taskInstance.GetDeferral();
+                foreach (var item in offlineTasks)
+                    await item.ExecuteAsync();
+
+                if (SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask)
+                {
+                    var items = await Client.GetItemsAsync(
+                        dateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
+                        sortOrder: Api.WallabagClient.WallabagSortOrder.Descending,
+                        since: SettingsService.Instance.LastSuccessfulSyncDateTime);
+
+                    if (items != null)
+                    {
+                        var itemList = new List<Item>();
+
+                        foreach (var item in items)
+                            itemList.Add(item);
+
+                        var databaseList = Database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{itemList.Count}", Array.Empty<object>());
+                        var deletedItems = databaseList.Except(itemList);
+
+                        Database.RunInTransaction(() =>
+                        {
+                            foreach (var item in deletedItems)
+                                Database.Delete(item);
+
+                            Database.InsertOrReplaceAll(itemList);
+                        });
+
+                        SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;
+                    }
+                }
+            }
+
+            SettingsService.Instance.LastExecutionOfBackgroundTask = DateTime.Now;
+        }
+
         private void CreateClientAndDatabase()
         {
             if (Client == null)
                 Client = new Api.WallabagClient(Settings.WallabagUrl, Settings.ClientId, Settings.ClientSecret);
+
+            if (!string.IsNullOrEmpty(Settings.AccessToken) &&
+                !string.IsNullOrEmpty(Settings.RefreshToken))
+            {
+                Client.AccessToken = Settings.AccessToken;
+                Client.RefreshToken = Settings.RefreshToken;
+                Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
+            }
 
             if (Database == null)
             {

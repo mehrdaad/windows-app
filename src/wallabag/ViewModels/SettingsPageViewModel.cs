@@ -1,6 +1,8 @@
 ﻿using PropertyChanged;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common.Helpers;
 using wallabag.Services;
@@ -43,10 +45,25 @@ namespace wallabag.ViewModels
             }
         }
         public bool WhiteOverlayForTitleBar { get; set; } = SettingsService.Instance.WhiteOverlayForTitleBar;
+        public bool BackgroundTaskIsEnabled { get; set; } = SettingsService.Instance.BackgroundTaskIsEnabled;
+        public double BackgroundTaskExecutionInterval { get; set; } = SettingsService.Instance.BackgroundTaskExecutionInterval;
+        public bool DownloadNewItemsDuringExecutionOfBackgroundTask { get; set; } = SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask;
 
         public bool? VideoOpenModeIsInline { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Inline; } }
         public bool? VideoOpenModeIsApp { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.App; } }
         public bool? VideoOpenModeIsBrowser { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Browser; } }
+
+        [DependsOn(nameof(BackgroundTaskExecutionInterval))]
+        public string BackgroundTaskExecutionIntervalDescription { get { return string.Format(GeneralHelper.LocalizedResource("BackgroundTaskExecutionIntervalInMinutesTextBlock.Text"), BackgroundTaskExecutionInterval); } }
+        public string BackgroundTaskLastExecutionDescription
+        {
+            get
+            {
+                return string.Format(GeneralHelper.LocalizedResource("LastExecutionOfBackgroundTaskTextBlock.Text"),
+                    SettingsService.Instance.LastExecutionOfBackgroundTask == DateTime.MinValue ? GeneralHelper.LocalizedResource("Never") : SettingsService.Instance.LastExecutionOfBackgroundTask.ToString());
+            }
+        }
+        private bool _backgroundTaskOptionsChanged = false;
 
         public DelegateCommand OpenChangelogCommand { get; private set; }
         public DelegateCommand OpenDocumentationCommand { get; private set; }
@@ -89,8 +106,36 @@ namespace wallabag.ViewModels
                         settings.SyncReadingProgress = SyncReadingProgress; break;
                     case nameof(WhiteOverlayForTitleBar):
                         settings.WhiteOverlayForTitleBar = WhiteOverlayForTitleBar; break;
+                    case nameof(DownloadNewItemsDuringExecutionOfBackgroundTask):
+                        settings.DownloadNewItemsDuringExecutionOfBackgroundTask = DownloadNewItemsDuringExecutionOfBackgroundTask; break;
+                    case nameof(BackgroundTaskExecutionInterval):
+                    case nameof(BackgroundTaskIsEnabled):
+                        if (BackgroundTaskIsEnabled == false)
+                        {
+                            SettingsService.Instance.LastExecutionOfBackgroundTask = DateTime.MinValue;
+                            RaisePropertyChanged(nameof(BackgroundTaskLastExecutionDescription));
+                        }
+
+                        _backgroundTaskOptionsChanged = true;
+                        break;
                 }
             };
+        }
+
+        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
+        {
+            if (_backgroundTaskOptionsChanged == false)
+                return Task.CompletedTask;
+
+            SettingsService.Instance.BackgroundTaskIsEnabled = BackgroundTaskIsEnabled;
+            SettingsService.Instance.BackgroundTaskExecutionInterval = (int)BackgroundTaskExecutionInterval;
+
+            if (BackgroundTaskIsEnabled)
+            {
+                BackgroundTaskHelper.UnregisterBackgroundTask();
+                return BackgroundTaskHelper.RegisterBackgroundTaskAsync();
+            }
+            return Task.CompletedTask;
         }
 
         private string GetVersionNumber()

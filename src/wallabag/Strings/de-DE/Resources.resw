@@ -480,4 +480,28 @@
   <data name="TitleBarVisibilityToggleSwitch.OnContent" xml:space="preserve">
     <value>Sichtbar</value>
   </data>
+  <data name="BackgroundTaskDownloadNewItemsDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Hiermit kannst du einstellen, ob bei der Synchronisation auch neue Einträge heruntergeladen werden sollen. Ansonsten werden nur lokale Änderungen an den Server übertragen.</value>
+  </data>
+  <data name="BackgroundTaskDownloadNewItemsToggleSwitch.Header" xml:space="preserve">
+    <value>Neue Einträge herunterladen</value>
+  </data>
+  <data name="BackgroundTaskExecutionIntervalInMinutesTextBlock.Text" xml:space="preserve">
+    <value>alle {0} Minuten</value>
+  </data>
+  <data name="BackgroundTaskExecutionIntervalSlider.Header" xml:space="preserve">
+    <value>Ausführungs-Intervall</value>
+  </data>
+  <data name="BackgroundTaskPivotItem.Header" xml:space="preserve">
+    <value>Hintergrund-Sync</value>
+  </data>
+  <data name="EnableBackgroundTaskToggleSwitch.Header" xml:space="preserve">
+    <value>Synchronisation im Hintergrund aktivieren</value>
+  </data>
+  <data name="LastExecutionOfBackgroundTaskTextBlock.Text" xml:space="preserve">
+    <value>Letzte Ausführung: {0}</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>niemals</value>
+  </data>
 </root>
