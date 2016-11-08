@@ -153,7 +153,7 @@ namespace wallabag.ViewModels
             foreach (var item in database)
                 result.Add(new ItemViewModel(item));
 
-            GetMetadataForItems(result);
+            await GetMetadataForItemsAsync(result);
 
             return result;
         }
@@ -203,7 +203,7 @@ namespace wallabag.ViewModels
                 if (databaseList[0].Equals(Items[0].Model) == false)
                     await ReloadViewAsync();
 
-                SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;                    
+                SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;
             }
             IsSyncing = false;
         }
@@ -309,40 +309,43 @@ namespace wallabag.ViewModels
         private async Task ReloadViewAsync()
         {
             var databaseItems = await GetItemsForCurrentSearchPropertiesAsync();
-            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
              {
                  Items.Clear();
 
                  foreach (var item in databaseItems)
                      Items.Add(new ItemViewModel(item));
 
-                 GetMetadataForItems(Items);
              });
+            await GetMetadataForItemsAsync(Items);
         }
-        private void GetMetadataForItems(IEnumerable<ItemViewModel> items)
+        private Windows.Foundation.IAsyncAction GetMetadataForItemsAsync(IEnumerable<ItemViewModel> items)
         {
-            foreach (var item in items)
+            return CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
-                if (item.Model.Language != null)
+                foreach (var item in items)
                 {
-                    var translatedLanguage = new Language(item.Model.Language);
+                    if (item.Model.Language != null)
+                    {
+                        var translatedLanguage = new Language(item.Model.Language);
 
-                    if (!LanguageSuggestions.Contains(translatedLanguage))
-                        LanguageSuggestions.AddSorted(translatedLanguage, sortAscending: true);
+                        if (!LanguageSuggestions.Contains(translatedLanguage))
+                            LanguageSuggestions.AddSorted(translatedLanguage, sortAscending: true);
+                    }
+                    else
+                    {
+                        if (!LanguageSuggestions.Contains(Language.Unknown))
+                            LanguageSuggestions.AddSorted(Language.Unknown, sortAscending: true);
+                    }
+
+                    foreach (var tag in item.Model.Tags)
+                        if (!TagSuggestions.Contains(tag))
+                            TagSuggestions.AddSorted(tag, sortAscending: true);
                 }
-                else
-                {
-                    if (!LanguageSuggestions.Contains(Language.Unknown))
-                        LanguageSuggestions.AddSorted(Language.Unknown, sortAscending: true);
-                }
 
-                foreach (var tag in item.Model.Tags)
-                    if (!TagSuggestions.Contains(tag))
-                        TagSuggestions.AddSorted(tag, sortAscending: true);
-            }
-
-            if (LanguageSuggestions.Contains(Language.Unknown))
-                LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.Unknown), 0);
+                if (LanguageSuggestions.Contains(Language.Unknown))
+                    LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.Unknown), 0);
+            });
         }
         private Task<List<Item>> GetItemsForCurrentSearchPropertiesAsync(int offset = 0, int limit = 24)
         {
