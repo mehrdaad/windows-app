@@ -1,6 +1,8 @@
 ﻿using PropertyChanged;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common.Helpers;
 using wallabag.Services;
@@ -96,21 +98,23 @@ namespace wallabag.ViewModels
                         settings.SyncReadingProgress = SyncReadingProgress; break;
                     case nameof(WhiteOverlayForTitleBar):
                         settings.WhiteOverlayForTitleBar = WhiteOverlayForTitleBar; break;
-                    case nameof(BackgroundTaskIsEnabled):
-                        {
-                            if (BackgroundTaskIsEnabled)
-                                BackgroundTaskHelper.RegisterBackgroundTaskAsync();
-                            else
-                                BackgroundTaskHelper.UnregisterBackgroundTask();
-
-                            settings.BackgroundTaskIsEnabled = BackgroundTaskIsEnabled; break;
-                        }
-                    case nameof(BackgroundTaskExecutionInterval):
-                        settings.BackgroundTaskExecutionInterval = (int)BackgroundTaskExecutionInterval; break;
                     case nameof(DownloadNewItemsDuringExecutionOfBackgroundTask):
                         settings.DownloadNewItemsDuringExecutionOfBackgroundTask = DownloadNewItemsDuringExecutionOfBackgroundTask; break;
                 }
             };
+        }
+
+        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
+        {
+            SettingsService.Instance.BackgroundTaskIsEnabled = BackgroundTaskIsEnabled;
+            SettingsService.Instance.BackgroundTaskExecutionInterval = (int)BackgroundTaskExecutionInterval;
+
+            if (BackgroundTaskIsEnabled)
+            {
+                BackgroundTaskHelper.UnregisterBackgroundTask();
+                return BackgroundTaskHelper.RegisterBackgroundTaskAsync();
+            }
+            return Task.CompletedTask;
         }
 
         private string GetVersionNumber()
