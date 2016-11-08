@@ -51,7 +51,7 @@ namespace wallabag.ViewModels
             {
                 //new WallabagProvider(new Uri("https://framabag.org"), "framabag", GeneralHelper.LocalizedResource("FramabagProviderDescription")),
                 new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", GeneralHelper.LocalizedResource("V2WallabagOrgProviderDescription")),
-                new WallabagProvider(default(Uri), GeneralHelper.LocalizedResource("OtherProviderName"),  GeneralHelper.LocalizedResource("OtherProviderDescription"))
+                WallabagProvider.Other
             };
 
             PreviousCommand = new DelegateCommand(() => Previous(), () => PreviousCanBeExecuted());
@@ -284,7 +284,7 @@ namespace wallabag.ViewModels
                 Username = np.Username;
                 Url = np.Server;
 
-                SelectedProvider = new WallabagProvider(new Uri(Url), string.Empty);
+                SelectedProvider = WallabagProvider.Other;
 
                 CurrentStep = 1;
                 return;
