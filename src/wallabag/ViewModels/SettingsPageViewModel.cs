@@ -52,8 +52,8 @@ namespace wallabag.ViewModels
         public bool? VideoOpenModeIsBrowser { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Browser; } }
 
         [DependsOn(nameof(BackgroundTaskExecutionInterval))]
-        public string BackgroundTaskExecutionIntervalDescription { get { return $"{BackgroundTaskExecutionInterval} minutes"; } }
-        public string BackgroundTaskLastExecution { get { return $"Last execution: {SettingsService.Instance.LastExecutionOfBackgroundTask}"; } }
+        public string BackgroundTaskExecutionIntervalDescription { get { return string.Format(GeneralHelper.LocalizedResource("BackgroundTaskExecutionIntervalInMinutesTextBlock.Text"), BackgroundTaskExecutionInterval); } }
+        public string BackgroundTaskLastExecution { get { return string.Format(GeneralHelper.LocalizedResource("LastExecutionOfBackgroundTaskTextBlock.Text"), SettingsService.Instance.LastExecutionOfBackgroundTask); } }
 
         public DelegateCommand OpenChangelogCommand { get; private set; }
         public DelegateCommand OpenDocumentationCommand { get; private set; }
