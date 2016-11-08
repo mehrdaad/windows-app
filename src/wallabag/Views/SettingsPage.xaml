@@ -44,7 +44,7 @@
                 <VisualState x:Name="Wide">
                     <VisualState.Setters>
                         <Setter Target="VideoOpenModeGrid.HorizontalAlignment" Value="Left" />
-                        <Setter Target="VideoOpenModeGrid.Width" Value="420" />
+                        <Setter Target="VideoOpenModeGrid.Width" Value="400" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="720" />
