@@ -104,7 +104,6 @@
                         IsOn="{x:Bind ViewModel.SyncOnStartup, Mode=TwoWay}" />
                     <TextBlock
                         x:Uid="TelemetryCollectionInfoTextBlock"
-                        MaxWidth="400"
                         Margin="2,16,2,8"
                         HorizontalAlignment="Left"
                         Style="{StaticResource InfoTextBlockStyle}"
@@ -188,8 +187,9 @@
                         x:Uid="LastExecutionOfBackgroundTaskTextBlock"
                         Margin="0,0,0,32"
                         Style="{StaticResource InfoTextBlockStyle}"
-                        Text="{x:Bind ViewModel.BackgroundTaskLastExecution}" />
-                    <RelativePanel>
+                        Text="{x:Bind ViewModel.BackgroundTaskLastExecution}"
+                        Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <RelativePanel Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Slider
                             x:Uid="BackgroundTaskExecutionIntervalSlider"
                             x:Name="BackgroundTaskExecutionIntervalSlider"
@@ -215,11 +215,14 @@
                     <ToggleSwitch
                         x:Uid="BackgroundTaskDownloadNewItemsToggleSwitch"
                         Header="Download new items"
-                        IsOn="{x:Bind ViewModel.DownloadNewItemsDuringExecutionOfBackgroundTask, Mode=TwoWay}" />
+                        IsOn="{x:Bind ViewModel.DownloadNewItemsDuringExecutionOfBackgroundTask, Mode=TwoWay}"
+                        Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <TextBlock
                         x:Uid="BackgroundTaskDownloadNewItemsDescriptionTextBlock"
+                        Margin="0"
                         Style="{StaticResource InfoTextBlockStyle}"
-                        Text="Setting the above value to On will download new items from the server. Otherwise the app will only sync local changes to the server." />
+                        Text="Setting the above value to On will download new items from the server. Otherwise the app will only sync local changes to the server."
+                        Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="InfoPivotItem" Header="Info">
