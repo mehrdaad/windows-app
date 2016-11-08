@@ -46,7 +46,7 @@ namespace wallabag.ViewModels
         }
         public bool WhiteOverlayForTitleBar { get; set; } = SettingsService.Instance.WhiteOverlayForTitleBar;
         public bool BackgroundTaskIsEnabled { get; set; } = SettingsService.Instance.BackgroundTaskIsEnabled;
-        public double BackgroundTaskExecutionInterval { get; set; } = (double)SettingsService.Instance.BackgroundTaskExecutionInterval;
+        public double BackgroundTaskExecutionInterval { get; set; } = SettingsService.Instance.BackgroundTaskExecutionInterval;
         public bool DownloadNewItemsDuringExecutionOfBackgroundTask { get; set; } = SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask;
 
         public bool? VideoOpenModeIsInline { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Inline; } }
@@ -56,6 +56,7 @@ namespace wallabag.ViewModels
         [DependsOn(nameof(BackgroundTaskExecutionInterval))]
         public string BackgroundTaskExecutionIntervalDescription { get { return string.Format(GeneralHelper.LocalizedResource("BackgroundTaskExecutionIntervalInMinutesTextBlock.Text"), BackgroundTaskExecutionInterval); } }
         public string BackgroundTaskLastExecution { get { return string.Format(GeneralHelper.LocalizedResource("LastExecutionOfBackgroundTaskTextBlock.Text"), SettingsService.Instance.LastExecutionOfBackgroundTask); } }
+        private bool _backgroundTaskOptionsChanged = false;
 
         public DelegateCommand OpenChangelogCommand { get; private set; }
         public DelegateCommand OpenDocumentationCommand { get; private set; }
@@ -100,12 +101,18 @@ namespace wallabag.ViewModels
                         settings.WhiteOverlayForTitleBar = WhiteOverlayForTitleBar; break;
                     case nameof(DownloadNewItemsDuringExecutionOfBackgroundTask):
                         settings.DownloadNewItemsDuringExecutionOfBackgroundTask = DownloadNewItemsDuringExecutionOfBackgroundTask; break;
+                    case nameof(BackgroundTaskExecutionInterval):
+                    case nameof(BackgroundTaskIsEnabled):
+                        _backgroundTaskOptionsChanged = true; break;
                 }
             };
         }
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
+            if (_backgroundTaskOptionsChanged == false)
+                return Task.CompletedTask;
+
             SettingsService.Instance.BackgroundTaskIsEnabled = BackgroundTaskIsEnabled;
             SettingsService.Instance.BackgroundTaskExecutionInterval = (int)BackgroundTaskExecutionInterval;
 
