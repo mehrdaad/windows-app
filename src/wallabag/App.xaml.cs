@@ -69,7 +69,12 @@ namespace wallabag
                     var username = split[0];
                     var server = split[1].Replace("https//", "https://").Replace("http//", "http://");
 
-                    NavigationService.Navigate(typeof(Views.LoginPage), new ProtocolSetupNavigationParameter(username, server));
+                    if (server.IsValidUri())
+                    {
+                        NavigationService.Navigate(typeof(Views.LoginPage), new ProtocolSetupNavigationParameter(username, server));
+                        NavigationService.ClearCache();
+                        NavigationService.ClearHistory();
+                    }
                 }
             }
             else
