@@ -103,7 +103,11 @@ namespace wallabag.ViewModels
                         settings.DownloadNewItemsDuringExecutionOfBackgroundTask = DownloadNewItemsDuringExecutionOfBackgroundTask; break;
                     case nameof(BackgroundTaskExecutionInterval):
                     case nameof(BackgroundTaskIsEnabled):
-                        _backgroundTaskOptionsChanged = true; break;
+                        if (BackgroundTaskIsEnabled == false)
+                            SettingsService.Instance.LastExecutionOfBackgroundTask = DateTime.MinValue;
+
+                        _backgroundTaskOptionsChanged = true;
+                        break;
                 }
             };
         }
