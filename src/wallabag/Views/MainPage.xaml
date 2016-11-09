@@ -242,6 +242,40 @@
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+        <Storyboard x:Name="ShowUndoChangesGridStoryboard">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="UndoChangesGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="48" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="UndoChangesGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1" />
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UndoChangesGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="HideUndoChangesGridStoryboard">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="UndoChangesGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="48" />
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="UndoChangesGrid" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="UndoChangesGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -618,6 +652,41 @@
                 Content="Reset filter"
                 Style="{StaticResource TextBlockButtonStyle}" />
         </StackPanel>
+        <Grid
+            x:Name="UndoChangesGrid"
+            VerticalAlignment="Bottom"
+            x:DeferLoadStrategy="Lazy"
+            Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+            RenderTransformOrigin="0.5,0.5"
+            RequestedTheme="Dark"
+            Visibility="Collapsed">
+            <Grid.RenderTransform>
+                <CompositeTransform />
+            </Grid.RenderTransform>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Margin="8,4"
+                VerticalAlignment="Center"
+                Text="Deleted {0} items." />
+            <Button
+                Grid.Column="1"
+                Background="Transparent"
+                BorderThickness="0"
+                Padding="16,14">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="15"
+                            Glyph="&#xE10E;" />
+                        <TextBlock Margin="8,0,0,0" Text="Undo" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </Grid>
         <CommandBar x:Name="MainCommandBar" Grid.Row="1">
             <AppBarButton
                 x:Uid="AddItemAppBarButton"
