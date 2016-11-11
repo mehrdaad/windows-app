@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using wallabag.Common.Messages;
 using wallabag.Models;
+using wallabag.Services;
 
 namespace wallabag.Common.Helpers
 {
@@ -24,7 +25,7 @@ namespace wallabag.Common.Helpers
             a.Invoke();
             Messenger.Default.Send(new ShowUndoPopupMessage(taskAction, itemCount));
 
-            try { await Task.Delay(TimeSpan.FromSeconds(5), _cts.Token); }
+            try { await Task.Delay(SettingsService.Instance.UndoTimeout, _cts.Token); }
             catch (TaskCanceledException) { }
 
             if (_cts.IsCancellationRequested)

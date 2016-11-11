@@ -73,6 +73,12 @@ namespace wallabag.Services
             set { _helper.Write(nameof(LastSuccessfulSyncDateTime), value); }
         }
 
+        public TimeSpan UndoTimeout
+        {
+            get { return _helper.Read(nameof(UndoTimeout), TimeSpan.FromSeconds(5)); }
+            set { _helper.Write(nameof(UndoTimeout), value); }
+        }
+
         #endregion
 
         #region Reading
