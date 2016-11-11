@@ -336,13 +336,10 @@ namespace wallabag.ViewModels
             if (!addResponse.IsSuccessStatusCode)
                 return false;
 
-            var results = ParseResult(await addResponse.Content.ReadAsStringAsync());
+            var result = ParseResult(await addResponse.Content.ReadAsStringAsync(), useNewApi);
 
-            if (results.Count == 2)
-                this.ClientId = results[0];
-            else
-                this.ClientId = results[1];
-            this.ClientSecret = results[2];
+            ClientId = result.Id;
+            ClientSecret = result.Secret;
 
             _http.Dispose();
             return true;
@@ -361,11 +358,12 @@ namespace wallabag.ViewModels
             return html.Substring(startIndex, endIndex - startIndex);
         }
 
-        private List<string> ParseResult(string html)
+        private ClientResultData ParseResult(string html, bool useNewApi = false)
         {
             var results = new List<string>();
 
             var lastIndex = 0;
+            int resultCount = useNewApi ? 2 : 1;
             do
             {
                 var start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
@@ -373,11 +371,31 @@ namespace wallabag.ViewModels
 
                 results.Add(html.Substring(start, lastIndex - start));
 
-            } while (results.Count <= 3);
+            } while (results.Count <= resultCount);
 
-            return results;
+            if (useNewApi)
+                return new ClientResultData()
+                {
+                    Name = results[0],
+                    Id = results[1],
+                    Secret = results[2]
+                };
+            else
+                return new ClientResultData()
+                {
+                    Id = results[0],
+                    Secret = results[1],
+                    Name = string.Empty
+                };
         }
 
         #endregion
+    }
+
+    public class ClientResultData
+    {
+        public string Id { get; set; }
+        public string Secret { get; set; }
+        public string Name { get; set; }
     }
 }
