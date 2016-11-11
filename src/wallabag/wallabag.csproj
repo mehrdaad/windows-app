@@ -111,6 +111,7 @@
     <Compile Include="Common\Helpers\WebViewHelper.cs" />
     <Compile Include="Common\IncrementalObservableCollection.cs" />
     <Compile Include="Common\Messages\CompleteMultipleSelectionMessage.cs" />
+    <Compile Include="Common\Messages\ShowUndoPopupMessage.cs" />
     <Compile Include="Common\Messages\UpdateItemMessage.cs" />
     <Compile Include="Common\Messages\BlockOfflineTaskExecutionMessage.cs" />
     <Compile Include="Controls\AdaptiveGridView.cs" />

@@ -1,32 +1,40 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Messaging;
+using SQLite.Net;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
+using wallabag.Common.Messages;
+using wallabag.Models;
 
 namespace wallabag.Common.Helpers
 {
     static class SQLiteConnectionHelper
     {
-        private static bool _resetTransaction = false;
-        private static string _transactionPoint = string.Empty;
+        private static CancellationTokenSource _cts;
 
-        internal static void RunInTransactionWithUndo(this SQLite.Net.SQLiteConnection conn, Action action)
+        internal static async Task RunInTransactionWithUndoAsync(
+            this SQLiteConnection conn,
+            Action a,
+            OfflineTask.OfflineTaskAction taskAction,
+            int itemCount)
         {
-            _transactionPoint = conn.SaveTransactionPoint();
-            action.Invoke();
+            _cts = new CancellationTokenSource();
+            var transactionPoint = conn.SaveTransactionPoint();
 
-            // Wait two seconds for user feedback, the user can reset the changes during this timespan.
-            Task.Delay(TimeSpan.FromSeconds(2)).Wait();
+            a.Invoke();
+            Messenger.Default.Send(new ShowUndoPopupMessage(taskAction, itemCount));
 
-            if (_resetTransaction)
-                conn.RollbackTo(_transactionPoint);
+            try { await Task.Delay(TimeSpan.FromSeconds(5), _cts.Token); }
+            catch (TaskCanceledException) { }
+
+            if (_cts.IsCancellationRequested)
+            {
+                conn.RollbackTo(transactionPoint);
+                // TODO: Inform main view to undo the changes
+            }
             else
                 conn.Commit();
-
-            _resetTransaction = false;
-            _transactionPoint = string.Empty;
         }
-        internal static void UndoChanges()
-        {
-            _resetTransaction = true;
-        }
+        internal static void UndoChanges() => _cts.Cancel();
     }
 }
