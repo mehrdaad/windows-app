@@ -668,6 +668,7 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <TextBlock
+                x:Name="UndoGridDescriptionTextBlock"
                 Margin="8,4"
                 VerticalAlignment="Center"
                 Text="Deleted {0} items." />
@@ -675,6 +676,7 @@
                 Grid.Column="1"
                 Background="Transparent"
                 BorderThickness="0"
+                Click="UndoChangesButton_Click"
                 Padding="16,14">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">

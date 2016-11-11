@@ -1,8 +1,11 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
 using System.Linq;
+using System.Threading.Tasks;
+using wallabag.Common.Helpers;
 using wallabag.Common.Messages;
 using wallabag.Controls;
+using wallabag.Services;
 using wallabag.ViewModels;
 using Windows.Foundation;
 using Windows.System;
@@ -22,6 +25,7 @@ namespace wallabag.Views
     [ImplementPropertyChanged]
     public sealed partial class MainPage : Page
     {
+        private bool _isUndoChangesGridVisible = false;
         public MainViewModel ViewModel { get { return DataContext as MainViewModel; } }
 
         public MainPage()
@@ -46,6 +50,8 @@ namespace wallabag.Views
             };
             ShowSearchResultsStoryboard.Completed += (s, e) => ((MainPivot.SelectedItem as PivotItem).Content as AdaptiveGridView).Focus(FocusState.Programmatic);
             HideSearchStoryboard.Completed += (s, e) => _isSearchVisible = false;
+            ShowUndoChangesGridStoryboard.Completed += (s, e) => _isUndoChangesGridVisible = true;
+            HideUndoChangesGridStoryboard.Completed += (s, e) => _isUndoChangesGridVisible = false;
 
             ViewModel.CurrentSearchProperties.SearchCanceled += p =>
             {
@@ -57,10 +63,29 @@ namespace wallabag.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Messenger.Default.Register<CompleteMultipleSelectionMessage>(this, message => DisableMultipleSelection(true));
+            Messenger.Default.Register<ShowUndoPopupMessage>(this, async message =>
+            {
+                ShowUndoChangesGridStoryboard.Begin();
+
+                var descriptionTextBlock = FindName(nameof(UndoGridDescriptionTextBlock)) as TextBlock;
+                descriptionTextBlock.Text = $"{message.Action.ToString()} for {message.NumberOfItems} items"; // TODO: Translation
+
+                await Task.Delay(SettingsService.Instance.UndoTimeout).ContinueWith(t =>
+                {
+                    if (_isUndoChangesGridVisible)
+                        HideUndoChangesGridStoryboard.Begin();
+                });
+            });
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             Messenger.Default.Unregister(this);
+        }
+
+        private void UndoChangesButton_Click(object sender, RoutedEventArgs e)
+        {
+            SQLiteConnectionHelper.UndoChanges();
+            HideUndoChangesGridStoryboard.Begin();
         }
 
         #region Context menu
