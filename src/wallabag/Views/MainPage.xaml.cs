@@ -9,6 +9,7 @@ using wallabag.Services;
 using wallabag.ViewModels;
 using Windows.Foundation;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -72,8 +73,11 @@ namespace wallabag.Views
 
                 await Task.Delay(SettingsService.Instance.UndoTimeout).ContinueWith(t =>
                 {
-                    if (_isUndoChangesGridVisible)
-                        HideUndoChangesGridStoryboard.Begin();
+                    return Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                    {
+                        if (_isUndoChangesGridVisible)
+                            HideUndoChangesGridStoryboard.Begin();
+                    });
                 });
             });
         }
