@@ -23,6 +23,7 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class MainViewModel : ViewModelBase
     {
+        private Delayer _delayer;
         public IncrementalObservableCollection<ItemViewModel> Items { get; set; }
 
         [DependsOn(nameof(OfflineTaskCount))]
@@ -92,6 +93,8 @@ namespace wallabag.ViewModels
                 RaisePropertyChanged(nameof(SortByReadingTime));
             };
 
+            _delayer = new Delayer(SettingsService.Instance.UndoTimeout);
+
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
 
             App.OfflineTaskAdded += App_OfflineTaskAdded;
@@ -99,20 +102,22 @@ namespace wallabag.ViewModels
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
         }
 
-        private async void App_OfflineTaskAdded(object sender, OfflineTask e)
+        private async void App_OfflineTaskAdded(object sender, OfflineTask task)
         {
             if (_offlineTaskAreBlocked)
                 return;
 
+            _delayer.ResetAndTick();
+
             ItemViewModel item = default(ItemViewModel);
             var orderAscending = CurrentSearchProperties.OrderAscending ?? false;
 
-            if (e.Action != OfflineTask.OfflineTaskAction.Delete)
-                item = new ItemViewModel(Item.FromId(e.ItemId));
+            if (task.Action != OfflineTask.OfflineTaskAction.Delete)
+                item = new ItemViewModel(Item.FromId(task.ItemId));
 
             await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
-                switch (e.Action)
+                switch (task.Action)
                 {
                     case OfflineTask.OfflineTaskAction.MarkAsRead:
                         if (CurrentSearchProperties.ItemTypeIndex == 2)
@@ -137,11 +142,11 @@ namespace wallabag.ViewModels
                             Items.AddSorted(item, sortAscending: orderAscending);
                         break;
                     case OfflineTask.OfflineTaskAction.Delete:
-                        Items.Remove(Items.Where(i => i.Model.Id.Equals(e.ItemId)).First());
+                        Items.Remove(Items.Where(i => i.Model.Id.Equals(task.ItemId)).First());
                         break;
                 }
             });
-            await e.ExecuteAsync();
+            _delayer.Action += async (s, e) => await task.ExecuteAsync();
         }
 
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
