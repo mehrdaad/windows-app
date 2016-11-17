@@ -5,6 +5,7 @@ using System.Linq;
 using Template10.Mvvm;
 using wallabag.Common.Helpers;
 using wallabag.Models;
+using wallabag.Services;
 
 namespace wallabag.ViewModels
 {
@@ -39,7 +40,7 @@ namespace wallabag.ViewModels
             {
                 foreach (var item in Items)
                 {
-                    OfflineTask.Add(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
+                    OfflineTaskService.AddTask(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
 
                     foreach (var tag in Tags)
                         item.Tags.Add(tag);
@@ -52,7 +53,7 @@ namespace wallabag.ViewModels
 
                 Items.First().Tags.Replace(Tags);
 
-                OfflineTask.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags.ToList(), deletedTags.ToList());
+                OfflineTaskService.AddTask(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags.ToList(), deletedTags.ToList());
             }
         }
     }

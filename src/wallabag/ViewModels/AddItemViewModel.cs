@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common.Helpers;
 using wallabag.Models;
+using wallabag.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.UI.Xaml.Navigation;
@@ -51,7 +52,7 @@ namespace wallabag.ViewModels
                     Hostname = uri.Host
                 });
 
-                OfflineTask.Add(UriString, Tags.ToStringArray());
+                OfflineTaskService.AddTask(UriString, Tags.ToStringArray());
 
                 _shareOperation?.ReportCompleted();
             }

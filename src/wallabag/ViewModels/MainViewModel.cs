@@ -146,7 +146,7 @@ namespace wallabag.ViewModels
                         break;
                 }
             });
-            _delayer.Action += async (s, e) => await task.ExecuteAsync();
+            _delayer.Action += async (s, e) => await OfflineTaskService.ExecuteAsync(task);
         }
 
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
@@ -170,7 +170,7 @@ namespace wallabag.ViewModels
             if (OfflineTaskCount > 0)
             {
                 foreach (var task in App.Database.Table<OfflineTask>())
-                    await task.ExecuteAsync();
+                    await OfflineTaskService.ExecuteAsync(task);
             }
         }
         private async Task SyncAsync()
