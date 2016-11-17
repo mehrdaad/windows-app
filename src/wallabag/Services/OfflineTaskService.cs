@@ -97,7 +97,7 @@ namespace wallabag.Services
         {
             var newTask = new OfflineTask();
 
-            newTask.ItemId = LastItemId;
+            newTask.ItemId = GeneralHelper.LastItemId;
             newTask.Action = OfflineTaskAction.AddItem;
             newTask.Url = url;
             newTask.Tags = newTags.ToList();
@@ -119,7 +119,5 @@ namespace wallabag.Services
             App.Database.Insert(newTask);
             App.OfflineTaskAdded?.Invoke(null, newTask);
         }
-
-        internal static int LastItemId => App.Database.ExecuteScalar<int>("select Max(ID) from 'Item'", new object[0]);
     }
 }

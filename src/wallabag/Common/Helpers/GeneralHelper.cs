@@ -30,5 +30,7 @@ namespace wallabag.Common.Helpers
                 return (DeviceFamily)Enum.Parse(typeof(DeviceFamily), AnalyticsInfo.VersionInfo.DeviceFamily.Replace("Windows.", string.Empty));
             }
         }
+
+        public static int LastItemId => App.Database.ExecuteScalar<int>("select Max(ID) from 'Item'", new object[0]);
     }
 }

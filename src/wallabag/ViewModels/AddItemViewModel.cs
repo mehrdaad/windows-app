@@ -45,7 +45,7 @@ namespace wallabag.ViewModels
                 var uri = new Uri(UriString);
                 App.Database.Insert(new Item()
                 {
-                    Id = OfflineTask.LastItemId + 1,
+                    Id = GeneralHelper.LastItemId + 1,
                     Title = uri.Host,
                     Url = UriString,
                     Hostname = uri.Host
