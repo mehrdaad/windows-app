@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using wallabag.Api.Models;
+using wallabag.Common;
 using wallabag.Common.Helpers;
 using wallabag.Common.Messages;
 using wallabag.Models;
@@ -15,6 +16,21 @@ namespace wallabag.Services
     class OfflineTaskService
     {
         private static Dictionary<int, OfflineTask> _tasks = new Dictionary<int, OfflineTask>();
+
+        private static Delayer _delayer = CreateDelayer();
+        private static Delayer CreateDelayer()
+        {
+            var d = new Delayer(SettingsService.Instance.UndoTimeout);
+            d.Action += async (s, e) =>
+            {
+                foreach (var item in _tasks)
+                {
+                    if (await ExecuteAsync(item.Value))
+                        _tasks.Remove(item.Key);
+                }
+            };
+            return d;
+        }
 
         public static Task<bool> ExecuteAsync(OfflineTask task) => ExecuteAsync(task.Id);
         public static async Task<bool> ExecuteAsync(int taskId)
