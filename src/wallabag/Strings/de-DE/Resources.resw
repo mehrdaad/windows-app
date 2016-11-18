@@ -504,4 +504,10 @@
   <data name="Never" xml:space="preserve">
     <value>niemals</value>
   </data>
+  <data name="FilterButton.Label" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="MadeByHeaderTextBlock.Text" xml:space="preserve">
+    <value>MIT VIEL HINGABE ENTWICKELT VON</value>
+  </data>
 </root>
