@@ -111,6 +111,7 @@ namespace wallabag.Services
 
             return executionIsSuccessful;
         }
+
         public static void Add(string url, IEnumerable<string> newTags = null, string title = "", bool invokeAddedEvent = true)
         {
             var newTask = new OfflineTask();
@@ -136,6 +137,17 @@ namespace wallabag.Services
 
             App.Database.Insert(newTask);
             App.OfflineTaskAdded?.Invoke(null, newTask);
+        }
+
+        public static bool Remove(OfflineTask task) => Remove(task.Id);
+        public static bool Remove(int taskId)
+        {
+            if (_tasks.ContainsKey(taskId))
+            {
+                _tasks.Remove(taskId);
+                return true;
+            }
+            else return false;
         }
     }
 }
