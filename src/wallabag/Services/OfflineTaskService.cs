@@ -40,11 +40,8 @@ namespace wallabag.Services
                 _tasks.Add(item.Id, item);
         }
 
-        public static Task<bool> ExecuteAsync(OfflineTask task) => ExecuteAsync(task.Id);
-        public static async Task<bool> ExecuteAsync(int taskId)
+        public static async Task<bool> ExecuteAsync(OfflineTask task)
         {
-            var task = _tasks[taskId];
-
             if (GeneralHelper.InternetConnectionIsAvailable == false)
                 return false;
 
@@ -112,15 +109,12 @@ namespace wallabag.Services
             }
 
             if (executionIsSuccessful)
-            {
-                App.Database.Delete(task);
-                App.OfflineTaskRemoved?.Invoke(task, task);
-            }
+                RemoveTask(task);
 
             return executionIsSuccessful;
         }
 
-        public static void Add(string url, IEnumerable<string> newTags = null, string title = "", bool invokeAddedEvent = true)
+        public static void Add(string url, IEnumerable<string> newTags = null, string title = "")
         {
             var newTask = new OfflineTask();
 
@@ -129,10 +123,7 @@ namespace wallabag.Services
             newTask.Url = url;
             newTask.Tags = newTags.ToList();
 
-            App.Database.Insert(newTask);
-
-            if (invokeAddedEvent)
-                App.OfflineTaskAdded?.Invoke(null, newTask);
+            AddTask(newTask);
         }
         public static void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
@@ -145,19 +136,30 @@ namespace wallabag.Services
 
             _delayer.ResetAndTick();
 
-            App.Database.Insert(newTask);
-            App.OfflineTaskAdded?.Invoke(null, newTask);
+            AddTask(newTask);
         }
 
-        public static bool Remove(OfflineTask task) => Remove(task.Id);
-        public static bool Remove(int taskId)
+        public static bool Remove(OfflineTask task)
         {
-            if (_tasks.ContainsKey(taskId))
+            if (_tasks.ContainsKey(task.Id))
             {
-                _tasks.Remove(taskId);
+                RemoveTask(task);
                 return true;
             }
             else return false;
+        }
+
+        private static void AddTask(OfflineTask task)
+        {
+            _tasks.Add(task.Id, task);
+            App.Database.Insert(task);
+            App.OfflineTaskAdded?.Invoke(null, task);
+        }
+        private static void RemoveTask(OfflineTask task)
+        {
+            _tasks.Remove(task.Id);
+            App.Database.Delete(task);
+            App.OfflineTaskRemoved?.Invoke(null, task);
         }
     }
 }
