@@ -157,23 +157,15 @@ namespace wallabag.ViewModels
             return result;
         }
 
-        private async Task ExecuteOfflineTasksAsync()
-        {
-            OfflineTaskCount = App.Database.ExecuteScalar<int>("SELECT COUNT(*) FROM OfflineTask");
-
-            if (OfflineTaskCount > 0)
-            {
-                foreach (var task in App.Database.Table<OfflineTask>())
-                    await OfflineTaskService.ExecuteAsync(task);
-            }
-        }
         private async Task SyncAsync()
         {
             if (GeneralHelper.InternetConnectionIsAvailable == false)
                 return;
 
             IsSyncing = true;
-            await ExecuteOfflineTasksAsync();
+
+            await OfflineTaskService.ExecuteAllAsync();
+
             int syncLimit = 24;
 
             var items = await App.Client.GetItemsAsync(

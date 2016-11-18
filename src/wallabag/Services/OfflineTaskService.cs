@@ -24,14 +24,7 @@ namespace wallabag.Services
             if (_delayer == null)
             {
                 _delayer = new Delayer(SettingsService.Instance.UndoTimeout);
-                _delayer.Action += async (s, e) =>
-                {
-                    foreach (var item in _tasks)
-                    {
-                        if (await ExecuteAsync(item.Value))
-                            _tasks.Remove(item.Key);
-                    }
-                };
+                _delayer.Action += async (s, e) => await ExecuteAllAsync();
             }
 
             // Fetch tasks from the database, so the dictionary contains all relevant tasks.        
@@ -113,6 +106,19 @@ namespace wallabag.Services
 
             return executionIsSuccessful;
         }
+        public static async Task ExecuteAllAsync()
+        {
+            var tasks = _tasks.ToList();
+
+            foreach (var item in tasks)
+            {
+                if (await ExecuteAsync(item.Value))
+                    RemoveTask(item.Value);
+            }
+
+            if (Count() == 0)
+                _delayer.Stop();
+        }
 
         public static void Add(string url, IEnumerable<string> newTags = null, string title = "")
         {
@@ -161,5 +167,7 @@ namespace wallabag.Services
             App.Database.Delete(task);
             App.OfflineTaskRemoved?.Invoke(null, task);
         }
+
+        public static int Count() => App.Database.ExecuteScalar<int>("select count(*) from OfflineTask");
     }
 }
