@@ -135,6 +135,8 @@ namespace wallabag.Services
             newTask.AddedTags = addTagsList;
             newTask.RemovedTags = removeTagsList;
 
+            _delayer.ResetAndTick();
+
             App.Database.Insert(newTask);
             App.OfflineTaskAdded?.Invoke(null, newTask);
         }
