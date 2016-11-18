@@ -52,7 +52,7 @@ namespace wallabag.ViewModels
                     Hostname = uri.Host
                 });
 
-                OfflineTaskService.AddTask(UriString, Tags.ToStringArray());
+                OfflineTaskService.Add(UriString, Tags.ToStringArray());
 
                 _shareOperation?.ReportCompleted();
             }

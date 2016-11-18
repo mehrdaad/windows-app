@@ -69,7 +69,7 @@ namespace wallabag.ViewModels
                 NavigationService.GoBack();
             });
 
-            SaveRightClickLinkCommand = new DelegateCommand(() => OfflineTaskService.AddTask(RightClickUri.ToString()));
+            SaveRightClickLinkCommand = new DelegateCommand(() => OfflineTaskService.Add(RightClickUri.ToString()));
             OpenRightClickLinkInBrowserCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(RightClickUri));
         }
 

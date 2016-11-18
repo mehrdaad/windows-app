@@ -111,7 +111,7 @@ namespace wallabag.Services
 
             return executionIsSuccessful;
         }
-        public static void AddTask(string url, IEnumerable<string> newTags = null, string title = "", bool invokeAddedEvent = true)
+        public static void Add(string url, IEnumerable<string> newTags = null, string title = "", bool invokeAddedEvent = true)
         {
             var newTask = new OfflineTask();
 
@@ -125,7 +125,7 @@ namespace wallabag.Services
             if (invokeAddedEvent)
                 App.OfflineTaskAdded?.Invoke(null, newTask);
         }
-        public static void AddTask(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
+        public static void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
             var newTask = new OfflineTask();
 
