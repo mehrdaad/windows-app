@@ -17,19 +17,27 @@ namespace wallabag.Services
     {
         private static Dictionary<int, OfflineTask> _tasks = new Dictionary<int, OfflineTask>();
 
-        private static Delayer _delayer = CreateDelayer();
-        private static Delayer CreateDelayer()
+        private static Delayer _delayer;
+
+        public static void Initialize()
         {
-            var d = new Delayer(SettingsService.Instance.UndoTimeout);
-            d.Action += async (s, e) =>
+            if (_delayer == null)
             {
-                foreach (var item in _tasks)
+                _delayer = new Delayer(SettingsService.Instance.UndoTimeout);
+                _delayer.Action += async (s, e) =>
                 {
-                    if (await ExecuteAsync(item.Value))
-                        _tasks.Remove(item.Key);
-                }
-            };
-            return d;
+                    foreach (var item in _tasks)
+                    {
+                        if (await ExecuteAsync(item.Value))
+                            _tasks.Remove(item.Key);
+                    }
+                };
+            }
+
+            // Fetch tasks from the database, so the dictionary contains all relevant tasks.        
+            var databaseTasks = App.Database.Table<OfflineTask>().ToList();
+            foreach (var item in databaseTasks)
+                _tasks.Add(item.Id, item);
         }
 
         public static Task<bool> ExecuteAsync(OfflineTask task) => ExecuteAsync(task.Id);

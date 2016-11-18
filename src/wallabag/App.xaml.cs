@@ -44,6 +44,8 @@ namespace wallabag
                 Settings.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
             };
 
+            OfflineTaskService.Initialize();
+
             if (Settings.BackgroundTaskIsEnabled && BackgroundTaskHelper.BackgroundTaskIsRegistered == false)
                 return BackgroundTaskHelper.RegisterBackgroundTaskAsync();
 
