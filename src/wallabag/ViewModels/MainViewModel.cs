@@ -23,7 +23,6 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class MainViewModel : ViewModelBase
     {
-        private Delayer _delayer;
         public IncrementalObservableCollection<ItemViewModel> Items { get; set; }
 
         [DependsOn(nameof(OfflineTaskCount))]
@@ -93,8 +92,6 @@ namespace wallabag.ViewModels
                 RaisePropertyChanged(nameof(SortByReadingTime));
             };
 
-            _delayer = new Delayer(SettingsService.Instance.UndoTimeout);
-
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
 
             App.OfflineTaskAdded += App_OfflineTaskAdded;
@@ -106,8 +103,6 @@ namespace wallabag.ViewModels
         {
             if (_offlineTaskAreBlocked)
                 return;
-
-            _delayer.ResetAndTick();
 
             ItemViewModel item = default(ItemViewModel);
             var orderAscending = CurrentSearchProperties.OrderAscending ?? false;
@@ -146,7 +141,6 @@ namespace wallabag.ViewModels
                         break;
                 }
             });
-            _delayer.Action += async (s, e) => await OfflineTaskService.ExecuteAsync(task);
         }
 
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
