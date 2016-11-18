@@ -16,13 +16,13 @@ namespace wallabag.Services
     {
         private static Dictionary<int, OfflineTask> _tasks = new Dictionary<int, OfflineTask>();
 
-        public static Task ExecuteAsync(OfflineTask task) => ExecuteAsync(task.Id);
-        public static async Task ExecuteAsync(int taskId)
+        public static Task<bool> ExecuteAsync(OfflineTask task) => ExecuteAsync(task.Id);
+        public static async Task<bool> ExecuteAsync(int taskId)
         {
             var task = _tasks[taskId];
 
             if (GeneralHelper.InternetConnectionIsAvailable == false)
-                return;
+                return false;
 
             bool executionIsSuccessful = false;
             switch (task.Action)
@@ -92,6 +92,8 @@ namespace wallabag.Services
                 App.Database.Delete(task);
                 App.OfflineTaskRemoved?.Invoke(task, task);
             }
+
+            return executionIsSuccessful;
         }
         public static void AddTask(string url, IEnumerable<string> newTags = null, string title = "", bool invokeAddedEvent = true)
         {
