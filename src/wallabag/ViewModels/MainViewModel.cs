@@ -27,7 +27,7 @@ namespace wallabag.ViewModels
 
         [DependsOn(nameof(OfflineTaskCount))]
         public Visibility OfflineTaskVisibility { get { return OfflineTaskCount > 0 ? Visibility.Visible : Visibility.Collapsed; } }
-        public int OfflineTaskCount { get; set; }
+        public int OfflineTaskCount { get { return OfflineTaskService.Count(); } }
         public bool IsSyncing { get; set; }
 
         public bool ItemsCountIsZero { get { return Items.Count == 0; } }
@@ -95,12 +95,14 @@ namespace wallabag.ViewModels
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
 
             App.OfflineTaskAdded += App_OfflineTaskAdded;
-            App.OfflineTaskRemoved += (s, e) => OfflineTaskCount -= 1;
+            App.OfflineTaskRemoved += (s, e) => RaisePropertyChanged(nameof(OfflineTaskCount));
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
         }
 
         private async void App_OfflineTaskAdded(object sender, OfflineTask task)
         {
+            RaisePropertyChanged(nameof(OfflineTaskCount));
+
             if (_offlineTaskAreBlocked)
                 return;
 
