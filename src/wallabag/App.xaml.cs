@@ -60,21 +60,13 @@ namespace wallabag
             else if (args.Kind == ActivationKind.Protocol)
             {
                 var a = args as ProtocolActivatedEventArgs;
-                var uriString = a.Uri.ToString().Replace("wallabag://", string.Empty);
+                var protocolParameter = ProtocolHelper.Parse(a.Uri.ToString());
 
-                var split = uriString.Split("@"[0]);
-
-                if (split.Length == 2)
+                if (protocolParameter != null && protocolParameter.Server.IsValidUri())
                 {
-                    var username = split[0];
-                    var server = split[1].Replace("https//", "https://").Replace("http//", "http://");
-
-                    if (server.IsValidUri())
-                    {
-                        NavigationService.Navigate(typeof(Views.LoginPage), new ProtocolSetupNavigationParameter(username, server));
-                        NavigationService.ClearCache();
-                        NavigationService.ClearHistory();
-                    }
+                    NavigationService.Navigate(typeof(Views.LoginPage), protocolParameter);
+                    NavigationService.ClearCache();
+                    NavigationService.ClearHistory();
                 }
             }
             else
