@@ -3,6 +3,7 @@ using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Template10.Controls;
 using Template10.Mvvm;
 using wallabag.Api.Models;
 using wallabag.Common.Helpers;
@@ -10,7 +11,9 @@ using wallabag.Models;
 using wallabag.Services;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
@@ -59,6 +62,39 @@ namespace wallabag.ViewModels
             RegisterCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri((SelectedProvider as WallabagProvider).Url, "/register")),
                 () => RegistrationCanBeExecuted());
             WhatIsWallabagCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
+            ScanQRCodeCommand = new DelegateCommand(async () =>
+            {
+                var rootModalDialog = Window.Current.Content as ModalDialog;
+                var oldFrame = rootModalDialog.Content as Frame;
+
+                var scanner = new ZXing.Mobile.MobileBarcodeScanner(CoreWindow.GetForCurrentThread().Dispatcher)
+                {
+                    RootFrame = new Frame(),
+                    TopText = "Hold the camera onto the QR code"
+                };
+
+                rootModalDialog.Content = scanner.RootFrame;
+                var result = await scanner.Scan(new ZXing.Mobile.MobileBarcodeScanningOptions()
+                {
+                    TryHarder = false,
+                    PossibleFormats = new List<ZXing.BarcodeFormat>() { ZXing.BarcodeFormat.QR_CODE }
+                });
+
+                if (string.IsNullOrEmpty(result?.Text) == false && result.Text.StartsWith("wallabag://"))
+                {
+                    SelectedProvider = WallabagProvider.Other;
+
+                    var parsedResult = ProtocolHelper.Parse(result.Text);
+                    if (parsedResult.Server.IsValidUri())
+                    {
+                        Url = parsedResult.Server;
+                        Username = parsedResult.Username;
+                        CurrentStep = 1;
+                    }
+
+                    rootModalDialog.Content = oldFrame;
+                }
+            });
 
             this.PropertyChanged += this_PropertyChanged;
         }
