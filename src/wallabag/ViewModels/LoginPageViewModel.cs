@@ -43,7 +43,6 @@ namespace wallabag.ViewModels
         public DelegateCommand NextCommand { get; private set; }
         public DelegateCommand RegisterCommand { get; private set; }
         public DelegateCommand WhatIsWallabagCommand { get; private set; }
-        public Task TitleBarExtensions { get; private set; }
         public DelegateCommand ScanQRCodeCommand { get; private set; }
 
         public LoginPageViewModel()
