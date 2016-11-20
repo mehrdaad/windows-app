@@ -158,8 +158,13 @@
                         </ListView.ItemTemplate>
                     </ListView>
                     <Button
-                        x:Uid="RegisterButton"
                         Margin="4,12,4,4"
+                        Command="{x:Bind ViewModel.ScanQRCodeCommand}"
+                        Content="Scan QR code for configuration"
+                        Style="{StaticResource TextBlockButtonStyle}" />
+                    <Button
+                        x:Uid="RegisterButton"
+                        Margin="4,6,4,4"
                         Command="{x:Bind ViewModel.RegisterCommand, Mode=OneWay}"
                         Content="Don't have an account yet? Create one!"
                         Style="{StaticResource TextBlockButtonStyle}" />
