@@ -158,10 +158,11 @@
                         </ListView.ItemTemplate>
                     </ListView>
                     <Button
-                        Margin="4,12,4,4"
+                        Margin="4,8,4,4"
                         Command="{x:Bind ViewModel.ScanQRCodeCommand}"
                         Content="Scan QR code for configuration"
-                        Style="{StaticResource TextBlockButtonStyle}" />
+                        Style="{StaticResource TextBlockButtonStyle}"
+                        Visibility="{x:Bind ViewModel.CameraIsSupported, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Button
                         x:Uid="RegisterButton"
                         Margin="4,6,4,4"

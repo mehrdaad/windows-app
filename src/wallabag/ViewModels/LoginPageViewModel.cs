@@ -9,6 +9,7 @@ using wallabag.Api.Models;
 using wallabag.Common.Helpers;
 using wallabag.Models;
 using wallabag.Services;
+using Windows.Devices.Enumeration;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.System;
 using Windows.UI.Core;
@@ -47,6 +48,8 @@ namespace wallabag.ViewModels
         public DelegateCommand RegisterCommand { get; private set; }
         public DelegateCommand WhatIsWallabagCommand { get; private set; }
         public DelegateCommand ScanQRCodeCommand { get; private set; }
+
+        public bool CameraIsSupported { get; set; } = false;
 
         public LoginPageViewModel()
         {
@@ -287,6 +290,8 @@ namespace wallabag.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             _credentialsAreExisting = parameter != null && parameter is bool && (bool)parameter;
+
+            CameraIsSupported = (await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture)).Count > 0;
 
             if (state.Count > 0)
             {
