@@ -94,7 +94,7 @@
                             VerticalScrollMode="Disabled"
                             VerticalSnapPointsType="MandatorySingle"
                             ZoomMode="Disabled">
-                            <ItemsPresenter />
+                            <ItemsPresenter ManipulationMode="All" ManipulationStarting="IgnoreTouchManipulation" />
                         </ScrollViewer>
                     </Grid>
                 </ControlTemplate>
