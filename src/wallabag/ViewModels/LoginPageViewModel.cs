@@ -25,6 +25,7 @@ namespace wallabag.ViewModels
     {
         private bool _credentialsAreExisting = false;
         private bool _restoredFromPageState = false;
+        private Frame _oldFrame;
 
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
@@ -67,8 +68,10 @@ namespace wallabag.ViewModels
             WhatIsWallabagCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
             ScanQRCodeCommand = new DelegateCommand(async () =>
             {
+                SystemNavigationManager.GetForCurrentView().BackRequested += QRCodeBackRequested;
+
                 var rootModalDialog = Window.Current.Content as ModalDialog;
-                var oldFrame = rootModalDialog.Content as Frame;
+                _oldFrame = rootModalDialog.Content as Frame;
 
                 var scanner = new ZXing.Mobile.MobileBarcodeScanner(CoreWindow.GetForCurrentThread().Dispatcher)
                 {
@@ -95,11 +98,21 @@ namespace wallabag.ViewModels
                         CurrentStep = 1;
                     }
 
-                    rootModalDialog.Content = oldFrame;
+                    rootModalDialog.Content = _oldFrame;
                 }
             });
 
             this.PropertyChanged += this_PropertyChanged;
+        }
+
+        private void QRCodeBackRequested(object sender, BackRequestedEventArgs args)
+        {
+            SystemNavigationManager.GetForCurrentView().BackRequested -= QRCodeBackRequested;
+            if (_oldFrame != null)
+            {
+                args.Handled = true;
+                (Window.Current.Content as ModalDialog).Content = _oldFrame;
+            }
         }
 
         private void this_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
