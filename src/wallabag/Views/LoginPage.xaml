@@ -158,6 +158,7 @@
                         </ListView.ItemTemplate>
                     </ListView>
                     <Button
+                        x:Uid="ScanQRCodeButton"
                         Margin="4,8,4,4"
                         Command="{x:Bind ViewModel.ScanQRCodeCommand}"
                         Content="Scan QR code for configuration"

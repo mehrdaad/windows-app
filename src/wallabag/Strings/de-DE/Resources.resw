@@ -510,4 +510,10 @@
   <data name="MadeByHeaderTextBlock.Text" xml:space="preserve">
     <value>MIT VIEL HINGABE ENTWICKELT VON</value>
   </data>
+  <data name="HoldCameraOntoQRCodeMessage" xml:space="preserve">
+    <value>Halte die Kamera auf den QR-Code</value>
+  </data>
+  <data name="ScanQRCodeButton.Content" xml:space="preserve">
+    <value>QR-Code für Konfiguration scannen</value>
+  </data>
 </root>

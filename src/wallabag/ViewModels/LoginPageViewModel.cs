@@ -76,7 +76,7 @@ namespace wallabag.ViewModels
                 var scanner = new ZXing.Mobile.MobileBarcodeScanner(CoreWindow.GetForCurrentThread().Dispatcher)
                 {
                     RootFrame = new Frame(),
-                    TopText = "Hold the camera onto the QR code"
+                    TopText = GeneralHelper.LocalizedResource("HoldCameraOntoQRCodeMessage")
                 };
 
                 rootModalDialog.Content = scanner.RootFrame;

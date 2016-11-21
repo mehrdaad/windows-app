@@ -495,4 +495,10 @@
   <data name="MadeByHeaderTextBlock.Text" xml:space="preserve">
     <value>MADE WITH PASSION BY</value>
   </data>
+  <data name="HoldCameraOntoQRCodeMessage" xml:space="preserve">
+    <value>Hold the camera onto the QR code</value>
+  </data>
+  <data name="ScanQRCodeButton.Content" xml:space="preserve">
+    <value>Scan QR code for configuration</value>
+  </data>
 </root>
