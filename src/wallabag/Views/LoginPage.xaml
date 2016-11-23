@@ -320,11 +320,6 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Button
-                x:Uid="PreviousButton"
-                Margin="8,8,4,8"
-                Command="{x:Bind ViewModel.PreviousCommand, Mode=OneWay}"
-                Content="previous" />
-            <Button
                 x:Uid="ContinueButton"
                 Grid.Column="1"
                 Margin="4,8,8,8"

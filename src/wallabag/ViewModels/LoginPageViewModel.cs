@@ -120,6 +120,9 @@ namespace wallabag.ViewModels
             PreviousCommand.RaiseCanExecuteChanged();
             NextCommand.RaiseCanExecuteChanged();
             RegisterCommand.RaiseCanExecuteChanged();
+
+            if (e.PropertyName == nameof(CurrentStep))
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = PreviousCanBeExecuted() ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
         }
 
         private bool PreviousCanBeExecuted()
@@ -300,9 +303,17 @@ namespace wallabag.ViewModels
             });
         }
 
+        private void BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            e.Handled = true;
+            if (PreviousCanBeExecuted())
+                Previous();
+        }
+
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             _credentialsAreExisting = parameter != null && parameter is bool && (bool)parameter;
+            SystemNavigationManager.GetForCurrentView().BackRequested += BackRequested;
 
             CameraIsSupported = (await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture)).Count > 0;
 
@@ -346,6 +357,8 @@ namespace wallabag.ViewModels
         }
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
+            SystemNavigationManager.GetForCurrentView().BackRequested -= BackRequested;
+
             if (suspending)
             {
                 pageState[nameof(Username)] = Username;

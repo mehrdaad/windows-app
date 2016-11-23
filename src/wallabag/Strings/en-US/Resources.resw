@@ -402,9 +402,6 @@
   <data name="OtherProviderName" xml:space="preserve">
     <value>other</value>
   </data>
-  <data name="PreviousButton.Content" xml:space="preserve">
-    <value>Go back</value>
-  </data>
   <data name="RegisterButton.Content" xml:space="preserve">
     <value>Don't have an account yet? Create one!</value>
   </data>
