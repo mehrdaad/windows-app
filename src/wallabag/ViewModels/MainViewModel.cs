@@ -351,7 +351,7 @@ namespace wallabag.ViewModels
         {
             return Task.Factory.StartNew(() =>
             {
-                var queryStart = "SELECT Id,Title,PreviewImageUri,Hostname,EstimatedReadingTime,Tags FROM Item";
+                var queryStart = "SELECT Id,Title,PreviewImageUri,Hostname,EstimatedReadingTime,Tags,Url FROM Item";
                 var queryParts = new List<string>();
                 var queryParameters = new List<object>();
 
