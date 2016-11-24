@@ -106,6 +106,7 @@
     <Compile Include="Common\Helpers\GeneralHelper.cs" />
     <Compile Include="Common\Helpers\DispatcherHelper.cs" />
     <Compile Include="Common\Helpers\ListHelper.cs" />
+    <Compile Include="Common\Helpers\ProtocolHelper.cs" />
     <Compile Include="Common\Helpers\SQLiteConnectionHelper.cs" />
     <Compile Include="Common\Helpers\StringHelper.cs" />
     <Compile Include="Common\Helpers\TitleBarHelper.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Language.cs" />
     <Compile Include="Models\OfflineTask.cs" />
+    <Compile Include="Models\ProtocolSetupNavigationParameter.cs" />
     <Compile Include="Models\SearchProperties.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\WallabagProvider.cs" />

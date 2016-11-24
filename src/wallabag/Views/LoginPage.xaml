@@ -94,7 +94,7 @@
                             VerticalScrollMode="Disabled"
                             VerticalSnapPointsType="MandatorySingle"
                             ZoomMode="Disabled">
-                            <ItemsPresenter />
+                            <ItemsPresenter ManipulationMode="All" ManipulationStarting="IgnoreTouchManipulation" />
                         </ScrollViewer>
                     </Grid>
                 </ControlTemplate>
@@ -158,8 +158,15 @@
                         </ListView.ItemTemplate>
                     </ListView>
                     <Button
+                        x:Uid="ScanQRCodeButton"
+                        Margin="4,8,4,4"
+                        Command="{x:Bind ViewModel.ScanQRCodeCommand}"
+                        Content="Scan QR code for configuration"
+                        Style="{StaticResource TextBlockButtonStyle}"
+                        Visibility="{x:Bind ViewModel.CameraIsSupported, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Button
                         x:Uid="RegisterButton"
-                        Margin="4,12,4,4"
+                        Margin="4,6,4,4"
                         Command="{x:Bind ViewModel.RegisterCommand, Mode=OneWay}"
                         Content="Don't have an account yet? Create one!"
                         Style="{StaticResource TextBlockButtonStyle}" />
@@ -312,11 +319,6 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button
-                x:Uid="PreviousButton"
-                Margin="8,8,4,8"
-                Command="{x:Bind ViewModel.PreviousCommand, Mode=OneWay}"
-                Content="previous" />
             <Button
                 x:Uid="ContinueButton"
                 Grid.Column="1"

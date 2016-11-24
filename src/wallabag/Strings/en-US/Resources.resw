@@ -402,9 +402,6 @@
   <data name="OtherProviderName" xml:space="preserve">
     <value>other</value>
   </data>
-  <data name="PreviousButton.Content" xml:space="preserve">
-    <value>Go back</value>
-  </data>
   <data name="RegisterButton.Content" xml:space="preserve">
     <value>Don't have an account yet? Create one!</value>
   </data>
@@ -488,5 +485,17 @@
   </data>
   <data name="Never" xml:space="preserve">
     <value>never</value>
+  </data>
+  <data name="FilterButton.Label" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="MadeByHeaderTextBlock.Text" xml:space="preserve">
+    <value>MADE WITH PASSION BY</value>
+  </data>
+  <data name="HoldCameraOntoQRCodeMessage" xml:space="preserve">
+    <value>Hold the camera onto the QR code</value>
+  </data>
+  <data name="ScanQRCodeButton.Content" xml:space="preserve">
+    <value>Scan QR code for configuration</value>
   </data>
 </root>

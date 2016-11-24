@@ -59,6 +59,18 @@ namespace wallabag
                 SessionState["shareTarget"] = args;
                 NavigationService.Navigate(typeof(Views.ShareTargetPage));
             }
+            else if (args.Kind == ActivationKind.Protocol)
+            {
+                var a = args as ProtocolActivatedEventArgs;
+                var protocolParameter = ProtocolHelper.Parse(a.Uri.ToString());
+
+                if (protocolParameter != null && protocolParameter.Server.IsValidUri())
+                {
+                    NavigationService.Navigate(typeof(Views.LoginPage), protocolParameter);
+                    NavigationService.ClearCache();
+                    NavigationService.ClearHistory();
+                }
+            }
             else
             {
                 if (string.IsNullOrEmpty(Settings.AccessToken) || string.IsNullOrEmpty(Settings.RefreshToken))

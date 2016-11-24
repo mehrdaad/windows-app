@@ -716,7 +716,7 @@
                 Icon="Bullets"
                 Label="Select" />
             <AppBarToggleButton
-                x:Uid="filterButton"
+                x:Uid="FilterButton"
                 x:Name="filterButton"
                 Checked="filterButton_Checked"
                 Icon="Filter"

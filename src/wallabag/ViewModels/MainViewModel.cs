@@ -193,7 +193,7 @@ namespace wallabag.ViewModels
                     App.Database.InsertOrReplaceAll(itemList);
                 });
 
-                if (databaseList[0].Equals(Items[0].Model) == false)
+                if (Items.Count == 0 || databaseList[0].Equals(Items[0].Model) == false)
                     await ReloadViewAsync();
 
                 SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;
@@ -344,7 +344,7 @@ namespace wallabag.ViewModels
         {
             return Task.Factory.StartNew(() =>
             {
-                var queryStart = "SELECT Id,Title,PreviewImageUri,Hostname,EstimatedReadingTime,Tags FROM Item";
+                var queryStart = "SELECT Id,Title,PreviewImageUri,Hostname,EstimatedReadingTime,Tags,Url FROM Item";
                 var queryParts = new List<string>();
                 var queryParameters = new List<object>();
 

@@ -23,6 +23,7 @@ namespace wallabag.Views
         }
 
         private void IgnorePointerWheel(object sender, PointerRoutedEventArgs e) => e.Handled = true;
+        private void IgnoreTouchManipulation(object sender, ManipulationStartingRoutedEventArgs e) => e.Handled = true;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {

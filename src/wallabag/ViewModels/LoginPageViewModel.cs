@@ -3,14 +3,18 @@ using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Template10.Controls;
 using Template10.Mvvm;
 using wallabag.Api.Models;
 using wallabag.Common.Helpers;
 using wallabag.Models;
 using wallabag.Services;
+using Windows.Devices.Enumeration;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
@@ -21,6 +25,7 @@ namespace wallabag.ViewModels
     {
         private bool _credentialsAreExisting = false;
         private bool _restoredFromPageState = false;
+        private Frame _oldFrame;
 
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
@@ -43,7 +48,9 @@ namespace wallabag.ViewModels
         public DelegateCommand NextCommand { get; private set; }
         public DelegateCommand RegisterCommand { get; private set; }
         public DelegateCommand WhatIsWallabagCommand { get; private set; }
-        public Task TitleBarExtensions { get; private set; }
+        public DelegateCommand ScanQRCodeCommand { get; private set; }
+
+        public bool CameraIsSupported { get; set; } = false;
 
         public LoginPageViewModel()
         {
@@ -51,7 +58,7 @@ namespace wallabag.ViewModels
             {
                 //new WallabagProvider(new Uri("https://framabag.org"), "framabag", GeneralHelper.LocalizedResource("FramabagProviderDescription")),
                 new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", GeneralHelper.LocalizedResource("V2WallabagOrgProviderDescription")),
-                new WallabagProvider(default(Uri), GeneralHelper.LocalizedResource("OtherProviderName"),  GeneralHelper.LocalizedResource("OtherProviderDescription"))
+                WallabagProvider.Other
             };
 
             PreviousCommand = new DelegateCommand(() => Previous(), () => PreviousCanBeExecuted());
@@ -59,8 +66,53 @@ namespace wallabag.ViewModels
             RegisterCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri((SelectedProvider as WallabagProvider).Url, "/register")),
                 () => RegistrationCanBeExecuted());
             WhatIsWallabagCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
+            ScanQRCodeCommand = new DelegateCommand(async () =>
+            {
+                SystemNavigationManager.GetForCurrentView().BackRequested += QRCodeBackRequested;
+
+                var rootModalDialog = Window.Current.Content as ModalDialog;
+                _oldFrame = rootModalDialog.Content as Frame;
+
+                var scanner = new ZXing.Mobile.MobileBarcodeScanner(CoreWindow.GetForCurrentThread().Dispatcher)
+                {
+                    RootFrame = new Frame(),
+                    TopText = GeneralHelper.LocalizedResource("HoldCameraOntoQRCodeMessage")
+                };
+
+                rootModalDialog.Content = scanner.RootFrame;
+                var result = await scanner.Scan(new ZXing.Mobile.MobileBarcodeScanningOptions()
+                {
+                    TryHarder = false,
+                    PossibleFormats = new List<ZXing.BarcodeFormat>() { ZXing.BarcodeFormat.QR_CODE }
+                });
+
+                if (string.IsNullOrEmpty(result?.Text) == false && result.Text.StartsWith("wallabag://"))
+                {
+                    SelectedProvider = WallabagProvider.Other;
+
+                    var parsedResult = ProtocolHelper.Parse(result.Text);
+                    if (parsedResult.Server.IsValidUri())
+                    {
+                        Url = parsedResult.Server;
+                        Username = parsedResult.Username;
+                        CurrentStep = 1;
+                    }
+
+                    rootModalDialog.Content = _oldFrame;
+                }
+            });
 
             this.PropertyChanged += this_PropertyChanged;
+        }
+
+        private void QRCodeBackRequested(object sender, BackRequestedEventArgs args)
+        {
+            SystemNavigationManager.GetForCurrentView().BackRequested -= QRCodeBackRequested;
+            if (_oldFrame != null)
+            {
+                args.Handled = true;
+                (Window.Current.Content as ModalDialog).Content = _oldFrame;
+            }
         }
 
         private void this_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -68,6 +120,9 @@ namespace wallabag.ViewModels
             PreviousCommand.RaiseCanExecuteChanged();
             NextCommand.RaiseCanExecuteChanged();
             RegisterCommand.RaiseCanExecuteChanged();
+
+            if (e.PropertyName == nameof(CurrentStep))
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = PreviousCanBeExecuted() ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
         }
 
         private bool PreviousCanBeExecuted()
@@ -110,7 +165,8 @@ namespace wallabag.ViewModels
 
             if (CurrentStep == 0)
             {
-                Url = selectedProvider?.Url == null ? "https://" : selectedProvider.Url.ToString();
+                if (Url.IsValidUri() == false)
+                    Url = selectedProvider?.Url == null ? "https://" : selectedProvider.Url.ToString();
 
                 CurrentStep += 1;
                 return;
@@ -247,9 +303,19 @@ namespace wallabag.ViewModels
             });
         }
 
+        private void BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            e.Handled = true;
+            if (PreviousCanBeExecuted())
+                Previous();
+        }
+
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            _credentialsAreExisting = parameter != null && (bool)parameter;
+            _credentialsAreExisting = parameter != null && parameter is bool && (bool)parameter;
+            SystemNavigationManager.GetForCurrentView().BackRequested += BackRequested;
+
+            CameraIsSupported = (await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture)).Count > 0;
 
             if (state.Count > 0)
             {
@@ -274,10 +340,25 @@ namespace wallabag.ViewModels
                 Url = App.Client.InstanceUri.ToString();
 
                 await NextAsync();
+                return;
+            }
+
+            if (parameter is ProtocolSetupNavigationParameter)
+            {
+                var np = parameter as ProtocolSetupNavigationParameter;
+                Username = np.Username;
+                Url = np.Server;
+
+                SelectedProvider = WallabagProvider.Other;
+
+                CurrentStep = 1;
+                return;
             }
         }
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
+            SystemNavigationManager.GetForCurrentView().BackRequested -= BackRequested;
+
             if (suspending)
             {
                 pageState[nameof(Username)] = Username;
@@ -336,13 +417,10 @@ namespace wallabag.ViewModels
             if (!addResponse.IsSuccessStatusCode)
                 return false;
 
-            var results = ParseResult(await addResponse.Content.ReadAsStringAsync());
+            var result = ParseResult(await addResponse.Content.ReadAsStringAsync(), useNewApi);
 
-            if (results.Count == 2)
-                this.ClientId = results[0];
-            else
-                this.ClientId = results[1];
-            this.ClientSecret = results[2];
+            ClientId = result.Id;
+            ClientSecret = result.Secret;
 
             _http.Dispose();
             return true;
@@ -361,11 +439,12 @@ namespace wallabag.ViewModels
             return html.Substring(startIndex, endIndex - startIndex);
         }
 
-        private List<string> ParseResult(string html)
+        private ClientResultData ParseResult(string html, bool useNewApi = false)
         {
             var results = new List<string>();
 
             var lastIndex = 0;
+            int resultCount = useNewApi ? 2 : 1;
             do
             {
                 var start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
@@ -373,11 +452,31 @@ namespace wallabag.ViewModels
 
                 results.Add(html.Substring(start, lastIndex - start));
 
-            } while (results.Count <= 3);
+            } while (results.Count <= resultCount);
 
-            return results;
+            if (useNewApi)
+                return new ClientResultData()
+                {
+                    Name = results[0],
+                    Id = results[1],
+                    Secret = results[2]
+                };
+            else
+                return new ClientResultData()
+                {
+                    Id = results[0],
+                    Secret = results[1],
+                    Name = string.Empty
+                };
         }
 
         #endregion
+    }
+
+    public class ClientResultData
+    {
+        public string Id { get; set; }
+        public string Secret { get; set; }
+        public string Name { get; set; }
     }
 }
