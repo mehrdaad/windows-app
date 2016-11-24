@@ -157,6 +157,12 @@ namespace wallabag.Services
 
         private static void AddTask(OfflineTask task)
         {
+            if (task.Id == 0)
+                task.Id = LastTaskId;
+
+            if (task.Id == 0)
+                task.Id = _tasks.Count + 1;
+
             _tasks.Add(task.Id, task);
             App.Database.Insert(task);
             App.OfflineTaskAdded?.Invoke(null, task);
@@ -168,6 +174,7 @@ namespace wallabag.Services
             App.OfflineTaskRemoved?.Invoke(null, task);
         }
 
+        private static int LastTaskId => App.Database.ExecuteScalar<int>("select max(ID) from OfflineTask");
         public static int Count() => App.Database.ExecuteScalar<int>("select count(*) from OfflineTask");
     }
 }
