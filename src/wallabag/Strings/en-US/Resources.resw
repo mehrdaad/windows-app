@@ -498,4 +498,7 @@
   <data name="ScanQRCodeButton.Content" xml:space="preserve">
     <value>Scan QR code for configuration</value>
   </data>
+  <data name="NotSupportedOnThisDeviceTextBlock.Text" xml:space="preserve">
+    <value>This feature is not supported on your device. Upgrade to a newer version of Windows to make use of all wallabag features.</value>
+  </data>
 </root>

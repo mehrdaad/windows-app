@@ -45,7 +45,9 @@ namespace wallabag.ViewModels
             }
         }
         public bool WhiteOverlayForTitleBar { get; set; } = SettingsService.Instance.WhiteOverlayForTitleBar;
-        public bool BackgroundTaskIsEnabled { get; set; } = SettingsService.Instance.BackgroundTaskIsEnabled;
+        public bool BackgroundTaskIsEnabled { get; set; } = SettingsService.Instance.BackgroundTaskIsEnabled && BackgroundTaskHelper.IsSupportedOnDevice;
+        public bool BackgroundTaskIsNotSupported { get; } = BackgroundTaskHelper.IsSupportedOnDevice == false;
+        public bool BackgroundTaskIsSupported { get; } = BackgroundTaskHelper.IsSupportedOnDevice;
         public double BackgroundTaskExecutionInterval { get; set; } = SettingsService.Instance.BackgroundTaskExecutionInterval;
         public bool DownloadNewItemsDuringExecutionOfBackgroundTask { get; set; } = SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask;
 

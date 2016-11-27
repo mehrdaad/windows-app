@@ -179,9 +179,32 @@
             </PivotItem>
             <PivotItem x:Uid="BackgroundTaskPivotItem" Header="Background task">
                 <StackPanel>
+                    <Grid
+                        Margin="0,0,0,12"
+                        BorderBrush="#FFFFA200"
+                        BorderThickness="1"
+                        Padding="8"
+                        Visibility="{x:Bind ViewModel.BackgroundTaskIsNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <FontIcon
+                            Margin="8,0"
+                            Foreground="#FFFFA200"
+                            Glyph="&#xE7BA;" />
+                        <TextBlock
+                            Grid.Column="1"
+                            x:Uid="NotSupportedOnThisDeviceTextBlock"
+                            VerticalAlignment="Center"
+                            Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                            Style="{StaticResource InfoTextBlockStyle}"
+                            Text="This feature is not supported on your device. Upgrade to a newer version of Windows to enable backgrund tasks." />
+                    </Grid>
                     <ToggleSwitch
                         x:Uid="EnableBackgroundTaskToggleSwitch"
                         Header="Enable background task"
+                        IsEnabled="{x:Bind ViewModel.BackgroundTaskIsSupported}"
                         IsOn="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=TwoWay}" />
                     <TextBlock
                         x:Uid="LastExecutionOfBackgroundTaskTextBlock"
@@ -226,7 +249,7 @@
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="InfoPivotItem" Header="Info">
-                <ScrollViewer VerticalScrollBarVisibility="Hidden" Padding="0,0,0,8">
+                <ScrollViewer Padding="0,0,0,8" VerticalScrollBarVisibility="Hidden">
                     <StackPanel>
                         <TextBlock
                             x:Uid="VersionHeaderTextBlock"
