@@ -519,4 +519,7 @@
   <data name="NotSupportedOnThisDeviceTextBlock.Text" xml:space="preserve">
     <value>Dieses Feature wird auf deinem Gerät nicht unterstützt. Aktualisiere auf eine neuere Windows-Version, um alle Features von wallabag nutzen zu können.</value>
   </data>
+  <data name="WallabagItProviderDescription" xml:space="preserve">
+    <value>Speichere Artikel. Lese sie später. Egal an welchem Ort.</value>
+  </data>
 </root>
