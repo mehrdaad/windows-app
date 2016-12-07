@@ -199,9 +199,14 @@ namespace wallabag.ViewModels
                 var link = $"http://vimeo.com/api/v2/video/{videoId}.json";
                 using (HttpClient client = new HttpClient())
                 {
-                    var resp = await client.GetAsync(new Uri(link));
-                    dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(await resp.Content.ReadAsStringAsync());
-                    return json[0].thumbnail_large.Value;
+                    var response = await client.GetAsync(new Uri(link));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+                        return json[0].thumbnail_large.Value;
+                    }
+                    return string.Empty;
                 }
             }
         }
