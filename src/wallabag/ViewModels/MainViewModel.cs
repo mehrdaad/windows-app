@@ -10,6 +10,7 @@ using Template10.Mvvm;
 using wallabag.Common;
 using wallabag.Common.Helpers;
 using wallabag.Common.Messages;
+using System.Reflection;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.UI.Core;
@@ -50,7 +51,6 @@ namespace wallabag.ViewModels
         public DelegateCommand SyncCommand { get; private set; }
         public DelegateCommand AddCommand { get; private set; }
         public DelegateCommand NavigateToSettingsPageCommand { get; private set; }
-        public DelegateCommand<SelectionChangedEventArgs> PivotSelectionChangedCommand { get; private set; }
 
         public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties();
         public ObservableCollection<Item> SearchQuerySuggestions { get; set; } = new ObservableCollection<Item>();
@@ -351,7 +351,9 @@ namespace wallabag.ViewModels
         {
             return Task.Factory.StartNew(() =>
             {
-                var queryStart = "SELECT Id,Title,PreviewImageUri,Hostname,EstimatedReadingTime,Tags,Url FROM Item";
+                string sqlPropertyString = string.Join(",", typeof(Item).GetProperties().Select(p => p.Name)).Replace($"{nameof(Item.Content)},", string.Empty);
+
+                var queryStart = $"SELECT {sqlPropertyString} FROM Item";
                 var queryParts = new List<string>();
                 var queryParameters = new List<object>();
 
