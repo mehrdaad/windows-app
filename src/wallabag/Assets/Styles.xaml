@@ -173,21 +173,26 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <StackPanel
+                        <Grid
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Orientation="Horizontal">
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"                          >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
                             <ContentPresenter
                                 x:Name="Icon"
-                                Margin="0,0,8,0"
+                                HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw"
                                 Content="{TemplateBinding Tag}" />
                             <TextBlock
+                                Grid.Column="1"
                                 x:Name="Content"
+                                TextWrapping="Wrap"
                                 VerticalAlignment="Center"
                                 Text="{TemplateBinding Content}" />
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
