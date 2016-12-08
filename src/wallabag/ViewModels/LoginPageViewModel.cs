@@ -392,7 +392,7 @@ namespace wallabag.ViewModels
             var instanceUri = new Uri(Url);
 
             // Step 1: Login to get a cookie.
-            var loginContent = new HttpStringContent($"_username={Username}&_password={Password}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+            var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
             var loginResponse = await _http.PostAsync(new Uri(instanceUri, "/login_check"), loginContent);
 
             if (!loginResponse.IsSuccessStatusCode)
