@@ -3,7 +3,7 @@
   <Identity Name="36523JulianOster.wallabag.Beta" Publisher="CN=1568B1BC-E22B-483C-96D0-E71125281590" Version="2.1.8.0" />
   <mp:PhoneIdentity PhoneProductId="ce750668-9dba-409c-83d6-53d781a957ed" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>wallabag.Beta</DisplayName>
+    <DisplayName>wallabag</DisplayName>
     <PublisherDisplayName>Julian Oster</PublisherDisplayName>
     <Logo>Assets\StoreLogo\StoreLogo.png</Logo>
   </Properties>
@@ -21,15 +21,15 @@
         <uap:SplashScreen Image="Assets\SplashScreen\SplashScreen.png" BackgroundColor="#000000" />
       </uap:VisualElements>
       <Extensions>
-        <uap:Extension Category="windows.shareTarget" EntryPoint="wallabag.App">
-          <uap:ShareTarget Description="Save a link in your wallabag!">
-            <uap:DataFormat>URI</uap:DataFormat>
-          </uap:ShareTarget>
-        </uap:Extension>
         <uap:Extension Category="windows.protocol">
           <uap:Protocol Name="wallabag">
             <uap:DisplayName>wallabag</uap:DisplayName>
           </uap:Protocol>
+        </uap:Extension>
+        <uap:Extension Category="windows.shareTarget" EntryPoint="wallabag.App">
+          <uap:ShareTarget Description="Save a link in your wallabag!">
+            <uap:DataFormat>URI</uap:DataFormat>
+          </uap:ShareTarget>
         </uap:Extension>
       </Extensions>
     </Application>
