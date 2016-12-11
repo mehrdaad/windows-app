@@ -455,6 +455,14 @@ namespace wallabag.ViewModels
                     Items.AddSorted(viewModel, sortAscending: CurrentSearchProperties.OrderAscending == true);
                 }
             });
+            Messenger.Default.Register<ApplyUIUpdatesMessage>(this, message =>
+            {
+                foreach (var task in OfflineTaskService.Queue)
+                    OfflineTaskService_OfflineTaskAdded(this, task);
+
+                if (message.ClearQueue)
+                    OfflineTaskService.Queue.Clear();
+            });
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
