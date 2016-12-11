@@ -103,7 +103,7 @@ namespace wallabag.ViewModels
         {
             RaisePropertyChanged(nameof(OfflineTaskCount));
 
-            if (_offlineTaskAreBlocked)
+            if (OfflineTaskService.IsBlocked)
                 return;
 
             ItemViewModel item = default(ItemViewModel);
@@ -268,7 +268,6 @@ namespace wallabag.ViewModels
         private void SetSortOrder(string order) => CurrentSearchProperties.OrderAscending = order == "asc";
 
         private int _previousItemTypeIndex;
-        private bool _offlineTaskAreBlocked;
 
         private void StartSearch()
         {
@@ -446,18 +445,6 @@ namespace wallabag.ViewModels
                     await SyncAsync();
             }
 
-            Messenger.Default.Register<BlockOfflineTaskExecutionMessage>(this, message =>
-            {
-                _offlineTaskAreBlocked = message.IsBlocked;
-                if (_offlineTaskAreBlocked == false)
-                {
-                    var tasks = App.Database.Table<OfflineTask>().ToList();
-                    foreach (var task in tasks)
-                    {
-                        OfflineTaskService_OfflineTaskAdded(this, task);
-                    }
-                }
-            });
             Messenger.Default.Register<UpdateItemMessage>(this, message =>
             {
                 var viewModel = new ItemViewModel(Item.FromId(message.ItemId));

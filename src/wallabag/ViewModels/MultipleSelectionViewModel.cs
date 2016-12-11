@@ -6,6 +6,7 @@ using Template10.Mvvm;
 using wallabag.Common.Helpers;
 using wallabag.Common.Messages;
 using wallabag.Models;
+using wallabag.Services;
 
 namespace wallabag.ViewModels
 {
@@ -32,29 +33,26 @@ namespace wallabag.ViewModels
             UnmarkAsFavoriteCommand = new DelegateCommand(() => ExecuteActionOnItems(OfflineTask.OfflineTaskAction.UnmarkAsStarred));
             DeleteCommand = new DelegateCommand(() => ExecuteActionOnItems(OfflineTask.OfflineTaskAction.Delete));
             EditTagsCommand = new DelegateCommand(() => BlockOfflineTaskExecution(async () =>
-{
-    var viewModel = new EditTagsViewModel();
-
-    foreach (var item in Items)
-        viewModel.Items.Add(item.Model);
-
-    await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, viewModel);
-}));
-            OpenInBrowserCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
             {
-                App.Database.RunInTransaction(() =>
-                {
-                    foreach (var item in Items)
-                        item.OpenInBrowserCommand.Execute();
-                });
+                var viewModel = new EditTagsViewModel();
+
+                foreach (var item in Items)
+                    viewModel.Items.Add(item.Model);
+
+                await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, viewModel);
             }));
+            OpenInBrowserCommand = new DelegateCommand(() =>
+            {
+                foreach (var item in Items)
+                    item.OpenInBrowserCommand.Execute();
+            });
         }
 
         private void BlockOfflineTaskExecution(Action a)
         {
-            Messenger.Default.Send(new BlockOfflineTaskExecutionMessage(true));
+            OfflineTaskService.IsBlocked = true;
             a.Invoke();
-            Messenger.Default.Send(new BlockOfflineTaskExecutionMessage(false));
+            OfflineTaskService.IsBlocked = false;
             Messenger.Default.Send(new CompleteMultipleSelectionMessage());
         }
 

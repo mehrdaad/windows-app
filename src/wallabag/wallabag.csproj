@@ -115,7 +115,6 @@
     <Compile Include="Common\Messages\CompleteMultipleSelectionMessage.cs" />
     <Compile Include="Common\Messages\ShowUndoPopupMessage.cs" />
     <Compile Include="Common\Messages\UpdateItemMessage.cs" />
-    <Compile Include="Common\Messages\BlockOfflineTaskExecutionMessage.cs" />
     <Compile Include="Controls\AdaptiveGridView.cs" />
     <Compile Include="Controls\TagsControl.xaml.cs">
       <DependentUpon>TagsControl.xaml</DependentUpon>

@@ -18,6 +18,8 @@ namespace wallabag.Services
         private static Dictionary<int, OfflineTask> _tasks = new Dictionary<int, OfflineTask>();
         private static Delayer _delayer;
 
+        public static bool IsBlocked { get; set; } = false;
+
         public static EventHandler<OfflineTask> OfflineTaskAdded;
         public static EventHandler<OfflineTask> OfflineTaskRemoved;
 
@@ -110,9 +112,7 @@ namespace wallabag.Services
         }
         public static async Task ExecuteAllAsync()
         {
-            var tasks = _tasks.ToList();
-
-            foreach (var item in tasks)
+            foreach (var item in _tasks)
             {
                 if (await ExecuteAsync(item.Value))
                     RemoveTask(item.Value);
