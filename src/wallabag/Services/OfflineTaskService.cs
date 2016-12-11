@@ -19,6 +19,7 @@ namespace wallabag.Services
         private static Delayer _delayer;
 
         public static bool IsBlocked { get; set; } = false;
+        public static List<OfflineTask> Queue { get; } = new List<OfflineTask>();
 
         public static EventHandler<OfflineTask> OfflineTaskAdded;
         public static EventHandler<OfflineTask> OfflineTaskRemoved;
@@ -167,7 +168,11 @@ namespace wallabag.Services
 
             _tasks.Add(task.Id, task);
             App.Database.Insert(task);
-            OfflineTaskAdded?.Invoke(null, task);
+
+            if (IsBlocked)
+                Queue.Add(task);
+            else
+                OfflineTaskAdded?.Invoke(null, task);
         }
         private static void RemoveTask(OfflineTask task)
         {
