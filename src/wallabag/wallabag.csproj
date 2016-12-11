@@ -112,6 +112,7 @@
     <Compile Include="Common\Helpers\TitleBarHelper.cs" />
     <Compile Include="Common\Helpers\WebViewHelper.cs" />
     <Compile Include="Common\IncrementalObservableCollection.cs" />
+    <Compile Include="Common\Messages\ApplyUIUpdatesMessage.cs" />
     <Compile Include="Common\Messages\CompleteMultipleSelectionMessage.cs" />
     <Compile Include="Common\Messages\ShowUndoPopupMessage.cs" />
     <Compile Include="Common\Messages\UpdateItemMessage.cs" />
