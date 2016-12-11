@@ -195,9 +195,6 @@
   <data name="GeneralSettingsPivotItem.Header" xml:space="preserve">
     <value>Général</value>
   </data>
-  <data name="grayThemeButton.Label" xml:space="preserve">
-    <value>Gris</value>
-  </data>
   <data name="InfoPivotItem.Header" xml:space="preserve">
     <value>Info</value>
   </data>
@@ -293,18 +290,6 @@
   </data>
   <data name="ShareMenuFlyoutItem.Text" xml:space="preserve">
     <value>Partager</value>
-  </data>
-  <data name="SortByLongestFirstTextBlock.Text" xml:space="preserve">
-    <value>Les plus long en premier</value>
-  </data>
-  <data name="SortByNewestFirstTextBlock.Text" xml:space="preserve">
-    <value>Les plus récent en premier</value>
-  </data>
-  <data name="SortByOldestFirstTextBlock.Text" xml:space="preserve">
-    <value>Les plus vieux en premier</value>
-  </data>
-  <data name="SortByShortestFirstTextBlock.Text" xml:space="preserve">
-    <value>Les plus court en premier</value>
   </data>
   <data name="SortOrderFilterTitleTextBlock.Text" xml:space="preserve">
     <value>ORDRE DE TRI</value>
@@ -421,9 +406,6 @@ Les changements seront appliqués après le prochain redémarrage.</value>
   <data name="OtherProviderName" xml:space="preserve">
     <value>autre</value>
   </data>
-  <data name="PreviousButton.Content" xml:space="preserve">
-    <value>Revenir en arrière</value>
-  </data>
   <data name="RegisterButton.Content" xml:space="preserve">
     <value>Vous n&apos;avez pas encore de compte ? Créez-en un !</value>
   </data>
@@ -456,6 +438,72 @@ Les changements seront appliqués après le prochain redémarrage.</value>
   </data>
   <data name="VideoOpenModeHeaderTextBlock.Text" xml:space="preserve">
     <value>Comment les vidéos doivent-elle être lues ?</value>
+  </data>
+  <data name="OrderAscendingRadioButton.Tag" xml:space="preserve">
+    <value>trier par ordre ascendant</value>
+  </data>
+  <data name="OrderDescendingRadioButton.Tag" xml:space="preserve">
+    <value>trier par order descendant</value>
+  </data>
+  <data name="SortByDateRadioButton.Content" xml:space="preserve">
+    <value>par date</value>
+  </data>
+  <data name="SortByReadingTimeRadioButton.Content" xml:space="preserve">
+    <value>par temps de lecture</value>
+  </data>
+  <data name="SearchHeaderWithQuery" xml:space="preserve">
+    <value>Résultats de la recherche pour : {0}</value>
+  </data>
+  <data name="TitleBarVisibilityToggleSwitch.Header" xml:space="preserve">
+    <value>Visibilité de la barre de titre</value>
+  </data>
+  <data name="TitleBarVisibilityToggleSwitch.OffContent" xml:space="preserve">
+    <value>Cachée</value>
+  </data>
+  <data name="TitleBarVisibilityToggleSwitch.OnContent" xml:space="preserve">
+    <value>Visible</value>
+  </data>
+  <data name="BackgroundTaskDownloadNewItemsDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Avec ce paramètre vous pouvez demander à l&apos;application de télécharger les nouveaux articles depuis le serveur. Dans le cas contraire uniquement les changements locaux seront envoyés depuis l&apos;application au serveur.</value>
+  </data>
+  <data name="BackgroundTaskDownloadNewItemsToggleSwitch.Header" xml:space="preserve">
+    <value>Télécharger les nouveaux articles</value>
+  </data>
+  <data name="BackgroundTaskExecutionIntervalInMinutesTextBlock.Text" xml:space="preserve">
+    <value>toutes les {0} minutes</value>
+  </data>
+  <data name="BackgroundTaskExecutionIntervalSlider.Header" xml:space="preserve">
+    <value>Fréquence d&apos;exécution</value>
+  </data>
+  <data name="BackgroundTaskPivotItem.Header" xml:space="preserve">
+    <value>Synchronisation en arrière-plan</value>
+  </data>
+  <data name="EnableBackgroundTaskToggleSwitch.Header" xml:space="preserve">
+    <value>Activer la synchronisation en arrière-plan</value>
+  </data>
+  <data name="LastExecutionOfBackgroundTaskTextBlock.Text" xml:space="preserve">
+    <value>Dernière exécution : {0}</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>jamais</value>
+  </data>
+  <data name="FilterButton.Label" xml:space="preserve">
+    <value>Filtre</value>
+  </data>
+  <data name="MadeByHeaderTextBlock.Text" xml:space="preserve">
+    <value>RÉALISÉ AVEC PASSION PAR</value>
+  </data>
+  <data name="HoldCameraOntoQRCodeMessage" xml:space="preserve">
+    <value>Placez votre appareil-photo face au QR code</value>
+  </data>
+  <data name="ScanQRCodeButton.Content" xml:space="preserve">
+    <value>Scannez le QR code pour la configuration</value>
+  </data>
+  <data name="NotSupportedOnThisDeviceTextBlock.Text" xml:space="preserve">
+    <value>Cette fonctionnalité n’est pas supporté par votre appareil. Mettez-le à jour avec une version plus récente de Windows pour pouvoir profiter de toutes les fonctionnalités de wallabag.</value>
+  </data>
+  <data name="WallabagItProviderDescription" xml:space="preserve">
+    <value>Sauvegardez des articles. Lisez-les plus tard. Lisez-les n&apos;importe où.</value>
   </data>
 
 </root>

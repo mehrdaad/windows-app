@@ -12,6 +12,9 @@ namespace wallabag.Common.Helpers
 
         public static async Task RegisterBackgroundTaskAsync()
         {
+            if (IsSupportedOnDevice == false)
+                return;
+
             await BackgroundExecutionManager.RequestAccessAsync();
 
             var builder = new BackgroundTaskBuilder();
@@ -31,6 +34,9 @@ namespace wallabag.Common.Helpers
         {
             get
             {
+                if (IsSupportedOnDevice == false)
+                    return false;
+
                 bool taskRegistered = false;
                 foreach (var task in BackgroundTaskRegistration.AllTasks)
                 {
@@ -44,5 +50,6 @@ namespace wallabag.Common.Helpers
                 return taskRegistered;
             }
         }
+        public static bool IsSupportedOnDevice => Windows.Foundation.Metadata.ApiInformation.IsMethodPresent(typeof(Windows.UI.Xaml.Application).FullName, "OnBackgroundActivated");
     }
 }

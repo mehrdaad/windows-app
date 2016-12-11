@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -129,9 +129,6 @@
   <data name="AddItemContentDialog.Title" xml:space="preserve">
     <value>ADD ITEM</value>
   </data>
-  <data name="ArchivedPivotItem.Header" xml:space="preserve">
-    <value>ARCHIVED</value>
-  </data>
   <data name="blackThemeButton.Label" xml:space="preserve">
     <value>Black</value>
   </data>
@@ -139,7 +136,7 @@
     <value>Cancel</value>
   </data>
   <data name="CantRetrieveContentsErrorMessage" xml:space="preserve">
-    <value>wallabag can't retrieve contents for this article.</value>
+    <value>wallabag can&apos;t retrieve contents for this article.</value>
   </data>
   <data name="ClientIdTextBox.Header" xml:space="preserve">
     <value>Client ID</value>
@@ -229,7 +226,7 @@
     <value>MISCELLANOUS</value>
   </data>
   <data name="MultipleDevicesAlertTextBlock.Text" xml:space="preserve">
-    <value>A usage of the same ID/secret combination on multiple devices isn't recommended and could cause (a lot of) frustration.</value>
+    <value>A usage of the same ID/secret combination on multiple devices isn&apos;t recommended and could cause (a lot of) frustration.</value>
   </data>
   <data name="MultipleSelectionAppBarButton.Label" xml:space="preserve">
     <value>Select</value>
@@ -241,13 +238,13 @@
     <value>NEED HELP?</value>
   </data>
   <data name="NoContentAvailableErrorMessage" xml:space="preserve">
-    <value>There is no content available. Maybe the item wasn't added yet.</value>
+    <value>There is no content available. Maybe the item wasn&apos;t added yet.</value>
   </data>
   <data name="NoTagsInfoTextBlock.Text" xml:space="preserve">
     <value>No tags added, yet.</value>
   </data>
   <data name="NothingFoundTextBlock.Text" xml:space="preserve">
-    <value>Didn't found something for you. Sorry.</value>
+    <value>Didn&apos;t found something for you. Sorry.</value>
   </data>
   <data name="OpenChangelogButton.Content" xml:space="preserve">
     <value>(changelog)</value>
@@ -300,9 +297,6 @@
   <data name="SpecialThanksInfoTextBlock.Text" xml:space="preserve">
     <value>Nicolas Lœuillet, Thomas Citharel and Jérémy Benoist for creating such a great software.</value>
   </data>
-  <data name="FavoritesPivotItem.Header" xml:space="preserve">
-    <value>FAVORITES</value>
-  </data>
   <data name="SyncAppBarButton.Label" xml:space="preserve">
     <value>Sync</value>
   </data>
@@ -319,9 +313,9 @@
     <value>TAG</value>
   </data>
   <data name="TelemetryCollectionInfoTextBlock.Text" xml:space="preserve">
-    <value>To improve the general stability of this app, it's recommended to turn on the automatic submission of anonymous telemetry data. However, if you want to turn it off, because you care of your privacy, you can do it too. Changes will be applied after the next restart. Do you want to allow it?</value>
+    <value>To improve the general stability of this app, it&apos;s recommended to turn on the automatic submission of anonymous telemetry data. However, if you want to turn it off, because you care of your privacy, you can do it too. Changes will be applied after the next restart.</value>
   </data>
-  <data name="TelemetryDataCheckBox.Content" xml:space="preserve">
+  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
     <value>Allow collection of telemetry data</value>
   </data>
   <data name="TellFriendsButton.Content" xml:space="preserve">
@@ -345,9 +339,6 @@
   <data name="UnmarkAsReadMenuFlyoutItem.Text" xml:space="preserve">
     <value>Unmark as read</value>
   </data>
-  <data name="UnreadPivotItem.Header" xml:space="preserve">
-    <value>UNREAD</value>
-  </data>
   <data name="UrlTextBox.Header" xml:space="preserve">
     <value>URL</value>
   </data>
@@ -367,7 +358,19 @@
     <value>Welcome!</value>
   </data>
   <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
-    <value>Use custom client settings</value>
+    <value>Use custom settings</value>
+  </data>
+  <data name="ArchivedPivotItem.Header" xml:space="preserve">
+    <value>ARCHIVED</value>
+  </data>
+  <data name="FavoritesPivotItem.Header" xml:space="preserve">
+    <value>FAVORITES</value>
+  </data>
+  <data name="UnreadPivotItem.Header" xml:space="preserve">
+    <value>UNREAD</value>
+  </data>
+  <data name="TelemetryDataCheckBox.Content" xml:space="preserve">
+    <value>Allow collection of telemetry data</value>
   </data>
   <data name="CreatingClientMessage" xml:space="preserve">
     <value>Creating a client…</value>
@@ -382,7 +385,7 @@
     <value>Now we continue with the configuration. In the simplest case you just need to enter your usename and your password.</value>
   </data>
   <data name="FirstStartContinueTextBlock.Text" xml:space="preserve">
-    <value>Let's continue!</value>
+    <value>Let&apos;s continue!</value>
   </data>
   <data name="FirstStartLastQuestionTextBlock.Text" xml:space="preserve">
     <value>One last question…</value>
@@ -397,19 +400,16 @@
     <value>Framabag users are always welcome!</value>
   </data>
   <data name="OtherProviderDescription" xml:space="preserve">
-    <value>If you're using another provider, this option is for you.</value>
+    <value>If you&apos;re using another provider, this option is for you.</value>
   </data>
   <data name="OtherProviderName" xml:space="preserve">
     <value>other</value>
   </data>
   <data name="RegisterButton.Content" xml:space="preserve">
-    <value>Don't have an account yet? Create one!</value>
+    <value>Don&apos;t have an account yet? Create one!</value>
   </data>
   <data name="SavingItemsInDatabaseMessage" xml:space="preserve">
     <value>Saving items in the database…</value>
-  </data>
-  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
-    <value>Allow collection of telemetry data</value>
   </data>
   <data name="TestingConfigurationMessage" xml:space="preserve">
     <value>Testing the configuration…</value>
@@ -498,4 +498,11 @@
   <data name="ScanQRCodeButton.Content" xml:space="preserve">
     <value>Scan QR code for configuration</value>
   </data>
+  <data name="NotSupportedOnThisDeviceTextBlock.Text" xml:space="preserve">
+    <value>This feature is not supported on your device. Upgrade to a newer version of Windows to make use of all wallabag features.</value>
+  </data>
+  <data name="WallabagItProviderDescription" xml:space="preserve">
+    <value>Save web articles. Read them later. Read them anywhere.</value>
+  </data>
+
 </root>

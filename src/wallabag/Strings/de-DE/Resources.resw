@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -129,9 +129,6 @@
   <data name="AddItemContentDialog.Title" xml:space="preserve">
     <value>EINTRAG HINZUFÜGEN</value>
   </data>
-  <data name="ArchivedPivotItem.Header" xml:space="preserve">
-    <value>ARCHIVIERT</value>
-  </data>
   <data name="blackThemeButton.Label" xml:space="preserve">
     <value>Schwarz</value>
   </data>
@@ -197,9 +194,6 @@
   </data>
   <data name="GeneralSettingsPivotItem.Header" xml:space="preserve">
     <value>Allgemein</value>
-  </data>
-  <data name="grayThemeButton.Label" xml:space="preserve">
-    <value>Grau</value>
   </data>
   <data name="InfoPivotItem.Header" xml:space="preserve">
     <value>Info</value>
@@ -297,26 +291,11 @@
   <data name="ShareMenuFlyoutItem.Text" xml:space="preserve">
     <value>Teilen</value>
   </data>
-  <data name="SortByLongestFirstTextBlock.Text" xml:space="preserve">
-    <value>längste zuerst</value>
-  </data>
-  <data name="SortByNewestFirstTextBlock.Text" xml:space="preserve">
-    <value>neueste zuerst</value>
-  </data>
-  <data name="SortByOldestFirstTextBlock.Text" xml:space="preserve">
-    <value>älteste zuerst</value>
-  </data>
-  <data name="SortByShortestFirstTextBlock.Text" xml:space="preserve">
-    <value>kürzeste zuerst</value>
-  </data>
   <data name="SortOrderFilterTitleTextBlock.Text" xml:space="preserve">
     <value>SORTIERUNG</value>
   </data>
   <data name="SpecialThanksInfoTextBlock.Text" xml:space="preserve">
     <value>Nicolas Lœuillet, Thomas Citharel und Jérémy Benoist für dieses großartige Stück Software.</value>
-  </data>
-  <data name="FavoritesPivotItem.Header" xml:space="preserve">
-    <value>FAVORITEN</value>
   </data>
   <data name="SyncAppBarButton.Label" xml:space="preserve">
     <value>Synchronisieren</value>
@@ -336,7 +315,7 @@
   <data name="TelemetryCollectionInfoTextBlock.Text" xml:space="preserve">
     <value>Um die allgemeine Stabilität der App zu verbessern, ist es ratsam, das automatische Sammeln von Telemetrie-Daten zu erlauben. Diese sind anonymisiert und erlauben keine Rückschlüsse auf die einzelne Person. Falls allerdings Bedenken aufgrund der Privatsphäre existieren, kann dies abgeschaltet werden. Änderungen werden nach einem Neustart übernommen. Dürfen Telemetrie-Daten gesammelt werden?</value>
   </data>
-  <data name="TelemetryDataCheckBox.Content" xml:space="preserve">
+  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
     <value>Sammeln von Telemetrie-Daten erlauben</value>
   </data>
   <data name="TellFriendsButton.Content" xml:space="preserve">
@@ -360,9 +339,6 @@
   <data name="UnmarkAsReadMenuFlyoutItem.Text" xml:space="preserve">
     <value>Als ungelesen markieren</value>
   </data>
-  <data name="UnreadPivotItem.Header" xml:space="preserve">
-    <value>UNGELESEN</value>
-  </data>
   <data name="UrlTextBox.Header" xml:space="preserve">
     <value>URL</value>
   </data>
@@ -384,6 +360,18 @@
   <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
     <value>Client-Daten anpassen</value>
   </data>
+  <data name="ArchivedPivotItem.Header" xml:space="preserve">
+    <value>ARCHIVIERT</value>
+  </data>
+  <data name="FavoritesPivotItem.Header" xml:space="preserve">
+    <value>FAVORITEN</value>
+  </data>
+  <data name="UnreadPivotItem.Header" xml:space="preserve">
+    <value>UNGELESEN</value>
+  </data>
+  <data name="TelemetryDataCheckBox.Content" xml:space="preserve">
+    <value>Sammeln von Telemetrie-Daten erlauben</value>
+  </data>
   <data name="CreatingClientMessage" xml:space="preserve">
     <value>Client wird erstellt…</value>
   </data>
@@ -393,20 +381,11 @@
   <data name="DownloadingItemsWithProgress" xml:space="preserve">
     <value>Einträge werden heruntergeladen… ({0}/{1})</value>
   </data>
-  <data name="SavingItemsInDatabaseMessage" xml:space="preserve">
-    <value>Einträge werden in der Datenbank gespeichert…</value>
-  </data>
-  <data name="TestingConfigurationMessage" xml:space="preserve">
-    <value>Konfiguration wird getestet…</value>
-  </data>
-  <data name="UrlFormatWrongMessage" xml:space="preserve">
-    <value>Die URL ist nicht in einem korrekten Format.</value>
-  </data>
   <data name="FirstStartContinueDescriptionTextBlock.Text" xml:space="preserve">
     <value>Nun fahren wir mit der Konfiguration fort. Im einfachsten Falle musst du nur deinen Benutzernamen und dein Kennwort eingeben.</value>
   </data>
   <data name="FirstStartContinueTextBlock.Text" xml:space="preserve">
-    <value>Weiter geht's!</value>
+    <value>Weiter geht&apos;s!</value>
   </data>
   <data name="FirstStartLastQuestionTextBlock.Text" xml:space="preserve">
     <value>Eine letzte Frage…</value>
@@ -417,12 +396,6 @@
   <data name="FirstStartWelcomeTitleTextBlock.Text" xml:space="preserve">
     <value>Hi!</value>
   </data>
-  <data name="PreviousButton.Content" xml:space="preserve">
-    <value>Zurück</value>
-  </data>
-  <data name="RegisterButton.Content" xml:space="preserve">
-    <value>Noch keinen Account erstellt?</value>
-  </data>
   <data name="FramabagProviderDescription" xml:space="preserve">
     <value>Willkommen Framabag-Nutzer!</value>
   </data>
@@ -432,8 +405,17 @@
   <data name="OtherProviderName" xml:space="preserve">
     <value>Andere</value>
   </data>
-  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
-    <value>Sammeln von Telemetrie-Daten erlauben</value>
+  <data name="RegisterButton.Content" xml:space="preserve">
+    <value>Noch keinen Account erstellt?</value>
+  </data>
+  <data name="SavingItemsInDatabaseMessage" xml:space="preserve">
+    <value>Einträge werden in der Datenbank gespeichert…</value>
+  </data>
+  <data name="TestingConfigurationMessage" xml:space="preserve">
+    <value>Konfiguration wird getestet…</value>
+  </data>
+  <data name="UrlFormatWrongMessage" xml:space="preserve">
+    <value>Die URL ist nicht in einem korrekten Format.</value>
   </data>
   <data name="V2WallabagOrgProviderDescription" xml:space="preserve">
     <value>Immer auf dem neuesten Stand?</value>
@@ -516,4 +498,11 @@
   <data name="ScanQRCodeButton.Content" xml:space="preserve">
     <value>QR-Code für Konfiguration scannen</value>
   </data>
+  <data name="NotSupportedOnThisDeviceTextBlock.Text" xml:space="preserve">
+    <value>Dieses Feature wird auf deinem Gerät nicht unterstützt. Aktualisiere auf eine neuere Windows-Version, um alle Features von wallabag nutzen zu können.</value>
+  </data>
+  <data name="WallabagItProviderDescription" xml:space="preserve">
+    <value>Speichere Artikel. Lese sie später. Egal an welchem Ort.</value>
+  </data>
+
 </root>
