@@ -163,7 +163,7 @@ namespace wallabag.Services
             if (task.Id == 0)
                 task.Id = LastTaskId;
 
-            if (task.Id == 0)
+            if (task.Id == 0 || _tasks.ContainsKey(task.Id))
                 task.Id = _tasks.Count + 1;
 
             _tasks.Add(task.Id, task);
