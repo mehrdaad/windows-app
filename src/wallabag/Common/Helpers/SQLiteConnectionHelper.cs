@@ -24,6 +24,7 @@ namespace wallabag.Common.Helpers
 
             a.Invoke();
             Messenger.Default.Send(new ShowUndoPopupMessage(taskAction, itemCount));
+            Messenger.Default.Send(new ApplyUIUpdatesMessage());
 
             try { await Task.Delay(SettingsService.Instance.UndoTimeout, _cts.Token); }
             catch (TaskCanceledException) { }
@@ -31,10 +32,17 @@ namespace wallabag.Common.Helpers
             if (_cts.IsCancellationRequested)
             {
                 conn.RollbackTo(transactionPoint);
-                // TODO: Inform main view to undo the changes
+
+                foreach (var item in OfflineTaskService.Queue)
+                    item.Invert();
+
+                Messenger.Default.Send(new ApplyUIUpdatesMessage(clearQueue: true));
             }
             else
+            {
                 conn.Commit();
+                OfflineTaskService.Queue.Clear();
+            }
         }
         internal static void UndoChanges() => _cts.Cancel();
     }

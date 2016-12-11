@@ -28,5 +28,32 @@ namespace wallabag.Models
             AddItem = 5,
             Delete = 10
         }
+        
+        public void Invert()
+        {
+            switch (Action)
+            {
+                case OfflineTaskAction.MarkAsRead:
+                    Action = OfflineTaskAction.UnmarkAsRead;
+                    break;
+                case OfflineTaskAction.UnmarkAsRead:
+                    Action = OfflineTaskAction.UnmarkAsRead;
+                    break;
+                case OfflineTaskAction.MarkAsStarred:
+                    Action = OfflineTaskAction.UnmarkAsStarred;
+                    break;
+                case OfflineTaskAction.UnmarkAsStarred:
+                    Action = OfflineTaskAction.MarkAsRead;
+                    break;
+                case OfflineTaskAction.AddItem:
+                    Action = OfflineTaskAction.Delete;
+                    break;
+                case OfflineTaskAction.Delete:
+                    Action = OfflineTaskAction.AddItem;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
