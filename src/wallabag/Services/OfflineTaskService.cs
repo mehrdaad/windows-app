@@ -16,8 +16,10 @@ namespace wallabag.Services
     class OfflineTaskService
     {
         private static Dictionary<int, OfflineTask> _tasks = new Dictionary<int, OfflineTask>();
-
         private static Delayer _delayer;
+
+        public static EventHandler<OfflineTask> OfflineTaskAdded;
+        public static EventHandler<OfflineTask> OfflineTaskRemoved;
 
         public static void Initialize()
         {
@@ -165,13 +167,13 @@ namespace wallabag.Services
 
             _tasks.Add(task.Id, task);
             App.Database.Insert(task);
-            App.OfflineTaskAdded?.Invoke(null, task);
+            OfflineTaskAdded?.Invoke(null, task);
         }
         private static void RemoveTask(OfflineTask task)
         {
             _tasks.Remove(task.Id);
             App.Database.Delete(task);
-            App.OfflineTaskRemoved?.Invoke(null, task);
+            OfflineTaskRemoved?.Invoke(null, task);
         }
 
         private static int LastTaskId => App.Database.ExecuteScalar<int>("select max(ID) from OfflineTask");

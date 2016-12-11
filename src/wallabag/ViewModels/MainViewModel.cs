@@ -94,12 +94,12 @@ namespace wallabag.ViewModels
 
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
 
-            App.OfflineTaskAdded += App_OfflineTaskAdded;
-            App.OfflineTaskRemoved += (s, e) => RaisePropertyChanged(nameof(OfflineTaskCount));
+            OfflineTaskService.OfflineTaskAdded += OfflineTaskService_OfflineTaskAdded;
+            OfflineTaskService.OfflineTaskRemoved += (s, e) => RaisePropertyChanged(nameof(OfflineTaskCount));
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
         }
 
-        private async void App_OfflineTaskAdded(object sender, OfflineTask task)
+        private async void OfflineTaskService_OfflineTaskAdded(object sender, OfflineTask task)
         {
             RaisePropertyChanged(nameof(OfflineTaskCount));
 
@@ -452,7 +452,7 @@ namespace wallabag.ViewModels
                     var tasks = App.Database.Table<OfflineTask>().ToList();
                     foreach (var task in tasks)
                     {
-                        App_OfflineTaskAdded(this, task);
+                        OfflineTaskService_OfflineTaskAdded(this, task);
                     }
                 }
             });
