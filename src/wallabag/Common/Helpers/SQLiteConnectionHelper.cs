@@ -19,6 +19,8 @@ namespace wallabag.Common.Helpers
             OfflineTask.OfflineTaskAction taskAction,
             int itemCount)
         {
+            OfflineTaskService.IsBlocked = true;
+
             _cts = new CancellationTokenSource();
             var transactionPoint = conn.SaveTransactionPoint();
 
@@ -43,6 +45,8 @@ namespace wallabag.Common.Helpers
                 conn.Commit();
                 OfflineTaskService.Queue.Clear();
             }
+
+            OfflineTaskService.IsBlocked = false;
         }
         internal static void UndoChanges() => _cts.Cancel();
     }

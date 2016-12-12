@@ -2,6 +2,7 @@
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common.Helpers;
 using wallabag.Common.Messages;
@@ -27,20 +28,20 @@ namespace wallabag.ViewModels
         {
             Items = new List<ItemViewModel>();
 
-            MarkAsReadCommand = new DelegateCommand(() => ExecuteActionOnItems(OfflineTask.OfflineTaskAction.MarkAsRead));
-            UnmarkAsReadCommand = new DelegateCommand(() => ExecuteActionOnItems(OfflineTask.OfflineTaskAction.UnmarkAsRead));
-            MarkAsFavoriteCommand = new DelegateCommand(() => ExecuteActionOnItems(OfflineTask.OfflineTaskAction.MarkAsStarred));
-            UnmarkAsFavoriteCommand = new DelegateCommand(() => ExecuteActionOnItems(OfflineTask.OfflineTaskAction.UnmarkAsStarred));
-            DeleteCommand = new DelegateCommand(() => ExecuteActionOnItems(OfflineTask.OfflineTaskAction.Delete));
-            EditTagsCommand = new DelegateCommand(() => BlockOfflineTaskExecution(async () =>
+            MarkAsReadCommand = new DelegateCommand(async () => await ExecuteActionOnItemsAsync(OfflineTask.OfflineTaskAction.MarkAsRead));
+            UnmarkAsReadCommand = new DelegateCommand(async () => await ExecuteActionOnItemsAsync(OfflineTask.OfflineTaskAction.UnmarkAsRead));
+            MarkAsFavoriteCommand = new DelegateCommand(async () => await ExecuteActionOnItemsAsync(OfflineTask.OfflineTaskAction.MarkAsStarred));
+            UnmarkAsFavoriteCommand = new DelegateCommand(async () => await ExecuteActionOnItemsAsync(OfflineTask.OfflineTaskAction.UnmarkAsStarred));
+            DeleteCommand = new DelegateCommand(async () => await ExecuteActionOnItemsAsync(OfflineTask.OfflineTaskAction.Delete));
+            EditTagsCommand = new DelegateCommand(async () => await App.Database.RunInTransactionWithUndoAsync(async () =>
             {
                 var viewModel = new EditTagsViewModel();
 
                 foreach (var item in Items)
                     viewModel.Items.Add(item.Model);
 
-                await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, viewModel);
-            }));
+                await DialogService.ShowAsync(DialogService.Dialog.EditTags, viewModel);
+            }, OfflineTask.OfflineTaskAction.EditTags, Items.Count));
             OpenInBrowserCommand = new DelegateCommand(() =>
             {
                 foreach (var item in Items)
@@ -48,43 +49,32 @@ namespace wallabag.ViewModels
             });
         }
 
-        private void BlockOfflineTaskExecution(Action a)
+        private Task ExecuteActionOnItemsAsync(OfflineTask.OfflineTaskAction action)
         {
-            OfflineTaskService.IsBlocked = true;
-            a.Invoke();
-            OfflineTaskService.IsBlocked = false;
-            Messenger.Default.Send(new CompleteMultipleSelectionMessage());
-        }
-
-        private void ExecuteActionOnItems(OfflineTask.OfflineTaskAction action)
-        {
-            BlockOfflineTaskExecution(async () =>
+            return App.Database.RunInTransactionWithUndoAsync(() =>
             {
-                await App.Database.RunInTransactionWithUndoAsync(() =>
+                foreach (var item in Items)
                 {
-                    foreach (var item in Items)
+                    switch (action)
                     {
-                        switch (action)
-                        {
-                            case OfflineTask.OfflineTaskAction.MarkAsRead:
-                                item.MarkAsReadCommand.Execute();
-                                break;
-                            case OfflineTask.OfflineTaskAction.UnmarkAsRead:
-                                item.UnmarkAsReadCommand.Execute();
-                                break;
-                            case OfflineTask.OfflineTaskAction.MarkAsStarred:
-                                item.MarkAsStarredCommand.Execute();
-                                break;
-                            case OfflineTask.OfflineTaskAction.UnmarkAsStarred:
-                                item.UnmarkAsStarredCommand.Execute();
-                                break;
-                            case OfflineTask.OfflineTaskAction.Delete:
-                                item.DeleteCommand.Execute();
-                                break;
-                        }
+                        case OfflineTask.OfflineTaskAction.MarkAsRead:
+                            item.MarkAsReadCommand.Execute();
+                            break;
+                        case OfflineTask.OfflineTaskAction.UnmarkAsRead:
+                            item.UnmarkAsReadCommand.Execute();
+                            break;
+                        case OfflineTask.OfflineTaskAction.MarkAsStarred:
+                            item.MarkAsStarredCommand.Execute();
+                            break;
+                        case OfflineTask.OfflineTaskAction.UnmarkAsStarred:
+                            item.UnmarkAsStarredCommand.Execute();
+                            break;
+                        case OfflineTask.OfflineTaskAction.Delete:
+                            item.DeleteCommand.Execute();
+                            break;
                     }
-                }, action, Items.Count);
-            });
+                }
+            }, action, Items.Count);
         }
     }
 }
