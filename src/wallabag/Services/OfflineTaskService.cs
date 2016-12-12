@@ -21,8 +21,7 @@ namespace wallabag.Services
         public static bool IsBlocked { get; set; } = false;
         public static List<OfflineTask> Queue { get; } = new List<OfflineTask>();
 
-        public static EventHandler<OfflineTask> OfflineTaskAdded;
-        public static EventHandler<OfflineTask> OfflineTaskRemoved;
+        public static EventHandler CountChanged;
 
         public static void Initialize()
         {
@@ -172,13 +171,13 @@ namespace wallabag.Services
             if (IsBlocked)
                 Queue.Add(task);
             else
-                OfflineTaskAdded?.Invoke(null, task);
+                CountChanged?.Invoke(null, null);
         }
         private static void RemoveTask(OfflineTask task)
         {
             _tasks.Remove(task.Id);
             App.Database.Delete(task);
-            OfflineTaskRemoved?.Invoke(null, task);
+            CountChanged?.Invoke(null, null);
         }
 
         private static int LastTaskId => App.Database.ExecuteScalar<int>("select max(ID) from OfflineTask");

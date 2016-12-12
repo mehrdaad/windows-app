@@ -94,8 +94,7 @@ namespace wallabag.ViewModels
 
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
 
-            OfflineTaskService.OfflineTaskAdded += OfflineTaskService_OfflineTaskAdded;
-            OfflineTaskService.OfflineTaskRemoved += (s, e) => RaisePropertyChanged(nameof(OfflineTaskCount));
+            OfflineTaskService.CountChanged += (s, e) => RaisePropertyChanged(nameof(OfflineTaskCount));
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
         }
 
