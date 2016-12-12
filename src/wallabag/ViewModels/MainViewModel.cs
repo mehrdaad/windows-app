@@ -18,6 +18,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using Windows.Foundation;
 
 namespace wallabag.ViewModels
 {
@@ -98,26 +99,23 @@ namespace wallabag.ViewModels
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
         }
 
-        private async void OfflineTaskService_OfflineTaskAdded(object sender, OfflineTask task)
+        private IAsyncAction ApplyUIChangesForOfflineTaskAsync(OfflineTask task)
         {
             RaisePropertyChanged(nameof(OfflineTaskCount));
 
-            if (OfflineTaskService.IsBlocked)
-                return;
-
-            ItemViewModel item = default(ItemViewModel);
-            var orderAscending = CurrentSearchProperties.OrderAscending ?? false;
+            var item = default(ItemViewModel);
+            bool orderAscending = CurrentSearchProperties.OrderAscending ?? false;
 
             if (task.Action != OfflineTask.OfflineTaskAction.Delete)
                 item = new ItemViewModel(Item.FromId(task.ItemId));
 
-            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+            return CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
                 switch (task.Action)
                 {
                     case OfflineTask.OfflineTaskAction.MarkAsRead:
                         if (CurrentSearchProperties.ItemTypeIndex == 2)
-                            Items.AddSorted(item, sortAscending: orderAscending);
+                            Items.AddSorted(item, sortAscending: orderAscending, preventDuplicates: true);
                         else
                             Items.Remove(item);
                         break;
@@ -125,7 +123,7 @@ namespace wallabag.ViewModels
                         if (CurrentSearchProperties.ItemTypeIndex == 2)
                             Items.Remove(item);
                         else
-                            Items.AddSorted(item, sortAscending: orderAscending);
+                            Items.AddSorted(item, sortAscending: orderAscending, preventDuplicates: true);
                         break;
                     case OfflineTask.OfflineTaskAction.MarkAsStarred: break;
                     case OfflineTask.OfflineTaskAction.UnmarkAsStarred:
@@ -135,7 +133,7 @@ namespace wallabag.ViewModels
                     case OfflineTask.OfflineTaskAction.EditTags: break;
                     case OfflineTask.OfflineTaskAction.AddItem:
                         if (CurrentSearchProperties.ItemTypeIndex == 0)
-                            Items.AddSorted(item, sortAscending: orderAscending);
+                            Items.AddSorted(item, sortAscending: orderAscending, preventDuplicates: true);
                         break;
                     case OfflineTask.OfflineTaskAction.Delete:
                         Items.Remove(Items.Where(i => i.Model.Id.Equals(task.ItemId)).First());
@@ -454,10 +452,10 @@ namespace wallabag.ViewModels
                     Items.AddSorted(viewModel, sortAscending: CurrentSearchProperties.OrderAscending == true);
                 }
             });
-            Messenger.Default.Register<ApplyUIUpdatesMessage>(this, message =>
+            Messenger.Default.Register<ApplyUIUpdatesMessage>(this, async message =>
             {
                 foreach (var task in OfflineTaskService.Queue)
-                    OfflineTaskService_OfflineTaskAdded(this, task);
+                    await ApplyUIChangesForOfflineTaskAsync(task);
 
                 if (message.ClearQueue)
                     OfflineTaskService.Queue.Clear();
