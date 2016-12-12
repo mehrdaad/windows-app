@@ -12,6 +12,7 @@ namespace wallabag.Common.Helpers
     static class SQLiteConnectionHelper
     {
         private static CancellationTokenSource _cts;
+        private static string _transactionPoint;
 
         internal static async Task RunInTransactionWithUndoAsync(
             this SQLiteConnection conn,
@@ -19,12 +20,19 @@ namespace wallabag.Common.Helpers
             OfflineTask.OfflineTaskAction taskAction,
             int itemCount = 1)
         {
-            OfflineTaskService.IsBlocked = true;
-
-            _cts = new CancellationTokenSource();
-            var transactionPoint = conn.SaveTransactionPoint();
+            bool transactionPointIsBlocked = OfflineTaskService.IsBlocked;
+            if (transactionPointIsBlocked == false)
+            {
+                _cts = new CancellationTokenSource();
+                _transactionPoint = conn.SaveTransactionPoint();
+                OfflineTaskService.IsBlocked = true;
+            }
 
             a.Invoke();
+
+            if (transactionPointIsBlocked)
+                return;
+
             Messenger.Default.Send(new ShowUndoPopupMessage(taskAction, itemCount));
             Messenger.Default.Send(new ApplyUIUpdatesMessage());
 
@@ -33,7 +41,7 @@ namespace wallabag.Common.Helpers
 
             if (_cts.IsCancellationRequested)
             {
-                conn.RollbackTo(transactionPoint);
+                conn.RollbackTo(_transactionPoint);
 
                 foreach (var item in OfflineTaskService.Queue)
                     item.Invert();
@@ -46,7 +54,8 @@ namespace wallabag.Common.Helpers
                 OfflineTaskService.Queue.Clear();
             }
 
-            OfflineTaskService.IsBlocked = false;
+            if (transactionPointIsBlocked)
+                OfflineTaskService.IsBlocked = false;
         }
         internal static void UndoChanges() => _cts.Cancel();
     }
