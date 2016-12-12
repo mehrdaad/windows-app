@@ -1,7 +1,9 @@
 ﻿using PropertyChanged;
 using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Template10.Mvvm;
+using wallabag.Common.Helpers;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.ApplicationModel.DataTransfer;
@@ -37,34 +39,33 @@ namespace wallabag.ViewModels
                 RaisePropertyChanged(nameof(TagsAreExisting));
             };
 
-            MarkAsReadCommand = new DelegateCommand(() =>
+            MarkAsReadCommand = new DelegateCommand(async () =>
             {
                 Model.IsRead = true;
-                UpdateItem();
-                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
+                await UpdateItemAsync(OfflineTask.OfflineTaskAction.MarkAsRead);
             });
-            UnmarkAsReadCommand = new DelegateCommand(() =>
+            UnmarkAsReadCommand = new DelegateCommand(async () =>
             {
                 Model.IsRead = false;
-                UpdateItem();
-                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
+                await UpdateItemAsync(OfflineTask.OfflineTaskAction.UnmarkAsRead);
             });
-            MarkAsStarredCommand = new DelegateCommand(() =>
+            MarkAsStarredCommand = new DelegateCommand(async () =>
             {
                 Model.IsStarred = true;
-                UpdateItem();
-                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
+                await UpdateItemAsync(OfflineTask.OfflineTaskAction.MarkAsStarred);
             });
-            UnmarkAsStarredCommand = new DelegateCommand(() =>
+            UnmarkAsStarredCommand = new DelegateCommand(async () =>
             {
                 Model.IsStarred = false;
-                UpdateItem();
-                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
+                await UpdateItemAsync(OfflineTask.OfflineTaskAction.UnmarkAsStarred);
             });
-            DeleteCommand = new DelegateCommand(() =>
+            DeleteCommand = new DelegateCommand(async () =>
             {
-                App.Database.Delete(Model);
-                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
+                await App.Database.RunInTransactionWithUndoAsync(() =>
+                {
+                    App.Database.Delete(Model);
+                    OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
+                }, OfflineTask.OfflineTaskAction.Delete);
             });
             ShareCommand = new DelegateCommand(() =>
             {
@@ -81,10 +82,14 @@ namespace wallabag.ViewModels
             OpenInBrowserCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri(Model.Url)));
         }
 
-        private void UpdateItem()
+        private Task UpdateItemAsync(OfflineTask.OfflineTaskAction taskAction)
         {
-            Model.LastModificationDate = DateTime.UtcNow;
-            App.Database.Update(Model);
+            return App.Database.RunInTransactionWithUndoAsync(() =>
+            {
+                Model.LastModificationDate = DateTime.UtcNow;
+                App.Database.Update(Model);
+                OfflineTaskService.Add(Model.Id, taskAction);
+            }, taskAction);
         }
 
         public int CompareTo(object obj) => ((IComparable)Model).CompareTo((obj as ItemViewModel).Model);
