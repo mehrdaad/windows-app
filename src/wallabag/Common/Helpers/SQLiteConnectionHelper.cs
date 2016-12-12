@@ -17,7 +17,7 @@ namespace wallabag.Common.Helpers
             this SQLiteConnection conn,
             Action a,
             OfflineTask.OfflineTaskAction taskAction,
-            int itemCount)
+            int itemCount = 1)
         {
             OfflineTaskService.IsBlocked = true;
 
