@@ -136,7 +136,7 @@
     <value>Cancel</value>
   </data>
   <data name="CantRetrieveContentsErrorMessage" xml:space="preserve">
-    <value>wallabag can&apos;t retrieve contents for this article.</value>
+    <value>wallabag can't retrieve contents for this article.</value>
   </data>
   <data name="ClientIdTextBox.Header" xml:space="preserve">
     <value>Client ID</value>
@@ -226,7 +226,7 @@
     <value>MISCELLANOUS</value>
   </data>
   <data name="MultipleDevicesAlertTextBlock.Text" xml:space="preserve">
-    <value>A usage of the same ID/secret combination on multiple devices isn&apos;t recommended and could cause (a lot of) frustration.</value>
+    <value>A usage of the same ID/secret combination on multiple devices isn't recommended and could cause (a lot of) frustration.</value>
   </data>
   <data name="MultipleSelectionAppBarButton.Label" xml:space="preserve">
     <value>Select</value>
@@ -238,13 +238,13 @@
     <value>NEED HELP?</value>
   </data>
   <data name="NoContentAvailableErrorMessage" xml:space="preserve">
-    <value>There is no content available. Maybe the item wasn&apos;t added yet.</value>
+    <value>There is no content available. Maybe the item wasn't added yet.</value>
   </data>
   <data name="NoTagsInfoTextBlock.Text" xml:space="preserve">
     <value>No tags added, yet.</value>
   </data>
   <data name="NothingFoundTextBlock.Text" xml:space="preserve">
-    <value>Didn&apos;t found something for you. Sorry.</value>
+    <value>Didn't found something for you. Sorry.</value>
   </data>
   <data name="OpenChangelogButton.Content" xml:space="preserve">
     <value>(changelog)</value>
@@ -313,7 +313,7 @@
     <value>TAG</value>
   </data>
   <data name="TelemetryCollectionInfoTextBlock.Text" xml:space="preserve">
-    <value>To improve the general stability of this app, it&apos;s recommended to turn on the automatic submission of anonymous telemetry data. However, if you want to turn it off, because you care of your privacy, you can do it too. Changes will be applied after the next restart.</value>
+    <value>To improve the general stability of this app, it's recommended to turn on the automatic submission of anonymous telemetry data. However, if you want to turn it off, because you care of your privacy, you can do it too. Changes will be applied after the next restart.</value>
   </data>
   <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
     <value>Allow collection of telemetry data</value>
@@ -385,7 +385,7 @@
     <value>Now we continue with the configuration. In the simplest case you just need to enter your usename and your password.</value>
   </data>
   <data name="FirstStartContinueTextBlock.Text" xml:space="preserve">
-    <value>Let&apos;s continue!</value>
+    <value>Let's continue!</value>
   </data>
   <data name="FirstStartLastQuestionTextBlock.Text" xml:space="preserve">
     <value>One last question…</value>
@@ -400,13 +400,13 @@
     <value>Framabag users are always welcome!</value>
   </data>
   <data name="OtherProviderDescription" xml:space="preserve">
-    <value>If you&apos;re using another provider, this option is for you.</value>
+    <value>If you're using another provider, this option is for you.</value>
   </data>
   <data name="OtherProviderName" xml:space="preserve">
     <value>other</value>
   </data>
   <data name="RegisterButton.Content" xml:space="preserve">
-    <value>Don&apos;t have an account yet? Create one!</value>
+    <value>Don't have an account yet? Create one!</value>
   </data>
   <data name="SavingItemsInDatabaseMessage" xml:space="preserve">
     <value>Saving items in the database…</value>
@@ -504,5 +504,7 @@
   <data name="WallabagItProviderDescription" xml:space="preserve">
     <value>Save web articles. Read them later. Read them anywhere.</value>
   </data>
-
+  <data name="SomethingWentWrongMessage" xml:space="preserve">
+    <value>Something went wrong. Please try it again.</value>
+  </data>
 </root>
