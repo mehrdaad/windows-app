@@ -419,11 +419,16 @@ namespace wallabag.ViewModels
                 return false;
 
             var result = ParseResult(await addResponse.Content.ReadAsStringAsync(), useNewApi);
+            if (result != null)
+            {
+                ClientId = result.Id;
+                ClientSecret = result.Secret;
 
-            ClientId = result.Id;
-            ClientSecret = result.Secret;
+                _http.Dispose();
+            }
+            else
+                return false;
 
-            _http.Dispose();
             return true;
         }
 
@@ -442,33 +447,48 @@ namespace wallabag.ViewModels
 
         private ClientResultData ParseResult(string html, bool useNewApi = false)
         {
-            var results = new List<string>();
-
-            var lastIndex = 0;
-            int resultCount = useNewApi ? 2 : 1;
-            do
+            try
             {
-                var start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
-                lastIndex = html.IndexOf(m_finalTokenEndString, start);
+                var results = new List<string>();
 
-                results.Add(html.Substring(start, lastIndex - start));
-
-            } while (results.Count <= resultCount);
-
-            if (useNewApi)
-                return new ClientResultData()
+                var lastIndex = 0;
+                int resultCount = useNewApi ? 2 : 1;
+                do
                 {
-                    Name = results[0],
-                    Id = results[1],
-                    Secret = results[2]
-                };
-            else
-                return new ClientResultData()
+                    var start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
+                    lastIndex = html.IndexOf(m_finalTokenEndString, start);
+
+                    results.Add(html.Substring(start, lastIndex - start));
+
+                } while (results.Count <= resultCount);
+
+                if (useNewApi)
+                    return new ClientResultData()
+                    {
+                        Name = results[0],
+                        Id = results[1],
+                        Secret = results[2]
+                    };
+                else
+                    return new ClientResultData()
+                    {
+                        Id = results[0],
+                        Secret = results[1],
+                        Name = string.Empty
+                    };
+            }
+            catch (ArgumentOutOfRangeException exception)
+            {
+                var exceptionMetadata = new Dictionary<string, string>
                 {
-                    Id = results[0],
-                    Secret = results[1],
-                    Name = string.Empty
+                    { nameof(useNewApi), useNewApi.ToString() },
+                    { "HTML", html },
+                    { nameof(Url), Url }
                 };
+                Microsoft.HockeyApp.HockeyClient.Current.TrackException(exception, exceptionMetadata);
+                Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("SomethingWentWrongMessage")));
+                return null;
+            }
         }
 
         #endregion
