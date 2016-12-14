@@ -48,7 +48,9 @@ namespace wallabag.Models
 
         public int CompareTo(object obj)
         {
-            if (obj is Language)
+            if (obj is Language &&
+                obj != null &&
+                !string.IsNullOrEmpty(DisplayName))
                 return ((IComparable)DisplayName).CompareTo((obj as Language).DisplayName);
             else
                 return 0;
