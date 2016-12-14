@@ -388,48 +388,72 @@ namespace wallabag.ViewModels
         {
             ProgressDescription = GeneralHelper.LocalizedResource("CreatingClientMessage");
 
-            _http = new HttpClient();
-            var instanceUri = new Uri(Url);
+            string token = string.Empty;
+            bool useNewApi = false;
+            int step = 1;
+            HttpResponseMessage message = null;
 
-            // Step 1: Login to get a cookie.
-            var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
-            var loginResponse = await _http.PostAsync(new Uri(instanceUri, "/login_check"), loginContent);
-
-            if (!loginResponse.IsSuccessStatusCode)
-                return false;
-
-            // Step 2: Get the client token
-            var clientCreateUri = new Uri(instanceUri, "/developer/client/create");
-            var token = await GetStringFromHtmlSequenceAsync(clientCreateUri, m_tokenStartString, m_htmlInputEndString);
-
-            // Step 3: Create the new client
-
-            var stringContent = string.Empty;
-            var useNewApi = (await App.Client.GetVersionNumberAsync()).StartsWith("2.0") == false;
-
-            stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
-
-            if (useNewApi)
-                stringContent = $"client[name]={new EasClientDeviceInformation().FriendlyName}&" + stringContent;
-
-            var addContent = new HttpStringContent(stringContent, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
-            var addResponse = await _http.PostAsync(clientCreateUri, addContent);
-
-            if (!addResponse.IsSuccessStatusCode)
-                return false;
-
-            var result = ParseResult(await addResponse.Content.ReadAsStringAsync(), useNewApi);
-            if (result != null)
+            try
             {
-                ClientId = result.Id;
-                ClientSecret = result.Secret;
+                _http = new HttpClient();
+                var instanceUri = new Uri(Url);
 
-                _http.Dispose();
+                // Step 1: Login to get a cookie.
+                var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+                var loginResponse = await _http.PostAsync(new Uri(instanceUri, "/login_check"), loginContent);
+
+                if (!loginResponse.IsSuccessStatusCode)
+                    return false;
+
+                // Step 2: Get the client token
+                step++;
+                var clientCreateUri = new Uri(instanceUri, "/developer/client/create");
+                token = await GetStringFromHtmlSequenceAsync(clientCreateUri, m_tokenStartString, m_htmlInputEndString);
+
+                // Step 3: Create the new client
+                step++;
+                var stringContent = string.Empty;
+                useNewApi = (await App.Client.GetVersionNumberAsync()).StartsWith("2.0") == false;
+
+                stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
+
+                if (useNewApi)
+                    stringContent = $"client[name]={new EasClientDeviceInformation().FriendlyName}&" + stringContent;
+
+                var addContent = new HttpStringContent(stringContent, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+                var addResponse = _http.PostAsync(clientCreateUri, addContent);
+
+                message = await addResponse;
+
+                if (!message.IsSuccessStatusCode)
+                    return false;
+
+                var result = ParseResult(await message.Content.ReadAsStringAsync(), useNewApi);
+                if (result != null)
+                {
+                    ClientId = result.Id;
+                    ClientSecret = result.Secret;
+
+                    _http.Dispose();
+                }
+                else
+                    return false;
+
+                return true;
             }
-            else
+            catch (Exception e)
+            {
+                Microsoft.HockeyApp.HockeyClient.Current.TrackException(e, new Dictionary<string, string>()
+                {
+                    { nameof(token), token },
+                    { nameof(useNewApi), useNewApi.ToString() },
+                    { nameof(step), step.ToString() },
+                    { "StatusCode",  message.StatusCode.ToString() },
+                    { "IsSuccessStatusCode",  await message.Content.ReadAsStringAsync() },
+                    { nameof(Url), Url.ToString() }
+                });
                 return false;
-
-            return true;
+            }
         }
 
         private object GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(new Uri(Url), new EasClientDeviceInformation().FriendlyName);
