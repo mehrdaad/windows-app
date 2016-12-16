@@ -387,7 +387,7 @@ namespace wallabag.ViewModels
                 if (CurrentSearchProperties.Language?.IsUnknown == false)
                 {
                     queryParts.Add("Language=?");
-                    queryParameters.Add(CurrentSearchProperties.Language.wallabagLanguageCode);
+                    queryParameters.Add(CurrentSearchProperties.Language.InternalLanguageCode);
                 }
                 else if (CurrentSearchProperties.Language?.IsUnknown == true)
                     queryParts.Add("Language IS NULL");

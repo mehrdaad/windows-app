@@ -8,16 +8,16 @@ namespace wallabag.Models
     [ImplementPropertyChanged]
     public class Language : IComparable
     {
-        public string wallabagLanguageCode { get; set; }
+        public string InternalLanguageCode { get; set; }
         public string LanguageCode { get; set; }
         public string DisplayName { get; set; }
-        public bool IsUnknown { get { return wallabagLanguageCode == null; } }
+        public bool IsUnknown { get { return InternalLanguageCode == null; } }
 
         public Language(string languageCode)
         {
             if (!string.IsNullOrEmpty(languageCode))
             {
-                this.wallabagLanguageCode = languageCode;
+                InternalLanguageCode = languageCode;
                 LanguageCode = languageCode.Substring(0, 2);
                 DisplayName = new CultureInfo(LanguageCode).DisplayName;
             }
@@ -29,7 +29,7 @@ namespace wallabag.Models
             {
                 return new Language("en")
                 {
-                    wallabagLanguageCode = null,
+                    InternalLanguageCode = null,
                     LanguageCode = null,
                     DisplayName = GeneralHelper.LocalizedResource("UnknownLanguageDisplayName")
                 };
