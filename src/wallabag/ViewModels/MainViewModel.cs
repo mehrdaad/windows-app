@@ -108,7 +108,12 @@ namespace wallabag.ViewModels
             var orderAscending = CurrentSearchProperties.OrderAscending ?? false;
 
             if (e.Action != OfflineTask.OfflineTaskAction.Delete)
-                item = new ItemViewModel(Item.FromId(e.ItemId));
+            {
+                item = ItemViewModel.FromId(e.ItemId);
+
+                if (item == null)
+                    return;
+            }
 
             await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
@@ -467,9 +472,9 @@ namespace wallabag.ViewModels
             });
             Messenger.Default.Register<UpdateItemMessage>(this, message =>
             {
-                var viewModel = new ItemViewModel(Item.FromId(message.ItemId));
+                var viewModel = ItemViewModel.FromId(message.ItemId);
 
-                if (Items.Contains(viewModel))
+                if (viewModel != null && Items.Contains(viewModel))
                 {
                     Items.Remove(viewModel); // This is only working because the app is just comparing the ID's
                     Items.AddSorted(viewModel, sortAscending: CurrentSearchProperties.OrderAscending == true);

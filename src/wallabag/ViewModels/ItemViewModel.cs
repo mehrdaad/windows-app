@@ -80,6 +80,15 @@ namespace wallabag.ViewModels
             OpenInBrowserCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri(Model.Url)));
         }
 
+        public static ItemViewModel FromId(int itemId)
+        {
+            var item = App.Database.Find<Item>(itemId);
+            if (item != null)
+                return new ItemViewModel(item);
+            else
+                return null;
+        }
+
         private void UpdateItem()
         {
             Model.LastModificationDate = DateTime.UtcNow;

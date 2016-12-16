@@ -100,7 +100,5 @@ namespace wallabag.Models
             return false;
         }
         public override int GetHashCode() => Id;
-
-        internal static Item FromId(int itemId) => App.Database.Get<Item>(itemId);
     }
 }
