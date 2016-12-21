@@ -245,3 +245,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# Continous delivery
+/hockeyapp-symbols
