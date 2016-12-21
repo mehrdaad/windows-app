@@ -448,9 +448,9 @@ namespace wallabag.ViewModels
                     { nameof(token), token },
                     { nameof(useNewApi), useNewApi.ToString() },
                     { nameof(step), step.ToString() },
-                    { "StatusCode",  message.StatusCode.ToString() },
-                    { "IsSuccessStatusCode",  await message.Content.ReadAsStringAsync() },
-                    { nameof(Url), Url.ToString() }
+                    { "StatusCode",  message?.StatusCode.ToString() },
+                    { "IsSuccessStatusCode",  await message?.Content?.ReadAsStringAsync() },
+                    { nameof(Url), Url?.ToString() }
                 });
                 return false;
             }
@@ -461,10 +461,10 @@ namespace wallabag.ViewModels
 
         private async Task<string> GetStringFromHtmlSequenceAsync(Uri uri, string startString, string endString)
         {
-            var html = await (await _http.GetAsync(uri)).Content.ReadAsStringAsync();
+            string html = await (await _http.GetAsync(uri)).Content.ReadAsStringAsync();
 
-            var startIndex = html.IndexOf(startString) + startString.Length;
-            var endIndex = html.IndexOf(endString, startIndex);
+            int startIndex = html.IndexOf(startString) + startString.Length;
+            int endIndex = html.IndexOf(endString, startIndex);
 
             return html.Substring(startIndex, endIndex - startIndex);
         }
