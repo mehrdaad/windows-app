@@ -47,12 +47,12 @@ namespace wallabag.ViewModels
             }
             else
             {
-                var newTags = Tags.Except(_previousTags);
-                var deletedTags = _previousTags.Except(Tags);
+                var newTags = Tags.Except(_previousTags).ToList();
+                var deletedTags = _previousTags.Except(Tags).ToList();
 
                 Items.First().Tags.Replace(Tags);
 
-                OfflineTask.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags.ToList(), deletedTags.ToList());
+                OfflineTask.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags);
             }
         }
     }
