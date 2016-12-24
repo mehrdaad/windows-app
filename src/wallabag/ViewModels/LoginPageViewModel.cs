@@ -70,6 +70,7 @@ namespace wallabag.ViewModels
             ScanQRCodeCommand = new DelegateCommand(async () =>
             {
                 SystemNavigationManager.GetForCurrentView().BackRequested += QRCodeBackRequested;
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
 
                 var rootModalDialog = Window.Current.Content as ModalDialog;
                 _oldFrame = rootModalDialog.Content as Frame;
@@ -112,6 +113,7 @@ namespace wallabag.ViewModels
             if (_oldFrame != null)
             {
                 args.Handled = true;
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                 (Window.Current.Content as ModalDialog).Content = _oldFrame;
             }
         }
