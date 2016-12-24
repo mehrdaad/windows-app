@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common;
 using wallabag.Common.Helpers;
 using wallabag.Common.Messages;
-using System.Reflection;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.UI.Core;
@@ -151,6 +151,9 @@ namespace wallabag.ViewModels
 
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
         {
+            if (_incrementalLoadingIsBlocked)
+                return new List<ItemViewModel>();
+
             var result = new List<ItemViewModel>();
 
             var database = await GetItemsForCurrentSearchPropertiesAsync(Items.Count, (int)count);
@@ -290,6 +293,7 @@ namespace wallabag.ViewModels
 
         private int _previousItemTypeIndex;
         private bool _offlineTaskAreBlocked;
+        private bool _incrementalLoadingIsBlocked;
 
         private void StartSearch()
         {
@@ -329,7 +333,6 @@ namespace wallabag.ViewModels
 
                  foreach (var item in databaseItems)
                      Items.Add(new ItemViewModel(item));
-
              });
             await GetMetadataForItemsAsync(Items);
         }
@@ -421,11 +424,12 @@ namespace wallabag.ViewModels
                         query += " ORDER BY CreationDate DESC";
                 }
 
+                Items.MaxItems = App.Database.ExecuteScalar<int>(query.Replace(queryStart, "SELECT count(*) FROM Item"), queryParameters.ToArray());
+
                 query += " LIMIT ?,?";
                 queryParameters.Add(offset);
                 queryParameters.Add(limit);
 
-                Items.MaxItems = App.Database.ExecuteScalar<int>(query.Replace(queryStart, "SELECT count(*) FROM Item"), queryParameters.ToArray());
                 return App.Database.Query<Item>(query, queryParameters.ToArray());
             });
         }
@@ -451,6 +455,7 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
+            _incrementalLoadingIsBlocked = true;
             await TitleBarHelper.ResetAsync();
 
             if (mode != NavigationMode.Back && mode != NavigationMode.Forward)
@@ -462,6 +467,7 @@ namespace wallabag.ViewModels
                 }
 
                 await ReloadViewAsync();
+                _incrementalLoadingIsBlocked = false;
 
                 if (SettingsService.Instance.SyncOnStartup)
                     await SyncAsync();
