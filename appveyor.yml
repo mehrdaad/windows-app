@@ -3,10 +3,7 @@ configuration: Release
 branches:
   only:
   - master
-platform:
-- x86
-- x64
-- ARM
+platform: x86
 environment:
   hockeyapp_app_id:
     secure: sjmGaxHV6PWeZD20m+0CN62zoKHxlRALtSI5PE4xugNi5siO2YYMO87OVKJMO2p1
