@@ -59,6 +59,7 @@ namespace wallabag.Models
                             foreach (var tag in newTags)
                                 convertedTags.Add(tag);
 
+                            App.Database.InsertOrReplaceAll(convertedTags);
                             item.Tags.Replace(convertedTags);
                         }
                     }
