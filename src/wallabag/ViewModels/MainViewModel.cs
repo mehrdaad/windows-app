@@ -210,6 +210,15 @@ namespace wallabag.ViewModels
 
                 SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;
             }
+
+            var tags = await App.Client.GetTagsAsync();
+
+            App.Database.RunInTransaction(() =>
+            {
+                foreach (var tag in tags)
+                    App.Database.InsertOrReplace((Tag)tag);
+            });
+
             IsSyncing = false;
         }
 
