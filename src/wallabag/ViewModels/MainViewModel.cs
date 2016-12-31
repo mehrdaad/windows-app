@@ -216,11 +216,14 @@ namespace wallabag.ViewModels
 
             var tags = await App.Client.GetTagsAsync();
 
-            App.Database.RunInTransaction(() =>
+            if (tags != null)
             {
-                foreach (var tag in tags)
-                    App.Database.InsertOrReplace((Tag)tag);
-            });
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var tag in tags)
+                        App.Database.InsertOrReplace((Tag)tag);
+                });
+            }
 
             IsSyncing = false;
         }
