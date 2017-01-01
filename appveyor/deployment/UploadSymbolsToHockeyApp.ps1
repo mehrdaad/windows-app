@@ -1,3 +1,5 @@
+$completeVersionNumber = "$ENV:APPVEYOR_BUILD_ID.0"
+
 $appSymbolsDirectory = [System.IO.Path]::Combine($rootPath, "src\wallabag\AppPackages\wallabag_$($completeVersionNumber)_Test\");
 $finalSymbolRootDirectory = [System.IO.Path]::Combine($rootPath, "hockeyapp-symbols");
 

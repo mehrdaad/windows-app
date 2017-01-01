@@ -10,9 +10,15 @@ environment:
   hockeyapp_api_token:
     secure: US7d2cLw+jBRv5DIeqalgSOw2HP7NwKTttU/HfjhTKdm2umyOtj1MQayNFOfd978
 before_build:
-- ps: .\appveyor\build\InstallSQLite.ps1
+  - ps: .\appveyor\build\IncreaseVersionInManifest.ps1
+  - ps: .\appveyor\build\InstallSQLite.ps1
 after_build:
-- ps : .\appveyor\build\CreateSymbolZipFiles.ps1
+  - ps : .\appveyor\build\CreateSymbolZipFiles.ps1
 build:
   parallel: true
   verbosity: minimal
+deploy_script:
+  - ps: >-
+      if ($ENV:APPVEYOR_REPO_BRANCH -eq 'master' -and [string]::IsNullOrWhiteSpace($ENV:APPVEYOR_PULL_REQUEST_NUMBER)) {
+        .\appveyor\deployment\UploadSymbolsToHockeyApp.ps1
+      }
