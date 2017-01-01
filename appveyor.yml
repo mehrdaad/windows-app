@@ -1,17 +1,24 @@
-version: 2.0.{build}
+version: 2.1.{build}
+configuration: Release
+branches:
+  only:
+  - master
 platform: x86
+environment:
+  hockeyapp_app_id:
+    secure: sjmGaxHV6PWeZD20m+0CN62zoKHxlRALtSI5PE4xugNi5siO2YYMO87OVKJMO2p1
+  hockeyapp_api_token:
+    secure: US7d2cLw+jBRv5DIeqalgSOw2HP7NwKTttU/HfjhTKdm2umyOtj1MQayNFOfd978
 before_build:
-- ps: >-
-    $vsixPath = "$($env:USERPROFILE)\sqlite-uwp.vsix"
-
-    (New-Object Net.WebClient).DownloadFile('https://www.sqlite.org/2016/sqlite-uwp-3150200.vsix', $vsixPath)
-
-    "`"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\VSIXInstaller.exe`" /q /a $vsixPath" | out-file ".\install-vsix.cmd" -Encoding ASCII
-
-    & .\install-vsix.cmd
-
-    nuget restore
-
-    Write-Host "Installed SQLite." -ForegroundColor green
+  - ps: .\appveyor\build\IncreaseVersionInManifest.ps1
+  - ps: .\appveyor\build\InstallSQLite.ps1
+after_build:
+  - ps : .\appveyor\build\CreateSymbolZipFiles.ps1
 build:
+  parallel: true
   verbosity: minimal
+deploy_script:
+  - ps: >-
+      if ($ENV:APPVEYOR_REPO_BRANCH -eq 'master' -and [string]::IsNullOrWhiteSpace($ENV:APPVEYOR_PULL_REQUEST_NUMBER)) {
+        .\appveyor\deployment\UploadSymbolsToHockeyApp.ps1
+      }

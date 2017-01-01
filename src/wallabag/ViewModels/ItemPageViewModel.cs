@@ -289,6 +289,13 @@ namespace wallabag.ViewModels
         {
             Item = new ItemViewModel(App.Database.Get<Item>(i => i.Id == (int)parameter));
 
+            if (string.IsNullOrEmpty(Item.Model.Content) && GeneralHelper.InternetConnectionIsAvailable)
+            {
+                var item = await App.Client.GetItemAsync(Item.Model.Id);
+                if (item != null)
+                    Item.Model.Content = item.Content;
+            }
+
             if (string.IsNullOrEmpty(Item.Model.Content))
             {
                 FailureHasHappened = true;

@@ -1,6 +1,6 @@
 wallabag for Windows 10
 ================
-[![Build status](https://ci.appveyor.com/api/projects/status/u89nvv8bbakcyw75?svg=true)](https://ci.appveyor.com/project/jlnostr/windows-app)
+[![Build status](https://ci.appveyor.com/api/projects/status/v7ut97kjncsu1l01?svg=true)](https://ci.appveyor.com/project/jlnostr/windows-app)
 
 [Download the beta version from the Microsoft Store right now!](https://www.microsoft.com/store/apps/9nblggh5x3p6)
 

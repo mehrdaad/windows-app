@@ -92,7 +92,7 @@ namespace wallabag
 
         public override Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
-            return NavigationService.SaveAsync();
+            return NavigationService?.SaveAsync();
         }
 
         public override void OnResuming(object s, object e, AppExecutionState previousExecutionState)

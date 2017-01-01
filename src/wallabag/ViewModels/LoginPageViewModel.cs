@@ -70,6 +70,7 @@ namespace wallabag.ViewModels
             ScanQRCodeCommand = new DelegateCommand(async () =>
             {
                 SystemNavigationManager.GetForCurrentView().BackRequested += QRCodeBackRequested;
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
 
                 var rootModalDialog = Window.Current.Content as ModalDialog;
                 _oldFrame = rootModalDialog.Content as Frame;
@@ -112,6 +113,7 @@ namespace wallabag.ViewModels
             if (_oldFrame != null)
             {
                 args.Handled = true;
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                 (Window.Current.Content as ModalDialog).Content = _oldFrame;
             }
         }
@@ -388,43 +390,72 @@ namespace wallabag.ViewModels
         {
             ProgressDescription = GeneralHelper.LocalizedResource("CreatingClientMessage");
 
-            _http = new HttpClient();
-            var instanceUri = new Uri(Url);
+            string token = string.Empty;
+            bool useNewApi = false;
+            int step = 1;
+            HttpResponseMessage message = null;
 
-            // Step 1: Login to get a cookie.
-            var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
-            var loginResponse = await _http.PostAsync(new Uri(instanceUri, "/login_check"), loginContent);
+            try
+            {
+                _http = new HttpClient();
+                var instanceUri = new Uri(Url);
 
-            if (!loginResponse.IsSuccessStatusCode)
+                // Step 1: Login to get a cookie.
+                var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+                var loginResponse = await _http.PostAsync(new Uri(instanceUri, "/login_check"), loginContent);
+
+                if (!loginResponse.IsSuccessStatusCode)
+                    return false;
+
+                // Step 2: Get the client token
+                step++;
+                var clientCreateUri = new Uri(instanceUri, "/developer/client/create");
+                token = await GetStringFromHtmlSequenceAsync(clientCreateUri, m_tokenStartString, m_htmlInputEndString);
+
+                // Step 3: Create the new client
+                step++;
+                var stringContent = string.Empty;
+                useNewApi = (await App.Client.GetVersionNumberAsync()).StartsWith("2.0") == false;
+
+                stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
+
+                if (useNewApi)
+                    stringContent = $"client[name]={new EasClientDeviceInformation().FriendlyName}&" + stringContent;
+
+                var addContent = new HttpStringContent(stringContent, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+                var addResponse = _http.PostAsync(clientCreateUri, addContent);
+
+                message = await addResponse;
+
+                if (!message.IsSuccessStatusCode)
+                    return false;
+
+                var result = ParseResult(await message.Content.ReadAsStringAsync(), useNewApi);
+                if (result != null)
+                {
+                    ClientId = result.Id;
+                    ClientSecret = result.Secret;
+
+                    _http.Dispose();
+                }
+                else
+                    return false;
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Microsoft.HockeyApp.HockeyClient.Current.TrackException(e, new Dictionary<string, string>()
+                {
+                    { nameof(token), token },
+                    { nameof(useNewApi), useNewApi.ToString() },
+                    { nameof(step), step.ToString() },
+                    { "StatusCode",  message?.StatusCode.ToString() },
+                    { "IsSuccessStatusCode",  await message?.Content?.ReadAsStringAsync() },
+                    { nameof(Url), Url?.ToString() }
+                });
                 return false;
-
-            // Step 2: Get the client token
-            var clientCreateUri = new Uri(instanceUri, "/developer/client/create");
-            var token = await GetStringFromHtmlSequenceAsync(clientCreateUri, m_tokenStartString, m_htmlInputEndString);
-
-            // Step 3: Create the new client
-
-            var stringContent = string.Empty;
-            var useNewApi = (await App.Client.GetVersionNumberAsync()).StartsWith("2.0") == false;
-
-            stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
-
-            if (useNewApi)
-                stringContent = $"client[name]={new EasClientDeviceInformation().FriendlyName}&" + stringContent;
-
-            var addContent = new HttpStringContent(stringContent, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
-            var addResponse = await _http.PostAsync(clientCreateUri, addContent);
-
-            if (!addResponse.IsSuccessStatusCode)
-                return false;
-
-            var result = ParseResult(await addResponse.Content.ReadAsStringAsync(), useNewApi);
-
-            ClientId = result.Id;
-            ClientSecret = result.Secret;
-
-            _http.Dispose();
-            return true;
+            }
         }
 
         private object GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(new Uri(Url), new EasClientDeviceInformation().FriendlyName);
@@ -432,43 +463,58 @@ namespace wallabag.ViewModels
 
         private async Task<string> GetStringFromHtmlSequenceAsync(Uri uri, string startString, string endString)
         {
-            var html = await (await _http.GetAsync(uri)).Content.ReadAsStringAsync();
+            string html = await (await _http.GetAsync(uri)).Content.ReadAsStringAsync();
 
-            var startIndex = html.IndexOf(startString) + startString.Length;
-            var endIndex = html.IndexOf(endString, startIndex);
+            int startIndex = html.IndexOf(startString) + startString.Length;
+            int endIndex = html.IndexOf(endString, startIndex);
 
             return html.Substring(startIndex, endIndex - startIndex);
         }
 
         private ClientResultData ParseResult(string html, bool useNewApi = false)
         {
-            var results = new List<string>();
-
-            var lastIndex = 0;
-            int resultCount = useNewApi ? 2 : 1;
-            do
+            try
             {
-                var start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
-                lastIndex = html.IndexOf(m_finalTokenEndString, start);
+                var results = new List<string>();
 
-                results.Add(html.Substring(start, lastIndex - start));
-
-            } while (results.Count <= resultCount);
-
-            if (useNewApi)
-                return new ClientResultData()
+                var lastIndex = 0;
+                int resultCount = useNewApi ? 2 : 1;
+                do
                 {
-                    Name = results[0],
-                    Id = results[1],
-                    Secret = results[2]
-                };
-            else
-                return new ClientResultData()
+                    var start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
+                    lastIndex = html.IndexOf(m_finalTokenEndString, start);
+
+                    results.Add(html.Substring(start, lastIndex - start));
+
+                } while (results.Count <= resultCount);
+
+                if (useNewApi)
+                    return new ClientResultData()
+                    {
+                        Name = results[0],
+                        Id = results[1],
+                        Secret = results[2]
+                    };
+                else
+                    return new ClientResultData()
+                    {
+                        Id = results[0],
+                        Secret = results[1],
+                        Name = string.Empty
+                    };
+            }
+            catch (ArgumentOutOfRangeException exception)
+            {
+                var exceptionMetadata = new Dictionary<string, string>
                 {
-                    Id = results[0],
-                    Secret = results[1],
-                    Name = string.Empty
+                    { nameof(useNewApi), useNewApi.ToString() },
+                    { "HTML", html },
+                    { nameof(Url), Url }
                 };
+                Microsoft.HockeyApp.HockeyClient.Current.TrackException(exception, exceptionMetadata);
+                Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("SomethingWentWrongMessage")));
+                return null;
+            }
         }
 
         #endregion

@@ -385,7 +385,7 @@
     <value>Nun fahren wir mit der Konfiguration fort. Im einfachsten Falle musst du nur deinen Benutzernamen und dein Kennwort eingeben.</value>
   </data>
   <data name="FirstStartContinueTextBlock.Text" xml:space="preserve">
-    <value>Weiter geht&apos;s!</value>
+    <value>Weiter geht's!</value>
   </data>
   <data name="FirstStartLastQuestionTextBlock.Text" xml:space="preserve">
     <value>Eine letzte Frage…</value>
@@ -504,5 +504,7 @@
   <data name="WallabagItProviderDescription" xml:space="preserve">
     <value>Speichere Artikel. Lese sie später. Egal an welchem Ort.</value>
   </data>
-
+  <data name="SomethingWentWrongMessage" xml:space="preserve">
+    <value>Etwas ist schiefgelaufen. Versuche es bitte erneut.</value>
+  </data>
 </root>

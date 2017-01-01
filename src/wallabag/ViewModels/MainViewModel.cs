@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common;
 using wallabag.Common.Helpers;
 using wallabag.Common.Messages;
-using System.Reflection;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.UI.Core;
@@ -106,8 +106,13 @@ namespace wallabag.ViewModels
             var item = default(ItemViewModel);
             bool orderAscending = CurrentSearchProperties.OrderAscending ?? false;
 
-            if (task.Action != OfflineTask.OfflineTaskAction.Delete)
-                item = new ItemViewModel(Item.FromId(task.ItemId));
+            if (e.Action != OfflineTask.OfflineTaskAction.Delete)
+            {
+                item = ItemViewModel.FromId(e.ItemId);
+
+                if (item == null)
+                    return;
+            }
 
             return CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
@@ -144,6 +149,9 @@ namespace wallabag.ViewModels
 
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
         {
+            if (_incrementalLoadingIsBlocked)
+                return new List<ItemViewModel>();
+
             var result = new List<ItemViewModel>();
 
             var database = await GetItemsForCurrentSearchPropertiesAsync(Items.Count, (int)count);
@@ -195,6 +203,18 @@ namespace wallabag.ViewModels
 
                 SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;
             }
+
+            var tags = await App.Client.GetTagsAsync();
+
+            if (tags != null)
+            {
+                App.Database.RunInTransaction(() =>
+                {
+                    foreach (var tag in tags)
+                        App.Database.InsertOrReplace((Tag)tag);
+                });
+            }
+
             IsSyncing = false;
         }
 
@@ -265,6 +285,7 @@ namespace wallabag.ViewModels
         private void SetSortOrder(string order) => CurrentSearchProperties.OrderAscending = order == "asc";
 
         private int _previousItemTypeIndex;
+        private bool _incrementalLoadingIsBlocked;
 
         private void StartSearch()
         {
@@ -304,7 +325,6 @@ namespace wallabag.ViewModels
 
                  foreach (var item in databaseItems)
                      Items.Add(new ItemViewModel(item));
-
              });
             await GetMetadataForItemsAsync(Items);
         }
@@ -371,7 +391,7 @@ namespace wallabag.ViewModels
                 if (CurrentSearchProperties.Language?.IsUnknown == false)
                 {
                     queryParts.Add("Language=?");
-                    queryParameters.Add(CurrentSearchProperties.Language.wallabagLanguageCode);
+                    queryParameters.Add(CurrentSearchProperties.Language.InternalLanguageCode);
                 }
                 else if (CurrentSearchProperties.Language?.IsUnknown == true)
                     queryParts.Add("Language IS NULL");
@@ -396,11 +416,12 @@ namespace wallabag.ViewModels
                         query += " ORDER BY CreationDate DESC";
                 }
 
+                Items.MaxItems = App.Database.ExecuteScalar<int>(query.Replace(queryStart, "SELECT count(*) FROM Item"), queryParameters.ToArray());
+
                 query += " LIMIT ?,?";
                 queryParameters.Add(offset);
                 queryParameters.Add(limit);
 
-                Items.MaxItems = App.Database.ExecuteScalar<int>(query.Replace(queryStart, "SELECT count(*) FROM Item"), queryParameters.ToArray());
                 return App.Database.Query<Item>(query, queryParameters.ToArray());
             });
         }
@@ -426,6 +447,7 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
+            _incrementalLoadingIsBlocked = true;
             await TitleBarHelper.ResetAsync();
 
             if (mode != NavigationMode.Back && mode != NavigationMode.Forward)
@@ -437,6 +459,7 @@ namespace wallabag.ViewModels
                 }
 
                 await ReloadViewAsync();
+                _incrementalLoadingIsBlocked = false;
 
                 if (SettingsService.Instance.SyncOnStartup)
                     await SyncAsync();
@@ -444,9 +467,9 @@ namespace wallabag.ViewModels
 
             Messenger.Default.Register<UpdateItemMessage>(this, message =>
             {
-                var viewModel = new ItemViewModel(Item.FromId(message.ItemId));
+                var viewModel = ItemViewModel.FromId(message.ItemId);
 
-                if (Items.Contains(viewModel))
+                if (viewModel != null && Items.Contains(viewModel))
                 {
                     Items.Remove(viewModel); // This is only working because the app is just comparing the ID's
                     Items.AddSorted(viewModel, sortAscending: CurrentSearchProperties.OrderAscending == true);
