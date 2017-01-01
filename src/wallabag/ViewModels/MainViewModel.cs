@@ -106,12 +106,12 @@ namespace wallabag.ViewModels
             var item = default(ItemViewModel);
             bool orderAscending = CurrentSearchProperties.OrderAscending ?? false;
 
-            if (e.Action != OfflineTask.OfflineTaskAction.Delete)
+            if (task.Action != OfflineTask.OfflineTaskAction.Delete)
             {
-                item = ItemViewModel.FromId(e.ItemId);
+                item = ItemViewModel.FromId(task.ItemId);
 
                 if (item == null)
-                    return;
+                    return default(IAsyncAction);
             }
 
             return CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
