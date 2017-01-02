@@ -118,7 +118,7 @@ namespace wallabag.Services
                     RemoveTask(item.Value);
             }
 
-            if (Count() == 0)
+            if (Count == 0)
                 _delayer.Stop();
         }
 
@@ -181,6 +181,6 @@ namespace wallabag.Services
         }
 
         private static int LastTaskId => App.Database.ExecuteScalar<int>("select max(ID) from OfflineTask");
-        public static int Count() => App.Database.ExecuteScalar<int>("select count(*) from OfflineTask");
+        public static int Count => App.Database.ExecuteScalar<int>("select count(*) from OfflineTask");
     }
 }

@@ -29,7 +29,7 @@ namespace wallabag.ViewModels
 
         [DependsOn(nameof(OfflineTaskCount))]
         public Visibility OfflineTaskVisibility { get { return OfflineTaskCount > 0 ? Visibility.Visible : Visibility.Collapsed; } }
-        public int OfflineTaskCount { get { return OfflineTaskService.Count(); } }
+        public int OfflineTaskCount => OfflineTaskService.Count;
         public bool IsSyncing { get; set; }
 
         public bool ItemsCountIsZero { get { return Items.Count == 0; } }
