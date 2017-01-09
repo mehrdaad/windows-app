@@ -37,7 +37,7 @@ namespace wallabag.Services
                 _tasks.Add(item.Id, item);
         }
 
-        public static async Task<bool> ExecuteAsync(OfflineTask task)
+        private static async Task<bool> ExecuteAsync(OfflineTask task)
         {
             if (GeneralHelper.InternetConnectionIsAvailable == false)
                 return false;
@@ -105,21 +105,25 @@ namespace wallabag.Services
                     break;
             }
 
-            if (executionIsSuccessful)
-                RemoveTask(task);
-
             return executionIsSuccessful;
         }
         public static async Task ExecuteAllAsync()
         {
+            var itemsToDelete = new List<OfflineTask>();
+
             foreach (var item in _tasks)
             {
                 if (await ExecuteAsync(item.Value))
-                    RemoveTask(item.Value);
+                    itemsToDelete.Add(item.Value);
             }
+
+            foreach (var task in itemsToDelete)
+                RemoveTask(task);
 
             if (Count == 0)
                 _delayer.Stop();
+
+            itemsToDelete.Clear();
         }
 
         public static void Add(string url, IEnumerable<string> newTags = null, string title = "")
