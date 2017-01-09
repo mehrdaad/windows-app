@@ -1,7 +1,6 @@
 Add-Type -Assembly System.IO.Compression.FileSystem
 
-$rootPath = "D:\jlnostr\Coding\wallabag-windows-app"
-$uploadDirectory = Resolve-Path ([IO.Path]::Combine($rootPath, "src\wallabag\AppPackages"))
+$uploadDirectory = "$ENV:APPVEYOR_BUILD_FOLDER\src\wallabag\AppPackages"
 
 $tenantID = $ENV:STORE_TENANT_ID
 $clientID = $ENV:STORE_CLIENT_ID
