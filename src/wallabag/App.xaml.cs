@@ -118,8 +118,8 @@ namespace wallabag
             if (offlineTaskCount > 0)
             {
                 taskInstance.GetDeferral();
-                foreach (var item in offlineTasks)
-                    await OfflineTaskService.ExecuteAsync(item);
+
+                await OfflineTaskService.ExecuteAllAsync();
 
                 if (SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask)
                 {
