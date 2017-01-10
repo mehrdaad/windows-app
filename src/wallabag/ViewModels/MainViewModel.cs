@@ -387,7 +387,7 @@ namespace wallabag.ViewModels
                     else if (CurrentSearchProperties.ItemTypeIndex == 1)
                     {
                         queryParts.Add("IsStarred=?");
-                        queryParameters.Add(0);
+                        queryParameters.Add(1);
                     }
                     else if (CurrentSearchProperties.ItemTypeIndex == 2)
                     {
