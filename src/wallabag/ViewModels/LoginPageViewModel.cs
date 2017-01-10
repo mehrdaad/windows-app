@@ -23,7 +23,6 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class LoginPageViewModel : ViewModelBase
     {
-        private bool _credentialsAreExisting = false;
         private bool _restoredFromPageState = false;
         private Frame _oldFrame;
 
@@ -39,7 +38,7 @@ namespace wallabag.ViewModels
         public string ProgressDescription { get; set; }
 
         [DependsOn(nameof(SelectedProvider))]
-        public Visibility UrlFieldVisibility { get { return (_credentialsAreExisting == false && (SelectedProvider as WallabagProvider)?.Url == null) ? Visibility.Visible : Visibility.Collapsed; } }
+        public Visibility UrlFieldVisibility { get { return ((SelectedProvider as WallabagProvider)?.Url == null) ? Visibility.Visible : Visibility.Collapsed; } }
 
         public List<WallabagProvider> Providers { get; set; }
         public object SelectedProvider { get; set; }
@@ -128,17 +127,10 @@ namespace wallabag.ViewModels
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = PreviousCanBeExecuted() ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
         }
 
-        private bool PreviousCanBeExecuted()
-        {
-            if (_credentialsAreExisting)
-                return false;
-            else
-                return CurrentStep > 0 &&
-                       CurrentStep != 2;
-        }
+        private bool PreviousCanBeExecuted() => CurrentStep > 0 && CurrentStep != 2;
         private bool NextCanBeExecuted()
         {
-            return ((_credentialsAreExisting || SelectedProvider != null) || _restoredFromPageState) &&
+            return (SelectedProvider != null || _restoredFromPageState) &&
                     CurrentStep <= 3 &&
                     CurrentStep != 2;
         }
@@ -156,14 +148,11 @@ namespace wallabag.ViewModels
 
             if (CurrentStep != 3)
                 CurrentStep -= 1;
-            else if (CurrentStep == 3 && _credentialsAreExisting == false)
+            else if (CurrentStep == 3)
                 CurrentStep = 1;
         }
         private async Task NextAsync()
         {
-            if (_credentialsAreExisting && CurrentStep == 0)
-                CurrentStep = 2;
-
             var selectedProvider = SelectedProvider as WallabagProvider;
 
             if (CurrentStep == 0)
@@ -229,7 +218,7 @@ namespace wallabag.ViewModels
             try { await new HttpClient().GetAsync(new Uri(Url)); }
             catch { return false; }
 
-            if (UseCustomSettings == false && _credentialsAreExisting == false)
+            if (UseCustomSettings == false)
             {
                 App.Client.InstanceUri = new Uri(Url);
                 var clientCreationIsSuccessful = await CreateApiClientAsync();
@@ -315,7 +304,6 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            _credentialsAreExisting = parameter != null && parameter is bool && (bool)parameter;
             SystemNavigationManager.GetForCurrentView().BackRequested += BackRequested;
 
             CameraIsSupported = (await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture)).Count > 0;
@@ -332,18 +320,6 @@ namespace wallabag.ViewModels
                 UseCustomSettings = (bool?)state[nameof(UseCustomSettings)];
 
                 _restoredFromPageState = true;
-            }
-
-            if (_credentialsAreExisting)
-            {
-                UseCustomSettings = true;
-                ClientId = App.Client.ClientId;
-                ClientSecret = App.Client.ClientSecret;
-                SelectedProvider = new WallabagProvider(App.Client.InstanceUri, string.Empty);
-                Url = App.Client.InstanceUri.ToString();
-
-                await NextAsync();
-                return;
             }
 
             if (parameter is ProtocolSetupNavigationParameter)

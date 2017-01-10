@@ -1,13 +1,11 @@
-$completeVersionNumber = "$ENV:APPVEYOR_BUILD_ID.0"
+$completeVersionNumber = "$ENV:APPVEYOR_BUILD_VERSION.0"
 
-$appSymbolsDirectory = [System.IO.Path]::Combine($rootPath, "src\wallabag\AppPackages\wallabag_$($completeVersionNumber)_Test\");
-$finalSymbolRootDirectory = [System.IO.Path]::Combine($rootPath, "hockeyapp-symbols");
+$finalSymbolRootDirectory = [System.IO.Path]::Combine($rootPath, "hockeyapp-symbols")
 
-$HockeyAppAppID = $ENV:HOCKEYAPP_APP_ID;
-$HockeyAppApiToken = $ENV:HOCKEYAPP_API_TOKEN;
+$HockeyAppAppID = $ENV:HOCKEYAPP_APP_ID
+$HockeyAppApiToken = $ENV:HOCKEYAPP_API_TOKEN
  
-Write-Host "Create new HockeyApp version..."
-
+Write-Host "Creating new HockeyApp version..."
 $create_url = "https://rink.hockeyapp.net/api/2/apps/$HockeyAppAppID/app_versions/new"
 $response = Invoke-RestMethod -Method POST -Uri $create_url  -Header @{ "X-HockeyAppToken" = $HockeyAppApiToken } -Body @{bundle_version = $completeVersionNumber}
 $update_url = "https://rink.hockeyapp.net/api/2/apps/$($HockeyAppAppID)/app_versions/$($response.id)"

@@ -9,16 +9,23 @@ environment:
     secure: sjmGaxHV6PWeZD20m+0CN62zoKHxlRALtSI5PE4xugNi5siO2YYMO87OVKJMO2p1
   hockeyapp_api_token:
     secure: US7d2cLw+jBRv5DIeqalgSOw2HP7NwKTttU/HfjhTKdm2umyOtj1MQayNFOfd978
-before_build:
+  store_tenant_id:
+    secure: YKTuQb7f6Ee+tpaWC4pDfaY4IMF5WUbGtJKz4K9KR3V37m97Z2mS4aWEX6qrQFGX
+  store_client_id:
+    secure: iyL/6mMgpge3gR84IC18kEmmqaolw3cc2zG0dyMB8LBsAbyOAH78ZDszjssWBTzH
+  store_client_secret:
+    secure: y8wOyvG4eUlcWV9AqwTO8PdEUYmJaUq38T55skIJRCdua0cZCuNkqCbWDiL+Tn33
+  store_app_id: 9NBLGGH5X3P6
+  store_flight_id:
+    secure: Q5+mkXNdZwnzhyPwRkxKrUQ01v1prWOwzSMvPMS1c0G+4mVdQRcLTfguqkIw9MmE
+build_script:
   - ps: .\appveyor\build\IncreaseVersionInManifest.ps1
   - ps: .\appveyor\build\InstallSQLite.ps1
-after_build:
+  - ps: msbuild wallabag.sln /p:Configuration=Release /p:UapAppxPackageBuildMode=StoreUpload /p:AppxBundlePlatforms="x86|x64|ARM" /p:AppxBundle=Always /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - ps : .\appveyor\build\CreateSymbolZipFiles.ps1
-build:
-  parallel: true
-  verbosity: minimal
 deploy_script:
   - ps: >-
       if ($ENV:APPVEYOR_REPO_BRANCH -eq 'master' -and [string]::IsNullOrWhiteSpace($ENV:APPVEYOR_PULL_REQUEST_NUMBER)) {
         .\appveyor\deployment\UploadSymbolsToHockeyApp.ps1
+        .\appveyor\deployment\UploadAppToStore.ps1
       }
