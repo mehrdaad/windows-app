@@ -77,14 +77,6 @@ namespace wallabag
                     Client = new Api.WallabagClient(null, string.Empty, string.Empty);
                     NavigationService.Navigate(typeof(Views.LoginPage));
                 }
-                else if (Database.Table<Item>().Count() == 0)
-                {
-                    Client.AccessToken = Settings.AccessToken;
-                    Client.RefreshToken = Settings.RefreshToken;
-                    Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
-
-                    NavigationService.Navigate(typeof(Views.LoginPage), true);
-                }
                 else
                     NavigationService.Navigate(typeof(Views.MainPage));
             }
