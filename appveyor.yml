@@ -18,14 +18,11 @@ environment:
   store_app_id: 9NBLGGH5X3P6
   store_flight_id:
     secure: Q5+mkXNdZwnzhyPwRkxKrUQ01v1prWOwzSMvPMS1c0G+4mVdQRcLTfguqkIw9MmE
-before_build:
+build_script:
   - ps: .\appveyor\build\IncreaseVersionInManifest.ps1
   - ps: .\appveyor\build\InstallSQLite.ps1
-after_build:
+  - ps: msbuild wallabag.sln /p:Configuration=Release /p:UapAppxPackageBuildMode=StoreUpload /p:AppxBundlePlatforms="x86|x64|ARM" /p:AppxBundle=Always /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - ps : .\appveyor\build\CreateSymbolZipFiles.ps1
-build:
-  parallel: true
-  verbosity: minimal
 deploy_script:
   - ps: >-
       if ($ENV:APPVEYOR_REPO_BRANCH -eq 'master' -and [string]::IsNullOrWhiteSpace($ENV:APPVEYOR_PULL_REQUEST_NUMBER)) {
