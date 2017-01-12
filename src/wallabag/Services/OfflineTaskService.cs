@@ -35,6 +35,12 @@ namespace wallabag.Services
             var databaseTasks = App.Database.Table<OfflineTask>().ToList();
             foreach (var item in databaseTasks)
                 _tasks.Add(item.Id, item);
+
+            CountChanged += (s, e) =>
+            {
+                if (Count == 0)
+                    _delayer.Stop();
+            };
         }
 
         private static async Task<bool> ExecuteAsync(OfflineTask task)
@@ -119,9 +125,6 @@ namespace wallabag.Services
 
             foreach (var task in itemsToDelete)
                 RemoveTask(task);
-
-            if (Count == 0)
-                _delayer.Stop();
 
             itemsToDelete.Clear();
         }
