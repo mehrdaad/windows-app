@@ -28,17 +28,27 @@ namespace wallabag.Common.Helpers
             OfflineTask.OfflineTaskAction taskAction,
             int itemCount = 1)
         {
-            bool transactionPointIsBlocked = OfflineTaskService.IsBlocked;
-            if (transactionPointIsBlocked == false)
+            if (OfflineTaskService.IsBlocked == false)
             {
                 _cts = new CancellationTokenSource();
                 _transactionPoint = conn.SaveTransactionPoint();
-                OfflineTaskService.IsBlocked = true;
             }
+
+            if (!string.IsNullOrEmpty(_transactionPoint) &&
+                itemCount == 1 &&
+                OfflineTaskService.IsBlocked == false)
+            {
+                conn.Commit();
+                _transactionPoint = string.Empty;
+                OfflineTaskService.Queue.Clear();
+            }
+
+            if (itemCount > 1)
+                OfflineTaskService.IsBlocked = true;
 
             a.Invoke();
 
-            if (transactionPointIsBlocked)
+            if (itemCount == 1 && OfflineTaskService.IsBlocked)
                 return;
 
             Messenger.Default.Send(new ShowUndoPopupMessage(taskAction, itemCount));
@@ -62,8 +72,8 @@ namespace wallabag.Common.Helpers
                 OfflineTaskService.Queue.Clear();
             }
 
-            if (transactionPointIsBlocked)
-                OfflineTaskService.IsBlocked = false;
+            _transactionPoint = string.Empty;
+            OfflineTaskService.IsBlocked = false;
         }
         internal static void UndoChanges() => _cts.Cancel();
     }
