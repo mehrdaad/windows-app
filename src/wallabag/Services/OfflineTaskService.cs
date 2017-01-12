@@ -149,8 +149,6 @@ namespace wallabag.Services
             newTask.AddedTags = addTagsList;
             newTask.RemovedTags = removeTagsList;
 
-            _delayer.ResetAndTick();
-
             AddTask(newTask);
         }
 
@@ -166,6 +164,8 @@ namespace wallabag.Services
 
         private static void AddTask(OfflineTask task)
         {
+            _delayer.ResetAndTick();
+
             if (task.Id == 0)
                 task.Id = LastTaskId;
 
