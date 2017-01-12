@@ -172,13 +172,11 @@ namespace wallabag.Services
             if (task.Id == 0 || _tasks.ContainsKey(task.Id))
                 task.Id = _tasks.Count + 1;
 
+            Queue.Add(task);
+
             _tasks.Add(task.Id, task);
             App.Database.Insert(task);
-
-            if (IsBlocked)
-                Queue.Add(task);
-            else
-                CountChanged?.Invoke(null, null);
+            CountChanged?.Invoke(null, null);
         }
         private static void RemoveTask(OfflineTask task)
         {
