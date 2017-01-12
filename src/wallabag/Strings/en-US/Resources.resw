@@ -507,4 +507,28 @@
   <data name="SomethingWentWrongMessage" xml:space="preserve">
     <value>Something went wrong. Please try it again.</value>
   </data>
+  <data name="AddItemSingleMessage" xml:space="preserve">
+    <value>Added.</value>
+  </data>
+  <data name="DeleteSingleMessage" xml:space="preserve">
+    <value>Deleted.</value>
+  </data>
+  <data name="EditTagsSingleMessage" xml:space="preserve">
+    <value>Edited tags.</value>
+  </data>
+  <data name="MarkAsReadSingleMessage" xml:space="preserve">
+    <value>Marked as read.</value>
+  </data>
+  <data name="MarkAsStarredSingleMessage" xml:space="preserve">
+    <value>Marked as favorite.</value>
+  </data>
+  <data name="UndoButtonDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Undo changes</value>
+  </data>
+  <data name="UnmarkAsReadSingleMessage" xml:space="preserve">
+    <value>Unmarked as read.</value>
+  </data>
+  <data name="UnmarkAsStarredSingleMessage" xml:space="preserve">
+    <value>Unmarked as favorite.</value>
+  </data>
 </root>

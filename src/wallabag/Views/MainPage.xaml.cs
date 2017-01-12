@@ -69,7 +69,7 @@ namespace wallabag.Views
                 ShowUndoChangesGridStoryboard.Begin();
 
                 var descriptionTextBlock = FindName(nameof(UndoGridDescriptionTextBlock)) as TextBlock;
-                descriptionTextBlock.Text = $"{message.Action.ToString()} for {message.NumberOfItems} items"; // TODO: Translation
+                descriptionTextBlock.Text = GeneralHelper.LocalizedResource($"{message.Action}SingleMessage");
 
                 await Task.Delay(SettingsService.Instance.UndoTimeout).ContinueWith(t =>
                 {

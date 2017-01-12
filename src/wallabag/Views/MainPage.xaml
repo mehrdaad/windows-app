@@ -684,7 +684,7 @@
                             FontFamily="Segoe MDL2 Assets"
                             FontSize="15"
                             Glyph="&#xE10E;" />
-                        <TextBlock Margin="8,0,0,0" Text="Undo" />
+                        <TextBlock x:Uid="UndoButtonDescriptionTextBlock" Margin="8,0,0,0" Text="Undo" />
                     </StackPanel>
                 </Button.Content>
             </Button>
