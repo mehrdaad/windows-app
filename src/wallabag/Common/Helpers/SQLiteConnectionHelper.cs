@@ -14,6 +14,14 @@ namespace wallabag.Common.Helpers
         private static CancellationTokenSource _cts;
         private static string _transactionPoint;
 
+        /* Expected behaviour:
+         * 1. If there's just one item to change, adapt the change immediately and show a popup
+         * 2. If there are multiple items to changes, adapt the changes immediately and show a popup with the correct counter
+         * 3. If another change is done while one is still in progress, commit the old one and create a new one.
+         * 4. Undoing the changes should be immediately as well.
+         * 5. If changes are commited to the database, they should be commited to the server as well.
+         */
+
         internal static async Task RunInTransactionWithUndoAsync(
             this SQLiteConnection conn,
             Action a,
