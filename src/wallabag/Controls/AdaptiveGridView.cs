@@ -99,7 +99,8 @@ namespace wallabag.Controls
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (ItemsPanelRoot is ItemsWrapGrid panel)
+            var panel = ItemsPanelRoot as ItemsWrapGrid;
+            if (panel != null)
             {
                 if (MinItemWidth == 0)
                     throw new DivideByZeroException("You need to have a MinItemWidth greater than zero");

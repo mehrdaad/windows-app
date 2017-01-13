@@ -41,7 +41,8 @@ namespace wallabag.Controls
         {
             var itemsSource = ItemsSource as ICollection<Tag>;
 
-            if (args.ChosenSuggestion is Tag suggestion && !itemsSource.Contains(suggestion))
+            var suggestion = args.ChosenSuggestion as Tag;
+            if (suggestion != null && !itemsSource.Contains(suggestion))
                 itemsSource.Add(args.ChosenSuggestion as Tag);
             else
             {
