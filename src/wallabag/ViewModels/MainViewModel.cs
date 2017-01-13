@@ -28,7 +28,7 @@ namespace wallabag.ViewModels
 
         [DependsOn(nameof(OfflineTaskCount))]
         public Visibility OfflineTaskVisibility { get { return OfflineTaskCount > 0 ? Visibility.Visible : Visibility.Collapsed; } }
-        public int OfflineTaskCount { get; set; }
+        public int OfflineTaskCount => App.Database.ExecuteScalar<int>("select count(*) from OfflineTask");
         public bool IsSyncing { get; set; }
 
         public bool ItemsCountIsZero { get { return Items.Count == 0; } }
@@ -97,6 +97,7 @@ namespace wallabag.ViewModels
 
             OfflineTaskService.Tasks.CollectionChanged += async (s, e) =>
             {
+                RaisePropertyChanged(nameof(OfflineTaskCount));
                 if (e.NewItems != null && e.NewItems.Count > 0)
                     await ApplyUIChangesForOfflineTaskAsync(e.NewItems[0] as OfflineTask);
             };
