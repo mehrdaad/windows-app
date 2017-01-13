@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Template10.Mvvm;
 using Template10.Utils;
 using wallabag.Common.Helpers;
-using wallabag.Models;
 using wallabag.Services;
 using Windows.Storage;
 using Windows.System;
@@ -287,7 +286,7 @@ namespace wallabag.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            Item = new ItemViewModel(App.Database.Get<Item>(i => i.Id == (int)parameter));
+            Item = ItemViewModel.FromId((int)parameter);
 
             if (string.IsNullOrEmpty(Item.Model.Content) && GeneralHelper.InternetConnectionIsAvailable)
             {
@@ -302,7 +301,7 @@ namespace wallabag.ViewModels
                 FailureEmoji = "😶";
                 FailureDescription = GeneralHelper.LocalizedResource("NoContentAvailableErrorMessage");
             }
-            if (Item.Model.Content.Contains("wallabag can't retrieve contents for this article."))
+            else if (Item.Model.Content.Contains("wallabag can't retrieve contents for this article."))
             {
                 FailureHasHappened = true;
                 FailureEmoji = "😈";

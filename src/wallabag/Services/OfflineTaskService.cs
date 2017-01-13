@@ -59,7 +59,15 @@ namespace wallabag.Services
                     executionIsSuccessful = await App.Client.UnfavoriteAsync(task.ItemId);
                     break;
                 case OfflineTaskAction.EditTags:
-                    var item = App.Database.Get<Item>(i => i.Id == task.ItemId);
+                    var item = App.Database.Find<Item>(i => i.Id == task.ItemId);
+
+                    if (item == null)
+                    {
+                        /* This can happen in several cases even if it shouldn't. 
+                         * In the case the item is already deleted, the task will be marked as success so it's removed asap. */
+                        executionIsSuccessful = true;
+                        break;
+                    }
 
                     if (task.AddedTags?.Count > 0)
                     {
@@ -142,6 +150,6 @@ namespace wallabag.Services
             App.Database.Insert(newTask);
         }
 
-        internal static int LastItemId => App.Database.ExecuteScalar<int>("select Max(ID) from 'Item'", new object[0]);
+        internal static int LastItemId => App.Database.ExecuteScalar<int>("select Max(ID) from 'Item'");
     }
 }
