@@ -61,9 +61,9 @@ namespace wallabag.Services
                 case OfflineTaskAction.EditTags:
                     var item = App.Database.Get<Item>(i => i.Id == task.ItemId);
 
-                    if (task.addTagsList?.Count > 0)
+                    if (task.AddedTags?.Count > 0)
                     {
-                        var newTags = await App.Client.AddTagsAsync(task.ItemId, task.addTagsList.ToStringArray());
+                        var newTags = await App.Client.AddTagsAsync(task.ItemId, task.AddedTags.ToStringArray());
 
                         if (newTags != null)
                         {
@@ -75,14 +75,14 @@ namespace wallabag.Services
                             item.Tags.Replace(convertedTags);
                         }
                     }
-                    if (task.removeTagsList?.Count > 0)
+                    if (task.RemovedTags?.Count > 0)
                     {
                         List<WallabagTag> tagsToRemove = new List<WallabagTag>();
-                        foreach (var tag in task.removeTagsList)
+                        foreach (var tag in task.RemovedTags)
                             tagsToRemove.Add(tag);
 
                         if (await App.Client.RemoveTagsAsync(task.ItemId, tagsToRemove))
-                            foreach (var tag in task.removeTagsList)
+                            foreach (var tag in task.RemovedTags)
                                 if (item.Tags.Contains(tag))
                                     item.Tags.Remove(tag);
                     }
@@ -127,8 +127,8 @@ namespace wallabag.Services
             {
                 ItemId = itemId,
                 Action = action,
-                addTagsList = addTagsList,
-                removeTagsList = removeTagsList
+                AddedTags = addTagsList,
+                RemovedTags = removeTagsList
             };
             InsertTask(newTask);
         }

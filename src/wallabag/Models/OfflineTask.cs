@@ -10,8 +10,8 @@ namespace wallabag.Models
 
         public int ItemId { get; set; }
         public OfflineTaskAction Action { get; set; }
-        public List<Tag> addTagsList { get; set; }
-        public List<Tag> removeTagsList { get; set; }
+        public List<Tag> AddedTags { get; set; }
+        public List<Tag> RemovedTags { get; set; }
 
         public string Url { get; set; }
         public List<string> Tags { get; set; }
