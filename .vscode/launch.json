@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "Build with Deployment",
+            "script": "${workspaceRoot}/build-and-deploy.ps1",
+            "args": ["-deploy"],
+            "cwd": "${workspaceRoot}"
+        },
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "Build without Deployment",
+            "script": "${workspaceRoot}/build-and-deploy.ps1",
+            "args": [],
+            "cwd": "${workspaceRoot}"
+        },
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "PowerShell Launch (current file)",
+            "script": "${file}",
+            "args": [],
+            "cwd": "${file}"
+        }
+    ]
+}
