@@ -1,14 +1,7 @@
 ﻿<UserControl
     x:Class="wallabag.Controls.TagsControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:wallabag.Controls"
-    xmlns:m="using:wallabag.Api.Models"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="100"
-    d:DesignWidth="400"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -16,8 +9,8 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock
-            x:Uid="NoTagsInfoTextBlock"
             x:Name="noTagsInfoTextBlock"
+            x:Uid="NoTagsInfoTextBlock"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Opacity="0.8"
@@ -25,7 +18,7 @@
         <ListView
             x:Name="tagsListView"
             IsItemClickEnabled="True"
-            ItemClick="tagsListView_ItemClick"
+            ItemClick="TagsListView_ItemClick"
             ItemsSource="{x:Bind ItemsSource, Mode=OneWay}"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             ScrollViewer.HorizontalScrollMode="Auto"
@@ -61,8 +54,8 @@
             </ListView.ItemContainerStyle>
         </ListView>
         <AutoSuggestBox
-            x:Uid="EnterTagAutoSuggestBox"
             x:Name="autoSuggestBox"
+            x:Uid="EnterTagAutoSuggestBox"
             Grid.Row="1"
             VerticalAlignment="Bottom"
             ItemsSource="{x:Bind Suggestions, Mode=OneWay}"

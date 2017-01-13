@@ -416,7 +416,7 @@
             Height="48"
             HorizontalAlignment="Right"
             Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-            Click="searchButton_Click"
+            Click="SearchButton_Click"
             Icon="Find"
             IsCompact="True" />
         <Grid
@@ -438,7 +438,7 @@
                 ItemsSource="{x:Bind ViewModel.SearchQuerySuggestions, Mode=OneWay}"
                 PlaceholderText="Search…"
                 QueryIcon="Find"
-                QuerySubmitted="searchBox_QuerySubmitted"
+                QuerySubmitted="SearchBox_QuerySubmitted"
                 Text="{x:Bind ViewModel.CurrentSearchProperties.Query, Mode=TwoWay}">
                 <interactivity:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="QuerySubmitted">
@@ -459,7 +459,7 @@
             x:Name="overlayRectangle"
             x:DeferLoadStrategy="Lazy"
             Fill="#54000000"
-            PointerPressed="overlayRectangle_PointerPressed"
+            PointerPressed="OverlayRectangle_PointerPressed"
             Visibility="Collapsed" />
         <StackPanel
             x:Name="noItemsOverlay"
@@ -647,10 +647,10 @@
             <AppBarToggleButton
                 x:Uid="FilterButton"
                 x:Name="filterButton"
-                Checked="filterButton_Checked"
+                Checked="FilterButton_Checked"
                 Icon="Filter"
                 Label="Filter"
-                Unchecked="filterButton_Unchecked" />
+                Unchecked="FilterButton_Unchecked" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton
                     x:Uid="SettingsAppBarButton"
