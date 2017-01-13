@@ -38,10 +38,10 @@ namespace wallabag.Services
             foreach (var task in _tasks)
                 await ExecuteAsync(task);
         }
-        private static async Task<bool> ExecuteAsync(OfflineTask task)
+        private static async Task ExecuteAsync(OfflineTask task)
         {
             if (GeneralHelper.InternetConnectionIsAvailable == false)
-                return false;
+                return;
 
             bool executionIsSuccessful = false;
             switch (task.Action)
@@ -107,7 +107,11 @@ namespace wallabag.Services
                     break;
             }
 
-            return executionIsSuccessful;
+            if (executionIsSuccessful)
+            {
+                Tasks.Remove(task);
+                App.Database.Delete(task);
+            }
         }
 
         public static void Add(string url, IEnumerable<string> newTags, string title = "")
