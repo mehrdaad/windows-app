@@ -1,0 +1,12 @@
+To login to a demo instance of wallabag, use the app the following way:
+
+1. After starting, select "Other" from the list.
+2. Enter the following credentials:
+	URL: https://wallabag.jlnostr.de
+	User: wallabag
+	Password: g7idJ8jzpaUQfakz19mqkiDbwrot55f6
+3. Check "Use custom configuration"
+4. Enter the specific credentials for the Windows Store testing
+	Client-ID: 12_21ednyw1fnogo4444ww4w48sogwwg48s8kwo0cswo8k4gwwcg0
+	Client-Secret: 69vij84kmuoskg8gk088o4s8ss4s040skcgo0w4cw0gscs08wo
+5. Click "Continue".

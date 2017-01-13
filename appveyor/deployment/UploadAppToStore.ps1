@@ -71,6 +71,7 @@ $flightPackages.Add(@{
     "minimumSystemRam"= "None"
 })
 
+$notesForCertification = [IO.File]::ReadAllText([IO.Path]::Combine($PSScriptRoot, "NotesForCertification.txt"));
 $flightParameters = @{
     "flightPackages" = $flightPackages
     "packageDeliveryOptions" = @{
@@ -85,7 +86,7 @@ $flightParameters = @{
     }
     "targetPublishMode" = "Immediate"
     "targetPublishDate" = ""
-    "notesForCertification" = "No special steps are required for certification of this app."
+    "notesForCertification" = $notesForCertification
 }
 $updateUrl = "https://manage.devcenter.microsoft.com/v1.0/my/applications/$appId/flights/$flightId/submissions/$submissionId"
 $updateResponse = Invoke-RestMethod -Uri $updateUrl -Method PUT -Headers $authorizationHeader -ContentType $jsonContentType -Body (ConvertTo-Json -InputObject $flightParameters -Compress -Depth 99)
