@@ -14,8 +14,31 @@ namespace wallabag.Services
 {
     class OfflineTaskService
     {
-        public static async Task ExecuteAllAsync() { }
-        private async Task<bool> ExecuteAsync(OfflineTask task)
+        private static ObservableCollection<OfflineTask> _tasks;
+        public static ObservableCollection<OfflineTask> Tasks
+        {
+            get
+            {
+                if (_tasks == null)
+                {
+                    _tasks = new ObservableCollection<OfflineTask>(App.Database.Table<OfflineTask>());
+                    _tasks.CollectionChanged += async (s, e) =>
+                     {
+                         if (e.NewItems != null && e.NewItems.Count > 0)
+                             await ExecuteAsync(e.NewItems[0] as OfflineTask);
+                     };
+                }
+
+                return _tasks;
+            }
+        }
+
+        internal static Task ExecuteAllAsync()
+        {
+            return Task.CompletedTask;
+            // TODO: Force all tasks to be executed
+        }
+        private static async Task<bool> ExecuteAsync(OfflineTask task)
         {
             if (GeneralHelper.InternetConnectionIsAvailable == false)
                 return false;
