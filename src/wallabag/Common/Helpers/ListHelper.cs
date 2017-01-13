@@ -6,6 +6,9 @@ namespace wallabag.Common.Helpers
     {
         public static void AddSorted<T>(this IList<T> list, T item, Comparer<T> comparer = null, bool sortAscending = false)
         {
+            if (list.Contains(item))
+                return;
+
             if (comparer == null)
                 comparer = Comparer<T>.Default;
 
