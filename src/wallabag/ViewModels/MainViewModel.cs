@@ -93,29 +93,31 @@ namespace wallabag.ViewModels
             };
 
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
-            
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
+
+            OfflineTaskService.Tasks.CollectionChanged += async (s, e) =>
+            {
+                if (e.NewItems != null && e.NewItems.Count > 0)
+                    await ApplyUIChangesForOfflineTaskAsync(e.NewItems[0] as OfflineTask);
+            };
         }
 
-        private async void App_OfflineTaskAdded(object sender, OfflineTask e)
+        private Task ApplyUIChangesForOfflineTaskAsync(OfflineTask task)
         {
-            if (_offlineTaskAreBlocked)
-                return;
-
             ItemViewModel item = default(ItemViewModel);
             var orderAscending = CurrentSearchProperties.OrderAscending ?? false;
 
-            if (e.Action != OfflineTask.OfflineTaskAction.Delete)
+            if (task.Action != OfflineTask.OfflineTaskAction.Delete)
             {
-                item = ItemViewModel.FromId(e.ItemId);
+                item = ItemViewModel.FromId(task.ItemId);
 
                 if (item == null)
-                    return;
+                    return Task.CompletedTask;
             }
 
-            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+            return CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
-                switch (e.Action)
+                switch (task.Action)
                 {
                     case OfflineTask.OfflineTaskAction.MarkAsRead:
                         if (CurrentSearchProperties.ItemTypeIndex == 2)
@@ -140,11 +142,10 @@ namespace wallabag.ViewModels
                             Items.AddSorted(item, sortAscending: orderAscending);
                         break;
                     case OfflineTask.OfflineTaskAction.Delete:
-                        Items.Remove(Items.Where(i => i.Model.Id.Equals(e.ItemId)).First());
+                        Items.Remove(Items.Where(i => i.Model.Id.Equals(task.ItemId)).First());
                         break;
                 }
-            });
-            // TODO: await e.ExecuteAsync();
+            }).AsTask();
         }
 
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
