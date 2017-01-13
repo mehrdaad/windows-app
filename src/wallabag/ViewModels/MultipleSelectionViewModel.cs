@@ -24,7 +24,7 @@ namespace wallabag.ViewModels
         {
             Items = new List<ItemViewModel>();
 
-            MarkAsReadCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
+            MarkAsReadCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
             {
                 App.Database.RunInTransaction(() =>
                 {
@@ -32,7 +32,7 @@ namespace wallabag.ViewModels
                         item.MarkAsReadCommand.Execute();
                 });
             }));
-            UnmarkAsReadCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
+            UnmarkAsReadCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
             {
                 App.Database.RunInTransaction(() =>
                 {
@@ -40,7 +40,7 @@ namespace wallabag.ViewModels
                         item.UnmarkAsReadCommand.Execute();
                 });
             }));
-            MarkAsFavoriteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
+            MarkAsFavoriteCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
             {
                 App.Database.RunInTransaction(() =>
                 {
@@ -48,7 +48,7 @@ namespace wallabag.ViewModels
                         item.MarkAsStarredCommand.Execute();
                 });
             }));
-            UnmarkAsFavoriteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
+            UnmarkAsFavoriteCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
             {
                 App.Database.RunInTransaction(() =>
                 {
@@ -56,7 +56,7 @@ namespace wallabag.ViewModels
                         item.UnmarkAsStarredCommand.Execute();
                 });
             }));
-            EditTagsCommand = new DelegateCommand(() => BlockOfflineTaskExecution(async () =>
+            EditTagsCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(async () =>
             {
                 var viewModel = new EditTagsViewModel();
 
@@ -65,7 +65,7 @@ namespace wallabag.ViewModels
 
                 await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, viewModel);
             }));
-            OpenInBrowserCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
+            OpenInBrowserCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
             {
                 App.Database.RunInTransaction(() =>
                 {
@@ -73,7 +73,7 @@ namespace wallabag.ViewModels
                         item.OpenInBrowserCommand.Execute();
                 });
             }));
-            DeleteCommand = new DelegateCommand(() => BlockOfflineTaskExecution(() =>
+            DeleteCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
             {
                 App.Database.RunInTransaction(() =>
                 {
@@ -83,11 +83,9 @@ namespace wallabag.ViewModels
             }));
         }
 
-        private void BlockOfflineTaskExecution(Action a)
+        private void ExecuteMultipleSelectionAction(Action a)
         {
-            Messenger.Default.Send(new BlockOfflineTaskExecutionMessage(true));
             a.Invoke();
-            Messenger.Default.Send(new BlockOfflineTaskExecutionMessage(false));
             Messenger.Default.Send(new CompleteMultipleSelectionMessage());
         }
     }

@@ -466,18 +466,6 @@ namespace wallabag.ViewModels
                     await SyncAsync();
             }
 
-            Messenger.Default.Register<BlockOfflineTaskExecutionMessage>(this, message =>
-            {
-                _offlineTaskAreBlocked = message.IsBlocked;
-                if (_offlineTaskAreBlocked == false)
-                {
-                    var tasks = App.Database.Table<OfflineTask>().ToList();
-                    foreach (var task in tasks)
-                    {
-                        App_OfflineTaskAdded(this, task);
-                    }
-                }
-            });
             Messenger.Default.Register<UpdateItemMessage>(this, message =>
             {
                 var viewModel = ItemViewModel.FromId(message.ItemId);
