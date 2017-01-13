@@ -16,10 +16,9 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class SettingsPageViewModel : ViewModelBase
     {
-        private Uri _changelogUri = new Uri("https://github.com/wallabag/windows-app/blob/master/README.md");
         private Uri _documentationUri = new Uri("http://doc.wallabag.org/");
         private Uri _twitterAccountUri = new Uri("https://twitter.com/wallabagapp");
-        private Uri _mailUri = new Uri("mailto:jlnostr@outlook.de");
+        private Uri _mailUri = new Uri("mailto:jlnostr+wallabag@outlook.de");
         private Uri _githubIssueUri = new Uri("https://github.com/wallabag/windows-app/issues/new");
         private Uri _rateAppUri = new Uri("ms-windows-store://review/?ProductId=" + Package.Current.Id.FamilyName);
 
@@ -66,8 +65,7 @@ namespace wallabag.ViewModels
             }
         }
         private bool _backgroundTaskOptionsChanged = false;
-
-        public DelegateCommand OpenChangelogCommand { get; private set; }
+        
         public DelegateCommand OpenDocumentationCommand { get; private set; }
         public DelegateCommand OpenWallabagTwitterAccountCommand { get; set; }
         public DelegateCommand ContactDeveloperCommand { get; private set; }
@@ -81,8 +79,7 @@ namespace wallabag.ViewModels
         public SettingsPageViewModel()
         {
             VersionNumber = GetVersionNumber();
-
-            OpenChangelogCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(_changelogUri));
+            
             OpenDocumentationCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(_documentationUri));
             OpenWallabagTwitterAccountCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(_twitterAccountUri));
             ContactDeveloperCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(_mailUri));

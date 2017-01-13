@@ -229,15 +229,7 @@
                             Margin="0,8,0,4"
                             Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
                             Text="VERSION" />
-                        <StackPanel Margin="0" Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="{x:Bind ViewModel.VersionNumber}" />
-                            <Button
-                                x:Uid="OpenChangelogButton"
-                                Padding="0"
-                                Command="{x:Bind ViewModel.OpenChangelogCommand}"
-                                Content="(changelog)"
-                                Style="{ThemeResource TextBlockButtonStyle}" />
-                        </StackPanel>
+                        <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="{x:Bind ViewModel.VersionNumber}" />
                         <TextBlock
                             x:Uid="MadeByHeaderTextBlock"
                             Style="{StaticResource CustomMenuHeaderTextBlockStyle}"

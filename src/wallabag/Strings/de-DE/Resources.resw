@@ -246,9 +246,6 @@
   <data name="NothingFoundTextBlock.Text" xml:space="preserve">
     <value>Es tut mir leid, ich hab leider nichts finden können.</value>
   </data>
-  <data name="OpenChangelogButton.Content" xml:space="preserve">
-    <value>(änderungen)</value>
-  </data>
   <data name="OpenDocumentationButton.Content" xml:space="preserve">
     <value>Dokumentation öffnen</value>
   </data>
