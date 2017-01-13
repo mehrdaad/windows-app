@@ -14,10 +14,11 @@ namespace wallabag.Services
 {
     class OfflineTaskService
     {
-        public async Task ExecuteAsync(OfflineTask task)
+        public static async Task ExecuteAllAsync() { }
+        private async Task<bool> ExecuteAsync(OfflineTask task)
         {
             if (GeneralHelper.InternetConnectionIsAvailable == false)
-                return;
+                return false;
 
             bool executionIsSuccessful = false;
             switch (task.Action)
@@ -83,13 +84,10 @@ namespace wallabag.Services
                     break;
             }
 
-            if (executionIsSuccessful)
-            {
-                App.Database.Delete(this);
-                App.OfflineTaskRemoved?.Invoke(this, this);
-            }
+            return executionIsSuccessful;
         }
-        public static void Add(string url, IEnumerable<string> newTags, string title = "", bool invokeAddedEvent = true)
+
+        public static void Add(string url, IEnumerable<string> newTags, string title = "")
         {
             var newTask = new OfflineTask()
             {
@@ -98,10 +96,7 @@ namespace wallabag.Services
                 Url = url,
                 Tags = newTags.ToList()
             };
-            App.Database.Insert(newTask);
-
-            if (invokeAddedEvent)
-                App.OfflineTaskAdded?.Invoke(null, newTask);
+            InsertTask(newTask);
         }
         public static void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
@@ -112,9 +107,9 @@ namespace wallabag.Services
                 addTagsList = addTagsList,
                 removeTagsList = removeTagsList
             };
-            App.Database.Insert(newTask);
-            App.OfflineTaskAdded?.Invoke(null, newTask);
+            InsertTask(newTask);
         }
+        private static void InsertTask(OfflineTask newTask) => App.Database.Insert(newTask);
 
         internal static int LastItemId => App.Database.ExecuteScalar<int>("select Max(ID) from 'Item'", new object[0]);
     }
