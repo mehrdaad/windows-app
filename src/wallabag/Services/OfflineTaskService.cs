@@ -132,7 +132,11 @@ namespace wallabag.Services
             };
             InsertTask(newTask);
         }
-        private static void InsertTask(OfflineTask newTask) => App.Database.Insert(newTask);
+        private static void InsertTask(OfflineTask newTask)
+        {
+            Tasks.Add(newTask);
+            App.Database.Insert(newTask);
+        }
 
         internal static int LastItemId => App.Database.ExecuteScalar<int>("select Max(ID) from 'Item'", new object[0]);
     }
