@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Common.Helpers;
 using wallabag.Models;
+using wallabag.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.UI.Xaml.Navigation;
@@ -45,13 +46,13 @@ namespace wallabag.ViewModels
                 var uri = new Uri(UriString);
                 App.Database.Insert(new Item()
                 {
-                    Id = OfflineTask.LastItemId + 1,
+                    Id = OfflineTaskService.LastItemId + 1,
                     Title = uri.Host,
                     Url = UriString,
                     Hostname = uri.Host
                 });
 
-                OfflineTask.Add(UriString, Tags.ToStringArray());
+                OfflineTaskService.Add(UriString, Tags.ToStringArray());
 
                 _shareOperation?.ReportCompleted();
             }

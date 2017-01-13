@@ -93,9 +93,7 @@ namespace wallabag.ViewModels
             };
 
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
-
-            App.OfflineTaskAdded += App_OfflineTaskAdded;
-            App.OfflineTaskRemoved += (s, e) => OfflineTaskCount -= 1;
+            
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
         }
 
@@ -146,7 +144,7 @@ namespace wallabag.ViewModels
                         break;
                 }
             });
-            await e.ExecuteAsync();
+            // TODO: await e.ExecuteAsync();
         }
 
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
@@ -166,23 +164,13 @@ namespace wallabag.ViewModels
             return result;
         }
 
-        private async Task ExecuteOfflineTasksAsync()
-        {
-            OfflineTaskCount = App.Database.ExecuteScalar<int>("SELECT COUNT(*) FROM OfflineTask");
-
-            if (OfflineTaskCount > 0)
-            {
-                foreach (var task in App.Database.Table<OfflineTask>())
-                    await task.ExecuteAsync();
-            }
-        }
         private async Task SyncAsync()
         {
             if (GeneralHelper.InternetConnectionIsAvailable == false)
                 return;
 
             IsSyncing = true;
-            await ExecuteOfflineTasksAsync();
+            await OfflineTaskService.ExecuteAllAsync();
             int syncLimit = 24;
 
             var items = await App.Client.GetItemsAsync(

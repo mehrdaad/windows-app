@@ -100,48 +100,41 @@ namespace wallabag
             base.OnBackgroundActivated(args);
 
             CreateClientAndDatabase();
+            var deferral = args.TaskInstance.GetDeferral();
 
-            var taskInstance = args.TaskInstance;
-            var offlineTaskCount = Database.ExecuteScalar<int>("select count(*) from OfflineTask");
-            var offlineTasks = Database.Table<OfflineTask>();
+            await OfflineTaskService.ExecuteAllAsync();
 
-            if (offlineTaskCount > 0)
+            if (SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask)
             {
-                taskInstance.GetDeferral();
-                foreach (var item in offlineTasks)
-                    await item.ExecuteAsync();
+                var items = await Client.GetItemsAsync(
+                    dateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
+                    sortOrder: Api.WallabagClient.WallabagSortOrder.Descending,
+                    since: SettingsService.Instance.LastSuccessfulSyncDateTime);
 
-                if (SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask)
+                if (items != null)
                 {
-                    var items = await Client.GetItemsAsync(
-                        dateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
-                        sortOrder: Api.WallabagClient.WallabagSortOrder.Descending,
-                        since: SettingsService.Instance.LastSuccessfulSyncDateTime);
+                    var itemList = new List<Item>();
 
-                    if (items != null)
+                    foreach (var item in items)
+                        itemList.Add(item);
+
+                    var databaseList = Database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{itemList.Count}", Array.Empty<object>());
+                    var deletedItems = databaseList.Except(itemList);
+
+                    Database.RunInTransaction(() =>
                     {
-                        var itemList = new List<Item>();
+                        foreach (var item in deletedItems)
+                            Database.Delete(item);
 
-                        foreach (var item in items)
-                            itemList.Add(item);
+                        Database.InsertOrReplaceAll(itemList);
+                    });
 
-                        var databaseList = Database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{itemList.Count}", Array.Empty<object>());
-                        var deletedItems = databaseList.Except(itemList);
-
-                        Database.RunInTransaction(() =>
-                        {
-                            foreach (var item in deletedItems)
-                                Database.Delete(item);
-
-                            Database.InsertOrReplaceAll(itemList);
-                        });
-
-                        SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;
-                    }
+                    SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;
                 }
             }
 
             SettingsService.Instance.LastExecutionOfBackgroundTask = DateTime.Now;
+            deferral.Complete();
         }
 
         private void CreateClientAndDatabase()

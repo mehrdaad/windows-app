@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using Template10.Mvvm;
 using wallabag.Models;
+using wallabag.Services;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 
@@ -40,30 +41,30 @@ namespace wallabag.ViewModels
             {
                 Model.IsRead = true;
                 UpdateItem();
-                OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
+                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
             });
             UnmarkAsReadCommand = new DelegateCommand(() =>
             {
                 Model.IsRead = false;
                 UpdateItem();
-                OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
+                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
             });
             MarkAsStarredCommand = new DelegateCommand(() =>
             {
                 Model.IsStarred = true;
                 UpdateItem();
-                OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
+                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
             });
             UnmarkAsStarredCommand = new DelegateCommand(() =>
             {
                 Model.IsStarred = false;
                 UpdateItem();
-                OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
+                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
             });
             DeleteCommand = new DelegateCommand(() =>
             {
                 App.Database.Delete(Model);
-                OfflineTask.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
+                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
             });
             ShareCommand = new DelegateCommand(() =>
             {
