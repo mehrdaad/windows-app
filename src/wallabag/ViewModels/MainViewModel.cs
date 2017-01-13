@@ -30,7 +30,7 @@ namespace wallabag.ViewModels
         public int OfflineTaskCount => App.Database.ExecuteScalar<int>("select count(*) from OfflineTask");
         public bool IsSyncing { get; set; }
 
-        public bool ItemsCountIsZero { get { return Items.Count == 0; } }
+        public bool ItemsCountIsZero => Items.Count == 0;
         public bool IsSearchActive { get; set; } = false;
         public string PageHeader { get; set; } = GeneralHelper.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
 
@@ -72,7 +72,7 @@ namespace wallabag.ViewModels
 
             SetSortTypeFilterCommand = new DelegateCommand<string>(filter => SetSortTypeFilter(filter));
             SetSortOrderCommand = new DelegateCommand<string>(order => SetSortOrder(order));
-            SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(args => SearchQueryChanged(args));
+            SearchQueryChangedCommand = new DelegateCommand<AutoSuggestBoxTextChangedEventArgs>(async args => await SearchQueryChangedAsync(args));
             SearchQuerySubmittedCommand = new DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs>(async args => await SearchQuerySubmittedAsync(args));
             CloseSearchCommand = new DelegateCommand(() => EndSearchAsync(this, null));
             LanguageCodeChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
@@ -81,7 +81,7 @@ namespace wallabag.ViewModels
             ResetFilterTagCommand = new DelegateCommand(() => CurrentSearchProperties.Tag = null);
             ResetFilterCommand = new DelegateCommand(() => CurrentSearchProperties.Reset());
 
-            CurrentSearchProperties.SearchStarted += p => StartSearch();
+            CurrentSearchProperties.SearchStarted += (s, e) => StartSearch();
             CurrentSearchProperties.PropertyChanged += async (s, e) =>
             {
                 if (e.PropertyName != nameof(CurrentSearchProperties.Query))
@@ -106,8 +106,8 @@ namespace wallabag.ViewModels
 
         private Task ApplyUIChangesForOfflineTaskAsync(OfflineTask task)
         {
-            ItemViewModel item = default(ItemViewModel);
-            var orderAscending = CurrentSearchProperties.OrderAscending ?? false;
+            var item = default(ItemViewModel);
+            bool orderAscending = CurrentSearchProperties.OrderAscending ?? false;
 
             if (task.Action != OfflineTask.OfflineTaskAction.Delete)
             {
@@ -233,7 +233,7 @@ namespace wallabag.ViewModels
                 PageHeader = GeneralHelper.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
         }
 
-        private async void SearchQueryChanged(AutoSuggestBoxTextChangedEventArgs args)
+        private async Task SearchQueryChangedAsync(AutoSuggestBoxTextChangedEventArgs args)
         {
             if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
                 return;
@@ -286,7 +286,6 @@ namespace wallabag.ViewModels
         private void SetSortOrder(string order) => CurrentSearchProperties.OrderAscending = order == "asc";
 
         private int _previousItemTypeIndex;
-        private bool _offlineTaskAreBlocked;
         private bool _incrementalLoadingIsBlocked;
 
         private void StartSearch()
@@ -364,7 +363,7 @@ namespace wallabag.ViewModels
             {
                 string sqlPropertyString = string.Join(",", typeof(Item).GetProperties().Select(p => p.Name)).Replace($"{nameof(Item.Content)},", string.Empty);
 
-                var queryStart = $"SELECT {sqlPropertyString} FROM Item";
+                string queryStart = $"SELECT {sqlPropertyString} FROM Item";
                 var queryParts = new List<string>();
                 var queryParameters = new List<object>();
 
@@ -401,7 +400,7 @@ namespace wallabag.ViewModels
                 if (CurrentSearchProperties.Tag != null)
                     queryParts.Add($"Tags LIKE '%{CurrentSearchProperties.Tag.Label}%'");
 
-                var query = BuildSQLQuery(queryStart, queryParts);
+                string query = BuildSQLQuery(queryStart, queryParts);
 
                 if (CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime)
                 {
@@ -434,9 +433,9 @@ namespace wallabag.ViewModels
             if (start.EndsWith(" ") == false)
                 result += " ";
 
-            foreach (var item in queries)
+            foreach (string item in queries)
             {
-                var queryIndex = queries.IndexOf(item);
+                int queryIndex = queries.IndexOf(item);
                 if (queryIndex == 0)
                     result += "WHERE " + item;
                 else
@@ -456,7 +455,7 @@ namespace wallabag.ViewModels
             {
                 if (state.ContainsKey(nameof(CurrentSearchProperties)))
                 {
-                    var stateValue = state[nameof(CurrentSearchProperties)] as string;
+                    string stateValue = state[nameof(CurrentSearchProperties)] as string;
                     CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
                 }
 
@@ -480,7 +479,7 @@ namespace wallabag.ViewModels
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
-            var serializedSearchProperties = await Task.Run(() => JsonConvert.SerializeObject(CurrentSearchProperties));
+            string serializedSearchProperties = await Task.Run(() => JsonConvert.SerializeObject(CurrentSearchProperties));
             pageState[nameof(CurrentSearchProperties)] = serializedSearchProperties;
 
             Messenger.Default.Unregister(this);

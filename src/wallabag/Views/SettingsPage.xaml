@@ -2,12 +2,9 @@
     x:Class="wallabag.Views.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:wallabag.Views"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:wallabag.ViewModels"
-    xmlns:wst="using:WindowsStateTriggers"
-    mc:Ignorable="d">
+    xmlns:wst="using:WindowsStateTriggers">
 
     <Page.DataContext>
         <vm:SettingsPageViewModel />
@@ -38,30 +35,6 @@
             <RowDefinition Height="48" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="AdaptiveStates">
-                <VisualState x:Name="Narrow" />
-                <VisualState x:Name="Wide">
-                    <VisualState.Setters>
-                        <Setter Target="VideoOpenModeGrid.HorizontalAlignment" Value="Left" />
-                        <Setter Target="VideoOpenModeGrid.Width" Value="400" />
-                    </VisualState.Setters>
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="720" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-            </VisualStateGroup>
-            <VisualStateGroup>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        <wst:DeviceFamilyStateTrigger DeviceFamily="Desktop" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="TitleBarVisibilityToggleSwitch.Visibility" Value="Visible" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
         <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <TextBlock
                 x:Uid="SettingsPageTitleTextBlock"
@@ -166,8 +139,8 @@
                             Text="{x:Bind ViewModel.VideoOpenModeDescription, Mode=OneWay}" />
                     </Grid>
                     <ToggleSwitch
-                        x:Uid="TitleBarVisibilityToggleSwitch"
                         x:Name="TitleBarVisibilityToggleSwitch"
+                        x:Uid="TitleBarVisibilityToggleSwitch"
                         Margin="0,32,0,0"
                         x:DeferLoadStrategy="Lazy"
                         Header="Visibility of the title bar"
@@ -181,9 +154,9 @@
                 <StackPanel>
                     <Grid
                         Margin="0,0,0,12"
+                        Padding="8"
                         BorderBrush="#FFFFA200"
                         BorderThickness="1"
-                        Padding="8"
                         Visibility="{x:Bind ViewModel.BackgroundTaskIsNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
@@ -194,8 +167,8 @@
                             Foreground="#FFFFA200"
                             Glyph="&#xE7BA;" />
                         <TextBlock
-                            Grid.Column="1"
                             x:Uid="NotSupportedOnThisDeviceTextBlock"
+                            Grid.Column="1"
                             VerticalAlignment="Center"
                             Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
                             Style="{StaticResource InfoTextBlockStyle}"
@@ -214,8 +187,8 @@
                         Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <RelativePanel Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Slider
-                            x:Uid="BackgroundTaskExecutionIntervalSlider"
                             x:Name="BackgroundTaskExecutionIntervalSlider"
+                            x:Uid="BackgroundTaskExecutionIntervalSlider"
                             Header="Execution frequency"
                             IsThumbToolTipEnabled="False"
                             Maximum="120"
@@ -226,8 +199,8 @@
                             TickFrequency="15"
                             Value="{x:Bind ViewModel.BackgroundTaskExecutionInterval, Mode=TwoWay}" />
                         <TextBlock
-                            x:Uid="BackgroundTaskExecutionIntervalInMinutesTextBlock"
                             x:Name="BackgroundTaskExecutionIntervalInMinutesTextBlock"
+                            x:Uid="BackgroundTaskExecutionIntervalInMinutesTextBlock"
                             Margin="12,10,0,0"
                             HorizontalAlignment="Right"
                             RelativePanel.AlignRightWithPanel="True"
@@ -260,9 +233,9 @@
                             <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="{x:Bind ViewModel.VersionNumber}" />
                             <Button
                                 x:Uid="OpenChangelogButton"
+                                Padding="0"
                                 Command="{x:Bind ViewModel.OpenChangelogCommand}"
                                 Content="(changelog)"
-                                Padding="0"
                                 Style="{ThemeResource TextBlockButtonStyle}" />
                         </StackPanel>
                         <TextBlock
@@ -380,5 +353,29 @@
                 </ScrollViewer>
             </PivotItem>
         </Pivot>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveStates">
+                <VisualState x:Name="Narrow" />
+                <VisualState x:Name="Wide">
+                    <VisualState.Setters>
+                        <Setter Target="VideoOpenModeGrid.HorizontalAlignment" Value="Left" />
+                        <Setter Target="VideoOpenModeGrid.Width" Value="400" />
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="720" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <wst:DeviceFamilyStateTrigger DeviceFamily="Desktop" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="TitleBarVisibilityToggleSwitch.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

@@ -34,7 +34,7 @@ namespace wallabag.Common.Helpers
 
             if (GeneralHelper.IsPhone)
             {
-                StatusBar statusBar = StatusBar.GetForCurrentView();
+                var statusBar = StatusBar.GetForCurrentView();
                 statusBar.ForegroundColor = color;
             }
         }
@@ -63,7 +63,7 @@ namespace wallabag.Common.Helpers
 
             if (GeneralHelper.IsPhone)
             {
-                StatusBar statusBar = StatusBar.GetForCurrentView();
+                var statusBar = StatusBar.GetForCurrentView();
                 statusBar.BackgroundColor = color;
                 statusBar.BackgroundOpacity = 0.8;
             }
@@ -118,7 +118,7 @@ namespace wallabag.Common.Helpers
         public static readonly DependencyProperty IsVisibleProperty =
          DependencyProperty.RegisterAttached("IsVisible", typeof(bool),
          typeof(TitleBarHelper),
-         new PropertyMetadata(true, OnIsVisiblePropertyChanged));
+         new PropertyMetadata(true, OnIsVisiblePropertyChangedAsync));
 
         public static bool GetIsVisible(DependencyObject d)
         {
@@ -130,17 +130,17 @@ namespace wallabag.Common.Helpers
             d.SetValue(IsVisibleProperty, value);
         }
 
-        private static async void OnIsVisiblePropertyChanged(DependencyObject d,
+        private static async void OnIsVisiblePropertyChangedAsync(DependencyObject d,
             DependencyPropertyChangedEventArgs e)
         {
-            var isExtended = !(bool)e.NewValue;
+            bool isExtended = !(bool)e.NewValue;
 
-            CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.ExtendViewIntoTitleBar = isExtended;
 
             if (GeneralHelper.IsPhone)
             {
-                StatusBar statusBar = StatusBar.GetForCurrentView();
+                var statusBar = StatusBar.GetForCurrentView();
                 if (isExtended)
                     await statusBar.HideAsync();
                 else
@@ -163,7 +163,7 @@ namespace wallabag.Common.Helpers
 
                 if (GeneralHelper.IsPhone)
                 {
-                    StatusBar statusBar = StatusBar.GetForCurrentView();
+                    var statusBar = StatusBar.GetForCurrentView();
                     await statusBar.ShowAsync();
                 }
             });

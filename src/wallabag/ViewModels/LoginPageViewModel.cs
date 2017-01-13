@@ -103,7 +103,7 @@ namespace wallabag.ViewModels
                 }
             });
 
-            this.PropertyChanged += this_PropertyChanged;
+            this.PropertyChanged += This_PropertyChanged;
         }
 
         private void QRCodeBackRequested(object sender, BackRequestedEventArgs args)
@@ -117,7 +117,7 @@ namespace wallabag.ViewModels
             }
         }
 
-        private void this_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void This_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             PreviousCommand.RaiseCanExecuteChanged();
             NextCommand.RaiseCanExecuteChanged();
@@ -179,7 +179,7 @@ namespace wallabag.ViewModels
             if (CurrentStep == 2)
             {
                 if (await TestConfigurationAsync())
-                    await DownloadAndSaveItemsAndTags();
+                    await DownloadAndSaveItemsAndTagsAsync();
                 else
                 {
                     CurrentStep = 1;
@@ -221,7 +221,7 @@ namespace wallabag.ViewModels
             if (UseCustomSettings == false)
             {
                 App.Client.InstanceUri = new Uri(Url);
-                var clientCreationIsSuccessful = await CreateApiClientAsync();
+                bool clientCreationIsSuccessful = await CreateApiClientAsync();
 
                 if (clientCreationIsSuccessful == false &&
                     Url.StartsWith("https://"))
@@ -238,7 +238,7 @@ namespace wallabag.ViewModels
             App.Client.ClientSecret = ClientSecret;
             App.Client.InstanceUri = new Uri(Url);
 
-            var result = await App.Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
+            bool result = await App.Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
             {
                 if (x.Exception == null)
                     return x.Result;
@@ -262,7 +262,7 @@ namespace wallabag.ViewModels
 
             return result;
         }
-        private async Task DownloadAndSaveItemsAndTags()
+        private async Task DownloadAndSaveItemsAndTagsAsync()
         {
             ProgressDescription = GeneralHelper.LocalizedResource("DownloadingItemsTextBlock.Text");
             int itemsPerPage = 100;
@@ -390,7 +390,7 @@ namespace wallabag.ViewModels
 
                 // Step 3: Create the new client
                 step++;
-                var stringContent = string.Empty;
+                string stringContent = string.Empty;
                 useNewApi = (await App.Client.GetVersionNumberAsync()).StartsWith("2.0") == false;
 
                 stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
@@ -453,11 +453,11 @@ namespace wallabag.ViewModels
             {
                 var results = new List<string>();
 
-                var lastIndex = 0;
+                int lastIndex = 0;
                 int resultCount = useNewApi ? 2 : 1;
                 do
                 {
-                    var start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
+                    int start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
                     lastIndex = html.IndexOf(m_finalTokenEndString, start);
 
                     results.Add(html.Substring(start, lastIndex - start));

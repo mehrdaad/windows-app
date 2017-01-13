@@ -13,7 +13,7 @@ namespace wallabag.Views
         public AddItemViewModel ViewModel { get { return DataContext as AddItemViewModel; } }
         public ShareTargetPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             ViewModel.AddingStarted += (s, e) => AddStoryboard.Begin();
         }
     }

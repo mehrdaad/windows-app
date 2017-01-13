@@ -54,7 +54,7 @@ namespace wallabag.Controls
                 typeof(AdaptiveGridView),
                 new PropertyMetadata(1.0, (s, a) =>
                 {
-                    if (!Double.IsNaN((double)a.NewValue))
+                    if (!double.IsNaN((double)a.NewValue))
                     {
                         ((AdaptiveGridView)s).InvalidateMeasure();
                     }
@@ -84,36 +84,35 @@ namespace wallabag.Controls
 
         public AdaptiveGridView()
         {
-            if (this.ItemContainerStyle == null)
-                this.ItemContainerStyle = new Style(typeof(GridViewItem));
+            if (ItemContainerStyle == null)
+                ItemContainerStyle = new Style(typeof(GridViewItem));
 
-            this.ItemContainerStyle.Setters.Add(new Setter(GridViewItem.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch));
-            this.ItemContainerStyle.Setters.Add(new Setter(GridViewItem.VerticalContentAlignmentProperty, VerticalAlignment.Stretch));
+            ItemContainerStyle.Setters.Add(new Setter(GridViewItem.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch));
+            ItemContainerStyle.Setters.Add(new Setter(GridViewItem.VerticalContentAlignmentProperty, VerticalAlignment.Stretch));
 
             this.Loaded += (s, a) =>
             {
-                if (this.ItemsPanelRoot != null)
-                    this.InvalidateMeasure();
+                if (ItemsPanelRoot != null)
+                    InvalidateMeasure();
             };
         }
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            var panel = this.ItemsPanelRoot as ItemsWrapGrid;
-            if (panel != null)
+            if (ItemsPanelRoot is ItemsWrapGrid panel)
             {
                 if (MinItemWidth == 0)
                     throw new DivideByZeroException("You need to have a MinItemWidth greater than zero");
 
-                var availableWidth = availableSize.Width - (this.Padding.Right + this.Padding.Left);
+                double availableWidth = availableSize.Width - (Padding.Right + Padding.Left);
 
-                var numColumns = Math.Floor(availableWidth / MinItemWidth);
+                double numColumns = Math.Floor(availableWidth / MinItemWidth);
                 numColumns = numColumns == 0 ? 1 : numColumns;
-                var numRows = Math.Ceiling(this.Items.Count / numColumns);
+                double numRows = Math.Ceiling(Items.Count / numColumns);
 
-                var itemWidth = availableWidth / numColumns;
-                var aspectRatio = MinItemHeight / MinItemWidth;
-                var itemHeight = itemWidth * aspectRatio;
+                double itemWidth = availableWidth / numColumns;
+                double aspectRatio = MinItemHeight / MinItemWidth;
+                double itemHeight = itemWidth * aspectRatio;
 
                 if (IsItemWidthLocked)
                     itemWidth = MinItemWidth;

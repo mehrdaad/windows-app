@@ -26,15 +26,15 @@ namespace wallabag.Views
 
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
             ItemGridView.SelectionChanged += (s, e) =>
             {
-                foreach (ItemViewModel item in e.AddedItems)
-                    SelectionViewModel.Items.Add(item);
-                foreach (ItemViewModel item in e.RemovedItems)
-                    SelectionViewModel.Items.Remove(item);
+                foreach (object item in e.AddedItems)
+                    SelectionViewModel.Items.Add(item as ItemViewModel);
+                foreach (object item in e.RemovedItems)
+                    SelectionViewModel.Items.Remove(item as ItemViewModel);
 
                 if (ItemGridView.SelectedItems.Count == 0) DisableMultipleSelection();
             };
@@ -47,7 +47,7 @@ namespace wallabag.Views
             ShowSearchResultsStoryboard.Completed += (s, e) => ((MainPivot.SelectedItem as PivotItem).Content as AdaptiveGridView).Focus(FocusState.Programmatic);
             HideSearchStoryboard.Completed += (s, e) => _isSearchVisible = false;
 
-            ViewModel.CurrentSearchProperties.SearchCanceled += p =>
+            ViewModel.CurrentSearchProperties.SearchCanceled += (s, e) =>
             {
                 if (_isSearchVisible)
                     HideSearchStoryboard.Begin();
@@ -174,12 +174,12 @@ namespace wallabag.Views
         #region Search & Filter
 
         private bool _isSearchVisible;
-        private void searchButton_Click(object sender, RoutedEventArgs e) => ShowSearchStoryboard.Begin();
-        private void filterButton_Checked(object sender, RoutedEventArgs e) => ShowFilterStoryboard.Begin();
-        private void filterButton_Unchecked(object sender, RoutedEventArgs e) => HideFilterStoryboard.Begin();
+        private void SearchButton_Click(object sender, RoutedEventArgs e) => ShowSearchStoryboard.Begin();
+        private void FilterButton_Checked(object sender, RoutedEventArgs e) => ShowFilterStoryboard.Begin();
+        private void FilterButton_Unchecked(object sender, RoutedEventArgs e) => HideFilterStoryboard.Begin();
 
-        private void overlayRectangle_PointerPressed(object sender, PointerRoutedEventArgs e) => filterButton.IsChecked = false;
-        private void searchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) => ShowSearchResultsStoryboard.Begin();
+        private void OverlayRectangle_PointerPressed(object sender, PointerRoutedEventArgs e) => filterButton.IsChecked = false;
+        private void SearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) => ShowSearchResultsStoryboard.Begin();
         private void CloseSearchButton_Click(object sender, RoutedEventArgs e) => HideSearchStoryboard.Begin();
 
         #endregion
@@ -192,7 +192,7 @@ namespace wallabag.Views
             var lastPivotItem = (e.RemovedItems?.FirstOrDefault() ?? (sender as Pivot).Items.FirstOrDefault()) as PivotItem;
             var currentPivotItem = e.AddedItems?.FirstOrDefault() as PivotItem;
 
-            var gridView = lastPivotItem.Content;
+            object gridView = lastPivotItem.Content;
 
             lastPivotItem.Content = null;
             currentPivotItem.Content = gridView;

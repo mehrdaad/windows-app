@@ -11,17 +11,17 @@ namespace wallabag.Common.Helpers
             if (format == null)
                 throw new ArgumentNullException(nameof(format));
 
-            Regex r = new Regex(@"(?<start>\{)+(?<property>[\w\.\[\]]+)(?<format>:[^}]+)?(?<end>\})+",
+            var r = new Regex(@"(?<start>\{)+(?<property>[\w\.\[\]]+)(?<format>:[^}]+)?(?<end>\})+",
                     RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
             string rewrittenFormat = r.Replace(format, delegate (Match m)
             {
-                Group startGroup = m.Groups["start"];
-                Group propertyGroup = m.Groups["property"];
-                Group formatGroup = m.Groups["format"];
-                Group endGroup = m.Groups["end"];
+                var startGroup = m.Groups["start"];
+                var propertyGroup = m.Groups["property"];
+                var formatGroup = m.Groups["format"];
+                var endGroup = m.Groups["end"];
 
-                var value = (propertyGroup.Value == null)
+                object value = (propertyGroup.Value == null)
                            ? source
                            : source.GetType().GetRuntimeProperty(propertyGroup.Value).GetValue(source);
 
@@ -34,7 +34,7 @@ namespace wallabag.Common.Helpers
         {
             try
             {
-                Uri x = new Uri(uriString);
+                var x = new Uri(uriString);
                 return true;
             }
             catch (UriFormatException) { return false; }

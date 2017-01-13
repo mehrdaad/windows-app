@@ -17,9 +17,11 @@ namespace wallabag.Common.Helpers
 
             await BackgroundExecutionManager.RequestAccessAsync();
 
-            var builder = new BackgroundTaskBuilder();
-            builder.Name = _backgroundTaskName;
-            builder.IsNetworkRequested = true;
+            var builder = new BackgroundTaskBuilder()
+            {
+                Name = _backgroundTaskName,
+                IsNetworkRequested = true
+            };
             builder.SetTrigger(new TimeTrigger((uint)SettingsService.Instance.BackgroundTaskExecutionInterval, false));
 
             _backgroundTask = builder.Register();

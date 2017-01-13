@@ -74,11 +74,11 @@ namespace wallabag.ViewModels
 
         private async Task GenerateFormattedHtmlAsync()
         {
-            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Article/article.html"));
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Article/article.html"));
             string _template = await FileIO.ReadTextAsync(file);
 
             string accentColor = Application.Current.Resources["SystemAccentColor"].ToString().Remove(1, 2);
-            StringBuilder styleSheetBuilder = new StringBuilder();
+            var styleSheetBuilder = new StringBuilder();
             styleSheetBuilder.Append("<style>");
             styleSheetBuilder.Append("hr {border-color: " + accentColor + " !important}");
             styleSheetBuilder.Append("::selection,mark {background: " + accentColor + " !important}");
@@ -87,7 +87,7 @@ namespace wallabag.ViewModels
             styleSheetBuilder.Append($"text-align: {TextAlignment};}}");
             styleSheetBuilder.Append("</style>");
 
-            var imageHeader = string.Empty;
+            string imageHeader = string.Empty;
             if (Item.Model.Hostname.Contains("youtube.com") == false &&
                 Item.Model.Hostname.Contains("vimeo.com") == false &&
                 Item.Model.PreviewImageUri != null)
@@ -119,7 +119,7 @@ namespace wallabag.ViewModels
             {
                 if (node.HasAttributes && node.Attributes["src"] != null)
                 {
-                    var oldSource = node.Attributes["src"].Value;
+                    string oldSource = node.Attributes["src"].Value;
                     node.Attributes.RemoveAll();
 
                     if (!oldSource.Equals(Item.Model.PreviewImageUri?.ToString()) &&
@@ -134,10 +134,8 @@ namespace wallabag.ViewModels
                 }
             }
 
-            var c = "/"[0];
-
-            var dataOpenMode = SettingsService.Instance.VideoOpenMode.ToString().ToLower();
-            var containerString = "<div class='wallabag-video' style='background-image: url({0})' data-open-mode='" + dataOpenMode + "' data-provider='{1}' data-video-id='{2}'><span></span></div>";
+            string dataOpenMode = SettingsService.Instance.VideoOpenMode.ToString().ToLower();
+            string containerString = "<div class='wallabag-video' style='background-image: url({0})' data-open-mode='" + dataOpenMode + "' data-provider='{1}' data-video-id='{2}'><span></span></div>";
 
             // Replace videos (YouTube & Vimeo) by static thumbnails                  
             var iframeNodes = document.DocumentNode.Descendants("iframe").ToList();
@@ -149,15 +147,15 @@ namespace wallabag.ViewModels
                     node.Attributes.Contains("src"))
                 {
                     var videoSourceUri = new Uri(node.Attributes["src"].Value);
-                    var videoId = videoSourceUri.Segments.Last();
-                    var videoProvider = videoSourceUri.Host;
+                    string videoId = videoSourceUri.Segments.Last();
+                    string videoProvider = videoSourceUri.Host;
 
                     if (videoProvider.Contains("youtube.com"))
                         videoProvider = "youtube";
                     else if (videoProvider.Contains("player.vimeo.com"))
                         videoProvider = "vimeo";
 
-                    var newContainer = string.Format(containerString, await GetPreviewImageForVideoAsync(videoProvider, videoId), videoProvider, videoId);
+                    string newContainer = string.Format(containerString, await GetPreviewImageForVideoAsync(videoProvider, videoId), videoProvider, videoId);
 
                     node.ParentNode.InsertAfter(HtmlNode.CreateNode(newContainer), node);
                     node.ParentNode.RemoveChild(node);
@@ -167,7 +165,7 @@ namespace wallabag.ViewModels
             // This loop is for HTML5 videos using the <video> tag
             foreach (var node in videoNodes)
             {
-                var videoSource = string.Empty;
+                string videoSource = string.Empty;
 
                 videoSource = node.GetAttributeValue("src", string.Empty);
 
@@ -179,7 +177,7 @@ namespace wallabag.ViewModels
 
                 if (!string.IsNullOrEmpty(videoSource))
                 {
-                    var newContainer = string.Format(containerString, string.Empty, "html", videoSource);
+                    string newContainer = string.Format(containerString, string.Empty, "html", videoSource);
 
                     node.ParentNode.InsertAfter(HtmlNode.CreateNode(newContainer), node);
                     node.ParentNode.RemoveChild(node);
@@ -195,8 +193,8 @@ namespace wallabag.ViewModels
                 return $"http://img.youtube.com/vi/{videoId}/0.jpg";
             else
             {
-                var link = $"http://vimeo.com/api/v2/video/{videoId}.json";
-                using (HttpClient client = new HttpClient())
+                string link = $"http://vimeo.com/api/v2/video/{videoId}.json";
+                using (var client = new HttpClient())
                 {
                     var response = await client.GetAsync(new Uri(link));
 

@@ -14,7 +14,7 @@ namespace wallabag.Common.Helpers
 
         private static void OnHtmlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            WebView wv = d as WebView;
+            var wv = d as WebView;
             if (e.NewValue != null)
                 wv?.NavigateToString((string)e.NewValue);
         }

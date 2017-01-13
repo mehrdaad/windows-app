@@ -31,10 +31,10 @@ namespace wallabag.Views
 
         public ItemPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
-            HtmlViewer.ScriptNotify += HtmlViewer_ScriptNotify;
-            HtmlViewer.NavigationStarting += HtmlViewer_NavigationStarting;
+            HtmlViewer.ScriptNotify += HtmlViewer_ScriptNotifyAsync;
+            HtmlViewer.NavigationStarting += HtmlViewer_NavigationStartingAsync;
 
             ShowMinimalCommandBarStoryboard.Completed += (s, e) =>
             {
@@ -75,7 +75,7 @@ namespace wallabag.Views
 
         private MenuFlyout _rightClickMenuFlyout;
         private Grid _rightClickMenuGrid;
-        private async void HtmlViewer_ScriptNotify(object sender, NotifyEventArgs e)
+        private async void HtmlViewer_ScriptNotifyAsync(object sender, NotifyEventArgs e)
         {
             if (e.Value == "finishedReading")
             {
@@ -99,8 +99,8 @@ namespace wallabag.Views
                         break;
                     case "RC":
                     case "LC":
-                        var x = int.Parse(notify[2]);
-                        var y = int.Parse(notify[3]);
+                        int x = int.Parse(notify[2]);
+                        int y = int.Parse(notify[3]);
                         try
                         {
                             ViewModel.RightClickUri = new Uri(notify[1]);
@@ -110,8 +110,8 @@ namespace wallabag.Views
                         break;
                     case "video-app":
                     case "video-browser":
-                        var provider = notify[1];
-                        var videoId = notify[2];
+                        string provider = notify[1];
+                        string videoId = notify[2];
 
                         var launcherOptions = new LauncherOptions();
 
@@ -128,7 +128,7 @@ namespace wallabag.Views
 
         private Uri GetVideoUri(string provider, string videoId, bool returnFallbackUri = false)
         {
-            var uriString = string.Empty;
+            string uriString = string.Empty;
             var openMode = SettingsService.Instance.VideoOpenMode;
 
             if (provider == "youtube")
@@ -155,14 +155,14 @@ namespace wallabag.Views
             _rightClickMenuFlyout.ShowAt(HtmlViewer, new Point(x, y));
         }
 
-        private void saveButton_Click(object sender, RoutedEventArgs e) => (_rightClickMenuGrid.Resources["SaveRightClickLinkStoryboard"] as Storyboard).Begin();
-        private void rightClickGrid_Loaded(object sender, RoutedEventArgs e)
+        private void SaveButton_Click(object sender, RoutedEventArgs e) => (_rightClickMenuGrid.Resources["SaveRightClickLinkStoryboard"] as Storyboard).Begin();
+        private void RightClickGrid_Loaded(object sender, RoutedEventArgs e)
         {
             _rightClickMenuGrid = sender as Grid;
             (_rightClickMenuGrid.Resources["SaveRightClickLinkStoryboard"] as Storyboard).Completed += (s, args) => _rightClickMenuFlyout.Hide();
         }
 
-        private async void HtmlViewer_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
+        private async void HtmlViewer_NavigationStartingAsync(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             if (args.Uri != null)
             {
@@ -171,17 +171,17 @@ namespace wallabag.Views
             }
         }
 
-        private async void IncreaseFontSize(object sender, RoutedEventArgs e)
+        private async void IncreaseFontSizeAsync(object sender, RoutedEventArgs e)
         {
             ViewModel.FontSize += 1;
             await InvokeChangeHtmlAttributesAsync();
         }
-        private async void DecreaseFontSize(object sender, RoutedEventArgs e)
+        private async void DecreaseFontSizeAsync(object sender, RoutedEventArgs e)
         {
             ViewModel.FontSize -= 1;
             await InvokeChangeHtmlAttributesAsync();
         }
-        private async void ChangeColorScheme(object sender, RoutedEventArgs e)
+        private async void ChangeColorSchemeAsync(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
 
@@ -196,7 +196,7 @@ namespace wallabag.Views
 
             await InvokeChangeHtmlAttributesAsync();
         }
-        private async void ChangeFontFamily(object sender, RoutedEventArgs e)
+        private async void ChangeFontFamilyAsync(object sender, RoutedEventArgs e)
         {
             if (ViewModel.FontFamily.Equals("serif"))
                 ViewModel.FontFamily = "sans";
@@ -204,7 +204,7 @@ namespace wallabag.Views
                 ViewModel.FontFamily = "serif";
             await InvokeChangeHtmlAttributesAsync();
         }
-        private async void ChangeTextAlignment(object sender, RoutedEventArgs e)
+        private async void ChangeTextAlignmentAsync(object sender, RoutedEventArgs e)
         {
             var senderButton = sender as Button;
 
@@ -224,17 +224,18 @@ namespace wallabag.Views
 
         private IAsyncOperation<string> InvokeChangeHtmlAttributesAsync()
         {
-            var arguments = new List<string>();
-            arguments.Add(ViewModel.ColorScheme);
-            arguments.Add(ViewModel.FontFamily);
-            arguments.Add(ViewModel.FontSize.ToString());
-            arguments.Add(ViewModel.TextAlignment);
-
+            var arguments = new List<string>
+            {
+                ViewModel.ColorScheme,
+                ViewModel.FontFamily,
+                ViewModel.FontSize.ToString(),
+                ViewModel.TextAlignment
+            };
             ViewModel.UpdateBrushes();
             return HtmlViewer.InvokeScriptAsync(_scriptName, arguments);
         }
 
-        private void openCommandsButton_Click(object sender, RoutedEventArgs e)
+        private void OpenCommandsButton_Click(object sender, RoutedEventArgs e)
         {
             if (!_isCommandBarVisible || _isCommandBarCompact)
                 ShowFullCommandBarStoryboard.Begin();

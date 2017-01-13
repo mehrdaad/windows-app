@@ -152,7 +152,7 @@ namespace wallabag
 
             if (Database == null)
             {
-                var path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path, "wallabag.db");
+                string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path, "wallabag.db");
 
                 Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
                 Database.CreateTable<Item>();
@@ -174,7 +174,7 @@ namespace wallabag
 
         public object Deserialize(byte[] data, Type type)
         {
-            var str = System.Text.Encoding.UTF8.GetString(data);
+            string str = System.Text.Encoding.UTF8.GetString(data);
 
             if (type == typeof(Uri))
                 return new Uri(str.Replace("\"", string.Empty));

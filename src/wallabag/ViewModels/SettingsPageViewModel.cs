@@ -142,9 +142,9 @@ namespace wallabag.ViewModels
 
         private string GetVersionNumber()
         {
-            Package package = Package.Current;
-            PackageId packageId = package.Id;
-            PackageVersion version = packageId.Version;
+            var package = Package.Current;
+            var packageId = package.Id;
+            var version = packageId.Version;
 
             return string.Format($"{version.Major}.{version.Minor}.{version.Build}");
         }
@@ -168,7 +168,7 @@ namespace wallabag.ViewModels
         }
         private void DeleteDatabase()
         {
-            var path = App.Database.DatabasePath;
+            string path = App.Database.DatabasePath;
             App.Database.Close();
 
             File.Delete(path);

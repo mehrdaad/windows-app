@@ -30,7 +30,7 @@ namespace wallabag.Controls
 
         public TagsControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             this.Loaded += (s, e) => UpdateNoTagsInfoTextBlockVisibility();
 
             autoSuggestBox.KeyDown += AutoSuggestBox_KeyDown;
@@ -40,14 +40,13 @@ namespace wallabag.Controls
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             var itemsSource = ItemsSource as ICollection<Tag>;
-            var suggestion = args.ChosenSuggestion as Tag;
 
-            if (suggestion != null && !itemsSource.Contains(suggestion))
+            if (args.ChosenSuggestion is Tag suggestion && !itemsSource.Contains(suggestion))
                 itemsSource.Add(args.ChosenSuggestion as Tag);
             else
             {
                 var tags = args.QueryText.Split(","[0]).ToList();
-                foreach (var item in tags)
+                foreach (string item in tags)
                     if (!string.IsNullOrWhiteSpace(item))
                     {
                         var newTag = new Tag() { Label = item, Id = itemsSource.Count + 1 };
@@ -67,7 +66,7 @@ namespace wallabag.Controls
         {
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                var suggestionString = sender.Text.ToLower().Split(","[0]).Last();
+                string suggestionString = sender.Text.ToLower().Split(","[0]).Last();
                 Suggestions.Replace(
                     App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(suggestionString))
                         .Except(ItemsSource)
@@ -89,7 +88,7 @@ namespace wallabag.Controls
                 noTagsInfoTextBlock.Visibility = Visibility.Collapsed;
         }
 
-        private void tagsListView_ItemClick(object sender, ItemClickEventArgs e)
+        private void TagsListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             (ItemsSource as IList<Tag>).Remove(e.ClickedItem as Tag);
             UpdateNoTagsInfoTextBlockVisibility();
@@ -103,7 +102,7 @@ namespace wallabag.Controls
                 e.Handled = true;
                 var textBox = e.OriginalSource as TextBox;
 
-                var label = textBox.Text.Replace(",", string.Empty);
+                string label = textBox.Text.Replace(",", string.Empty);
                 if (!string.IsNullOrWhiteSpace(label))
                     (ItemsSource as ObservableCollection<Tag>).Add(new Tag() { Label = label });
 

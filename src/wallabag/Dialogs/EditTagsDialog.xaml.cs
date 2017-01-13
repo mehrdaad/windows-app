@@ -5,11 +5,11 @@ namespace wallabag.Dialogs
 {
     public sealed partial class EditTagsDialog : ContentDialog
     {
-        public EditTagsViewModel ViewModel { get { return this.DataContext as EditTagsViewModel; } }
+        public EditTagsViewModel ViewModel { get { return DataContext as EditTagsViewModel; } }
 
         public EditTagsDialog()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
     }
 }

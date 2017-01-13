@@ -12,7 +12,7 @@ namespace wallabag.Models
         public event SearchChangedEventHandler SearchCanceled;
         public event SearchChangedEventHandler SearchStarted;
 
-        public delegate void SearchChangedEventHandler(SearchProperties p);
+        public delegate void SearchChangedEventHandler(object sender, SearchProperties e);
         #endregion
 
         private string _query;
@@ -21,7 +21,7 @@ namespace wallabag.Models
             get { return _query; }
             set
             {
-                var oldValue = _query;
+                string oldValue = _query;
                 if (_query != value)
                 {
                     _query = value;
@@ -29,7 +29,7 @@ namespace wallabag.Models
                 }
 
                 if (!string.IsNullOrWhiteSpace(value) && string.IsNullOrWhiteSpace(oldValue))
-                    SearchStarted?.Invoke(this);
+                    SearchStarted?.Invoke(this, this);
             }
         }
 
@@ -74,6 +74,6 @@ namespace wallabag.Models
             Tag = searchProperties.Tag;
         }
 
-        internal void InvokeSearchCanceledEvent() => SearchCanceled?.Invoke(this);
+        internal void InvokeSearchCanceledEvent() => SearchCanceled?.Invoke(this, this);
     }
 }

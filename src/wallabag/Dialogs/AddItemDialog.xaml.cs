@@ -5,11 +5,11 @@ namespace wallabag.Dialogs
 {
     public sealed partial class AddItemDialog : ContentDialog
     {
-        public AddItemViewModel ViewModel { get { return this.DataContext as AddItemViewModel; } }
+        public AddItemViewModel ViewModel { get { return DataContext as AddItemViewModel; } }
 
         public AddItemDialog()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
     }
 }

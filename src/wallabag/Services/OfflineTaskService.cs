@@ -85,7 +85,7 @@ namespace wallabag.Services
                     }
                     if (task.RemovedTags?.Count > 0)
                     {
-                        List<WallabagTag> tagsToRemove = new List<WallabagTag>();
+                        var tagsToRemove = new List<WallabagTag>();
                         foreach (var tag in task.RemovedTags)
                             tagsToRemove.Add(tag);
 

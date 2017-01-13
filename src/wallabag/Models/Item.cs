@@ -38,7 +38,7 @@ namespace wallabag.Models
 
         public static implicit operator WallabagItem(Item i)
         {
-            List<WallabagTag> convertedTags = new List<WallabagTag>();
+            var convertedTags = new List<WallabagTag>();
             foreach (var item in i.Tags)
                 convertedTags.Add(item);
 
@@ -64,7 +64,7 @@ namespace wallabag.Models
         }
         public static implicit operator Item(WallabagItem i)
         {
-            ObservableCollection<Tag> convertedTags = new ObservableCollection<Tag>();
+            var convertedTags = new ObservableCollection<Tag>();
             foreach (var item in i.Tags)
                 convertedTags.Add(item);
 

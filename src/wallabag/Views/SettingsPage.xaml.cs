@@ -10,10 +10,10 @@ namespace wallabag.Views
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
-        public SettingsPageViewModel ViewModel { get { return this.DataContext as SettingsPageViewModel; } }
+        public SettingsPageViewModel ViewModel { get { return DataContext as SettingsPageViewModel; } }
         public SettingsPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
     }
 }
