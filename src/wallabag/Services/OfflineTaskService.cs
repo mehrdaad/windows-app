@@ -33,10 +33,10 @@ namespace wallabag.Services
             }
         }
 
-        internal static Task ExecuteAllAsync()
+        internal static async Task ExecuteAllAsync()
         {
-            return Task.CompletedTask;
-            // TODO: Force all tasks to be executed
+            foreach (var task in _tasks)
+                await ExecuteAsync(task);
         }
         private static async Task<bool> ExecuteAsync(OfflineTask task)
         {
