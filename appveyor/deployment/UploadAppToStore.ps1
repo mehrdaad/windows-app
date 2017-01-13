@@ -8,7 +8,6 @@ $clientSecret = $ENV:STORE_CLIENT_SECRET
 $appId = $ENV:STORE_APP_ID
 $flightId = $ENV:STORE_FLIGHT_ID
 
-$authorizationHeader = @{ "Authorization" = "Bearer $accessToken" }
 $jsonContentType = "application/json"
 
 Write-Host "Creating ZIP file with relevant files for upload..."
@@ -27,7 +26,9 @@ $loginString = (
     "client_secret=$clientSecret",
     "resource=https://manage.devcenter.microsoft.com"
 ) -join "&"
+
 $accessToken = (Invoke-RestMethod -Method POST -Uri $loginUrl -Body $loginString).access_token
+$authorizationHeader = @{ "Authorization" = "Bearer $accessToken" }
 
 $submissionId = 0
 $currentFlightPackages = Invoke-RestMethod -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/$appId/flights/$flightId" -Method Get -Headers $authorizationHeader
