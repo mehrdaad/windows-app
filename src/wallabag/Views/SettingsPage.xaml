@@ -240,15 +240,23 @@
                             Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
                             Text="USED LIBRARIES" />
                         <TextBlock Style="{ThemeResource InfoTextBlockStyle}">
-                            <Hyperlink NavigateUri="http://www.newtonsoft.com/json" UnderlineStyle="None">• Newtonsoft.Json</Hyperlink>
+                            <Hyperlink NavigateUri="http://hockeyapp.net" UnderlineStyle="None">• HockeyApp.UWP</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://htmlagilitypack.codeplex.com/" UnderlineStyle="None">• HtmlAgilityPack</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="http://www.mvvmlight.net/" UnderlineStyle="None">• MVVM Light</Hyperlink>
                             <LineBreak />
                             <Hyperlink NavigateUri="https://github.com/Fody/PropertyChanged" UnderlineStyle="None">• PropertyChanged.Fody</Hyperlink>
                             <LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/dotMorten/WindowsStateTriggers" UnderlineStyle="None">• WindowsStateTriggers</Hyperlink>
+                            <Hyperlink NavigateUri="https://github.com/oysteinkrog/SQLite.Net-PCL" UnderlineStyle="None">• SQLite.Net-PCL</Hyperlink>
                             <LineBreak />
                             <Hyperlink NavigateUri="https://github.com/Windows-XAML/Template10" UnderlineStyle="None">• Template10</Hyperlink>
                             <LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/oysteinkrog/SQLite.Net-PCL" UnderlineStyle="None">• SQLite.Net-PCL</Hyperlink>
+                            <Hyperlink NavigateUri="https://github.com/jlnostr/wallabag-api" UnderlineStyle="None">• wallabag-api</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://github.com/dotMorten/WindowsStateTriggers" UnderlineStyle="None">• WindowsStateTriggers</Hyperlink>
+                            <LineBreak />
+                            <Hyperlink NavigateUri="https://zxingnet.codeplex.com/" UnderlineStyle="None">• ZXing.Net</Hyperlink>
                             <LineBreak />
                             <Hyperlink NavigateUri="http://sixrevisions.com/free-icons/free-windows-10-icons/" UnderlineStyle="None">• Twitter icon by Icons8</Hyperlink>
                         </TextBlock>
