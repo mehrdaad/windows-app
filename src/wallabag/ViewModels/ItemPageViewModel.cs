@@ -286,20 +286,20 @@ namespace wallabag.ViewModels
         {
             Item = ItemViewModel.FromId((int)parameter);
 
-            if (string.IsNullOrEmpty(Item.Model.Content) && GeneralHelper.InternetConnectionIsAvailable)
+            if ((Item == null || string.IsNullOrEmpty(Item?.Model?.Content)) && GeneralHelper.InternetConnectionIsAvailable)
             {
                 var item = await App.Client.GetItemAsync(Item.Model.Id);
                 if (item != null)
-                    Item.Model.Content = item.Content;
+                    Item = new ItemViewModel(item);
             }
 
-            if (string.IsNullOrEmpty(Item.Model.Content))
+            if (string.IsNullOrEmpty(Item?.Model?.Content))
             {
                 FailureHasHappened = true;
                 FailureEmoji = "😶";
                 FailureDescription = GeneralHelper.LocalizedResource("NoContentAvailableErrorMessage");
             }
-            else if (Item.Model.Content.Contains("wallabag can't retrieve contents for this article."))
+            else if (Item?.Model?.Content?.Contains("wallabag can't retrieve contents for this article.") == true)
             {
                 FailureHasHappened = true;
                 FailureEmoji = "😈";
