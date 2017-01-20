@@ -63,7 +63,7 @@ namespace wallabag.ViewModels
 
             PreviousCommand = new DelegateCommand(() => Previous(), () => PreviousCanBeExecuted());
             NextCommand = new DelegateCommand(async () => await NextAsync(), () => NextCanBeExecuted());
-            RegisterCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri((SelectedProvider as WallabagProvider).Url, "/register")),
+            RegisterCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync((SelectedProvider as WallabagProvider).Url.Append("/register")),
                 () => RegistrationCanBeExecuted());
             WhatIsWallabagCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
             ScanQRCodeCommand = new DelegateCommand(async () =>
@@ -378,14 +378,14 @@ namespace wallabag.ViewModels
 
                 // Step 1: Login to get a cookie.
                 var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
-                var loginResponse = await _http.PostAsync(new Uri(instanceUri, "/login_check"), loginContent);
+                var loginResponse = await _http.PostAsync(instanceUri.Append("/login_check"), loginContent);
 
                 if (!loginResponse.IsSuccessStatusCode)
                     return false;
 
                 // Step 2: Get the client token
                 step++;
-                var clientCreateUri = new Uri(instanceUri, "/developer/client/create");
+                var clientCreateUri = instanceUri.Append("/developer/client/create");
                 token = await GetStringFromHtmlSequenceAsync(clientCreateUri, m_tokenStartString, m_htmlInputEndString);
 
                 // Step 3: Create the new client
@@ -434,8 +434,8 @@ namespace wallabag.ViewModels
             }
         }
 
-        private object GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(new Uri(Url), new EasClientDeviceInformation().FriendlyName);
-        private Task<string> GetCsrfTokenAsync() => GetStringFromHtmlSequenceAsync(new Uri(new Uri(Url), "/login"), m_loginStartString, m_htmlInputEndString);
+        private object GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(Url).Append(new EasClientDeviceInformation().FriendlyName);
+        private Task<string> GetCsrfTokenAsync() => GetStringFromHtmlSequenceAsync(new Uri(Url).Append("/login"), m_loginStartString, m_htmlInputEndString);
 
         private async Task<string> GetStringFromHtmlSequenceAsync(Uri uri, string startString, string endString)
         {
