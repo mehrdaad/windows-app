@@ -29,16 +29,6 @@ namespace wallabag.Common.Helpers
             });
             return rewrittenFormat;
         }
-
-        public static bool IsValidUri(this string uriString)
-        {
-            try
-            {
-                var x = new Uri(uriString);
-                return true;
-            }
-            catch (UriFormatException) { return false; }
-        }
     }
 }
 
