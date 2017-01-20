@@ -29,10 +29,6 @@ if ([System.IO.DirectoryInfo]::new($finalSymbolRootDirectory).Exists -eq $false)
         
         Push-AppveyorArtifact $zipFilePath;
     }
-
-    Write-Host "Pushing appxbundle to AppVeyor artifacts..."
-    $appxbundleFile = Get-ChildItem -Path $appSymbolsDirectory -Filter "wallabag*.appxbundle" | Select-Object -First 1
-    Push-AppveyorArtifact $appxbundleFile.FullName
 }
 else
 {
