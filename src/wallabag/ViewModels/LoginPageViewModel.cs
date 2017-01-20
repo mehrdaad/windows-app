@@ -215,6 +215,9 @@ namespace wallabag.ViewModels
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
                 Url = "https://" + Url;
 
+            if (!Url.EndsWith("/"))
+                Url += "/";
+
             try { await new HttpClient().GetAsync(new Uri(Url)); }
             catch { return false; }
 
