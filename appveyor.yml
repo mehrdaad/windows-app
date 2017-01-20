@@ -26,6 +26,7 @@ build_script:
 deploy_script:
   - ps: >-
       if ($ENV:APPVEYOR_REPO_BRANCH -eq 'master' -and [string]::IsNullOrWhiteSpace($ENV:APPVEYOR_PULL_REQUEST_NUMBER)) {
+        .\appveyor\deployment\PrintPDBCheckSums.ps1
         .\appveyor\deployment\UploadSymbolsToHockeyApp.ps1
         .\appveyor\deployment\UploadAppToStore.ps1
       }
