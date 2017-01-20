@@ -3,7 +3,6 @@ using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Template10.Controls;
 using Template10.Mvvm;
 using wallabag.Api.Models;
 using wallabag.Common.Helpers;
@@ -68,53 +67,29 @@ namespace wallabag.ViewModels
             WhatIsWallabagCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
             ScanQRCodeCommand = new DelegateCommand(async () =>
             {
-                SystemNavigationManager.GetForCurrentView().BackRequested += QRCodeBackRequested;
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                var qrScanPopup = await NavigationService.OpenAsync(typeof(Views.QRScanPage),
+                    size: Windows.UI.ViewManagement.ViewSizePreference.UseMinimum,
+                    title: GeneralHelper.LocalizedResource("HoldCameraOntoQRCodeMessage"));
 
-                var rootModalDialog = Window.Current.Content as ModalDialog;
-                _oldFrame = rootModalDialog.Content as Frame;
-
-                var scanner = new ZXing.Mobile.MobileBarcodeScanner(CoreWindow.GetForCurrentThread().Dispatcher)
+                qrScanPopup.Released += (s, e) =>
                 {
-                    RootFrame = new Frame(),
-                    TopText = GeneralHelper.LocalizedResource("HoldCameraOntoQRCodeMessage")
-                };
-
-                rootModalDialog.Content = scanner.RootFrame;
-                var result = await scanner.Scan(new ZXing.Mobile.MobileBarcodeScanningOptions()
-                {
-                    TryHarder = false,
-                    PossibleFormats = new List<ZXing.BarcodeFormat>() { ZXing.BarcodeFormat.QR_CODE }
-                });
-
-                if (string.IsNullOrEmpty(result?.Text) == false && result.Text.StartsWith("wallabag://"))
-                {
-                    SelectedProvider = WallabagProvider.Other;
-
-                    var parsedResult = ProtocolHelper.Parse(result.Text);
-                    if (parsedResult.Server.IsValidUri())
+                    if (SessionState.ContainsKey(QRScanPageViewModel.QRResultKey) &&
+                        (bool)SessionState[QRScanPageViewModel.QRResultKey] == true)
                     {
-                        Url = parsedResult.Server;
-                        Username = parsedResult.Username;
-                        CurrentStep = 1;
-                    }
+                        SelectedProvider = WallabagProvider.Other;
 
-                    rootModalDialog.Content = _oldFrame;
-                }
+                        var parsedResult = ProtocolHelper.Parse(SessionState[QRScanPageViewModel.QRResultKey] as string);
+                        if (parsedResult.Server.IsValidUri())
+                        {
+                            Url = parsedResult.Server;
+                            Username = parsedResult.Username;
+                            CurrentStep = 1;
+                        }
+                    }
+                };
             });
 
             this.PropertyChanged += This_PropertyChanged;
-        }
-
-        private void QRCodeBackRequested(object sender, BackRequestedEventArgs args)
-        {
-            SystemNavigationManager.GetForCurrentView().BackRequested -= QRCodeBackRequested;
-            if (_oldFrame != null)
-            {
-                args.Handled = true;
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                (Window.Current.Content as ModalDialog).Content = _oldFrame;
-            }
         }
 
         private void This_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
