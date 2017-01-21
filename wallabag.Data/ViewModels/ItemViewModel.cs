@@ -1,7 +1,7 @@
 ﻿using PropertyChanged;
 using System;
 using System.ComponentModel;
-using Template10.Mvvm;
+using System.Windows.Input;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
 using Windows.ApplicationModel.DataTransfer;
@@ -17,14 +17,14 @@ namespace wallabag.Data.ViewModels
         public string TagsString { get { return string.Join(", ", Model.Tags); } }
         public bool TagsAreExisting { get { return Model.Tags.Count > 0; } }
 
-        public DelegateCommand MarkAsReadCommand { get; private set; }
-        public DelegateCommand UnmarkAsReadCommand { get; private set; }
-        public DelegateCommand MarkAsStarredCommand { get; private set; }
-        public DelegateCommand UnmarkAsStarredCommand { get; private set; }
-        public DelegateCommand DeleteCommand { get; private set; }
-        public DelegateCommand ShareCommand { get; private set; }
-        public DelegateCommand EditTagsCommand { get; private set; }
-        public DelegateCommand OpenInBrowserCommand { get; private set; }
+        public ICommand MarkAsReadCommand { get; private set; }
+        public ICommand UnmarkAsReadCommand { get; private set; }
+        public ICommand MarkAsStarredCommand { get; private set; }
+        public ICommand UnmarkAsStarredCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
+        public ICommand ShareCommand { get; private set; }
+        public ICommand EditTagsCommand { get; private set; }
+        public ICommand OpenInBrowserCommand { get; private set; }
 
         public ItemViewModel(Item Model)
         {

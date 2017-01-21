@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Template10.Mvvm;
+using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Services;
 using Windows.ApplicationModel;
@@ -66,15 +66,15 @@ namespace wallabag.Data.ViewModels
         }
         private bool _backgroundTaskOptionsChanged = false;
         
-        public DelegateCommand OpenDocumentationCommand { get; private set; }
-        public DelegateCommand OpenWallabagTwitterAccountCommand { get; set; }
-        public DelegateCommand ContactDeveloperCommand { get; private set; }
-        public DelegateCommand CreateIssueCommand { get; private set; }
-        public DelegateCommand RateAppCommand { get; private set; }
-        public DelegateCommand TellFriendsCommand { get; private set; }
-        public DelegateCommand LogoutCommand { get; private set; }
-        public DelegateCommand DeleteDatabaseCommand { get; private set; }
-        public DelegateCommand<string> VideoOpenModeRadioButtonCheckedCommand { get; private set; }
+        public ICommand OpenDocumentationCommand { get; private set; }
+        public ICommand OpenWallabagTwitterAccountCommand { get; set; }
+        public ICommand ContactDeveloperCommand { get; private set; }
+        public ICommand CreateIssueCommand { get; private set; }
+        public ICommand RateAppCommand { get; private set; }
+        public ICommand TellFriendsCommand { get; private set; }
+        public ICommand LogoutCommand { get; private set; }
+        public ICommand DeleteDatabaseCommand { get; private set; }
+        public ICommand VideoOpenModeRadioButtonCheckedCommand { get; private set; }
 
         public SettingsPageViewModel()
         {

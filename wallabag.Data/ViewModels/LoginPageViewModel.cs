@@ -3,7 +3,7 @@ using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Template10.Mvvm;
+using System.Windows.Input;
 using wallabag.Api.Models;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Models;
@@ -42,11 +42,11 @@ namespace wallabag.Data.ViewModels
         public List<WallabagProvider> Providers { get; set; }
         public object SelectedProvider { get; set; }
 
-        public DelegateCommand PreviousCommand { get; private set; }
-        public DelegateCommand NextCommand { get; private set; }
-        public DelegateCommand RegisterCommand { get; private set; }
-        public DelegateCommand WhatIsWallabagCommand { get; private set; }
-        public DelegateCommand ScanQRCodeCommand { get; private set; }
+        public ICommand PreviousCommand { get; private set; }
+        public ICommand NextCommand { get; private set; }
+        public ICommand RegisterCommand { get; private set; }
+        public ICommand WhatIsWallabagCommand { get; private set; }
+        public ICommand ScanQRCodeCommand { get; private set; }
 
         public bool CameraIsSupported { get; set; } = false;
 

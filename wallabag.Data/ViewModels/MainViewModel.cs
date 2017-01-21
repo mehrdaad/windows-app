@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Template10.Mvvm;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
@@ -44,25 +45,25 @@ namespace wallabag.Data.ViewModels
             get { return CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime; }
             set { CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByReadingTime; }
         }
-        public DelegateCommand<string> SetSortTypeFilterCommand { get; private set; }
-        public DelegateCommand<string> SetSortOrderCommand { get; private set; }
+        public ICommand SetSortTypeFilterCommand { get; private set; }
+        public ICommand SetSortOrderCommand { get; private set; }
 
-        public DelegateCommand SyncCommand { get; private set; }
-        public DelegateCommand AddCommand { get; private set; }
-        public DelegateCommand NavigateToSettingsPageCommand { get; private set; }
+        public ICommand SyncCommand { get; private set; }
+        public ICommand AddCommand { get; private set; }
+        public ICommand NavigateToSettingsPageCommand { get; private set; }
 
         public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties();
         public ObservableCollection<Item> SearchQuerySuggestions { get; set; } = new ObservableCollection<Item>();
         public ObservableCollection<Language> LanguageSuggestions { get; set; } = new ObservableCollection<Language>();
         public ObservableCollection<Tag> TagSuggestions { get; set; } = new ObservableCollection<Tag>();
-        public DelegateCommand<AutoSuggestBoxTextChangedEventArgs> SearchQueryChangedCommand { get; private set; }
-        public DelegateCommand<AutoSuggestBoxQuerySubmittedEventArgs> SearchQuerySubmittedCommand { get; private set; }
-        public DelegateCommand CloseSearchCommand { get; private set; }
-        public DelegateCommand<SelectionChangedEventArgs> LanguageCodeChangedCommand { get; private set; }
-        public DelegateCommand<SelectionChangedEventArgs> TagChangedCommand { get; private set; }
-        public DelegateCommand ResetFilterLanguageCommand { get; private set; }
-        public DelegateCommand ResetFilterTagCommand { get; private set; }
-        public DelegateCommand ResetFilterCommand { get; private set; }
+        public ICommand SearchQueryChangedCommand { get; private set; }
+        public ICommand SearchQuerySubmittedCommand { get; private set; }
+        public ICommand CloseSearchCommand { get; private set; }
+        public ICommand LanguageCodeChangedCommand { get; private set; }
+        public ICommand TagChangedCommand { get; private set; }
+        public ICommand ResetFilterLanguageCommand { get; private set; }
+        public ICommand ResetFilterTagCommand { get; private set; }
+        public ICommand ResetFilterCommand { get; private set; }
 
         public MainViewModel()
         {

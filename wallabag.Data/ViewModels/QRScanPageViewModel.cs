@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Template10.Mvvm;
+using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using ZXing.Mobile;
 
@@ -9,7 +9,7 @@ namespace wallabag.Data.ViewModels
     {
         private ZXingScannerControl scannerControl;
 
-        public DelegateCommand ScanCommand { get; private set; }
+        public ICommand ScanCommand { get; private set; }
         public string ScanResult { get; set; }
 
         public const string QRResultKey = "QRScanResult";

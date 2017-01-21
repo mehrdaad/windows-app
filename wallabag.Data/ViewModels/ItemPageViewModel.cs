@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Template10.Mvvm;
-using Template10.Utils;
+using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Services;
 using Windows.Storage;
@@ -37,10 +36,10 @@ namespace wallabag.Data.ViewModels
         private const string _unstarredGlyph = "\uE007";
         public FontIcon ChangeReadStatusButtonFontIcon { get; set; }
         public FontIcon ChangeFavoriteStatusButtonFontIcon { get; set; }
-        public DelegateCommand ChangeReadStatusCommand { get; private set; }
-        public DelegateCommand ChangeFavoriteStatusCommand { get; private set; }
-        public DelegateCommand EditTagsCommand { get; private set; }
-        public DelegateCommand DeleteCommand { get; private set; }
+        public ICommand ChangeReadStatusCommand { get; private set; }
+        public ICommand ChangeFavoriteStatusCommand { get; private set; }
+        public ICommand EditTagsCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
 
         public SolidColorBrush ForegroundBrush { get; set; }
         public SolidColorBrush BackgroundBrush { get; set; }
@@ -52,8 +51,8 @@ namespace wallabag.Data.ViewModels
         public string TextAlignment { get; set; } = SettingsService.Instance.TextAlignment;
 
         public Uri RightClickUri { get; set; }
-        public DelegateCommand SaveRightClickLinkCommand { get; private set; }
-        public DelegateCommand OpenRightClickLinkInBrowserCommand { get; private set; }
+        public ICommand SaveRightClickLinkCommand { get; private set; }
+        public ICommand OpenRightClickLinkInBrowserCommand { get; private set; }
 
         public ItemPageViewModel()
         {

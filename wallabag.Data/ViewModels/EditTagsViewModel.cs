@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Template10.Mvvm;
+using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
@@ -16,8 +16,8 @@ namespace wallabag.Data.ViewModels
         public IList<Item> Items { get; set; } = new List<Item>();
         public ObservableCollection<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
 
-        public DelegateCommand FinishCommand { get; private set; }
-        public DelegateCommand CancelCommand { get; private set; }
+        public ICommand FinishCommand { get; private set; }
+        public ICommand CancelCommand { get; private set; }
 
         public EditTagsViewModel()
         {

@@ -2,7 +2,7 @@
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
-using Template10.Mvvm;
+using System.Windows.Input;
 using wallabag.Data.Common.Messages;
 
 namespace wallabag.Data.ViewModels
@@ -12,13 +12,13 @@ namespace wallabag.Data.ViewModels
     {
         public List<ItemViewModel> Items { get; set; }
 
-        public DelegateCommand MarkAsReadCommand { get; private set; }
-        public DelegateCommand UnmarkAsReadCommand { get; private set; }
-        public DelegateCommand MarkAsFavoriteCommand { get; private set; }
-        public DelegateCommand UnmarkAsFavoriteCommand { get; private set; }
-        public DelegateCommand EditTagsCommand { get; private set; }
-        public DelegateCommand OpenInBrowserCommand { get; private set; }
-        public DelegateCommand DeleteCommand { get; private set; }
+        public ICommand MarkAsReadCommand { get; private set; }
+        public ICommand UnmarkAsReadCommand { get; private set; }
+        public ICommand MarkAsFavoriteCommand { get; private set; }
+        public ICommand UnmarkAsFavoriteCommand { get; private set; }
+        public ICommand EditTagsCommand { get; private set; }
+        public ICommand OpenInBrowserCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
 
         public MultipleSelectionViewModel()
         {

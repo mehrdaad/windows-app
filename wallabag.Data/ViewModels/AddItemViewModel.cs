@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Template10.Mvvm;
+using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
@@ -24,8 +24,8 @@ namespace wallabag.Data.ViewModels
         public IEnumerable<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
         public string Title { get; set; } = string.Empty;
 
-        public DelegateCommand AddCommand { get; private set; }
-        public DelegateCommand CancelCommand { get; private set; }
+        public ICommand AddCommand { get; private set; }
+        public ICommand CancelCommand { get; private set; }
 
         public AddItemViewModel()
         {
