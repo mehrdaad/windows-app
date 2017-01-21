@@ -5,7 +5,7 @@ using Windows.ApplicationModel.Background;
 
 namespace wallabag.Common.Helpers
 {
-    static class BackgroundTaskHelper
+    public static class BackgroundTaskHelper
     {
         private const string _backgroundTaskName = "wallabagBackgroundSync";
         private static IBackgroundTaskRegistration _backgroundTask;

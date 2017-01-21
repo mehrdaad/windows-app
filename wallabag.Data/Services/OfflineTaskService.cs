@@ -12,7 +12,7 @@ using static wallabag.Models.OfflineTask;
 
 namespace wallabag.Services
 {
-    class OfflineTaskService
+    public class OfflineTaskService
     {
         private static ObservableCollection<OfflineTask> _tasks;
         public static ObservableCollection<OfflineTask> Tasks
@@ -33,7 +33,7 @@ namespace wallabag.Services
             }
         }
 
-        internal static async Task ExecuteAllAsync()
+        public static async Task ExecuteAllAsync()
         {
             foreach (var task in Tasks)
                 await ExecuteAsync(task);
