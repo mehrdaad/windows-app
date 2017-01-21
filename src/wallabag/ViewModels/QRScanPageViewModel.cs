@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Template10.Mvvm;
+using wallabag.Common.Helpers;
 using ZXing.Mobile;
 
 namespace wallabag.ViewModels
@@ -20,9 +21,11 @@ namespace wallabag.ViewModels
             {
                 bool success = string.IsNullOrEmpty(result?.Text) == false && result.Text.StartsWith("wallabag://");
 
-                SessionState.Add(QRSuccessKey, success);
                 if (success)
-                    SessionState.Add(QRResultKey, result?.Text);
+                {
+                    SessionState.Add(QRResultKey, ProtocolHelper.Parse(result?.Text));
+                    Dispatcher.Dispatch(() => NavigationService.GoBack());
+                }
             },
             new MobileBarcodeScanningOptions()
             {
