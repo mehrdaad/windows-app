@@ -253,7 +253,7 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\wallabag.Data\wallabag.Data.csproj">
+    <ProjectReference Include="..\wallabag.Data\wallabag.Data.csproj">
       <Project>{266a1fa2-218e-428b-8dc4-b13d2c386c32}</Project>
       <Name>wallabag.Data</Name>
     </ProjectReference>
