@@ -65,29 +65,7 @@ namespace wallabag.ViewModels
             RegisterCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync((SelectedProvider as WallabagProvider).Url.Append("/register")),
                 () => RegistrationCanBeExecuted());
             WhatIsWallabagCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
-            ScanQRCodeCommand = new DelegateCommand(async () =>
-            {
-                var qrScanPopup = await NavigationService.OpenAsync(typeof(Views.QRScanPage),
-                    size: Windows.UI.ViewManagement.ViewSizePreference.UseMinimum,
-                    title: GeneralHelper.LocalizedResource("HoldCameraOntoQRCodeMessage"));
-
-                qrScanPopup.Released += (s, e) =>
-                {
-                    if (SessionState.ContainsKey(QRScanPageViewModel.QRResultKey) &&
-                        (bool)SessionState[QRScanPageViewModel.QRResultKey] == true)
-                    {
-                        SelectedProvider = WallabagProvider.Other;
-
-                        var parsedResult = ProtocolHelper.Parse(SessionState[QRScanPageViewModel.QRResultKey] as string);
-                        if (parsedResult.Server.IsValidUri())
-                        {
-                            Url = parsedResult.Server;
-                            Username = parsedResult.Username;
-                            CurrentStep = 1;
-                        }
-                    }
-                };
-            });
+            ScanQRCodeCommand = new DelegateCommand(() => NavigationService.Navigate(typeof(Views.QRScanPage)));
 
             this.PropertyChanged += This_PropertyChanged;
         }
@@ -300,11 +278,18 @@ namespace wallabag.ViewModels
                 _restoredFromPageState = true;
             }
 
+            ProtocolSetupNavigationParameter protocolSetupParameter = null;
+
             if (parameter is ProtocolSetupNavigationParameter)
+                protocolSetupParameter = parameter as ProtocolSetupNavigationParameter;
+
+            if (SessionState.ContainsKey(QRScanPageViewModel.QRResultKey))
+                protocolSetupParameter = SessionState[QRScanPageViewModel.QRResultKey] as ProtocolSetupNavigationParameter;
+
+            if (protocolSetupParameter != null)
             {
-                var np = parameter as ProtocolSetupNavigationParameter;
-                Username = np.Username;
-                Url = np.Server;
+                Username = protocolSetupParameter.Username;
+                Url = protocolSetupParameter.Server;
 
                 SelectedProvider = WallabagProvider.Other;
 
