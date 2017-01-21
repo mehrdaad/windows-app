@@ -141,6 +141,7 @@
     <Compile Include="ViewModels\MultipleSelectionViewModel.cs" />
     <Compile Include="ViewModels\QRScanPageViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelLocator.cs" />
     <EmbeddedResource Include="Properties\wallabag.Data.rd.xml" />
   </ItemGroup>
   <ItemGroup>
