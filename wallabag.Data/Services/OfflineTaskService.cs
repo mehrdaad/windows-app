@@ -5,12 +5,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using wallabag.Api.Models;
-using wallabag.Common.Helpers;
-using wallabag.Common.Messages;
-using wallabag.Models;
-using static wallabag.Models.OfflineTask;
+using wallabag.Data.Common.Helpers;
+using wallabag.Data.Common.Messages;
+using wallabag.Data.Models;
+using static wallabag.Data.Models.OfflineTask;
 
-namespace wallabag.Services
+namespace wallabag.Data.Services
 {
     public class OfflineTaskService
     {

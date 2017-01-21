@@ -6,7 +6,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 
-namespace wallabag.Common.Helpers
+namespace wallabag.Data.Common.Helpers
 {
     public static class TitleBarHelper
     {

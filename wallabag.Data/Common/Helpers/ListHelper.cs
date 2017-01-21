@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace wallabag.Common.Helpers
+namespace wallabag.Data.Common.Helpers
 {
     public static class ListHelper
     {

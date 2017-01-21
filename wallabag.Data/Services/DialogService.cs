@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace wallabag.Services
+namespace wallabag.Data.Services
 {
     public class DialogService
     {

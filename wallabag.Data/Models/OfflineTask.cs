@@ -1,7 +1,7 @@
 ﻿using SQLite.Net.Attributes;
 using System.Collections.Generic;
 
-namespace wallabag.Models
+namespace wallabag.Data.Models
 {
     public class OfflineTask
     {

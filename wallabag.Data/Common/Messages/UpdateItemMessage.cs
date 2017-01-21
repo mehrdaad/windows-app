@@ -1,4 +1,4 @@
-﻿namespace wallabag.Common.Messages
+﻿namespace wallabag.Data.Common.Messages
 {
     class UpdateItemMessage
     {

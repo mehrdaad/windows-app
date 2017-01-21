@@ -1,9 +1,9 @@
 ﻿using PropertyChanged;
 using System;
 using System.Globalization;
-using wallabag.Common.Helpers;
+using wallabag.Data.Common.Helpers;
 
-namespace wallabag.Models
+namespace wallabag.Data.Models
 {
     [ImplementPropertyChanged]
     public class Language : IComparable

@@ -8,18 +8,18 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Template10.Mvvm;
-using wallabag.Common;
-using wallabag.Common.Helpers;
-using wallabag.Common.Messages;
-using wallabag.Models;
-using wallabag.Services;
+using wallabag.Data.Common;
+using wallabag.Data.Common.Helpers;
+using wallabag.Data.Common.Messages;
+using wallabag.Data.Models;
+using wallabag.Data.Services;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
-namespace wallabag.ViewModels
+namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
     public class MainViewModel : ViewModelBase

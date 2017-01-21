@@ -3,7 +3,7 @@ using SQLite.Net.Attributes;
 using System;
 using wallabag.Api.Models;
 
-namespace wallabag.Models
+namespace wallabag.Data.Models
 {
     [ImplementPropertyChanged]
     public class Tag : IComparable

@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Template10.Mvvm;
-using wallabag.Common.Helpers;
-using wallabag.Services;
+using wallabag.Data.Common.Helpers;
+using wallabag.Data.Services;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Xaml;
 
-namespace wallabag.ViewModels
+namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
     public class SettingsPageViewModel : ViewModelBase

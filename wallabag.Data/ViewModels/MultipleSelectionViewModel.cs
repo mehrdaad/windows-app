@@ -3,9 +3,9 @@ using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using Template10.Mvvm;
-using wallabag.Common.Messages;
+using wallabag.Data.Common.Messages;
 
-namespace wallabag.ViewModels
+namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
     public class MultipleSelectionViewModel

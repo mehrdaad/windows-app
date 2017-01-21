@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml.Data;
 
-namespace wallabag.Common
+namespace wallabag.Data.Common
 {
     public class IncrementalObservableCollection<T> : ObservableCollection<T>, ISupportIncrementalLoading
     {

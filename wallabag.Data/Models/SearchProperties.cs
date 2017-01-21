@@ -1,7 +1,7 @@
 ﻿using PropertyChanged;
 using System.ComponentModel;
 
-namespace wallabag.Models
+namespace wallabag.Data.Models
 {
     [ImplementPropertyChanged]
     public class SearchProperties : INotifyPropertyChanged

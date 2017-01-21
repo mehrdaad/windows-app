@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Data;
 
-namespace wallabag.Converters
+namespace wallabag.Data.Converters
 {
     class BooleanNegationConverter : IValueConverter
     {

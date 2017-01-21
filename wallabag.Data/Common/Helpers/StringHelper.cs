@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace wallabag.Common.Helpers
+namespace wallabag.Data.Common.Helpers
 {
     public static class StringHelper
     {

@@ -2,12 +2,12 @@
 using System;
 using System.ComponentModel;
 using Template10.Mvvm;
-using wallabag.Models;
-using wallabag.Services;
+using wallabag.Data.Models;
+using wallabag.Data.Services;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 
-namespace wallabag.ViewModels
+namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
     public class ItemViewModel : ViewModelBase, IComparable

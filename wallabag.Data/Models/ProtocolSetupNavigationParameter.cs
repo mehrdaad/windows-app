@@ -1,4 +1,4 @@
-﻿namespace wallabag.Models
+﻿namespace wallabag.Data.Models
 {
     public class ProtocolSetupNavigationParameter
     {

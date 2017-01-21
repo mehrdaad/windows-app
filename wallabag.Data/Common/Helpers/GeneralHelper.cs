@@ -3,7 +3,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.System.Profile;
 using WindowsStateTriggers;
 
-namespace wallabag.Common.Helpers
+namespace wallabag.Data.Common.Helpers
 {
     class GeneralHelper
     {

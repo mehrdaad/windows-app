@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using wallabag.Api.Models;
 
-namespace wallabag.Models
+namespace wallabag.Data.Models
 {
     [ImplementPropertyChanged]
     public class Item : IComparable

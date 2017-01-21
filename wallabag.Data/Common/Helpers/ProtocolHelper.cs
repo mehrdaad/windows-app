@@ -1,6 +1,6 @@
-﻿using wallabag.Models;
+﻿using wallabag.Data.Models;
 
-namespace wallabag.Common.Helpers
+namespace wallabag.Data.Common.Helpers
 {
     public static class ProtocolHelper
     {

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using wallabag.Api.Models;
-using wallabag.Common.Helpers;
-using wallabag.Models;
-using wallabag.Services;
+using wallabag.Data.Common.Helpers;
+using wallabag.Data.Models;
+using wallabag.Data.Services;
 using Windows.Devices.Enumeration;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.System;
@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
-namespace wallabag.ViewModels
+namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
     public class LoginPageViewModel : ViewModelBase

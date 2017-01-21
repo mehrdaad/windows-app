@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace wallabag.Common.Messages
+namespace wallabag.Data.Common.Messages
 {
     class CompleteMultipleSelectionMessage
     {

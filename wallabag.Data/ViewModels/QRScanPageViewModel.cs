@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Template10.Mvvm;
-using wallabag.Common.Helpers;
+using wallabag.Data.Common.Helpers;
 using ZXing.Mobile;
 
-namespace wallabag.ViewModels
+namespace wallabag.Data.ViewModels
 {
     public class QRScanPageViewModel : ViewModelBase
     {

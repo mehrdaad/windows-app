@@ -7,8 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using Template10.Utils;
-using wallabag.Common.Helpers;
-using wallabag.Services;
+using wallabag.Data.Common.Helpers;
+using wallabag.Data.Services;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI;
@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
-namespace wallabag.ViewModels
+namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
     public class ItemPageViewModel : ViewModelBase

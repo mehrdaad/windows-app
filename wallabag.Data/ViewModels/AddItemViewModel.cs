@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Template10.Mvvm;
-using wallabag.Common.Helpers;
-using wallabag.Models;
-using wallabag.Services;
+using wallabag.Data.Common.Helpers;
+using wallabag.Data.Models;
+using wallabag.Data.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer.ShareTarget;
 using Windows.UI.Xaml.Navigation;
 
-namespace wallabag.ViewModels
+namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
     public class AddItemViewModel : ViewModelBase

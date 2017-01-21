@@ -1,8 +1,8 @@
 ﻿using PropertyChanged;
 using System;
-using wallabag.Common.Helpers;
+using wallabag.Data.Common.Helpers;
 
-namespace wallabag.Models
+namespace wallabag.Data.Models
 {
     [ImplementPropertyChanged]
     public class WallabagProvider

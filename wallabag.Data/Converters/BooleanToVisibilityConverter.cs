@@ -2,7 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-namespace wallabag.Converters
+namespace wallabag.Data.Converters
 {
     class BooleanToVisibilityConverter : IValueConverter
     {

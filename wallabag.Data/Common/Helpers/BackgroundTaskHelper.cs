@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using wallabag.Services;
+using wallabag.Data.Services;
 using Windows.ApplicationModel.Background;
 
-namespace wallabag.Common.Helpers
+namespace wallabag.Data.Common.Helpers
 {
     public static class BackgroundTaskHelper
     {

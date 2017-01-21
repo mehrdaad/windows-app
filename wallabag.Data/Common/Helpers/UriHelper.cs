@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace wallabag.Common.Helpers
+namespace wallabag.Data.Common.Helpers
 {
     public static class UriHelper
     {

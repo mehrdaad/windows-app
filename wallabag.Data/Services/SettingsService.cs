@@ -1,7 +1,7 @@
 ﻿using System;
 using Template10.Services.SettingsService;
 
-namespace wallabag.Services
+namespace wallabag.Data.Services
 {
     public class SettingsService
     {
