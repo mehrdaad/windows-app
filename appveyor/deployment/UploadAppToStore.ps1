@@ -38,7 +38,7 @@ if ($currentFlightPackages.PSobject.Properties.Name -contains "pendingFlightSubm
     $submissionId = $currentFlightPackages.pendingFlightSubmission.id
     $submissionStatus = Invoke-RestMethod -Method Get -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/$appId/flights/$flightId/submissions/$submissionId/status" -Headers $authorizationHeader
     
-    if ($submissionStatus.status -eq "PendingCommit")
+    if ($submissionStatus.status -eq "PendingCommit" -or $submissionStatus.status -eq "CommitStarted")
     {
         Write-Host "Deleting pending submission..."
         $deleteResponse  = Invoke-RestMethod -Method Delete -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/$appId/flights/$flightId/submissions/$submissionId" -Headers $authorizationHeader
@@ -46,6 +46,7 @@ if ($currentFlightPackages.PSobject.Properties.Name -contains "pendingFlightSubm
     else
     {
         Write-Host $submissionStatus.status
+        Write-Host $submissionStatus.statusDetails
     }
 }
 
