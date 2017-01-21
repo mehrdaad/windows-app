@@ -12,8 +12,7 @@ namespace wallabag.ViewModels
         public DelegateCommand ScanCommand { get; private set; }
         public string ScanResult { get; set; }
 
-        public const string QRSuccessKey = "QRScanWasSuccessful";
-        public const string QRResultKey = "QRScanWasSuccessful";
+        public const string QRResultKey = "QRScanResult";
 
         public QRScanPageViewModel()
         {
@@ -36,6 +35,7 @@ namespace wallabag.ViewModels
         public QRScanPageViewModel(ZXingScannerControl scannerControl) : this()
         {
             this.scannerControl = scannerControl;
+            ScanCommand.Execute();
         }
     }
 }
