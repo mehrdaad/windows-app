@@ -1,29 +1,18 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.DataTransfer.ShareTarget;
-using Windows.UI.Xaml.Navigation;
 
 namespace wallabag.Data.ViewModels
 {
-    [ImplementPropertyChanged]
     public class AddItemViewModel : ViewModelBase
     {
-        private ShareOperation _shareOperation;
-
-        public event EventHandler AddingStarted;
-
         public string UriString { get; set; } = string.Empty;
         public IEnumerable<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
-        public string Title { get; set; } = string.Empty;
 
         public ICommand AddCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
@@ -31,20 +20,21 @@ namespace wallabag.Data.ViewModels
         public AddItemViewModel()
         {
             AddCommand = new RelayCommand(() => Add());
-            CancelCommand = new RelayCommand(() =>
-            {
-                _shareOperation?.ReportCompleted();
-                Services.DialogService.HideCurrentDialog();
-            });
+            CancelCommand = new RelayCommand(() => Cancel());
         }
 
         private void Add()
         {
-            AddingStarted?.Invoke(this, new EventArgs());
+            LoggingService.WriteLine("Adding item to wallabag.");
+            LoggingService.WriteLine($"URL: {UriString}");
+            LoggingService.WriteLine($"Tags: {string.Join(",", Tags)}");
 
             if (UriString.IsValidUri())
             {
+                LoggingService.WriteLine("URL is valid.");
                 var uri = new Uri(UriString);
+
+                LoggingService.WriteLine("Inserting new placeholder item into the database.");
                 Database.Insert(new Item()
                 {
                     Id = OfflineTaskService.LastItemId + 1,
@@ -54,20 +44,13 @@ namespace wallabag.Data.ViewModels
                 });
 
                 OfflineTaskService.Add(UriString, Tags.ToStringArray());
-
-                _shareOperation?.ReportCompleted();
             }
         }
 
-        public override Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
+        private void Cancel()
         {
-            return Task.CompletedTask;
-            /* TODO: Add implementation for SessionState?
-            var args = SessionState["shareTarget"] as ShareTargetActivatedEventArgs;
-            UriString = (await args.ShareOperation.Data.GetWebLinkAsync()).ToString();
-
-            _shareOperation = args.ShareOperation;
-            */
+            LoggingService.WriteLine("Cancelling the addition of another item. Closing dialog now.");
+            DialogService.HideCurrentDialog();
         }
     }
 }
