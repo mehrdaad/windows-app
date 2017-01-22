@@ -31,9 +31,10 @@ namespace wallabag
 #if DEBUG == false
             if (Settings.AllowCollectionOfTelemetryData)
                 HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
-#endif          
+#endif
 
             SimpleIoc.Default.Register<IDialogService, DialogService>();
+            SimpleIoc.Default.Register<IBackgroundTaskService, BackgroundTaskService>();
 
             CreateClientAndDatabase();
 

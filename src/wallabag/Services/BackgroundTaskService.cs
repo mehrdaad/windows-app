@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 using wallabag.Data.Services;
 using Windows.ApplicationModel.Background;
 
-namespace wallabag.Data.Common.Helpers
+namespace wallabag.Services
 {
-    public static class BackgroundTaskHelper
+    public class BackgroundTaskService : IBackgroundTaskService
     {
         private const string _backgroundTaskName = "wallabagBackgroundSync";
-        private static IBackgroundTaskRegistration _backgroundTask;
+        private IBackgroundTaskRegistration _backgroundTask;
 
-        public static async Task RegisterBackgroundTaskAsync()
+        public async Task RegisterBackgroundTaskAsync()
         {
             if (IsSupportedOnDevice == false)
                 return;
@@ -26,17 +26,17 @@ namespace wallabag.Data.Common.Helpers
 
             _backgroundTask = builder.Register();
         }
-        public static void UnregisterBackgroundTask()
+        public void UnregisterBackgroundTask()
         {
             if (BackgroundTaskIsRegistered)
                 _backgroundTask.Unregister(false);
         }
 
-        public static bool BackgroundTaskIsRegistered
+        public bool IsRegistered
         {
             get
             {
-                if (IsSupportedOnDevice == false)
+                if (IsSupported == false)
                     return false;
 
                 bool taskRegistered = false;
@@ -52,6 +52,6 @@ namespace wallabag.Data.Common.Helpers
                 return taskRegistered;
             }
         }
-        public static bool IsSupportedOnDevice => Windows.Foundation.Metadata.ApiInformation.IsMethodPresent(typeof(Windows.UI.Xaml.Application).FullName, "OnBackgroundActivated");
+        public bool IsSupported => Windows.Foundation.Metadata.ApiInformation.IsMethodPresent(typeof(Windows.UI.Xaml.Application).FullName, "OnBackgroundActivated");
     }
 }

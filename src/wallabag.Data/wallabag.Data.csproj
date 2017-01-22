@@ -107,7 +107,6 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\Helpers\BackgroundTaskHelper.cs" />
     <Compile Include="Common\Helpers\ColorHelper.cs" />
     <Compile Include="Common\Helpers\DispatcherHelper.cs" />
     <Compile Include="Common\Helpers\GeneralHelper.cs" />
@@ -133,6 +132,7 @@
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\WallabagProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IBackgroundTaskService.cs" />
     <Compile Include="Services\IDialogService.cs" />
     <Compile Include="Services\OfflineTaskService.cs" />
     <Compile Include="Services\SettingsService.cs" />
