@@ -114,9 +114,7 @@
     <Compile Include="Common\Helpers\ListHelper.cs" />
     <Compile Include="Common\Helpers\ProtocolHelper.cs" />
     <Compile Include="Common\Helpers\StringHelper.cs" />
-    <Compile Include="Common\Helpers\TitleBarHelper.cs" />
     <Compile Include="Common\Helpers\UriHelper.cs" />
-    <Compile Include="Common\Helpers\WebViewHelper.cs" />
     <Compile Include="Common\INavigable.cs" />
     <Compile Include="Common\IncrementalObservableCollection.cs" />
     <Compile Include="Common\Messages\CompleteMultipleSelectionMessage.cs" />

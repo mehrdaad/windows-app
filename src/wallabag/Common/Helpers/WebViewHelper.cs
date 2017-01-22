@@ -1,7 +1,7 @@
 ﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace wallabag.Data.Common.Helpers
+namespace wallabag.Common.Helpers
 {
     public static class WebViewHelper
     {
