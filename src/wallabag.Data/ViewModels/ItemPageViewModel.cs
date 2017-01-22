@@ -1,12 +1,12 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using HtmlAgilityPack;
-using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Services;
 using Windows.Storage;
@@ -15,12 +15,10 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
 namespace wallabag.Data.ViewModels
 {
-    [ImplementPropertyChanged]
     public class ItemPageViewModel : ViewModelBase
     {
         public ItemViewModel Item { get; set; }
@@ -46,10 +44,10 @@ namespace wallabag.Data.ViewModels
         public SolidColorBrush BackgroundBrush { get; set; }
         public ElementTheme ColorApplicationTheme { get; set; }
 
-        public int FontSize { get; set; } = SettingsService.Instance.FontSize;
-        public string FontFamily { get; set; } = SettingsService.Instance.FontFamily;
-        public string ColorScheme { get; set; } = SettingsService.Instance.ColorScheme;
-        public string TextAlignment { get; set; } = SettingsService.Instance.TextAlignment;
+        public int FontSize { get; set; } = Settings.Appereance.FontSize;
+        public string FontFamily { get; set; } = Settings.Appereance.FontFamily;
+        public string ColorScheme { get; set; } = Settings.Appereance.ColorScheme;
+        public string TextAlignment { get; set; } = Settings.Appereance.TextAlignment;
 
         public Uri RightClickUri { get; set; }
         public ICommand SaveRightClickLinkCommand { get; private set; }
@@ -57,13 +55,14 @@ namespace wallabag.Data.ViewModels
 
         public ItemPageViewModel()
         {
+            LoggingService.WriteLine($"Initializing new instance of {nameof(ItemPageViewModel)}.");
+
             ChangeReadStatusCommand = new RelayCommand(() => ChangeReadStatus());
             ChangeFavoriteStatusCommand = new RelayCommand(() => ChangeFavoriteStatus());
-            EditTagsCommand = new RelayCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags,
-                new EditTagsViewModel(Item.Model),
-                ColorApplicationTheme));
+            EditTagsCommand = new RelayCommand(async () => await DialogService.ShowAsync(Dialogs.EditTagsDialog, new EditTagsViewModel(Item.Model)));
             DeleteCommand = new RelayCommand(() =>
             {
+                LoggingService.WriteLine("Deleting the current item.");
                 Item.DeleteCommand.Execute();
                 Navigation.GoBack();
             });
@@ -74,8 +73,11 @@ namespace wallabag.Data.ViewModels
 
         private async Task GenerateFormattedHtmlAsync()
         {
+            LoggingService.WriteLine("Generating the HTML.");
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Article/article.html"));
             string _template = await FileIO.ReadTextAsync(file);
+
+            LoggingService.WriteLineIf(string.IsNullOrEmpty(_template), "The template is empty!", LoggingCategory.Critical);
 
             string accentColor = Application.Current.Resources["SystemAccentColor"].ToString().Remove(1, 2);
             var styleSheetBuilder = new StringBuilder();
@@ -88,11 +90,20 @@ namespace wallabag.Data.ViewModels
             styleSheetBuilder.Append("</style>");
 
             string imageHeader = string.Empty;
+
             if (Item.Model.Hostname.Contains("youtube.com") == false &&
                 Item.Model.Hostname.Contains("vimeo.com") == false &&
                 Item.Model.PreviewImageUri != null)
+            {
+                LoggingService.WriteLine($"Image header is set to: {Item.Model.PreviewImageUri.ToString()}");
                 imageHeader = Item.Model.PreviewImageUri.ToString();
+            }
+            else
+            {
+                LoggingService.WriteLine("Image header is empty.");
+            }
 
+            LoggingService.WriteLine("Formatting the template with the item properties.");
             FormattedHtml = _template.FormatWith(new
             {
                 title = Item.Model.Title,
@@ -110,17 +121,21 @@ namespace wallabag.Data.ViewModels
 
         private async Task<string> SetupArticleForHtmlViewerAsync()
         {
+            LoggingService.WriteLine("Preparing HTML.");
             var document = new HtmlDocument();
             document.LoadHtml(Item.Model.Content);
             document.OptionCheckSyntax = false;
 
             // Implement lazy-loading for images
+            LoggingService.WriteLine("Implementing lazy-loading for images...");
             foreach (var node in document.DocumentNode.Descendants("img"))
             {
                 if (node.HasAttributes && node.Attributes["src"] != null)
                 {
                     string oldSource = node.Attributes["src"].Value;
                     node.Attributes.RemoveAll();
+
+                    LoggingService.WriteLine($"Source of the image: {oldSource}");
 
                     if (!oldSource.Equals(Item.Model.PreviewImageUri?.ToString()) &&
                         GeneralHelper.InternetConnectionIsAvailable)
@@ -134,13 +149,18 @@ namespace wallabag.Data.ViewModels
                 }
             }
 
-            string dataOpenMode = SettingsService.Instance.VideoOpenMode.ToString().ToLower();
+            LoggingService.WriteLine("Add thumbnails for embedded videos...");
+            string dataOpenMode = Settings.Reading.VideoOpenMode.ToString().ToLower();
             string containerString = "<div class='wallabag-video' style='background-image: url({0})' data-open-mode='" + dataOpenMode + "' data-provider='{1}' data-video-id='{2}'><span></span></div>";
 
             // Replace videos (YouTube & Vimeo) by static thumbnails                  
             var iframeNodes = document.DocumentNode.Descendants("iframe").ToList();
             var videoNodes = document.DocumentNode.Descendants("video").ToList();
 
+            LoggingService.WriteLine($"Number of <iframe>'s: {iframeNodes.Count}");
+            LoggingService.WriteLine($"Number of <video>'s: {videoNodes.Count}");
+
+            LoggingService.WriteLine("Handling iframes...");
             foreach (var node in iframeNodes)
             {
                 if (node.HasAttributes &&
@@ -155,6 +175,9 @@ namespace wallabag.Data.ViewModels
                     else if (videoProvider.Contains("player.vimeo.com"))
                         videoProvider = "vimeo";
 
+                    LoggingService.WriteLine($"Video source: {videoSourceUri}");
+                    LoggingService.WriteLine($"Video ID: {videoId}");
+                    LoggingService.WriteLine($"Video provider: {videoProvider}");
                     string newContainer = string.Format(containerString, await GetPreviewImageForVideoAsync(videoProvider, videoId), videoProvider, videoId);
 
                     node.ParentNode.InsertAfter(HtmlNode.CreateNode(newContainer), node);
@@ -163,6 +186,7 @@ namespace wallabag.Data.ViewModels
             }
 
             // This loop is for HTML5 videos using the <video> tag
+            LoggingService.WriteLine("Handling video tags...");
             foreach (var node in videoNodes)
             {
                 string videoSource = string.Empty;
@@ -175,6 +199,7 @@ namespace wallabag.Data.ViewModels
                           .FirstOrDefault()
                           ?.GetAttributeValue("src", string.Empty);
 
+                LoggingService.WriteLine($"Video source: {videoSource}");
                 if (!string.IsNullOrEmpty(videoSource))
                 {
                     string newContainer = string.Format(containerString, string.Empty, "html", videoSource);
@@ -189,41 +214,56 @@ namespace wallabag.Data.ViewModels
 
         private async Task<string> GetPreviewImageForVideoAsync(string videoProvider, string videoId)
         {
+            string result = string.Empty;
+
+            LoggingService.WriteLine($"Getting preview image for video {videoId} from {videoProvider}");
+
             if (videoProvider == "youtube")
-                return $"http://img.youtube.com/vi/{videoId}/0.jpg";
+                result = $"http://img.youtube.com/vi/{videoId}/0.jpg";
             else
             {
                 string link = $"http://vimeo.com/api/v2/video/{videoId}.json";
+                LoggingService.WriteLine($"Contacting vimeo for preview image: {link}");
+
                 using (var client = new HttpClient())
                 {
                     var response = await client.GetAsync(new Uri(link));
+                    LoggingService.WriteObject(response);
 
                     if (response.IsSuccessStatusCode)
                     {
                         dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
-                        return json[0].thumbnail_large.Value;
+                        LoggingService.WriteLine($"Resulted JSON: {json}");
+                        result = json[0].thumbnail_large.Value;
                     }
-                    return string.Empty;
                 }
             }
+
+            LoggingService.WriteLine($"Final result: {result}");
+            return result;
         }
 
         private void ChangeReadStatus()
         {
+            LoggingService.WriteLine("Changing read status of item.");
             if (Item.Model.IsRead)
                 Item.UnmarkAsReadCommand.Execute();
             else
             {
                 Item.MarkAsReadCommand.Execute();
 
-                if (SettingsService.Instance.NavigateBackAfterReadingAnArticle)
-                    Navigation.GoBack();
-
-                if (SettingsService.Instance.SyncReadingProgress)
+                if (Settings.Reading.NavigateBackAfterReadingAnArticle)
                 {
-                    var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{SettingsService.Instance.ClientId}", ApplicationDataCreateDisposition.Always);
+                    LoggingService.WriteLine("Navigating back to main page.");
+                    Navigation.GoBack();
+                }
+
+                if (Settings.Reading.SyncReadingProgress)
+                {
+                    LoggingService.WriteLine($"Deleting reading progress.");
+                    var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{Settings.Authentication.ClientId}", ApplicationDataCreateDisposition.Always);
                     if (readingSettingsContainer.Values.ContainsKey(Item.Model.Id.ToString()))
-                        readingSettingsContainer.Values.Remove(Item.Model.Id.ToString());
+                        LoggingService.WriteLine($"Success: {readingSettingsContainer.Values.Remove(Item.Model.Id.ToString())}");
                 }
             }
 
@@ -231,6 +271,7 @@ namespace wallabag.Data.ViewModels
         }
         private void ChangeFavoriteStatus()
         {
+            LoggingService.WriteLine("Changing favorite status of item.");
             if (Item.Model.IsStarred)
                 Item.UnmarkAsStarredCommand.Execute();
             else
@@ -240,20 +281,29 @@ namespace wallabag.Data.ViewModels
         }
         private void UpdateReadIcon()
         {
+            LoggingService.WriteLine("Updating read icon.");
+
             if (Item.Model.IsRead)
                 ChangeReadStatusButtonFontIcon = CreateFontIcon(_unreadGlyph);
             else
                 ChangeReadStatusButtonFontIcon = CreateFontIcon(_readGlyph);
+
+            LoggingService.WriteLine($"New glyph: {ChangeReadStatusButtonFontIcon.Glyph}");
         }
         private void UpdateFavoriteIcon()
         {
+            LoggingService.WriteLine("Updating favorite icon.");
+
             if (Item.Model.IsStarred)
                 ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(_unstarredGlyph);
             else
                 ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(_starredGlyph);
+
+            LoggingService.WriteLine($"New glyph: {ChangeFavoriteStatusButtonFontIcon.Glyph}");
         }
         public void UpdateBrushes()
         {
+            LoggingService.WriteLine($"Updating brushes for theme '{ColorScheme}'");
             if (ColorScheme.Equals("light"))
             {
                 ForegroundBrush = Color.FromArgb(0xFF, 0x44, 0x44, 0x44).ToSolidColorBrush();
@@ -284,23 +334,33 @@ namespace wallabag.Data.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
+            LoggingService.WriteLine($"Navigation parameter: {parameter}");
             Item = ItemViewModel.FromId((int)parameter);
+
+            LoggingService.WriteLineIf(Item == null, "Item is null.", LoggingCategory.Warning);
+            LoggingService.WriteLine($"Item title: {Item?.Model?.Title}");
 
             if ((Item == null || string.IsNullOrEmpty(Item?.Model?.Content)) && GeneralHelper.InternetConnectionIsAvailable)
             {
+                LoggingService.WriteLine("Fetching item from server.");
                 var item = await Client.GetItemAsync(Item.Model.Id);
                 if (item != null)
                     Item = new ItemViewModel(item);
+
+                LoggingService.WriteLine($"Success: {item != null}");
+                LoggingService.WriteObject(item);
             }
 
             if (string.IsNullOrEmpty(Item?.Model?.Content))
             {
+                LoggingService.WriteLine("No content available.", LoggingCategory.Warning);
                 FailureHasHappened = true;
                 FailureEmoji = "😶";
                 FailureDescription = GeneralHelper.LocalizedResource("NoContentAvailableErrorMessage");
             }
             else if (Item?.Model?.Content?.Contains("wallabag can't retrieve contents for this article.") == true)
             {
+                LoggingService.WriteLine("wallabag can't retrieve content.", LoggingCategory.Warning);
                 FailureHasHappened = true;
                 FailureEmoji = "😈";
                 FailureDescription = GeneralHelper.LocalizedResource("CantRetrieveContentsErrorMessage");
@@ -310,31 +370,36 @@ namespace wallabag.Data.ViewModels
             UpdateFavoriteIcon();
             UpdateBrushes();
 
-            if (SettingsService.Instance.SyncReadingProgress && Item.Model.ReadingProgress < 100)
+            if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
             {
-                var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{SettingsService.Instance.ClientId}", ApplicationDataCreateDisposition.Always);
+                LoggingService.WriteLine("Fetching reading progress from roaming settings.");
+                var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{Settings.Authentication.ClientId}", ApplicationDataCreateDisposition.Always);
                 if (readingSettingsContainer.Values.ContainsKey(Item.Model.Id.ToString()))
                     Item.Model.ReadingProgress = (double)readingSettingsContainer.Values[Item.Model.Id.ToString()];
+
+                LoggingService.WriteLine($"Reading progress: {Item.Model.ReadingProgress}");
             }
 
             await GenerateFormattedHtmlAsync();
         }
-        public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
+        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
-            SettingsService.Instance.FontSize = FontSize;
-            SettingsService.Instance.FontFamily = FontFamily;
-            SettingsService.Instance.ColorScheme = ColorScheme;
-            SettingsService.Instance.TextAlignment = TextAlignment;
+            Settings.Appereance.FontSize = FontSize;
+            Settings.Appereance.FontFamily = FontFamily;
+            Settings.Appereance.ColorScheme = ColorScheme;
+            Settings.Appereance.TextAlignment = TextAlignment;
 
+            LoggingService.WriteLine("Updating item in database.");
             Database.Update(Item.Model);
 
-            if (SettingsService.Instance.SyncReadingProgress && Item.Model.ReadingProgress < 100)
+            if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
             {
-                var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{SettingsService.Instance.ClientId}", ApplicationDataCreateDisposition.Always);
+                LoggingService.WriteLine("Setting reading progress in RoamingSettings.");
+                var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{Settings.Authentication.ClientId}", ApplicationDataCreateDisposition.Always);
                 readingSettingsContainer.Values[Item.Model.Id.ToString()] = Item.Model.ReadingProgress;
             }
 
-            await TitleBarHelper.ResetAsync();
+            return Task.CompletedTask;
         }
     }
 }
