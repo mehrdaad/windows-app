@@ -132,8 +132,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IBackgroundTaskService.cs" />
     <Compile Include="Services\IDialogService.cs" />
+    <Compile Include="Services\ISettingsService.cs" />
     <Compile Include="Services\OfflineTaskService.cs" />
-    <Compile Include="Services\SettingsService.cs" />
+    <Compile Include="Common\Settings.cs" />
     <Compile Include="ViewModels\AddItemViewModel.cs" />
     <Compile Include="ViewModels\EditTagsViewModel.cs" />
     <Compile Include="ViewModels\ItemPageViewModel.cs" />
