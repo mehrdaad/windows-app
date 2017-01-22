@@ -1,14 +1,16 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using wallabag.Data.Common.Helpers;
 using wallabag.Data.Common.Messages;
 
 namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
-    public class MultipleSelectionViewModel
+    public class MultipleSelectionViewModel : ViewModelBase
     {
         public List<ItemViewModel> Items { get; set; }
 
@@ -24,39 +26,39 @@ namespace wallabag.Data.ViewModels
         {
             Items = new List<ItemViewModel>();
 
-            MarkAsReadCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
+            MarkAsReadCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(() =>
             {
-                App.Database.RunInTransaction(() =>
+                Database.RunInTransaction(() =>
                 {
                     foreach (var item in Items)
                         item.MarkAsReadCommand.Execute();
                 });
             }));
-            UnmarkAsReadCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
+            UnmarkAsReadCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(() =>
             {
-                App.Database.RunInTransaction(() =>
+                Database.RunInTransaction(() =>
                 {
                     foreach (var item in Items)
                         item.UnmarkAsReadCommand.Execute();
                 });
             }));
-            MarkAsFavoriteCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
+            MarkAsFavoriteCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(() =>
             {
-                App.Database.RunInTransaction(() =>
+                Database.RunInTransaction(() =>
                 {
                     foreach (var item in Items)
                         item.MarkAsStarredCommand.Execute();
                 });
             }));
-            UnmarkAsFavoriteCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
+            UnmarkAsFavoriteCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(() =>
             {
-                App.Database.RunInTransaction(() =>
+                Database.RunInTransaction(() =>
                 {
                     foreach (var item in Items)
                         item.UnmarkAsStarredCommand.Execute();
                 });
             }));
-            EditTagsCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(async () =>
+            EditTagsCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(async () =>
             {
                 var viewModel = new EditTagsViewModel();
 
@@ -65,17 +67,17 @@ namespace wallabag.Data.ViewModels
 
                 await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, viewModel);
             }));
-            OpenInBrowserCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
+            OpenInBrowserCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(() =>
             {
-                App.Database.RunInTransaction(() =>
+                Database.RunInTransaction(() =>
                 {
                     foreach (var item in Items)
                         item.OpenInBrowserCommand.Execute();
                 });
             }));
-            DeleteCommand = new DelegateCommand(() => ExecuteMultipleSelectionAction(() =>
+            DeleteCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(() =>
             {
-                App.Database.RunInTransaction(() =>
+                Database.RunInTransaction(() =>
                 {
                     foreach (var item in Items)
                         item.DeleteCommand.Execute();

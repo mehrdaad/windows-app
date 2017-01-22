@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Command;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,7 +66,7 @@ namespace wallabag.Data.ViewModels
             }
         }
         private bool _backgroundTaskOptionsChanged = false;
-        
+
         public ICommand OpenDocumentationCommand { get; private set; }
         public ICommand OpenWallabagTwitterAccountCommand { get; set; }
         public ICommand ContactDeveloperCommand { get; private set; }
@@ -79,16 +80,16 @@ namespace wallabag.Data.ViewModels
         public SettingsPageViewModel()
         {
             VersionNumber = GetVersionNumber();
-            
-            OpenDocumentationCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(_documentationUri));
-            OpenWallabagTwitterAccountCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(_twitterAccountUri));
-            ContactDeveloperCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(_mailUri));
-            CreateIssueCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(_githubIssueUri));
-            RateAppCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(_rateAppUri));
-            TellFriendsCommand = new DelegateCommand(() => TellFriends());
-            LogoutCommand = new DelegateCommand(() => Logout());
-            DeleteDatabaseCommand = new DelegateCommand(() => DeleteDatabase());
-            VideoOpenModeRadioButtonCheckedCommand = new DelegateCommand<string>(mode => VideoOpenModeRadioButtonChecked(mode));
+
+            OpenDocumentationCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_documentationUri));
+            OpenWallabagTwitterAccountCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_twitterAccountUri));
+            ContactDeveloperCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_mailUri));
+            CreateIssueCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_githubIssueUri));
+            RateAppCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_rateAppUri));
+            TellFriendsCommand = new RelayCommand(() => TellFriends());
+            LogoutCommand = new RelayCommand(() => Logout());
+            DeleteDatabaseCommand = new RelayCommand(() => DeleteDatabase());
+            VideoOpenModeRadioButtonCheckedCommand = new RelayCommand<string>(mode => VideoOpenModeRadioButtonChecked(mode));
 
             PropertyChanged += (s, e) =>
             {
@@ -121,7 +122,7 @@ namespace wallabag.Data.ViewModels
             };
         }
 
-        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
+        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
             if (_backgroundTaskOptionsChanged == false)
                 return Task.CompletedTask;
@@ -165,8 +166,8 @@ namespace wallabag.Data.ViewModels
         }
         private void DeleteDatabase()
         {
-            string path = App.Database.DatabasePath;
-            App.Database.Close();
+            string path = Database.DatabasePath;
+            Database.Close();
 
             File.Delete(path);
 

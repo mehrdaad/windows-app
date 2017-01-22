@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Command;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,8 +30,8 @@ namespace wallabag.Data.ViewModels
 
         public AddItemViewModel()
         {
-            AddCommand = new DelegateCommand(() => Add());
-            CancelCommand = new DelegateCommand(() =>
+            AddCommand = new RelayCommand(() => Add());
+            CancelCommand = new RelayCommand(() =>
             {
                 _shareOperation?.ReportCompleted();
                 Services.DialogService.HideCurrentDialog();
@@ -44,7 +45,7 @@ namespace wallabag.Data.ViewModels
             if (UriString.IsValidUri())
             {
                 var uri = new Uri(UriString);
-                App.Database.Insert(new Item()
+                Database.Insert(new Item()
                 {
                     Id = OfflineTaskService.LastItemId + 1,
                     Title = uri.Host,
@@ -58,12 +59,15 @@ namespace wallabag.Data.ViewModels
             }
         }
 
-        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        public override Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
+            return Task.CompletedTask;
+            /* TODO: Add implementation for SessionState?
             var args = SessionState["shareTarget"] as ShareTargetActivatedEventArgs;
             UriString = (await args.ShareOperation.Data.GetWebLinkAsync()).ToString();
 
             _shareOperation = args.ShareOperation;
+            */
         }
     }
 }

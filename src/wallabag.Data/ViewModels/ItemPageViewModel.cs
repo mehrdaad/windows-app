@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using GalaSoft.MvvmLight.Command;
+using HtmlAgilityPack;
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
@@ -56,19 +57,19 @@ namespace wallabag.Data.ViewModels
 
         public ItemPageViewModel()
         {
-            ChangeReadStatusCommand = new DelegateCommand(() => ChangeReadStatus());
-            ChangeFavoriteStatusCommand = new DelegateCommand(() => ChangeFavoriteStatus());
-            EditTagsCommand = new DelegateCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags,
+            ChangeReadStatusCommand = new RelayCommand(() => ChangeReadStatus());
+            ChangeFavoriteStatusCommand = new RelayCommand(() => ChangeFavoriteStatus());
+            EditTagsCommand = new RelayCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags,
                 new EditTagsViewModel(Item.Model),
                 ColorApplicationTheme));
-            DeleteCommand = new DelegateCommand(() =>
+            DeleteCommand = new RelayCommand(() =>
             {
                 Item.DeleteCommand.Execute();
-                NavigationService.GoBack();
+                Navigation.GoBack();
             });
 
-            SaveRightClickLinkCommand = new DelegateCommand(() => OfflineTaskService.Add(RightClickUri.ToString(), new List<string>()));
-            OpenRightClickLinkInBrowserCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(RightClickUri));
+            SaveRightClickLinkCommand = new RelayCommand(() => OfflineTaskService.Add(RightClickUri.ToString(), new List<string>()));
+            OpenRightClickLinkInBrowserCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(RightClickUri));
         }
 
         private async Task GenerateFormattedHtmlAsync()
@@ -216,7 +217,7 @@ namespace wallabag.Data.ViewModels
                 Item.MarkAsReadCommand.Execute();
 
                 if (SettingsService.Instance.NavigateBackAfterReadingAnArticle)
-                    NavigationService.GoBack();
+                    Navigation.GoBack();
 
                 if (SettingsService.Instance.SyncReadingProgress)
                 {
@@ -281,13 +282,13 @@ namespace wallabag.Data.ViewModels
 
         private FontIcon CreateFontIcon(string glyph) => new FontIcon() { Glyph = glyph, FontFamily = _iconFontFamily };
 
-        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
             Item = ItemViewModel.FromId((int)parameter);
 
             if ((Item == null || string.IsNullOrEmpty(Item?.Model?.Content)) && GeneralHelper.InternetConnectionIsAvailable)
             {
-                var item = await App.Client.GetItemAsync(Item.Model.Id);
+                var item = await Client.GetItemAsync(Item.Model.Id);
                 if (item != null)
                     Item = new ItemViewModel(item);
             }
@@ -318,14 +319,14 @@ namespace wallabag.Data.ViewModels
 
             await GenerateFormattedHtmlAsync();
         }
-        public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
+        public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
             SettingsService.Instance.FontSize = FontSize;
             SettingsService.Instance.FontFamily = FontFamily;
             SettingsService.Instance.ColorScheme = ColorScheme;
             SettingsService.Instance.TextAlignment = TextAlignment;
 
-            App.Database.Update(Item.Model);
+            Database.Update(Item.Model);
 
             if (SettingsService.Instance.SyncReadingProgress && Item.Model.ReadingProgress < 100)
             {

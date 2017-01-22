@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GalaSoft.MvvmLight.Command;
+using System.Collections.Generic;
 using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using ZXing.Mobile;
@@ -16,14 +17,15 @@ namespace wallabag.Data.ViewModels
 
         public QRScanPageViewModel()
         {
-            ScanCommand = new DelegateCommand(async () => await scannerControl.StartScanningAsync(result =>
+            ScanCommand = new RelayCommand(async () => await scannerControl.StartScanningAsync(result =>
             {
                 bool success = string.IsNullOrEmpty(result?.Text) == false && result.Text.StartsWith("wallabag://");
 
                 if (success)
                 {
-                    SessionState.Add(QRResultKey, ProtocolHelper.Parse(result?.Text));
-                    Dispatcher.Dispatch(() => NavigationService.GoBack());
+                    // TODO
+                    //SessionState.Add(QRResultKey, ProtocolHelper.Parse(result?.Text));
+                    //Dispatcher.Dispatch(() => NavigationService.GoBack());
                 }
             },
             new MobileBarcodeScanningOptions()

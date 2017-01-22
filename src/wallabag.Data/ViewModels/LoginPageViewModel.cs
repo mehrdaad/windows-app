@@ -1,10 +1,12 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Api.Models;
+using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
@@ -14,7 +16,6 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
 namespace wallabag.Data.ViewModels
@@ -42,9 +43,9 @@ namespace wallabag.Data.ViewModels
         public List<WallabagProvider> Providers { get; set; }
         public object SelectedProvider { get; set; }
 
-        public ICommand PreviousCommand { get; private set; }
-        public ICommand NextCommand { get; private set; }
-        public ICommand RegisterCommand { get; private set; }
+        public RelayCommand PreviousCommand { get; private set; }
+        public RelayCommand NextCommand { get; private set; }
+        public RelayCommand RegisterCommand { get; private set; }
         public ICommand WhatIsWallabagCommand { get; private set; }
         public ICommand ScanQRCodeCommand { get; private set; }
 
@@ -60,12 +61,12 @@ namespace wallabag.Data.ViewModels
                 WallabagProvider.Other
             };
 
-            PreviousCommand = new DelegateCommand(() => Previous(), () => PreviousCanBeExecuted());
-            NextCommand = new DelegateCommand(async () => await NextAsync(), () => NextCanBeExecuted());
-            RegisterCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync((SelectedProvider as WallabagProvider).Url.Append("/register")),
+            PreviousCommand = new RelayCommand(() => Previous(), () => PreviousCanBeExecuted());
+            NextCommand = new RelayCommand(async () => await NextAsync(), () => NextCanBeExecuted());
+            RegisterCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync((SelectedProvider as WallabagProvider).Url.Append("/register")),
                 () => RegistrationCanBeExecuted());
-            WhatIsWallabagCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
-            ScanQRCodeCommand = new DelegateCommand(() => NavigationService.Navigate(typeof(Views.QRScanPage)));
+            WhatIsWallabagCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
+            ScanQRCodeCommand = new RelayCommand(() => Navigation.NavigateTo(Pages.QRScanPage));
 
             this.PropertyChanged += This_PropertyChanged;
         }
@@ -146,16 +147,16 @@ namespace wallabag.Data.ViewModels
 
             if (CurrentStep == 3)
             {
-                SettingsService.Instance.AccessToken = App.Client.AccessToken;
-                SettingsService.Instance.RefreshToken = App.Client.RefreshToken;
-                SettingsService.Instance.WallabagUrl = App.Client.InstanceUri;
-                SettingsService.Instance.LastTokenRefreshDateTime = App.Client.LastTokenRefreshDateTime;
-                SettingsService.Instance.ClientId = App.Client.ClientId;
-                SettingsService.Instance.ClientSecret = App.Client.ClientSecret;
+                SettingsService.Instance.AccessToken = Client.AccessToken;
+                SettingsService.Instance.RefreshToken = Client.RefreshToken;
+                SettingsService.Instance.WallabagUrl = Client.InstanceUri;
+                SettingsService.Instance.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
+                SettingsService.Instance.ClientId = Client.ClientId;
+                SettingsService.Instance.ClientSecret = Client.ClientSecret;
                 SettingsService.Instance.AllowCollectionOfTelemetryData = (bool)AllowCollectionOfTelemetryData;
 
-                NavigationService.Navigate(typeof(Views.MainPage));
-                NavigationService.ClearHistory();
+                Navigation.NavigateTo(Pages.MainPage);
+                Navigation.ClearHistory();
 
                 await TitleBarHelper.ResetAsync();
             }
@@ -176,25 +177,25 @@ namespace wallabag.Data.ViewModels
 
             if (UseCustomSettings == false)
             {
-                App.Client.InstanceUri = new Uri(Url);
+                Client.InstanceUri = new Uri(Url);
                 bool clientCreationIsSuccessful = await CreateApiClientAsync();
 
                 if (clientCreationIsSuccessful == false &&
                     Url.StartsWith("https://"))
                 {
                     Url = Url.Replace("https://", "http://");
-                    App.Client.InstanceUri = new Uri(Url);
+                    Client.InstanceUri = new Uri(Url);
 
                     if (await CreateApiClientAsync() == false)
                         return false;
                 }
             }
 
-            App.Client.ClientId = ClientId;
-            App.Client.ClientSecret = ClientSecret;
-            App.Client.InstanceUri = new Uri(Url);
+            Client.ClientId = ClientId;
+            Client.ClientSecret = ClientSecret;
+            Client.InstanceUri = new Uri(Url);
 
-            bool result = await App.Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
+            bool result = await Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
             {
                 if (x.Exception == null)
                     return x.Result;
@@ -205,9 +206,9 @@ namespace wallabag.Data.ViewModels
             if (result == false && Url.StartsWith("https://"))
             {
                 Url = Url.Replace("https://", "http://");
-                App.Client.InstanceUri = new Uri(Url);
+                Client.InstanceUri = new Uri(Url);
 
-                result = await App.Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
+                result = await Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
                 {
                     if (x.Exception == null)
                         return x.Result;
@@ -223,7 +224,7 @@ namespace wallabag.Data.ViewModels
             ProgressDescription = GeneralHelper.LocalizedResource("DownloadingItemsTextBlock.Text");
             int itemsPerPage = 100;
 
-            var itemResponse = await App.Client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: itemsPerPage);
+            var itemResponse = await Client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: itemsPerPage);
             var items = itemResponse.Items as List<WallabagItem>;
 
             // For users with a lot of items
@@ -231,22 +232,22 @@ namespace wallabag.Data.ViewModels
                 for (int i = 2; i <= itemResponse.Pages; i++)
                 {
                     ProgressDescription = string.Format(GeneralHelper.LocalizedResource("DownloadingItemsWithProgress"), items.Count, itemResponse.TotalNumberOfItems);
-                    items.AddRange(await App.Client.GetItemsAsync(itemsPerPage: itemsPerPage, pageNumber: i));
+                    items.AddRange(await Client.GetItemsAsync(itemsPerPage: itemsPerPage, pageNumber: i));
                 }
 
-            var tags = await App.Client.GetTagsAsync();
+            var tags = await Client.GetTagsAsync();
 
             ProgressDescription = GeneralHelper.LocalizedResource("SavingItemsInDatabaseMessage");
 
             await Task.Run(() =>
             {
-                App.Database.RunInTransaction(() =>
+                Database.RunInTransaction(() =>
                 {
                     foreach (var item in items)
-                        App.Database.InsertOrReplace((Item)item);
+                        Database.InsertOrReplace((Item)item);
 
                     foreach (var tag in tags)
-                        App.Database.InsertOrReplace((Tag)tag);
+                        Database.InsertOrReplace((Tag)tag);
                 });
             });
         }
@@ -258,7 +259,7 @@ namespace wallabag.Data.ViewModels
                 Previous();
         }
 
-        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
             SystemNavigationManager.GetForCurrentView().BackRequested += BackRequested;
 
@@ -283,8 +284,9 @@ namespace wallabag.Data.ViewModels
             if (parameter is ProtocolSetupNavigationParameter)
                 protocolSetupParameter = parameter as ProtocolSetupNavigationParameter;
 
-            if (SessionState.ContainsKey(QRScanPageViewModel.QRResultKey))
-                protocolSetupParameter = SessionState[QRScanPageViewModel.QRResultKey] as ProtocolSetupNavigationParameter;
+            // TODO: Implement SessionState
+            /* if (SessionState.ContainsKey(QRScanPageViewModel.QRResultKey))
+                protocolSetupParameter = SessionState[QRScanPageViewModel.QRResultKey] as ProtocolSetupNavigationParameter; */
 
             if (protocolSetupParameter != null)
             {
@@ -297,21 +299,19 @@ namespace wallabag.Data.ViewModels
                 return;
             }
         }
-        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
+        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
             SystemNavigationManager.GetForCurrentView().BackRequested -= BackRequested;
 
-            if (suspending)
-            {
-                pageState[nameof(Username)] = Username;
-                pageState[nameof(Password)] = Password;
-                pageState[nameof(Url)] = Url;
-                pageState[nameof(ClientId)] = ClientId;
-                pageState[nameof(ClientSecret)] = ClientSecret;
+            pageState[nameof(Username)] = Username;
+            pageState[nameof(Password)] = Password;
+            pageState[nameof(Url)] = Url;
+            pageState[nameof(ClientId)] = ClientId;
+            pageState[nameof(ClientSecret)] = ClientSecret;
 
-                pageState[nameof(CurrentStep)] = CurrentStep;
-                pageState[nameof(UseCustomSettings)] = UseCustomSettings;
-            }
+            pageState[nameof(CurrentStep)] = CurrentStep;
+            pageState[nameof(UseCustomSettings)] = UseCustomSettings;
+
             return Task.CompletedTask;
         }
 
@@ -354,7 +354,7 @@ namespace wallabag.Data.ViewModels
                 // Step 3: Create the new client
                 step++;
                 string stringContent = string.Empty;
-                useNewApi = (await App.Client.GetVersionNumberAsync()).StartsWith("2.0") == false;
+                useNewApi = (await Client.GetVersionNumberAsync()).StartsWith("2.0") == false;
 
                 stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
 
@@ -382,9 +382,10 @@ namespace wallabag.Data.ViewModels
 
                 return true;
             }
-            catch (Exception e)
+            catch
             {
-                Microsoft.HockeyApp.HockeyClient.Current.TrackException(e, new Dictionary<string, string>()
+                // TODO: Log exceptions
+                /* Microsoft.HockeyApp.HockeyClient.Current.TrackException(e, new Dictionary<string, string>()
                 {
                     { nameof(token), token },
                     { nameof(useNewApi), useNewApi.ToString() },
@@ -392,7 +393,7 @@ namespace wallabag.Data.ViewModels
                     { "StatusCode",  message?.StatusCode.ToString() },
                     { "IsSuccessStatusCode",  await message?.Content?.ReadAsStringAsync() },
                     { nameof(Url), Url?.ToString() }
-                });
+                }); */
                 return false;
             }
         }
@@ -442,15 +443,16 @@ namespace wallabag.Data.ViewModels
                         Name = string.Empty
                     };
             }
-            catch (ArgumentOutOfRangeException exception)
+            catch
             {
+                /* TODO: Log exceptions
                 var exceptionMetadata = new Dictionary<string, string>
                 {
                     { nameof(useNewApi), useNewApi.ToString() },
                     { "HTML", html },
                     { nameof(Url), Url }
                 };
-                Microsoft.HockeyApp.HockeyClient.Current.TrackException(exception, exceptionMetadata);
+                Microsoft.HockeyApp.HockeyClient.Current.TrackException(exception, exceptionMetadata); */
                 Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("SomethingWentWrongMessage")));
                 return null;
             }

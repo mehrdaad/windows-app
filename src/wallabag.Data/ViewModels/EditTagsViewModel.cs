@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Command;
+using PropertyChanged;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,13 +22,13 @@ namespace wallabag.Data.ViewModels
 
         public EditTagsViewModel()
         {
-            FinishCommand = new DelegateCommand(() => Finish());
-            CancelCommand = new DelegateCommand(() => Services.DialogService.HideCurrentDialog());
+            FinishCommand = new RelayCommand(() => Finish());
+            CancelCommand = new RelayCommand(() => Services.DialogService.HideCurrentDialog());
         }
         public EditTagsViewModel(Item Item)
         {
-            FinishCommand = new DelegateCommand(() => Finish());
-            CancelCommand = new DelegateCommand(() => Services.DialogService.HideCurrentDialog());
+            FinishCommand = new RelayCommand(() => Finish());
+            CancelCommand = new RelayCommand(() => Services.DialogService.HideCurrentDialog());
 
             Items.Add(Item);
             _previousTags = Item.Tags;

@@ -9,7 +9,7 @@ namespace wallabag.Data.ViewModels
     public class ViewModelBase : GalaSoft.MvvmLight.ViewModelBase, INavigable
     {
         internal IWallabagClient Client;
-        internal SQLite.Net.SQLiteConnection Database;
+        internal static SQLite.Net.SQLiteConnection Database;
         internal INavigationService Navigation;
 
         public virtual Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)

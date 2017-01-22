@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Command;
+using PropertyChanged;
 using System;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -37,36 +38,36 @@ namespace wallabag.Data.ViewModels
                 RaisePropertyChanged(nameof(TagsAreExisting));
             };
 
-            MarkAsReadCommand = new DelegateCommand(() =>
+            MarkAsReadCommand = new RelayCommand(() =>
             {
                 Model.IsRead = true;
                 UpdateItem();
                 OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
             });
-            UnmarkAsReadCommand = new DelegateCommand(() =>
+            UnmarkAsReadCommand = new RelayCommand(() =>
             {
                 Model.IsRead = false;
                 UpdateItem();
                 OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
             });
-            MarkAsStarredCommand = new DelegateCommand(() =>
+            MarkAsStarredCommand = new RelayCommand(() =>
             {
                 Model.IsStarred = true;
                 UpdateItem();
                 OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
             });
-            UnmarkAsStarredCommand = new DelegateCommand(() =>
+            UnmarkAsStarredCommand = new RelayCommand(() =>
             {
                 Model.IsStarred = false;
                 UpdateItem();
                 OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
             });
-            DeleteCommand = new DelegateCommand(() =>
+            DeleteCommand = new RelayCommand(() =>
             {
-                App.Database.Delete(Model);
+                Database.Delete(Model);
                 OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
             });
-            ShareCommand = new DelegateCommand(() =>
+            ShareCommand = new RelayCommand(() =>
             {
                 DataTransferManager.GetForCurrentView().DataRequested += (s, args) =>
                 {
@@ -77,13 +78,13 @@ namespace wallabag.Data.ViewModels
                 };
                 DataTransferManager.ShowShareUI();
             });
-            EditTagsCommand = new DelegateCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, new EditTagsViewModel(this.Model)));
-            OpenInBrowserCommand = new DelegateCommand(async () => await Launcher.LaunchUriAsync(new Uri(Model.Url)));
+            EditTagsCommand = new RelayCommand(async () => await Services.DialogService.ShowAsync(Services.DialogService.Dialog.EditTags, new EditTagsViewModel(this.Model)));
+            OpenInBrowserCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(new Uri(Model.Url)));
         }
 
         public static ItemViewModel FromId(int itemId)
         {
-            var item = App.Database.Find<Item>(itemId);
+            var item = Database.Find<Item>(itemId);
             if (item != null)
                 return new ItemViewModel(item);
             else
@@ -93,7 +94,7 @@ namespace wallabag.Data.ViewModels
         private void UpdateItem()
         {
             Model.LastModificationDate = DateTime.UtcNow;
-            App.Database.Update(Model);
+            Database.Update(Model);
         }
 
         public int CompareTo(object obj) => ((IComparable)Model).CompareTo((obj as ItemViewModel).Model);
