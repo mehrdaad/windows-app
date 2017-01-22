@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using PropertyChanged;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,7 +9,6 @@ using wallabag.Data.Services;
 
 namespace wallabag.Data.ViewModels
 {
-    [ImplementPropertyChanged]
     public class EditTagsViewModel : ViewModelBase
     {
         private IEnumerable<Tag> _previousTags;
@@ -23,13 +21,10 @@ namespace wallabag.Data.ViewModels
         public EditTagsViewModel()
         {
             FinishCommand = new RelayCommand(() => Finish());
-            CancelCommand = new RelayCommand(() => Services.DialogService.HideCurrentDialog());
+            CancelCommand = new RelayCommand(() => Cancel());
         }
-        public EditTagsViewModel(Item Item)
+        public EditTagsViewModel(Item Item) : this()
         {
-            FinishCommand = new RelayCommand(() => Finish());
-            CancelCommand = new RelayCommand(() => Services.DialogService.HideCurrentDialog());
-
             Items.Add(Item);
             _previousTags = Item.Tags;
             Tags = new ObservableCollection<Tag>(Item.Tags);
@@ -37,6 +32,9 @@ namespace wallabag.Data.ViewModels
 
         private void Finish()
         {
+            LoggingService.WriteLine($"Editing tags for {Items.Count} items.");
+            LoggingService.WriteLineIf(_previousTags != null, $"Number of previous tags: {_previousTags.Count()}");
+           
             if (_previousTags == null)
             {
                 foreach (var item in Items)
@@ -52,10 +50,17 @@ namespace wallabag.Data.ViewModels
                 var newTags = Tags.Except(_previousTags).ToList();
                 var deletedTags = _previousTags.Except(Tags).ToList();
 
+                LoggingService.WriteLine($"Number of new tags: {newTags?.Count}");
+                LoggingService.WriteLine($"Number of deleted tags: {deletedTags?.Count}");
+
                 Items.First().Tags.Replace(Tags);
 
                 OfflineTaskService.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags);
             }
+        }
+        private void Cancel()
+        {
+            LoggingService.WriteLine("Cancelling the editing of tags.");
         }
     }
 }
