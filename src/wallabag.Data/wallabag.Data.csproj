@@ -119,6 +119,7 @@
     <Compile Include="Common\IncrementalObservableCollection.cs" />
     <Compile Include="Common\Messages\CompleteMultipleSelectionMessage.cs" />
     <Compile Include="Common\Messages\UpdateItemMessage.cs" />
+    <Compile Include="Common\Pages.cs" />
     <Compile Include="Converters\BooleanNegationConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Models\Item.cs" />
