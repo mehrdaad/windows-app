@@ -1,4 +1,5 @@
-﻿using Microsoft.HockeyApp;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Microsoft.HockeyApp;
 using Newtonsoft.Json;
 using SQLite.Net;
 using SQLite.Net.Platform.WinRT;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Template10.Common;
 using wallabag.Common.Helpers;
+using wallabag.Data.Services;
 using wallabag.Models;
 using wallabag.Services;
 using Windows.ApplicationModel;
@@ -30,6 +32,8 @@ namespace wallabag
             if (Settings.AllowCollectionOfTelemetryData)
                 HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
 #endif          
+
+            SimpleIoc.Default.Register<IDialogService, DialogService>();
 
             CreateClientAndDatabase();
 
