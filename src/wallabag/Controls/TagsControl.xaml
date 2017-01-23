@@ -9,17 +9,16 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock
-            x:Name="noTagsInfoTextBlock"
             x:Uid="NoTagsInfoTextBlock"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Opacity="0.8"
-            Text="No tags added, yet :(" />
+            Text="No tags added, yet :(" 
+            Visibility="{x:Bind ViewModel.TagsCountIsZero, Mode=OneWay,Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <ListView
-            x:Name="tagsListView"
             IsItemClickEnabled="True"
             ItemClick="TagsListView_ItemClick"
-            ItemsSource="{x:Bind ItemsSource, Mode=OneWay}"
+            ItemsSource="{x:Bind ViewModel.Tags, Mode=OneWay}"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             ScrollViewer.HorizontalScrollMode="Auto"
             ScrollViewer.VerticalScrollMode="Disabled">
@@ -57,11 +56,10 @@
             x:Name="autoSuggestBox"
             x:Uid="EnterTagAutoSuggestBox"
             Grid.Row="1"
+            Text="{x:Bind ViewModel.TagQuery, Mode=TwoWay}"
             VerticalAlignment="Bottom"
-            ItemsSource="{x:Bind Suggestions, Mode=OneWay}"
+            ItemsSource="{x:Bind ViewModel.Suggestions, Mode=OneWay}"
             PlaceholderText="enter a tag…"
-            QueryIcon="Add"
-            QuerySubmitted="AutoSuggestBox_QuerySubmitted"
-            TextChanged="AutoSuggestBox_TextChanged" />
+            QueryIcon="Add" />
     </Grid>
 </UserControl>

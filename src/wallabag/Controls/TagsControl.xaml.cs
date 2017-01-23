@@ -1,11 +1,5 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using SQLite.Net;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using wallabag.Data.Common.Helpers;
-using wallabag.Data.Models;
-using Windows.UI.Xaml;
+﻿using wallabag.Data.Models;
+using wallabag.Data.ViewModels;
 using Windows.UI.Xaml.Controls;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -14,89 +8,18 @@ namespace wallabag.Controls
 {
     public sealed partial class TagsControl : UserControl
     {
-        #region Dependency Properties
-
-        public IEnumerable<Tag> ItemsSource
-        {
-            get { return (IEnumerable<Tag>)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for ItemsSource.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.Register("ItemsSource", typeof(IEnumerable<Tag>), typeof(TagsControl), new PropertyMetadata(new ObservableCollection<Tag>()));
-
-        #endregion
-
-        public ObservableCollection<Tag> Suggestions { get; set; } = new ObservableCollection<Tag>();
+        public EditTagsViewModel ViewModel => DataContext as EditTagsViewModel;
 
         public TagsControl()
         {
             InitializeComponent();
-            this.Loaded += (s, e) => UpdateNoTagsInfoTextBlockVisibility();
 
             autoSuggestBox.KeyDown += AutoSuggestBox_KeyDown;
         }
 
-        private bool _queryIsAlreadyHandled;
-        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            var itemsSource = ItemsSource as ICollection<Tag>;
-
-            var suggestion = args.ChosenSuggestion as Tag;
-            if (suggestion != null && !itemsSource.Contains(suggestion))
-                itemsSource.Add(args.ChosenSuggestion as Tag);
-            else
-            {
-                var tags = args.QueryText.Split(","[0]).ToList();
-                foreach (string item in tags)
-                    if (!string.IsNullOrWhiteSpace(item))
-                    {
-                        var newTag = new Tag() { Label = item, Id = itemsSource.Count + 1 };
-
-                        if (itemsSource.Contains(newTag) == false)
-                            itemsSource.Add(newTag);
-                    }
-            }
-
-            UpdateNoTagsInfoTextBlockVisibility();
-            if (string.IsNullOrEmpty(sender.Text))
-                _queryIsAlreadyHandled = true;
-            else
-                sender.Text = string.Empty;
-        }
-        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-        {
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-            {
-                string suggestionString = sender.Text.ToLower().Split(","[0]).Last();
-                Suggestions.Replace(
-                    SimpleIoc.Default.GetInstance<SQLiteConnection>()
-                        .Table<Tag>()
-                        .Where(t => t.Label.ToLower().StartsWith(suggestionString))
-                        .Except(ItemsSource)
-                        .Take(3)
-                        .ToList());
-            }
-            else if (_queryIsAlreadyHandled)
-            {
-                _queryIsAlreadyHandled = false;
-                sender.Text = string.Empty;
-            }
-        }
-
-        private void UpdateNoTagsInfoTextBlockVisibility()
-        {
-            if (ItemsSource.Count() == 0)
-                noTagsInfoTextBlock.Visibility = Visibility.Visible;
-            else
-                noTagsInfoTextBlock.Visibility = Visibility.Collapsed;
-        }
-
         private void TagsListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            (ItemsSource as IList<Tag>).Remove(e.ClickedItem as Tag);
-            UpdateNoTagsInfoTextBlockVisibility();
+            ViewModel.Tags.Remove(e.ClickedItem as Tag);
         }
 
         private void AutoSuggestBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
@@ -109,11 +32,10 @@ namespace wallabag.Controls
 
                 string label = textBox.Text.Replace(",", string.Empty);
                 if (!string.IsNullOrWhiteSpace(label))
-                    (ItemsSource as ObservableCollection<Tag>).Add(new Tag() { Label = label });
+                    ViewModel.Tags.Add(new Tag() { Label = label });
 
                 textBox.Text = string.Empty;
             }
-            UpdateNoTagsInfoTextBlockVisibility();
         }
     }
 }
