@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using ZXing.Mobile;
@@ -17,12 +18,28 @@ namespace wallabag.Data.ViewModels
 
         public QRScanPageViewModel()
         {
-            ScanCommand = new RelayCommand(async () => await scannerControl.StartScanningAsync(result =>
+            LoggingService.WriteLine($"Creating new instance of {nameof(QRScanPageViewModel)}.");
+            ScanCommand = new RelayCommand(async () => await ScanAsync());
+        }
+        public QRScanPageViewModel(ZXingScannerControl scannerControl) : this()
+        {
+            LoggingService.WriteLine($"Creating new instance of {nameof(QRScanPageViewModel)} with given scanner control.");
+
+            this.scannerControl = scannerControl;
+            ScanCommand.Execute();
+        }
+
+        private async Task ScanAsync()
+        {
+            LoggingService.WriteLine("Scanning for wallabag QR code...");
+            await scannerControl.StartScanningAsync(result =>
             {
+                LoggingService.WriteLine($"QR code found. Text: {result?.Text}");
                 bool success = string.IsNullOrEmpty(result?.Text) == false && result.Text.StartsWith("wallabag://");
 
                 if (success)
                 {
+                    LoggingService.WriteLine("QR code matches the protocol.");
                     // TODO
                     //SessionState.Add(QRResultKey, ProtocolHelper.Parse(result?.Text));
                     //Dispatcher.Dispatch(() => NavigationService.GoBack());
@@ -32,12 +49,7 @@ namespace wallabag.Data.ViewModels
             {
                 TryHarder = false,
                 PossibleFormats = new List<ZXing.BarcodeFormat>() { ZXing.BarcodeFormat.QR_CODE }
-            }));
-        }
-        public QRScanPageViewModel(ZXingScannerControl scannerControl) : this()
-        {
-            this.scannerControl = scannerControl;
-            ScanCommand.Execute();
+            });
         }
     }
 }
