@@ -36,6 +36,7 @@ namespace wallabag
             SimpleIoc.Default.Register<IDialogService, DialogService>();
             SimpleIoc.Default.Register<IBackgroundTaskService, BackgroundTaskService>();
             SimpleIoc.Default.Register<ILoggingService, LoggingService>();
+            SimpleIoc.Default.Register<ISettingsService, SettingsService>();
 
             CreateClientAndDatabase();
 
