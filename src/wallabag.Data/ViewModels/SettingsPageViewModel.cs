@@ -146,6 +146,7 @@ namespace wallabag.Data.ViewModels
 
         public SettingsPageViewModel(IBackgroundTaskService backgroundTaskService)
         {
+            LoggingService.WriteLine($"Creating a new instance of {nameof(SettingsPageViewModel)}. Type of parameter: {backgroundTaskService?.GetType()?.Name}");
             _backgroundTaskService = backgroundTaskService;
 
             OpenDocumentationCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_documentationUri));
@@ -161,10 +162,19 @@ namespace wallabag.Data.ViewModels
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
-            if (_backgroundTaskOptionsChanged && BackgroundTaskIsEnabled)
+            if (_backgroundTaskOptionsChanged)
             {
-                _backgroundTaskService.UnregisterBackgroundTask();
-                return _backgroundTaskService.RegisterBackgroundTaskAsync();
+                if (BackgroundTaskIsEnabled)
+                {
+                    LoggingService.WriteLine("The background task options were changed. Re-registering the background task.");
+                    _backgroundTaskService.UnregisterBackgroundTask();
+                    return _backgroundTaskService.RegisterBackgroundTaskAsync();
+                }
+                else
+                {
+                    LoggingService.WriteLine("The background task options were changed. Unregistering the background task.");
+                    _backgroundTaskService.UnregisterBackgroundTask();
+                }
             }
             return Task.CompletedTask;
         }
@@ -176,6 +186,7 @@ namespace wallabag.Data.ViewModels
         }
         private void TellFriends()
         {
+            LoggingService.WriteLine("Sharing info about wallabag with friends.");
             DataTransferManager.GetForCurrentView().DataRequested += (s, e) =>
             {
                 e.Request.Data.SetWebLink(new Uri("https://www.wallabag.org/"));
@@ -186,6 +197,7 @@ namespace wallabag.Data.ViewModels
         }
         private void Logout()
         {
+            LoggingService.WriteLine("Deleting all credentials...");
             Settings.Authentication.AccessToken = string.Empty;
             Settings.Authentication.RefreshToken = string.Empty;
             Settings.Authentication.LastTokenRefreshDateTime = DateTime.MinValue;
@@ -194,6 +206,7 @@ namespace wallabag.Data.ViewModels
         }
         private void DeleteDatabase()
         {
+            LoggingService.WriteLine("Deleting the database...");
             string path = Database.DatabasePath;
             Database.Close();
 
