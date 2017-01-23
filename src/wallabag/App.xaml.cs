@@ -10,9 +10,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Template10.Common;
 using wallabag.Common.Helpers;
+using wallabag.Data.Common;
 using wallabag.Data.Services;
 using wallabag.Models;
 using wallabag.Services;
+using wallabag.Views;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 
@@ -37,6 +39,18 @@ namespace wallabag
             SimpleIoc.Default.Register<IBackgroundTaskService, BackgroundTaskService>();
             SimpleIoc.Default.Register<ILoggingService, LoggingService>();
             SimpleIoc.Default.Register<ISettingsService, SettingsService>();
+            SimpleIoc.Default.Register<INavigationService>(() =>
+            {
+                var ns = new NavigationService();
+
+                ns.Configure(Pages.ItemPage, typeof(ItemPage));
+                ns.Configure(Pages.LoginPage, typeof(LoginPage));
+                ns.Configure(Pages.MainPage, typeof(MainPage));
+                ns.Configure(Pages.QRScanPage, typeof(QRScanPage));
+                ns.Configure(Pages.SettingsPage, typeof(SettingsPage));
+
+                return ns;
+            });
 
             CreateClientAndDatabase();
 
