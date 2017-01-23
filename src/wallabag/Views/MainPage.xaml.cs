@@ -1,9 +1,9 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
 using System.Linq;
-using wallabag.Common.Messages;
 using wallabag.Controls;
-using wallabag.ViewModels;
+using wallabag.Data.Common.Messages;
+using wallabag.Data.ViewModels;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;

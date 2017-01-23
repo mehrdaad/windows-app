@@ -1,6 +1,6 @@
 ﻿namespace wallabag.Data.Common.Messages
 {
-    class UpdateItemMessage
+    public class UpdateItemMessage
     {
         public int ItemId { get; set; }
 

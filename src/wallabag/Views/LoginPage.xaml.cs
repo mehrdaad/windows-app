@@ -1,5 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
-using wallabag.ViewModels;
+using wallabag.Data.ViewModels;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
@@ -13,7 +13,7 @@ namespace wallabag.Views
     /// </summary>
     public sealed partial class LoginPage : Page
     {
-        public LoginPageViewModel ViewModel { get { return DataContext as LoginPageViewModel; } }
+        public LoginPageViewModel ViewModel => DataContext as LoginPageViewModel;
 
         public LoginPage()
         {

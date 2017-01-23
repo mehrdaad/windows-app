@@ -1,5 +1,5 @@
-﻿using wallabag.Common.Helpers;
-using wallabag.ViewModels;
+﻿using wallabag.Data.Common.Helpers;
+using wallabag.Data.ViewModels;
 using Windows.UI.Xaml.Controls;
 
 // Die Elementvorlage "Leere Seite" wird unter https://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.

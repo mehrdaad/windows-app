@@ -1,4 +1,3 @@
-using GalaSoft.MvvmLight.Views;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using wallabag.Api;
@@ -11,8 +10,8 @@ namespace wallabag.Data.ViewModels
     {
         internal IWallabagClient Client;
         internal static SQLite.Net.SQLiteConnection Database;
-        internal Services.INavigationService Navigation;
-        internal Services.IDialogService DialogService;
+        internal INavigationService Navigation;
+        internal IDialogService DialogService;
         internal ILoggingService LoggingService;
 
         public virtual Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using GalaSoft.MvvmLight.Ioc;
+using SQLite.Net;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using wallabag.Common.Helpers;
-using wallabag.Models;
+using wallabag.Data.Common.Helpers;
+using wallabag.Data.Models;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -69,7 +71,9 @@ namespace wallabag.Controls
             {
                 string suggestionString = sender.Text.ToLower().Split(","[0]).Last();
                 Suggestions.Replace(
-                    App.Database.Table<Tag>().Where(t => t.Label.ToLower().StartsWith(suggestionString))
+                    SimpleIoc.Default.GetInstance<SQLiteConnection>()
+                        .Table<Tag>()
+                        .Where(t => t.Label.ToLower().StartsWith(suggestionString))
                         .Except(ItemsSource)
                         .Take(3)
                         .ToList());

@@ -5,7 +5,7 @@ using WindowsStateTriggers;
 
 namespace wallabag.Data.Common.Helpers
 {
-    class GeneralHelper
+    public class GeneralHelper
     {
         public static bool IsPhone { get { return DeviceFamilyOfCurrentDevice == DeviceFamily.Mobile; } }
 

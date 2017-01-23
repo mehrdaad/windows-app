@@ -1,18 +1,16 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using Microsoft.HockeyApp;
-using Newtonsoft.Json;
 using SQLite.Net;
-using SQLite.Net.Platform.WinRT;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Template10.Common;
-using wallabag.Common.Helpers;
+using wallabag.Api;
 using wallabag.Data.Common;
+using wallabag.Data.Common.Helpers;
+using wallabag.Data.Models;
 using wallabag.Data.Services;
-using wallabag.Models;
 using wallabag.Services;
 using wallabag.Views;
 using Windows.ApplicationModel;
@@ -22,49 +20,25 @@ namespace wallabag
 {
     public sealed partial class App : BootStrapper
     {
-        public static Api.WallabagClient Client { get; private set; }
-        public static SQLiteConnection Database { get; private set; }
-        public static SettingsService Settings { get { return SettingsService.Instance; } }
+        private static IWallabagClient Client => SimpleIoc.Default.GetInstance<IWallabagClient>();
+        private static SQLiteConnection Database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
 
         public App() { InitializeComponent(); }
 
         public override Task OnInitializeAsync(IActivatedEventArgs args)
         {
 #if DEBUG == false
-            if (Settings.AllowCollectionOfTelemetryData)
+            if (Settings.General.AllowCollectionOfTelemetryData)
                 HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
 #endif
 
-            SimpleIoc.Default.Register<IDialogService, DialogService>();
-            SimpleIoc.Default.Register<IBackgroundTaskService, BackgroundTaskService>();
-            SimpleIoc.Default.Register<ILoggingService, LoggingService>();
-            SimpleIoc.Default.Register<ISettingsService, SettingsService>();
-            SimpleIoc.Default.Register<INavigationService>(() =>
-            {
-                var ns = new NavigationService();
+            RegisterServices();
 
-                ns.Configure(Pages.ItemPage, typeof(ItemPage));
-                ns.Configure(Pages.LoginPage, typeof(LoginPage));
-                ns.Configure(Pages.MainPage, typeof(MainPage));
-                ns.Configure(Pages.QRScanPage, typeof(QRScanPage));
-                ns.Configure(Pages.SettingsPage, typeof(SettingsPage));
+            var bts = SimpleIoc.Default.GetInstance<IBackgroundTaskService>();
 
-                return ns;
-            });
-
-            CreateClientAndDatabase();
-
-            Client.CredentialsRefreshed += (s, e) =>
-            {
-                Settings.ClientId = Client.ClientId;
-                Settings.ClientSecret = Client.ClientSecret;
-                Settings.AccessToken = Client.AccessToken;
-                Settings.RefreshToken = Client.RefreshToken;
-                Settings.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
-            };
-
-            if (Settings.BackgroundTaskIsEnabled && BackgroundTaskHelper.BackgroundTaskIsRegistered == false)
-                return BackgroundTaskHelper.RegisterBackgroundTaskAsync();
+            if (Settings.BackgroundTask.IsEnabled &&
+                bts.IsRegistered == false && bts.IsSupported)
+                return bts.RegisterBackgroundTaskAsync();
 
             return Task.CompletedTask;
         }
@@ -83,18 +57,15 @@ namespace wallabag
 
                 if (protocolParameter != null && protocolParameter.Server.IsValidUri())
                 {
-                    NavigationService.Navigate(typeof(Views.LoginPage), protocolParameter);
+                    NavigationService.Navigate(typeof(LoginPage), protocolParameter);
                     NavigationService.ClearCache();
                     NavigationService.ClearHistory();
                 }
             }
             else
             {
-                if (string.IsNullOrEmpty(Settings.AccessToken) || string.IsNullOrEmpty(Settings.RefreshToken))
-                {
-                    Client = new Api.WallabagClient(null, string.Empty, string.Empty);
+                if (string.IsNullOrEmpty(Settings.Authentication.AccessToken) || string.IsNullOrEmpty(Settings.Authentication.RefreshToken))
                     NavigationService.Navigate(typeof(Views.LoginPage));
-                }
                 else
                     NavigationService.Navigate(typeof(Views.MainPage));
             }
@@ -108,10 +79,6 @@ namespace wallabag
 
         public override void OnResuming(object s, object e, AppExecutionState previousExecutionState)
         {
-            Client.AccessToken = Settings.AccessToken;
-            Client.RefreshToken = Settings.RefreshToken;
-            Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
-
             if (previousExecutionState == AppExecutionState.Suspended)
                 NavigationService.Resuming();
         }
@@ -120,17 +87,17 @@ namespace wallabag
         {
             base.OnBackgroundActivated(args);
 
-            CreateClientAndDatabase();
+            RegisterServices();
             var deferral = args.TaskInstance.GetDeferral();
 
             await OfflineTaskService.ExecuteAllAsync();
 
-            if (SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask)
+            if (Settings.BackgroundTask.DownloadNewItemsDuringExecution)
             {
                 var items = await Client.GetItemsAsync(
-                    dateOrder: Api.WallabagClient.WallabagDateOrder.ByLastModificationDate,
-                    sortOrder: Api.WallabagClient.WallabagSortOrder.Descending,
-                    since: SettingsService.Instance.LastSuccessfulSyncDateTime);
+                    dateOrder: WallabagClient.WallabagDateOrder.ByLastModificationDate,
+                    sortOrder: WallabagClient.WallabagSortOrder.Descending,
+                    since: Settings.General.LastSuccessfulSyncDateTime);
 
                 if (items != null)
                 {
@@ -150,40 +117,32 @@ namespace wallabag
                         Database.InsertOrReplaceAll(itemList);
                     });
 
-                    SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;
+                    Settings.General.LastSuccessfulSyncDateTime = DateTime.Now;
                 }
             }
 
-            SettingsService.Instance.LastExecutionOfBackgroundTask = DateTime.Now;
+            Settings.BackgroundTask.LastExecution = DateTime.Now;
             deferral.Complete();
         }
 
-        private void CreateClientAndDatabase()
+        private void RegisterServices()
         {
-            if (Client == null)
-                Client = new Api.WallabagClient(Settings.WallabagUrl, Settings.ClientId, Settings.ClientSecret);
-
-            if (!string.IsNullOrEmpty(Settings.AccessToken) &&
-                !string.IsNullOrEmpty(Settings.RefreshToken))
+            SimpleIoc.Default.Register<IDialogService, DialogService>();
+            SimpleIoc.Default.Register<IBackgroundTaskService, BackgroundTaskService>();
+            SimpleIoc.Default.Register<ILoggingService, LoggingService>();
+            SimpleIoc.Default.Register<ISettingsService, SettingsService>();
+            SimpleIoc.Default.Register<INavigationService>(() =>
             {
-                Client.AccessToken = Settings.AccessToken;
-                Client.RefreshToken = Settings.RefreshToken;
-                Client.LastTokenRefreshDateTime = Settings.LastTokenRefreshDateTime;
-            }
+                var ns = new NavigationService();
 
-            if (Database == null)
-            {
-                string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path, "wallabag.db");
+                ns.Configure(Pages.ItemPage, typeof(ItemPage));
+                ns.Configure(Pages.LoginPage, typeof(LoginPage));
+                ns.Configure(Pages.MainPage, typeof(MainPage));
+                ns.Configure(Pages.QRScanPage, typeof(QRScanPage));
+                ns.Configure(Pages.SettingsPage, typeof(SettingsPage));
 
-                Database = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
-                Database.CreateTable<Item>();
-                Database.CreateTable<Tag>();
-                Database.CreateTable<OfflineTask>();
-            }
-        }
-    }
-
-
+                return ns;
+            });
         }
     }
 }

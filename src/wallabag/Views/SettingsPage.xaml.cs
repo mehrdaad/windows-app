@@ -1,4 +1,4 @@
-﻿using wallabag.ViewModels;
+﻿using wallabag.Data.ViewModels;
 using Windows.UI.Xaml.Controls;
 
 // Die Elementvorlage "Leere Seite" ist unter http://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
@@ -10,7 +10,8 @@ namespace wallabag.Views
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
-        public SettingsPageViewModel ViewModel { get { return DataContext as SettingsPageViewModel; } }
+        public SettingsPageViewModel ViewModel => DataContext as SettingsPageViewModel;
+
         public SettingsPage()
         {
             InitializeComponent();

@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace wallabag.Data.Common.Messages
 {
-    class CompleteMultipleSelectionMessage
-    {
-    }
+    public class CompleteMultipleSelectionMessage { }
 }

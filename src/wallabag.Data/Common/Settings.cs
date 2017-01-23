@@ -140,6 +140,6 @@ namespace wallabag.Data.Common
             }
         }
 
-        internal static ISettingsService SettingsService => SimpleIoc.Default.GetInstance<ISettingsService>();
+        public static ISettingsService SettingsService => SimpleIoc.Default.GetInstance<ISettingsService>();
     }
 }

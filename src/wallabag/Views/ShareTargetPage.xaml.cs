@@ -1,4 +1,4 @@
-﻿using wallabag.ViewModels;
+﻿using wallabag.Data.ViewModels;
 using Windows.UI.Xaml.Controls;
 
 // Die Elementvorlage "Leere Seite" ist unter http://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
@@ -10,11 +10,10 @@ namespace wallabag.Views
     /// </summary>
     public sealed partial class ShareTargetPage : Page
     {
-        public AddItemViewModel ViewModel { get { return DataContext as AddItemViewModel; } }
+        public AddItemViewModel ViewModel => DataContext as AddItemViewModel;
         public ShareTargetPage()
         {
             InitializeComponent();
-            ViewModel.AddingStarted += (s, e) => AddStoryboard.Begin();
         }
     }
 }

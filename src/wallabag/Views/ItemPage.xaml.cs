@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using wallabag.Common.Helpers;
+using wallabag.Data.Common;
+using wallabag.Data.ViewModels;
 using wallabag.Services;
-using wallabag.ViewModels;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -12,7 +12,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
-using WindowsStateTriggers;
 
 // Die Elementvorlage "Leere Seite" ist unter http://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
@@ -27,7 +26,7 @@ namespace wallabag.Views
         private bool _isCommandBarVisible = false;
         private bool _isCommandBarCompact = false;
 
-        public ItemPageViewModel ViewModel { get { return DataContext as ItemPageViewModel; } }
+        public ItemPageViewModel ViewModel => DataContext as ItemPageViewModel;
 
         public ItemPage()
         {
@@ -62,14 +61,15 @@ namespace wallabag.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             var titleBarBackgroundRectangle = FindName(nameof(TitleBarBackgroundRectangle)) as Rectangle;
-            System.Diagnostics.Debug.WriteLine(GeneralHelper.DeviceFamilyOfCurrentDevice);
-            if (SettingsService.Instance.WhiteOverlayForTitleBar &&
-                GeneralHelper.DeviceFamilyOfCurrentDevice == DeviceFamily.Desktop)
-            {
-                titleBarBackgroundRectangle.Visibility = Visibility.Visible;
-            }
-            else
-                titleBarBackgroundRectangle.Visibility = Visibility.Collapsed;
+
+            // TODO: Add settings for WhiteOverlayForTitleBar!
+            //if (Settings..WhiteOverlayForTitleBar &&
+            //    GeneralHelper.DeviceFamilyOfCurrentDevice == DeviceFamily.Desktop)
+            //{
+            //    titleBarBackgroundRectangle.Visibility = Visibility.Visible;
+            //}
+            //else
+            //    titleBarBackgroundRectangle.Visibility = Visibility.Collapsed;
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e) => HtmlViewer.NavigateToString("<p></p>");
 
@@ -81,7 +81,6 @@ namespace wallabag.Views
             {
                 if (!_isCommandBarVisible)
                     ShowMinimalCommandBarStoryboard.Begin();
-
             }
             else
             {
@@ -129,15 +128,15 @@ namespace wallabag.Views
         private Uri GetVideoUri(string provider, string videoId, bool returnFallbackUri = false)
         {
             string uriString = string.Empty;
-            var openMode = SettingsService.Instance.VideoOpenMode;
+            var openMode = Settings.Reading.VideoOpenMode;
 
             if (provider == "youtube")
-                if (openMode == SettingsService.WallabagVideoOpenMode.App && returnFallbackUri == false)
+                if (openMode == Settings.Reading.WallabagVideoOpenMode.App && returnFallbackUri == false)
                     uriString = $"vnd.youtube:{videoId}";
                 else
                     uriString = $"https://youtu.be/{videoId}";
             else if (provider == "vimeo")
-                if (openMode == SettingsService.WallabagVideoOpenMode.App && returnFallbackUri == false)
+                if (openMode == Settings.Reading.WallabagVideoOpenMode.App && returnFallbackUri == false)
                     uriString = $"vimeo://v/{videoId}";
                 else
                     uriString = $"https://vimeo.com/{videoId}";
