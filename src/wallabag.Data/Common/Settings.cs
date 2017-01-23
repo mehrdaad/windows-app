@@ -135,7 +135,7 @@ namespace wallabag.Data.Common
             }
             public static DateTime LastExecution
             {
-                get { return SettingsService.GetValueOrDefault(nameof(LastExecution), default(DateTime)); }
+                get { return SettingsService.GetValueOrDefault(nameof(LastExecution), DateTime.MinValue); }
                 set { SettingsService.AddOrUpdateValue(nameof(LastExecution), value); }
             }
         }
