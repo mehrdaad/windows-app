@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using wallabag.Data.Common;
 using wallabag.Data.Services;
 using Windows.ApplicationModel.Background;
 
@@ -12,7 +13,7 @@ namespace wallabag.Services
 
         public async Task RegisterBackgroundTaskAsync()
         {
-            if (IsSupportedOnDevice == false)
+            if (IsSupported == false)
                 return;
 
             await BackgroundExecutionManager.RequestAccessAsync();
@@ -22,13 +23,13 @@ namespace wallabag.Services
                 Name = _backgroundTaskName,
                 IsNetworkRequested = true
             };
-            builder.SetTrigger(new TimeTrigger((uint)SettingsService.Instance.BackgroundTaskExecutionInterval, false));
+            builder.SetTrigger(new TimeTrigger((uint)Settings.BackgroundTask.ExecutionInterval.TotalMinutes, false));
 
             _backgroundTask = builder.Register();
         }
         public void UnregisterBackgroundTask()
         {
-            if (BackgroundTaskIsRegistered)
+            if (IsRegistered)
                 _backgroundTask.Unregister(false);
         }
 
