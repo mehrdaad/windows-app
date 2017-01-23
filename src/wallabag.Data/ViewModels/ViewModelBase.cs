@@ -11,7 +11,7 @@ namespace wallabag.Data.ViewModels
     {
         internal IWallabagClient Client;
         internal static SQLite.Net.SQLiteConnection Database;
-        internal INavigationService Navigation;
+        internal Services.INavigationService Navigation;
         internal Services.IDialogService DialogService;
         internal ILoggingService LoggingService;
 
