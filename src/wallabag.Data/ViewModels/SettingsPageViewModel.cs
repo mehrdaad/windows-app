@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Services;
 using Windows.ApplicationModel;
@@ -22,49 +23,115 @@ namespace wallabag.Data.ViewModels
         private Uri _mailUri = new Uri("mailto:jlnostr+wallabag@outlook.de");
         private Uri _githubIssueUri = new Uri("https://github.com/wallabag/windows-app/issues/new");
         private Uri _rateAppUri = new Uri("ms-windows-store://review/?ProductId=" + Package.Current.Id.FamilyName);
+        private IBackgroundTaskService _backgroundTaskService;
 
-        public bool SyncOnStartup { get; set; } = SettingsService.Instance.SyncOnStartup;
-        public bool AllowCollectionOfTelemetryData { get; set; } = SettingsService.Instance.AllowCollectionOfTelemetryData;
-        public bool NavigateBackAfterReadingAnArticle { get; set; } = SettingsService.Instance.NavigateBackAfterReadingAnArticle;
-        public bool SyncReadingProgress { get; set; } = SettingsService.Instance.SyncReadingProgress;
-        public string VersionNumber { get; set; }
+        public bool SyncOnStartup
+        {
+            get { return Settings.General.SyncOnStartup; }
+            set
+            {
+                Settings.General.SyncOnStartup = value;
+                RaisePropertyChanged();
+            }
+        }
+        public bool AllowCollectionOfTelemetryData
+        {
+            get { return Settings.General.AllowCollectionOfTelemetryData; }
+            set
+            {
+                Settings.General.AllowCollectionOfTelemetryData = value;
+                RaisePropertyChanged();
+            }
+        }
+        public bool NavigateBackAfterReadingAnArticle
+        {
+            get { return Settings.Reading.NavigateBackAfterReadingAnArticle; }
+            set
+            {
+                Settings.Reading.NavigateBackAfterReadingAnArticle = value;
+                RaisePropertyChanged();
+            }
+        }
+        public bool SyncReadingProgress
+        {
+            get { return Settings.Reading.SyncReadingProgress; }
+            set
+            {
+                Settings.Reading.SyncReadingProgress = value;
+                RaisePropertyChanged();
+            }
+        }
+        public string VersionNumber => GetVersionNumber();
         public string VideoOpenModeDescription
         {
             get
             {
-                switch (SettingsService.Instance.VideoOpenMode)
+                switch (Settings.Reading.VideoOpenMode)
                 {
-                    case SettingsService.WallabagVideoOpenMode.Browser:
+                    case Settings.Reading.WallabagVideoOpenMode.Browser:
                         return GeneralHelper.LocalizedResource("VideoOpenModeDescriptionBrowser");
-                    case SettingsService.WallabagVideoOpenMode.App:
+                    case Settings.Reading.WallabagVideoOpenMode.App:
                         return GeneralHelper.LocalizedResource("VideoOpenModeDescriptionApp");
                     default:
-                    case SettingsService.WallabagVideoOpenMode.Inline:
+                    case Settings.Reading.WallabagVideoOpenMode.Inline:
                         return GeneralHelper.LocalizedResource("VideoOpenModeDescriptionInline");
                 }
             }
         }
-        public bool WhiteOverlayForTitleBar { get; set; } = SettingsService.Instance.WhiteOverlayForTitleBar;
-        public bool BackgroundTaskIsEnabled { get; set; } = SettingsService.Instance.BackgroundTaskIsEnabled && BackgroundTaskHelper.IsSupportedOnDevice;
-        public bool BackgroundTaskIsNotSupported { get; } = BackgroundTaskHelper.IsSupportedOnDevice == false;
-        public bool BackgroundTaskIsSupported { get; } = BackgroundTaskHelper.IsSupportedOnDevice;
-        public double BackgroundTaskExecutionInterval { get; set; } = SettingsService.Instance.BackgroundTaskExecutionInterval;
-        public bool DownloadNewItemsDuringExecutionOfBackgroundTask { get; set; } = SettingsService.Instance.DownloadNewItemsDuringExecutionOfBackgroundTask;
 
-        public bool? VideoOpenModeIsInline { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Inline; } }
-        public bool? VideoOpenModeIsApp { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.App; } }
-        public bool? VideoOpenModeIsBrowser { get { return SettingsService.Instance.VideoOpenMode == SettingsService.WallabagVideoOpenMode.Browser; } }
-
-        [DependsOn(nameof(BackgroundTaskExecutionInterval))]
-        public string BackgroundTaskExecutionIntervalDescription { get { return string.Format(GeneralHelper.LocalizedResource("BackgroundTaskExecutionIntervalInMinutesTextBlock.Text"), BackgroundTaskExecutionInterval); } }
-        public string BackgroundTaskLastExecutionDescription
+        public bool WhiteOverlayForTitleBar
         {
-            get
+            get { return Settings.SettingsService.GetValueOrDefault(nameof(WhiteOverlayForTitleBar), true); }
+            set
             {
-                return string.Format(GeneralHelper.LocalizedResource("LastExecutionOfBackgroundTaskTextBlock.Text"),
-                    SettingsService.Instance.LastExecutionOfBackgroundTask == DateTime.MinValue ? GeneralHelper.LocalizedResource("Never") : SettingsService.Instance.LastExecutionOfBackgroundTask.ToString());
+                Settings.SettingsService.AddOrUpdateValue(nameof(WhiteOverlayForTitleBar), value);
+                RaisePropertyChanged();
             }
         }
+        public bool BackgroundTaskIsEnabled
+        {
+            get { return Settings.BackgroundTask.IsEnabled; }
+            set
+            {
+                Settings.BackgroundTask.IsEnabled = value;
+                _backgroundTaskOptionsChanged = true;
+                RaisePropertyChanged();
+            }
+        }
+        public bool BackgroundTaskIsNotSupported => _backgroundTaskService.IsSupported == false;
+        public bool BackgroundTaskIsSupported => _backgroundTaskService.IsSupported;
+        public double BackgroundTaskExecutionInterval
+        {
+            get { return Settings.BackgroundTask.ExecutionInterval.TotalMinutes; }
+            set
+            {
+                Settings.BackgroundTask.ExecutionInterval = TimeSpan.FromMinutes(value);
+                _backgroundTaskOptionsChanged = true;
+                RaisePropertyChanged();
+            }
+        }
+        public bool DownloadNewItemsDuringExecutionOfBackgroundTask
+        {
+            get { return Settings.BackgroundTask.DownloadNewItemsDuringExecution; }
+            set
+            {
+                Settings.BackgroundTask.DownloadNewItemsDuringExecution = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool? VideoOpenModeIsInline => Settings.Reading.VideoOpenMode == Settings.Reading.WallabagVideoOpenMode.Inline;
+        public bool? VideoOpenModeIsApp => Settings.Reading.VideoOpenMode == Settings.Reading.WallabagVideoOpenMode.App;
+        public bool? VideoOpenModeIsBrowser => Settings.Reading.VideoOpenMode == Settings.Reading.WallabagVideoOpenMode.Browser;
+
+        [DependsOn(nameof(BackgroundTaskExecutionInterval))]
+        public string BackgroundTaskExecutionIntervalDescription => string.Format(GeneralHelper.LocalizedResource("BackgroundTaskExecutionIntervalInMinutesTextBlock.Text"), BackgroundTaskExecutionInterval);
+        public string BackgroundTaskLastExecutionDescription
+        => string.Format(GeneralHelper.LocalizedResource("LastExecutionOfBackgroundTaskTextBlock.Text"),
+            Settings.BackgroundTask.LastExecution == DateTime.MinValue
+            ? GeneralHelper.LocalizedResource("Never")
+            : Settings.BackgroundTask.LastExecution.ToString());
+
         private bool _backgroundTaskOptionsChanged = false;
 
         public ICommand OpenDocumentationCommand { get; private set; }
@@ -77,9 +144,9 @@ namespace wallabag.Data.ViewModels
         public ICommand DeleteDatabaseCommand { get; private set; }
         public ICommand VideoOpenModeRadioButtonCheckedCommand { get; private set; }
 
-        public SettingsPageViewModel()
+        public SettingsPageViewModel(IBackgroundTaskService backgroundTaskService)
         {
-            VersionNumber = GetVersionNumber();
+            _backgroundTaskService = backgroundTaskService;
 
             OpenDocumentationCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_documentationUri));
             OpenWallabagTwitterAccountCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_twitterAccountUri));
@@ -90,60 +157,21 @@ namespace wallabag.Data.ViewModels
             LogoutCommand = new RelayCommand(() => Logout());
             DeleteDatabaseCommand = new RelayCommand(() => DeleteDatabase());
             VideoOpenModeRadioButtonCheckedCommand = new RelayCommand<string>(mode => VideoOpenModeRadioButtonChecked(mode));
-
-            PropertyChanged += (s, e) =>
-            {
-                var settings = SettingsService.Instance;
-                switch (e.PropertyName)
-                {
-                    case nameof(SyncOnStartup):
-                        settings.SyncOnStartup = SyncOnStartup; break;
-                    case nameof(AllowCollectionOfTelemetryData):
-                        settings.AllowCollectionOfTelemetryData = AllowCollectionOfTelemetryData; break;
-                    case nameof(NavigateBackAfterReadingAnArticle):
-                        settings.NavigateBackAfterReadingAnArticle = NavigateBackAfterReadingAnArticle; break;
-                    case nameof(SyncReadingProgress):
-                        settings.SyncReadingProgress = SyncReadingProgress; break;
-                    case nameof(WhiteOverlayForTitleBar):
-                        settings.WhiteOverlayForTitleBar = WhiteOverlayForTitleBar; break;
-                    case nameof(DownloadNewItemsDuringExecutionOfBackgroundTask):
-                        settings.DownloadNewItemsDuringExecutionOfBackgroundTask = DownloadNewItemsDuringExecutionOfBackgroundTask; break;
-                    case nameof(BackgroundTaskExecutionInterval):
-                    case nameof(BackgroundTaskIsEnabled):
-                        if (BackgroundTaskIsEnabled == false)
-                        {
-                            SettingsService.Instance.LastExecutionOfBackgroundTask = DateTime.MinValue;
-                            RaisePropertyChanged(nameof(BackgroundTaskLastExecutionDescription));
-                        }
-
-                        _backgroundTaskOptionsChanged = true;
-                        break;
-                }
-            };
         }
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
-            if (_backgroundTaskOptionsChanged == false)
-                return Task.CompletedTask;
-
-            SettingsService.Instance.BackgroundTaskIsEnabled = BackgroundTaskIsEnabled;
-            SettingsService.Instance.BackgroundTaskExecutionInterval = (int)BackgroundTaskExecutionInterval;
-
-            if (BackgroundTaskIsEnabled)
+            if (_backgroundTaskOptionsChanged && BackgroundTaskIsEnabled)
             {
-                BackgroundTaskHelper.UnregisterBackgroundTask();
-                return BackgroundTaskHelper.RegisterBackgroundTaskAsync();
+                _backgroundTaskService.UnregisterBackgroundTask();
+                return _backgroundTaskService.RegisterBackgroundTaskAsync();
             }
             return Task.CompletedTask;
         }
 
         private string GetVersionNumber()
         {
-            var package = Package.Current;
-            var packageId = package.Id;
-            var version = packageId.Version;
-
+            var version = Package.Current.Id.Version;
             return string.Format($"{version.Major}.{version.Minor}.{version.Build}");
         }
         private void TellFriends()
@@ -158,9 +186,9 @@ namespace wallabag.Data.ViewModels
         }
         private void Logout()
         {
-            SettingsService.Instance.AccessToken = string.Empty;
-            SettingsService.Instance.RefreshToken = string.Empty;
-            SettingsService.Instance.LastTokenRefreshDateTime = DateTime.MinValue;
+            Settings.Authentication.AccessToken = string.Empty;
+            Settings.Authentication.RefreshToken = string.Empty;
+            Settings.Authentication.LastTokenRefreshDateTime = DateTime.MinValue;
 
             DeleteDatabase();
         }
@@ -179,14 +207,14 @@ namespace wallabag.Data.ViewModels
             switch (mode)
             {
                 case "app":
-                    SettingsService.Instance.VideoOpenMode = SettingsService.WallabagVideoOpenMode.App;
+                    Settings.Reading.VideoOpenMode = Settings.Reading.WallabagVideoOpenMode.App;
                     break;
                 case "browser":
-                    SettingsService.Instance.VideoOpenMode = SettingsService.WallabagVideoOpenMode.Browser;
+                    Settings.Reading.VideoOpenMode = Settings.Reading.WallabagVideoOpenMode.Browser;
                     break;
                 case "inline":
                 default:
-                    SettingsService.Instance.VideoOpenMode = SettingsService.WallabagVideoOpenMode.Inline;
+                    Settings.Reading.VideoOpenMode = Settings.Reading.WallabagVideoOpenMode.Inline;
                     break;
             }
 
