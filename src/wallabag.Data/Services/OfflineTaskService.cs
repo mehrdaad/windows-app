@@ -1,9 +1,12 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
+using SQLite.Net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using wallabag.Api;
 using wallabag.Api.Models;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Common.Messages;
@@ -14,6 +17,9 @@ namespace wallabag.Data.Services
 {
     public class OfflineTaskService
     {
+        private static IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
+        private static SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
+
         private static ObservableCollection<OfflineTask> _tasks;
         public static ObservableCollection<OfflineTask> Tasks
         {
@@ -21,7 +27,7 @@ namespace wallabag.Data.Services
             {
                 if (_tasks == null)
                 {
-                    _tasks = new ObservableCollection<OfflineTask>(App.Database.Table<OfflineTask>());
+                    _tasks = new ObservableCollection<OfflineTask>(_database.Table<OfflineTask>());
                     _tasks.CollectionChanged += async (s, e) =>
                      {
                          if (e.NewItems != null && e.NewItems.Count > 0)
@@ -47,19 +53,19 @@ namespace wallabag.Data.Services
             switch (task.Action)
             {
                 case OfflineTaskAction.MarkAsRead:
-                    executionIsSuccessful = await App.Client.ArchiveAsync(task.ItemId);
+                    executionIsSuccessful = await _client.ArchiveAsync(task.ItemId);
                     break;
                 case OfflineTaskAction.UnmarkAsRead:
-                    executionIsSuccessful = await App.Client.UnarchiveAsync(task.ItemId);
+                    executionIsSuccessful = await _client.UnarchiveAsync(task.ItemId);
                     break;
                 case OfflineTaskAction.MarkAsStarred:
-                    executionIsSuccessful = await App.Client.FavoriteAsync(task.ItemId);
+                    executionIsSuccessful = await _client.FavoriteAsync(task.ItemId);
                     break;
                 case OfflineTaskAction.UnmarkAsStarred:
-                    executionIsSuccessful = await App.Client.UnfavoriteAsync(task.ItemId);
+                    executionIsSuccessful = await _client.UnfavoriteAsync(task.ItemId);
                     break;
                 case OfflineTaskAction.EditTags:
-                    var item = App.Database.Find<Item>(i => i.Id == task.ItemId);
+                    var item = _database.Find<Item>(i => i.Id == task.ItemId);
 
                     if (item == null)
                     {
@@ -71,7 +77,7 @@ namespace wallabag.Data.Services
 
                     if (task.AddedTags?.Count > 0)
                     {
-                        var newTags = await App.Client.AddTagsAsync(task.ItemId, task.AddedTags.ToStringArray());
+                        var newTags = await _client.AddTagsAsync(task.ItemId, task.AddedTags.ToStringArray());
 
                         if (newTags != null)
                         {
@@ -79,7 +85,7 @@ namespace wallabag.Data.Services
                             foreach (var tag in newTags)
                                 convertedTags.Add(tag);
 
-                            App.Database.InsertOrReplaceAll(convertedTags);
+                            _database.InsertOrReplaceAll(convertedTags);
                             item.Tags.Replace(convertedTags);
                         }
                     }
@@ -89,27 +95,27 @@ namespace wallabag.Data.Services
                         foreach (var tag in task.RemovedTags)
                             tagsToRemove.Add(tag);
 
-                        if (await App.Client.RemoveTagsAsync(task.ItemId, tagsToRemove))
+                        if (await _client.RemoveTagsAsync(task.ItemId, tagsToRemove))
                             foreach (var tag in task.RemovedTags)
                                 if (item.Tags.Contains(tag))
                                     item.Tags.Remove(tag);
                     }
 
-                    executionIsSuccessful = App.Database.Update(item) == 1;
+                    executionIsSuccessful = _database.Update(item) == 1;
                     break;
                 case OfflineTaskAction.AddItem:
-                    var newItem = await App.Client.AddAsync(new Uri(task.Url), task.Tags);
+                    var newItem = await _client.AddAsync(new Uri(task.Url), task.Tags);
 
                     if (newItem != null)
                     {
-                        App.Database.InsertOrReplace((Item)newItem);
+                        _database.InsertOrReplace((Item)newItem);
                         Messenger.Default.Send(new UpdateItemMessage(newItem.Id));
                     }
 
                     executionIsSuccessful = newItem != null;
                     break;
                 case OfflineTaskAction.Delete:
-                    executionIsSuccessful = await App.Client.DeleteAsync(task.ItemId);
+                    executionIsSuccessful = await _client.DeleteAsync(task.ItemId);
                     break;
                 default:
                     break;
@@ -118,7 +124,7 @@ namespace wallabag.Data.Services
             if (executionIsSuccessful)
             {
                 Tasks.Remove(task);
-                App.Database.Delete(task);
+                _database.Delete(task);
             }
         }
 
@@ -147,9 +153,9 @@ namespace wallabag.Data.Services
         private static void InsertTask(OfflineTask newTask)
         {
             Tasks.Add(newTask);
-            App.Database.Insert(newTask);
+            _database.Insert(newTask);
         }
 
-        internal static int LastItemId => App.Database.ExecuteScalar<int>("select Max(ID) from 'Item'");
+        internal static int LastItemId => _database.ExecuteScalar<int>("select Max(ID) from 'Item'");
     }
 }
