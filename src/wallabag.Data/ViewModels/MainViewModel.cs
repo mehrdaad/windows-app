@@ -67,7 +67,7 @@ namespace wallabag.Data.ViewModels
 
         public MainViewModel()
         {
-            AddCommand = new RelayCommand(async () => await DialogService.ShowAsync(DialogService.Dialog.AddItem));
+            AddCommand = new RelayCommand(async () => await DialogService.ShowAsync(Dialogs.AddItemDialog));
             SyncCommand = new RelayCommand(async () => await SyncAsync());
             NavigateToSettingsPageCommand = new RelayCommand(() => Navigation.NavigateTo(Pages.SettingsPage));
 
@@ -203,7 +203,7 @@ namespace wallabag.Data.ViewModels
                 if (Items.Count == 0 || databaseList[0].Equals(Items[0].Model) == false)
                     await ReloadViewAsync();
 
-                SettingsService.Instance.LastSuccessfulSyncDateTime = DateTime.Now;
+                Settings.General.LastSuccessfulSyncDateTime = DateTime.Now;
             }
 
             var tags = await Client.GetTagsAsync();
@@ -450,7 +450,6 @@ namespace wallabag.Data.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
             _incrementalLoadingIsBlocked = true;
-            await TitleBarHelper.ResetAsync();
 
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
             {
@@ -461,7 +460,7 @@ namespace wallabag.Data.ViewModels
             await ReloadViewAsync();
             _incrementalLoadingIsBlocked = false;
 
-            if (SettingsService.Instance.SyncOnStartup)
+            if (Settings.General.SyncOnStartup)
                 await SyncAsync();
 
             Messenger.Default.Register<UpdateItemMessage>(this, message =>
