@@ -9,7 +9,7 @@ using wallabag.Data.Models;
 
 namespace wallabag.Data.ViewModels
 {
-    class ViewModelLocator
+    public class ViewModelLocator
     {
         public ViewModelLocator()
         {
@@ -50,9 +50,21 @@ namespace wallabag.Data.ViewModels
                 return db;
             });
 
+            SimpleIoc.Default.Register<AddItemViewModel>();
+            SimpleIoc.Default.Register<EditTagsViewModel>();
+            SimpleIoc.Default.Register<ItemPageViewModel>();
+            SimpleIoc.Default.Register<LoginPageViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<QRScanPageViewModel>();
+            SimpleIoc.Default.Register<SettingsPageViewModel>();
         }
 
+        public AddItemViewModel AddItem => ServiceLocator.Current.GetInstance<AddItemViewModel>();
+        public EditTagsViewModel EditTags => ServiceLocator.Current.GetInstance<EditTagsViewModel>();
+        public ItemPageViewModel ItemView => ServiceLocator.Current.GetInstance<ItemPageViewModel>();
+        public LoginPageViewModel Login => ServiceLocator.Current.GetInstance<LoginPageViewModel>();
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+        public QRScanPageViewModel QRScan => ServiceLocator.Current.GetInstance<QRScanPageViewModel>();
+        public SettingsPageViewModel Settings => ServiceLocator.Current.GetInstance<SettingsPageViewModel>();
     }
 }
