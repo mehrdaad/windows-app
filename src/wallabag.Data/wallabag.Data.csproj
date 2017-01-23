@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\CustomBlobSerializer.cs" />
     <Compile Include="Common\Helpers\ColorHelper.cs" />
     <Compile Include="Common\Helpers\DispatcherHelper.cs" />
     <Compile Include="Common\Helpers\GeneralHelper.cs" />
