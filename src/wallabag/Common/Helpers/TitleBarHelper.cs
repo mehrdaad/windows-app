@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using wallabag.Data.Common.Helpers;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
 using Windows.UI.Core;
