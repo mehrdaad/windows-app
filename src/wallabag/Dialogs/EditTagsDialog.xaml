@@ -19,6 +19,6 @@
         <vm:EditTagsViewModel />
     </ContentDialog.DataContext>
 
-    <controls:TagsControl ItemsSource="{x:Bind ViewModel.Tags, Mode=OneWay}" />
+    <controls:TagsControl />
 
 </ContentDialog>

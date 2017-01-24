@@ -65,7 +65,7 @@
                 IsReadOnly="True"
                 PlaceholderText="https://"
                 Text="{x:Bind ViewModel.UriString, Mode=OneWay}" />
-            <controls:TagsControl Margin="0,12,0,0" ItemsSource="{x:Bind ViewModel.Tags, Mode=TwoWay}" />
+            <controls:TagsControl Margin="0,12,0,0" />
             <StackPanel
                 Margin="0,24,0,0"
                 HorizontalAlignment="Center"
