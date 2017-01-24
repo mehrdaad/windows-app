@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Data;
 
 namespace wallabag.Data.Converters
 {
-    class BooleanToVisibilityConverter : IValueConverter
+    public class BooleanToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
