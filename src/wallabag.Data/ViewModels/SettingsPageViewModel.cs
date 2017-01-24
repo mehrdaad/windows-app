@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
@@ -144,10 +145,9 @@ namespace wallabag.Data.ViewModels
         public ICommand DeleteDatabaseCommand { get; private set; }
         public ICommand VideoOpenModeRadioButtonCheckedCommand { get; private set; }
 
-        public SettingsPageViewModel(IBackgroundTaskService backgroundTaskService)
+        public SettingsPageViewModel()
         {
-            LoggingService.WriteLine($"Creating a new instance of {nameof(SettingsPageViewModel)}. Type of parameter: {backgroundTaskService?.GetType()?.Name}");
-            _backgroundTaskService = backgroundTaskService;
+            LoggingService.WriteLine($"Creating a new instance of {nameof(SettingsPageViewModel)}.");
 
             OpenDocumentationCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_documentationUri));
             OpenWallabagTwitterAccountCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_twitterAccountUri));
@@ -158,6 +158,12 @@ namespace wallabag.Data.ViewModels
             LogoutCommand = new RelayCommand(() => Logout());
             DeleteDatabaseCommand = new RelayCommand(() => DeleteDatabase());
             VideoOpenModeRadioButtonCheckedCommand = new RelayCommand<string>(mode => VideoOpenModeRadioButtonChecked(mode));
+        }
+        [PreferredConstructor]
+        public SettingsPageViewModel(IBackgroundTaskService backgroundTaskService) : this()
+        {
+            LoggingService.WriteLine($"Creating a new instance of {nameof(SettingsPageViewModel)}. Type of parameter: {backgroundTaskService?.GetType()?.Name}");
+            _backgroundTaskService = backgroundTaskService;
         }
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
