@@ -2,7 +2,7 @@
     x:Class="wallabag.Views.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="using:wallabag.ViewModels"
+    xmlns:vm="using:wallabag.Data.ViewModels"
     xmlns:wst="using:WindowsStateTriggers">
 
     <Page.DataContext>
