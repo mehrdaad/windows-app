@@ -256,7 +256,8 @@ namespace wallabag.Data.ViewModels
             LoggingService.WriteLine("Syncing completed.");
         }
 
-        internal void ItemClick(object sender, ItemClickEventArgs args)
+        // TODO: ICommand
+        public void ItemClick(object sender, ItemClickEventArgs args)
         {
             var item = args.ClickedItem as ItemViewModel;
 
