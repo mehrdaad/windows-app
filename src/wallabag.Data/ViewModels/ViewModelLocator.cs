@@ -15,6 +15,9 @@ namespace wallabag.Data.ViewModels
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
+            if (GalaSoft.MvvmLight.ViewModelBase.IsInDesignModeStatic)
+                return;
+
             SimpleIoc.Default.Register<IWallabagClient>(() =>
             {
                 var client = new WallabagClient(Settings.Authentication.WallabagUri, Settings.Authentication.ClientId, Settings.Authentication.ClientSecret);
