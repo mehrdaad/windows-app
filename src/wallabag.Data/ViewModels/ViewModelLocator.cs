@@ -68,6 +68,6 @@ namespace wallabag.Data.ViewModels
         public LoginPageViewModel Login => ServiceLocator.Current.GetInstance<LoginPageViewModel>();
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
         public QRScanPageViewModel QRScan => ServiceLocator.Current.GetInstance<QRScanPageViewModel>();
-        public SettingsPageViewModel Settings => ServiceLocator.Current.GetInstance<SettingsPageViewModel>();
+        public SettingsPageViewModel SettingsView => ServiceLocator.Current.GetInstance<SettingsPageViewModel>();
     }
 }
