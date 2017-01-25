@@ -19,7 +19,7 @@ namespace wallabag.Data.Services
     {
         private static IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
         private static SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
-        private static ILoggingService LS => SimpleIoc.Default.GetInstance<ILoggingService>();
+        private static ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
 
         private static ObservableCollection<OfflineTask> _tasks;
         public static ObservableCollection<OfflineTask> Tasks
@@ -42,20 +42,20 @@ namespace wallabag.Data.Services
 
         public static async Task ExecuteAllAsync()
         {
-            LS.WriteLine($"Executing all offline tasks. Number of tasks: {Tasks.Count}");
+            _loggingService.WriteLine($"Executing all offline tasks. Number of tasks: {Tasks.Count}");
 
             foreach (var task in Tasks)
                 await ExecuteAsync(task);
 
-            LS.WriteLine($"Execution finished. Number of failed tasks: {Tasks.Count}");
+            _loggingService.WriteLine($"Execution finished. Number of failed tasks: {Tasks.Count}");
         }
         private static async Task ExecuteAsync(OfflineTask task)
         {
-            LS.WriteLine($"Executing task {task.Id} with action {task.Action} for item {task.ItemId}.");
+            _loggingService.WriteLine($"Executing task {task.Id} with action {task.Action} for item {task.ItemId}.");
 
             if (GeneralHelper.InternetConnectionIsAvailable == false)
             {
-                LS.WriteLine("No internet connection available. Cancelled.");
+                _loggingService.WriteLine("No internet connection available. Cancelled.");
                 return;
             }
 
@@ -133,17 +133,17 @@ namespace wallabag.Data.Services
 
             if (executionIsSuccessful)
             {
-                LS.WriteLine("Execution was successful.");
+                _loggingService.WriteLine("Execution was successful.");
                 Tasks.Remove(task);
                 _database.Delete(task);
             }
 
-            LS.WriteLineIf(!executionIsSuccessful, "Execution was not successful.", LoggingCategory.Warning);
+            _loggingService.WriteLineIf(!executionIsSuccessful, "Execution was not successful.", LoggingCategory.Warning);
         }
 
         public static void Add(string url, IEnumerable<string> newTags)
         {
-            LS.WriteLine($"Adding task for URL '{url}' with {newTags.Count()} tags: {string.Join(",", newTags)}");
+            _loggingService.WriteLine($"Adding task for URL '{url}' with {newTags.Count()} tags: {string.Join(",", newTags)}");
 
             var newTask = new OfflineTask()
             {
@@ -156,7 +156,7 @@ namespace wallabag.Data.Services
         }
         public static void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
-            LS.WriteLine($"Adding task for item {itemId} with action {action}. {addTagsList?.Count} new tags, {removeTagsList?.Count} removed tags.");
+            _loggingService.WriteLine($"Adding task for item {itemId} with action {action}. {addTagsList?.Count} new tags, {removeTagsList?.Count} removed tags.");
 
             var newTask = new OfflineTask()
             {
@@ -169,7 +169,7 @@ namespace wallabag.Data.Services
         }
         private static void InsertTask(OfflineTask newTask)
         {
-            LS.WriteLine("Inserting task into database.");
+            _loggingService.WriteLine("Inserting task into database.");
 
             Tasks.Add(newTask);
             _database.Insert(newTask);

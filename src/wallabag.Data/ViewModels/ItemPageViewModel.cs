@@ -29,10 +29,10 @@ namespace wallabag.Data.ViewModels
         public string FailureDescription { get; set; }
 
         private FontFamily _iconFontFamily = new FontFamily("Segoe MDL2 Assets");
-        private const string _readGlyph = "\uE001";
-        private const string _unreadGlyph = "\uE18B";
-        private const string _starredGlyph = "\uE006";
-        private const string _unstarredGlyph = "\uE007";
+        private const string m_READGLYPH = "\uE001";
+        private const string m_UNREADGLYPH = "\uE18B";
+        private const string m_STARREDGLYPH = "\uE006";
+        private const string m_UNSTARREDGLYPH = "\uE007";
         public FontIcon ChangeReadStatusButtonFontIcon { get; set; }
         public FontIcon ChangeFavoriteStatusButtonFontIcon { get; set; }
         public ICommand ChangeReadStatusCommand { get; private set; }
@@ -55,16 +55,16 @@ namespace wallabag.Data.ViewModels
 
         public ItemPageViewModel()
         {
-            LoggingService.WriteLine($"Initializing new instance of {nameof(ItemPageViewModel)}.");
+            _loggingService.WriteLine($"Initializing new instance of {nameof(ItemPageViewModel)}.");
 
             ChangeReadStatusCommand = new RelayCommand(() => ChangeReadStatus());
             ChangeFavoriteStatusCommand = new RelayCommand(() => ChangeFavoriteStatus());
-            EditTagsCommand = new RelayCommand(async () => await DialogService.ShowAsync(Dialogs.EditTagsDialog, new EditTagsViewModel(Item.Model)));
+            EditTagsCommand = new RelayCommand(async () => await _dialogService.ShowAsync(Dialogs.EditTagsDialog, new EditTagsViewModel(Item.Model)));
             DeleteCommand = new RelayCommand(() =>
             {
-                LoggingService.WriteLine("Deleting the current item.");
+                _loggingService.WriteLine("Deleting the current item.");
                 Item.DeleteCommand.Execute();
-                Navigation.GoBack();
+                _navigationService.GoBack();
             });
 
             SaveRightClickLinkCommand = new RelayCommand(() => OfflineTaskService.Add(RightClickUri.ToString(), new List<string>()));
@@ -73,11 +73,11 @@ namespace wallabag.Data.ViewModels
 
         private async Task GenerateFormattedHtmlAsync()
         {
-            LoggingService.WriteLine("Generating the HTML.");
+            _loggingService.WriteLine("Generating the HTML.");
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Article/article.html"));
             string _template = await FileIO.ReadTextAsync(file);
 
-            LoggingService.WriteLineIf(string.IsNullOrEmpty(_template), "The template is empty!", LoggingCategory.Critical);
+            _loggingService.WriteLineIf(string.IsNullOrEmpty(_template), "The template is empty!", LoggingCategory.Critical);
 
             string accentColor = Application.Current.Resources["SystemAccentColor"].ToString().Remove(1, 2);
             var styleSheetBuilder = new StringBuilder();
@@ -95,15 +95,15 @@ namespace wallabag.Data.ViewModels
                 Item.Model.Hostname.Contains("vimeo.com") == false &&
                 Item.Model.PreviewImageUri != null)
             {
-                LoggingService.WriteLine($"Image header is set to: {Item.Model.PreviewImageUri.ToString()}");
+                _loggingService.WriteLine($"Image header is set to: {Item.Model.PreviewImageUri.ToString()}");
                 imageHeader = Item.Model.PreviewImageUri.ToString();
             }
             else
             {
-                LoggingService.WriteLine("Image header is empty.");
+                _loggingService.WriteLine("Image header is empty.");
             }
 
-            LoggingService.WriteLine("Formatting the template with the item properties.");
+            _loggingService.WriteLine("Formatting the template with the item properties.");
             FormattedHtml = _template.FormatWith(new
             {
                 title = Item.Model.Title,
@@ -121,13 +121,13 @@ namespace wallabag.Data.ViewModels
 
         private async Task<string> SetupArticleForHtmlViewerAsync()
         {
-            LoggingService.WriteLine("Preparing HTML.");
+            _loggingService.WriteLine("Preparing HTML.");
             var document = new HtmlDocument();
             document.LoadHtml(Item.Model.Content);
             document.OptionCheckSyntax = false;
 
             // Implement lazy-loading for images
-            LoggingService.WriteLine("Implementing lazy-loading for images...");
+            _loggingService.WriteLine("Implementing lazy-loading for images...");
             foreach (var node in document.DocumentNode.Descendants("img"))
             {
                 if (node.HasAttributes && node.Attributes["src"] != null)
@@ -135,7 +135,7 @@ namespace wallabag.Data.ViewModels
                     string oldSource = node.Attributes["src"].Value;
                     node.Attributes.RemoveAll();
 
-                    LoggingService.WriteLine($"Source of the image: {oldSource}");
+                    _loggingService.WriteLine($"Source of the image: {oldSource}");
 
                     if (!oldSource.Equals(Item.Model.PreviewImageUri?.ToString()) &&
                         GeneralHelper.InternetConnectionIsAvailable)
@@ -149,7 +149,7 @@ namespace wallabag.Data.ViewModels
                 }
             }
 
-            LoggingService.WriteLine("Add thumbnails for embedded videos...");
+            _loggingService.WriteLine("Add thumbnails for embedded videos...");
             string dataOpenMode = Settings.Reading.VideoOpenMode.ToString().ToLower();
             string containerString = "<div class='wallabag-video' style='background-image: url({0})' data-open-mode='" + dataOpenMode + "' data-provider='{1}' data-video-id='{2}'><span></span></div>";
 
@@ -157,10 +157,10 @@ namespace wallabag.Data.ViewModels
             var iframeNodes = document.DocumentNode.Descendants("iframe").ToList();
             var videoNodes = document.DocumentNode.Descendants("video").ToList();
 
-            LoggingService.WriteLine($"Number of <iframe>'s: {iframeNodes.Count}");
-            LoggingService.WriteLine($"Number of <video>'s: {videoNodes.Count}");
+            _loggingService.WriteLine($"Number of <iframe>'s: {iframeNodes.Count}");
+            _loggingService.WriteLine($"Number of <video>'s: {videoNodes.Count}");
 
-            LoggingService.WriteLine("Handling iframes...");
+            _loggingService.WriteLine("Handling iframes...");
             foreach (var node in iframeNodes)
             {
                 if (node.HasAttributes &&
@@ -175,9 +175,9 @@ namespace wallabag.Data.ViewModels
                     else if (videoProvider.Contains("player.vimeo.com"))
                         videoProvider = "vimeo";
 
-                    LoggingService.WriteLine($"Video source: {videoSourceUri}");
-                    LoggingService.WriteLine($"Video ID: {videoId}");
-                    LoggingService.WriteLine($"Video provider: {videoProvider}");
+                    _loggingService.WriteLine($"Video source: {videoSourceUri}");
+                    _loggingService.WriteLine($"Video ID: {videoId}");
+                    _loggingService.WriteLine($"Video provider: {videoProvider}");
                     string newContainer = string.Format(containerString, await GetPreviewImageForVideoAsync(videoProvider, videoId), videoProvider, videoId);
 
                     node.ParentNode.InsertAfter(HtmlNode.CreateNode(newContainer), node);
@@ -186,7 +186,7 @@ namespace wallabag.Data.ViewModels
             }
 
             // This loop is for HTML5 videos using the <video> tag
-            LoggingService.WriteLine("Handling video tags...");
+            _loggingService.WriteLine("Handling video tags...");
             foreach (var node in videoNodes)
             {
                 string videoSource = string.Empty;
@@ -199,7 +199,7 @@ namespace wallabag.Data.ViewModels
                           .FirstOrDefault()
                           ?.GetAttributeValue("src", string.Empty);
 
-                LoggingService.WriteLine($"Video source: {videoSource}");
+                _loggingService.WriteLine($"Video source: {videoSource}");
                 if (!string.IsNullOrEmpty(videoSource))
                 {
                     string newContainer = string.Format(containerString, string.Empty, "html", videoSource);
@@ -216,36 +216,36 @@ namespace wallabag.Data.ViewModels
         {
             string result = string.Empty;
 
-            LoggingService.WriteLine($"Getting preview image for video {videoId} from {videoProvider}");
+            _loggingService.WriteLine($"Getting preview image for video {videoId} from {videoProvider}");
 
             if (videoProvider == "youtube")
                 result = $"http://img.youtube.com/vi/{videoId}/0.jpg";
             else
             {
                 string link = $"http://vimeo.com/api/v2/video/{videoId}.json";
-                LoggingService.WriteLine($"Contacting vimeo for preview image: {link}");
+                _loggingService.WriteLine($"Contacting vimeo for preview image: {link}");
 
                 using (var client = new HttpClient())
                 {
                     var response = await client.GetAsync(new Uri(link));
-                    LoggingService.WriteObject(response);
+                    _loggingService.WriteObject(response);
 
                     if (response.IsSuccessStatusCode)
                     {
                         dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
-                        LoggingService.WriteLine($"Resulted JSON: {json}");
+                        _loggingService.WriteLine($"Resulted JSON: {json}");
                         result = json[0].thumbnail_large.Value;
                     }
                 }
             }
 
-            LoggingService.WriteLine($"Final result: {result}");
+            _loggingService.WriteLine($"Final result: {result}");
             return result;
         }
 
         private void ChangeReadStatus()
         {
-            LoggingService.WriteLine("Changing read status of item.");
+            _loggingService.WriteLine("Changing read status of item.");
             if (Item.Model.IsRead)
                 Item.UnmarkAsReadCommand.Execute();
             else
@@ -254,16 +254,16 @@ namespace wallabag.Data.ViewModels
 
                 if (Settings.Reading.NavigateBackAfterReadingAnArticle)
                 {
-                    LoggingService.WriteLine("Navigating back to main page.");
-                    Navigation.GoBack();
+                    _loggingService.WriteLine("Navigating back to main page.");
+                    _navigationService.GoBack();
                 }
 
                 if (Settings.Reading.SyncReadingProgress)
                 {
-                    LoggingService.WriteLine($"Deleting reading progress.");
+                    _loggingService.WriteLine($"Deleting reading progress.");
                     var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{Settings.Authentication.ClientId}", ApplicationDataCreateDisposition.Always);
                     if (readingSettingsContainer.Values.ContainsKey(Item.Model.Id.ToString()))
-                        LoggingService.WriteLine($"Success: {readingSettingsContainer.Values.Remove(Item.Model.Id.ToString())}");
+                        _loggingService.WriteLine($"Success: {readingSettingsContainer.Values.Remove(Item.Model.Id.ToString())}");
                 }
             }
 
@@ -271,7 +271,7 @@ namespace wallabag.Data.ViewModels
         }
         private void ChangeFavoriteStatus()
         {
-            LoggingService.WriteLine("Changing favorite status of item.");
+            _loggingService.WriteLine("Changing favorite status of item.");
             if (Item.Model.IsStarred)
                 Item.UnmarkAsStarredCommand.Execute();
             else
@@ -281,29 +281,29 @@ namespace wallabag.Data.ViewModels
         }
         private void UpdateReadIcon()
         {
-            LoggingService.WriteLine("Updating read icon.");
+            _loggingService.WriteLine("Updating read icon.");
 
             if (Item.Model.IsRead)
-                ChangeReadStatusButtonFontIcon = CreateFontIcon(_unreadGlyph);
+                ChangeReadStatusButtonFontIcon = CreateFontIcon(m_UNREADGLYPH);
             else
-                ChangeReadStatusButtonFontIcon = CreateFontIcon(_readGlyph);
+                ChangeReadStatusButtonFontIcon = CreateFontIcon(m_READGLYPH);
 
-            LoggingService.WriteLine($"New glyph: {ChangeReadStatusButtonFontIcon.Glyph}");
+            _loggingService.WriteLine($"New glyph: {ChangeReadStatusButtonFontIcon.Glyph}");
         }
         private void UpdateFavoriteIcon()
         {
-            LoggingService.WriteLine("Updating favorite icon.");
+            _loggingService.WriteLine("Updating favorite icon.");
 
             if (Item.Model.IsStarred)
-                ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(_unstarredGlyph);
+                ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(m_UNSTARREDGLYPH);
             else
-                ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(_starredGlyph);
+                ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(m_STARREDGLYPH);
 
-            LoggingService.WriteLine($"New glyph: {ChangeFavoriteStatusButtonFontIcon.Glyph}");
+            _loggingService.WriteLine($"New glyph: {ChangeFavoriteStatusButtonFontIcon.Glyph}");
         }
         public void UpdateBrushes()
         {
-            LoggingService.WriteLine($"Updating brushes for theme '{ColorScheme}'");
+            _loggingService.WriteLine($"Updating brushes for theme '{ColorScheme}'");
             if (ColorScheme.Equals("light"))
             {
                 ForegroundBrush = Color.FromArgb(0xFF, 0x44, 0x44, 0x44).ToSolidColorBrush();
@@ -334,33 +334,33 @@ namespace wallabag.Data.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
-            LoggingService.WriteLine($"Navigation parameter: {parameter}");
+            _loggingService.WriteLine($"Navigation parameter: {parameter}");
             Item = ItemViewModel.FromId((int)parameter);
 
-            LoggingService.WriteLineIf(Item == null, "Item is null.", LoggingCategory.Warning);
-            LoggingService.WriteLine($"Item title: {Item?.Model?.Title}");
+            _loggingService.WriteLineIf(Item == null, "Item is null.", LoggingCategory.Warning);
+            _loggingService.WriteLine($"Item title: {Item?.Model?.Title}");
 
             if ((Item == null || string.IsNullOrEmpty(Item?.Model?.Content)) && GeneralHelper.InternetConnectionIsAvailable)
             {
-                LoggingService.WriteLine("Fetching item from server.");
-                var item = await Client.GetItemAsync(Item.Model.Id);
+                _loggingService.WriteLine("Fetching item from server.");
+                var item = await _client.GetItemAsync(Item.Model.Id);
                 if (item != null)
                     Item = new ItemViewModel(item);
 
-                LoggingService.WriteLine($"Success: {item != null}");
-                LoggingService.WriteObject(item);
+                _loggingService.WriteLine($"Success: {item != null}");
+                _loggingService.WriteObject(item);
             }
 
             if (string.IsNullOrEmpty(Item?.Model?.Content))
             {
-                LoggingService.WriteLine("No content available.", LoggingCategory.Warning);
+                _loggingService.WriteLine("No content available.", LoggingCategory.Warning);
                 FailureHasHappened = true;
                 FailureEmoji = "😶";
                 FailureDescription = GeneralHelper.LocalizedResource("NoContentAvailableErrorMessage");
             }
             else if (Item?.Model?.Content?.Contains("wallabag can't retrieve contents for this article.") == true)
             {
-                LoggingService.WriteLine("wallabag can't retrieve content.", LoggingCategory.Warning);
+                _loggingService.WriteLine("wallabag can't retrieve content.", LoggingCategory.Warning);
                 FailureHasHappened = true;
                 FailureEmoji = "😈";
                 FailureDescription = GeneralHelper.LocalizedResource("CantRetrieveContentsErrorMessage");
@@ -372,12 +372,12 @@ namespace wallabag.Data.ViewModels
 
             if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
             {
-                LoggingService.WriteLine("Fetching reading progress from roaming settings.");
+                _loggingService.WriteLine("Fetching reading progress from roaming settings.");
                 var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{Settings.Authentication.ClientId}", ApplicationDataCreateDisposition.Always);
                 if (readingSettingsContainer.Values.ContainsKey(Item.Model.Id.ToString()))
                     Item.Model.ReadingProgress = (double)readingSettingsContainer.Values[Item.Model.Id.ToString()];
 
-                LoggingService.WriteLine($"Reading progress: {Item.Model.ReadingProgress}");
+                _loggingService.WriteLine($"Reading progress: {Item.Model.ReadingProgress}");
             }
 
             await GenerateFormattedHtmlAsync();
@@ -389,12 +389,12 @@ namespace wallabag.Data.ViewModels
             Settings.Appereance.ColorScheme = ColorScheme;
             Settings.Appereance.TextAlignment = TextAlignment;
 
-            LoggingService.WriteLine("Updating item in database.");
-            Database.Update(Item.Model);
+            _loggingService.WriteLine("Updating item in database.");
+            _database.Update(Item.Model);
 
             if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
             {
-                LoggingService.WriteLine("Setting reading progress in RoamingSettings.");
+                _loggingService.WriteLine("Setting reading progress in RoamingSettings.");
                 var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{Settings.Authentication.ClientId}", ApplicationDataCreateDisposition.Always);
                 readingSettingsContainer.Values[Item.Model.Id.ToString()] = Item.Model.ReadingProgress;
             }

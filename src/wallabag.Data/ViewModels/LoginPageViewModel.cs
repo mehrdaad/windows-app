@@ -51,7 +51,7 @@ namespace wallabag.Data.ViewModels
 
         public LoginPageViewModel()
         {
-            LoggingService.WriteLine("Creating new instance of LoginPageViewModel.");
+            _loggingService.WriteLine("Creating new instance of LoginPageViewModel.");
 
             Providers = new List<WallabagProvider>()
             {
@@ -66,7 +66,7 @@ namespace wallabag.Data.ViewModels
             RegisterCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync((SelectedProvider as WallabagProvider).Url.Append("/register")),
                 () => RegistrationCanBeExecuted());
             WhatIsWallabagCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
-            ScanQRCodeCommand = new RelayCommand(() => Navigation.NavigateTo(Pages.QRScanPage));
+            ScanQRCodeCommand = new RelayCommand(() => _navigationService.NavigateTo(Pages.QRScanPage));
 
             this.PropertyChanged += This_PropertyChanged;
         }
@@ -97,7 +97,7 @@ namespace wallabag.Data.ViewModels
 
         private void Previous()
         {
-            LoggingService.WriteLine($"Navigating one step back. New step: {CurrentStep}");
+            _loggingService.WriteLine($"Navigating one step back. New step: {CurrentStep}");
 
             PreviousCommand.RaiseCanExecuteChanged();
             NextCommand.RaiseCanExecuteChanged();
@@ -111,8 +111,8 @@ namespace wallabag.Data.ViewModels
         {
             var selectedProvider = SelectedProvider as WallabagProvider;
 
-            LoggingService.WriteLine($"Navigating one step forward. New step: {CurrentStep}");
-            LoggingService.WriteLine($"Selected provider URL: {selectedProvider?.Url}");
+            _loggingService.WriteLine($"Navigating one step forward. New step: {CurrentStep}");
+            _loggingService.WriteLine($"Selected provider URL: {selectedProvider?.Url}");
 
             if (CurrentStep == 0)
             {
@@ -129,7 +129,7 @@ namespace wallabag.Data.ViewModels
                 catch (UriFormatException)
                 {
                     Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("UrlFormatWrongMessage")));
-                    LoggingService.WriteLine($"URL was in a wrong format. Input: {Url}", LoggingCategory.Warning);
+                    _loggingService.WriteLine($"URL was in a wrong format. Input: {Url}", LoggingCategory.Warning);
                     return;
                 }
 
@@ -144,7 +144,7 @@ namespace wallabag.Data.ViewModels
                 {
                     CurrentStep = 1;
                     Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("CredentialsWrongMessage")));
-                    LoggingService.WriteLine("The entered credentials are wrong.");
+                    _loggingService.WriteLine("The entered credentials are wrong.");
                     return;
                 }
 
@@ -154,114 +154,114 @@ namespace wallabag.Data.ViewModels
 
             if (CurrentStep == 3)
             {
-                LoggingService.WriteLine("Save fetched values to settings.");
-                Settings.Authentication.AccessToken = Client.AccessToken;
-                Settings.Authentication.RefreshToken = Client.RefreshToken;
-                Settings.Authentication.WallabagUri = Client.InstanceUri;
-                Settings.Authentication.LastTokenRefreshDateTime = Client.LastTokenRefreshDateTime;
-                Settings.Authentication.ClientId = Client.ClientId;
-                Settings.Authentication.ClientSecret = Client.ClientSecret;
+                _loggingService.WriteLine("Save fetched values to settings.");
+                Settings.Authentication.AccessToken = _client.AccessToken;
+                Settings.Authentication.RefreshToken = _client.RefreshToken;
+                Settings.Authentication.WallabagUri = _client.InstanceUri;
+                Settings.Authentication.LastTokenRefreshDateTime = _client.LastTokenRefreshDateTime;
+                Settings.Authentication.ClientId = _client.ClientId;
+                Settings.Authentication.ClientSecret = _client.ClientSecret;
                 Settings.General.AllowCollectionOfTelemetryData = (bool)AllowCollectionOfTelemetryData;
 
-                Navigation.NavigateTo(Pages.MainPage);
-                Navigation.ClearHistory();
+                _navigationService.NavigateTo(Pages.MainPage);
+                _navigationService.ClearHistory();
             }
         }
 
         private async Task<bool> TestConfigurationAsync()
         {
-            LoggingService.WriteLine("Testing configuration.");
-            LoggingService.WriteLine($"URL: {Url}");
+            _loggingService.WriteLine("Testing configuration.");
+            _loggingService.WriteLine($"URL: {Url}");
             ProgressDescription = GeneralHelper.LocalizedResource("TestingConfigurationMessage");
 
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
             {
-                LoggingService.WriteLine("URL doesn't start with protocol, using HTTPS.");
+                _loggingService.WriteLine("URL doesn't start with protocol, using HTTPS.");
                 Url = "https://" + Url;
             }
 
             if (!Url.EndsWith("/"))
             {
                 Url += "/";
-                LoggingService.WriteLine("URL doesn't end with a slash. Added it.");
+                _loggingService.WriteLine("URL doesn't end with a slash. Added it.");
             }
 
-            LoggingService.WriteLine($"URL to test: {Url}");
+            _loggingService.WriteLine($"URL to test: {Url}");
 
             try { await new HttpClient().GetAsync(new Uri(Url)); }
             catch
             {
-                LoggingService.WriteLine("Server was not reachable.", LoggingCategory.Info);
+                _loggingService.WriteLine("Server was not reachable.", LoggingCategory.Info);
                 return false;
             }
 
-            LoggingService.WriteLineIf(UseCustomSettings == true, "User wants to use custom settings.");
+            _loggingService.WriteLineIf(UseCustomSettings == true, "User wants to use custom settings.");
             if (UseCustomSettings == false)
             {
-                Client.InstanceUri = new Uri(Url);
-                LoggingService.WriteLine($"Instance URI of the client: {Client.InstanceUri}");
+                _client.InstanceUri = new Uri(Url);
+                _loggingService.WriteLine($"Instance URI of the client: {_client.InstanceUri}");
 
                 bool clientCreationIsSuccessful = await CreateApiClientAsync();
-                LoggingService.WriteLineIf(clientCreationIsSuccessful, "Client creation is successful.");
+                _loggingService.WriteLineIf(clientCreationIsSuccessful, "Client creation is successful.");
 
                 if (clientCreationIsSuccessful == false &&
                     Url.StartsWith("https://"))
                 {
-                    LoggingService.WriteLine("Client creation was not successful. Trying again with HTTP.");
+                    _loggingService.WriteLine("Client creation was not successful. Trying again with HTTP.");
                     Url = Url.Replace("https://", "http://");
-                    Client.InstanceUri = new Uri(Url);
+                    _client.InstanceUri = new Uri(Url);
 
                     if (await CreateApiClientAsync() == false)
                     {
-                        LoggingService.WriteLine("Client creation failed.");
+                        _loggingService.WriteLine("Client creation failed.");
                         return false;
                     }
                 }
             }
 
-            Client.ClientId = ClientId;
-            Client.ClientSecret = ClientSecret;
-            Client.InstanceUri = new Uri(Url);
+            _client.ClientId = ClientId;
+            _client.ClientSecret = ClientSecret;
+            _client.InstanceUri = new Uri(Url);
 
-            LoggingService.WriteLine("Request authentication tokens.");
-            bool result = await Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
+            _loggingService.WriteLine("Request authentication tokens.");
+            bool result = await _client.RequestTokenAsync(Username, Password).ContinueWith(x =>
             {
                 if (x.Exception == null)
                     return x.Result;
                 else
                     return false;
             });
-            LoggingService.WriteLineIf(result, "Authentication tokens successful requested.");
+            _loggingService.WriteLineIf(result, "Authentication tokens successful requested.");
 
             if (result == false && Url.StartsWith("https://"))
             {
-                LoggingService.WriteLine("Authentication tokens couldn't be requested. Trying again with HTTP.");
+                _loggingService.WriteLine("Authentication tokens couldn't be requested. Trying again with HTTP.");
 
                 Url = Url.Replace("https://", "http://");
-                Client.InstanceUri = new Uri(Url);
+                _client.InstanceUri = new Uri(Url);
 
-                result = await Client.RequestTokenAsync(Username, Password).ContinueWith(x =>
+                result = await _client.RequestTokenAsync(Username, Password).ContinueWith(x =>
                 {
                     if (x.Exception == null)
                         return x.Result;
                     else
                         return false;
                 });
-                LoggingService.WriteLineIf(result == false, "Authentication tokens couldn't be requested.");
+                _loggingService.WriteLineIf(result == false, "Authentication tokens couldn't be requested.");
             }
 
             return result;
         }
         private async Task DownloadAndSaveItemsAndTagsAsync()
         {
-            LoggingService.WriteLine("Downloading items and tags...");
+            _loggingService.WriteLine("Downloading items and tags...");
             ProgressDescription = GeneralHelper.LocalizedResource("DownloadingItemsTextBlock.Text");
             int itemsPerPage = 100;
 
-            var itemResponse = await Client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: itemsPerPage);
+            var itemResponse = await _client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: itemsPerPage);
 
-            LoggingService.WriteLine($"Total number of items: {itemResponse.TotalNumberOfItems}");
-            LoggingService.WriteLine($"Pages: {itemResponse.Pages}");
+            _loggingService.WriteLine($"Total number of items: {itemResponse.TotalNumberOfItems}");
+            _loggingService.WriteLine($"Pages: {itemResponse.Pages}");
 
             var items = itemResponse.Items as List<WallabagItem>;
 
@@ -270,36 +270,36 @@ namespace wallabag.Data.ViewModels
             {
                 for (int i = 2; i <= itemResponse.Pages; i++)
                 {
-                    LoggingService.WriteLine($"Downloading items for page {i}...");
+                    _loggingService.WriteLine($"Downloading items for page {i}...");
                     ProgressDescription = string.Format(GeneralHelper.LocalizedResource("DownloadingItemsWithProgress"), items.Count, itemResponse.TotalNumberOfItems);
-                    items.AddRange(await Client.GetItemsAsync(itemsPerPage: itemsPerPage, pageNumber: i));
+                    items.AddRange(await _client.GetItemsAsync(itemsPerPage: itemsPerPage, pageNumber: i));
                 }
             }
 
-            LoggingService.WriteLine("Downloading tags.");
-            var tags = await Client.GetTagsAsync();
+            _loggingService.WriteLine("Downloading tags.");
+            var tags = await _client.GetTagsAsync();
 
             ProgressDescription = GeneralHelper.LocalizedResource("SavingItemsInDatabaseMessage");
 
-            LoggingService.WriteLine("Saving results in database.");
+            _loggingService.WriteLine("Saving results in database.");
             await Task.Run(() =>
             {
-                Database.RunInTransaction(() =>
+                _database.RunInTransaction(() =>
                 {
-                    LoggingService.WriteLine("Saving items in database.");
+                    _loggingService.WriteLine("Saving items in database.");
                     foreach (var item in items)
-                        Database.InsertOrReplace((Item)item);
+                        _database.InsertOrReplace((Item)item);
 
-                    LoggingService.WriteLine("Saving tags in database.");
+                    _loggingService.WriteLine("Saving tags in database.");
                     foreach (var tag in tags)
-                        Database.InsertOrReplace((Tag)tag);
+                        _database.InsertOrReplace((Tag)tag);
                 });
             });
         }
 
         private void BackRequested(object sender, BackRequestedEventArgs e)
         {
-            LoggingService.WriteLine("User navigated back using the back button.");
+            _loggingService.WriteLine("User navigated back using the back button.");
 
             e.Handled = true;
             if (PreviousCanBeExecuted())
@@ -311,12 +311,12 @@ namespace wallabag.Data.ViewModels
             SystemNavigationManager.GetForCurrentView().BackRequested += BackRequested;
 
             CameraIsSupported = (await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture)).Count > 0;
-            LoggingService.WriteLine($"Camera is supported: {CameraIsSupported}");
+            _loggingService.WriteLine($"Camera is supported: {CameraIsSupported}");
 
             if (state.Count > 0)
             {
-                LoggingService.WriteLine("PageState.Count was greater than zero. Restoring.");
-                LoggingService.WriteObject(state);
+                _loggingService.WriteLine("PageState.Count was greater than zero. Restoring.");
+                _loggingService.WriteObject(state);
 
                 Username = state[nameof(Username)] as string;
                 Password = state[nameof(Password)] as string;
@@ -330,13 +330,13 @@ namespace wallabag.Data.ViewModels
                 _restoredFromPageState = true;
             }
 
-            LoggingService.WriteLine("Checking for navigation parameter.");
+            _loggingService.WriteLine("Checking for navigation parameter.");
             ProtocolSetupNavigationParameter protocolSetupParameter = null;
 
             if (parameter is ProtocolSetupNavigationParameter)
             {
                 protocolSetupParameter = parameter as ProtocolSetupNavigationParameter;
-                LoggingService.WriteLine($"Parameter existing. Setting it as {nameof(protocolSetupParameter)}.");
+                _loggingService.WriteLine($"Parameter existing. Setting it as {nameof(protocolSetupParameter)}.");
             }
 
             // TODO: Implement SessionState
@@ -345,7 +345,7 @@ namespace wallabag.Data.ViewModels
 
             if (protocolSetupParameter != null)
             {
-                LoggingService.WriteLine($"Making use of the {nameof(ProtocolSetupNavigationParameter)}.");
+                _loggingService.WriteLine($"Making use of the {nameof(ProtocolSetupNavigationParameter)}.");
 
                 Username = protocolSetupParameter.Username;
                 Url = protocolSetupParameter.Server;
@@ -359,7 +359,7 @@ namespace wallabag.Data.ViewModels
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
             SystemNavigationManager.GetForCurrentView().BackRequested -= BackRequested;
-            LoggingService.WriteLine("Saving page state.");
+            _loggingService.WriteLine("Saving page state.");
 
             pageState[nameof(Username)] = Username;
             pageState[nameof(Password)] = Password;
@@ -377,15 +377,15 @@ namespace wallabag.Data.ViewModels
 
         HttpClient _http;
 
-        private const string m_loginStartString = "<input type=\"hidden\" name=\"_csrf_token\" value=\"";
-        private const string m_tokenStartString = "<input type=\"hidden\" id=\"client__token\" name=\"client[_token]\" value=\"";
-        private const string m_finalTokenStartString = "<strong><pre>";
-        private const string m_finalTokenEndString = "</pre></strong>";
-        private const string m_htmlInputEndString = "\" />";
+        private const string m_LOGINSTARTSTRING = "<input type=\"hidden\" name=\"_csrf_token\" value=\"";
+        private const string m_TOKENSTARTSTRING = "<input type=\"hidden\" id=\"client__token\" name=\"client[_token]\" value=\"";
+        private const string m_FINALTOKENSTARTSTRING = "<strong><pre>";
+        private const string m_FINALTOKENENDSTRING = "</pre></strong>";
+        private const string m_HTMLINPUTENDSTRING = "\" />";
 
         public async Task<bool> CreateApiClientAsync()
         {
-            LoggingService.WriteLine("Creating a new client...");
+            _loggingService.WriteLine("Creating a new client...");
             ProgressDescription = GeneralHelper.LocalizedResource("CreatingClientMessage");
 
             string token = string.Empty;
@@ -398,8 +398,8 @@ namespace wallabag.Data.ViewModels
                 _http = new HttpClient();
                 var instanceUri = new Uri(Url);
 
-                LoggingService.WriteLine("Logging in to get a cookie... (mmh, cookies...)");
-                LoggingService.WriteLine($"URI: {instanceUri.Append("/login_check")}");
+                _loggingService.WriteLine("Logging in to get a cookie... (mmh, cookies...)");
+                _loggingService.WriteLine($"URI: {instanceUri.Append("/login_check")}");
 
                 // Step 1: Login to get a cookie.
                 var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
@@ -407,33 +407,33 @@ namespace wallabag.Data.ViewModels
 
                 if (!loginResponse.IsSuccessStatusCode)
                 {
-                    LoggingService.WriteLine($"Failed. Resulted content: {await loginResponse.Content.ReadAsStringAsync()}", LoggingCategory.Warning);
+                    _loggingService.WriteLine($"Failed. Resulted content: {await loginResponse.Content.ReadAsStringAsync()}", LoggingCategory.Warning);
                     return false;
                 }
 
                 // Step 2: Get the client token
-                LoggingService.WriteLine("Get the client token...");
+                _loggingService.WriteLine("Get the client token...");
                 step++;
                 var clientCreateUri = instanceUri.Append("/developer/client/create");
-                token = await GetStringFromHtmlSequenceAsync(clientCreateUri, m_tokenStartString, m_htmlInputEndString);
+                token = await GetStringFromHtmlSequenceAsync(clientCreateUri, m_TOKENSTARTSTRING, m_HTMLINPUTENDSTRING);
 
-                LoggingService.WriteLine($"URI: {clientCreateUri}");
-                LoggingService.WriteLine($"Token: {token}");
+                _loggingService.WriteLine($"URI: {clientCreateUri}");
+                _loggingService.WriteLine($"Token: {token}");
 
                 // Step 3: Create the new client
-                LoggingService.WriteLine("Creating the new client...");
+                _loggingService.WriteLine("Creating the new client...");
                 step++;
                 string stringContent = string.Empty;
-                useNewApi = (await Client.GetVersionAsync()).Minor > 0;
+                useNewApi = (await _client.GetVersionAsync()).Minor > 0;
 
-                LoggingService.WriteLine($"Use new API: {useNewApi}");
+                _loggingService.WriteLine($"Use new API: {useNewApi}");
 
                 stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
 
                 if (useNewApi)
                     stringContent = $"client[name]={new EasClientDeviceInformation().FriendlyName}&" + stringContent;
 
-                LoggingService.WriteLine($"Content: {stringContent}");
+                _loggingService.WriteLine($"Content: {stringContent}");
 
                 var addContent = new HttpStringContent(stringContent, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
                 var addResponse = _http.PostAsync(clientCreateUri, addContent);
@@ -442,17 +442,17 @@ namespace wallabag.Data.ViewModels
 
                 if (!message.IsSuccessStatusCode)
                 {
-                    LoggingService.WriteLine($"Failed. Resulted content: {await message.Content.ReadAsStringAsync()}", LoggingCategory.Warning);
+                    _loggingService.WriteLine($"Failed. Resulted content: {await message.Content.ReadAsStringAsync()}", LoggingCategory.Warning);
                     return false;
                 }
 
                 string content = await message.Content.ReadAsStringAsync();
-                LoggingService.WriteLine($"Parsing the resulted string: {content}");
+                _loggingService.WriteLine($"Parsing the resulted string: {content}");
 
                 var result = ParseResult(content, useNewApi);
                 if (result != null)
                 {
-                    LoggingService.WriteLine("Success!");
+                    _loggingService.WriteLine("Success!");
                     ClientId = result.Id;
                     ClientSecret = result.Secret;
 
@@ -465,41 +465,41 @@ namespace wallabag.Data.ViewModels
             }
             catch (Exception e)
             {
-                LoggingService.TrackException(e);
+                _loggingService.TrackException(e);
                 return false;
             }
         }
 
         private object GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(Url).Append(new EasClientDeviceInformation().FriendlyName);
-        private Task<string> GetCsrfTokenAsync() => GetStringFromHtmlSequenceAsync(new Uri(Url).Append("/login"), m_loginStartString, m_htmlInputEndString);
+        private Task<string> GetCsrfTokenAsync() => GetStringFromHtmlSequenceAsync(new Uri(Url).Append("/login"), m_LOGINSTARTSTRING, m_HTMLINPUTENDSTRING);
 
         private async Task<string> GetStringFromHtmlSequenceAsync(Uri uri, string startString, string endString)
         {
-            LoggingService.WriteLine("Trying to get a string from HTML code.");
-            LoggingService.WriteLine($"URI: {uri}");
-            LoggingService.WriteLine($"Start string: {startString}");
-            LoggingService.WriteLine($"End string: {endString}");
+            _loggingService.WriteLine("Trying to get a string from HTML code.");
+            _loggingService.WriteLine($"URI: {uri}");
+            _loggingService.WriteLine($"Start string: {startString}");
+            _loggingService.WriteLine($"End string: {endString}");
 
             string html = await (await _http.GetAsync(uri)).Content.ReadAsStringAsync();
-            LoggingService.WriteLine($"HTML to parse: {html}");
+            _loggingService.WriteLine($"HTML to parse: {html}");
 
             int startIndex = html.IndexOf(startString) + startString.Length;
             int endIndex = html.IndexOf(endString, startIndex);
 
-            LoggingService.WriteLine($"Start index: {startIndex}");
-            LoggingService.WriteLine($"End index: {endIndex}");
+            _loggingService.WriteLine($"Start index: {startIndex}");
+            _loggingService.WriteLine($"End index: {endIndex}");
 
             string result = html.Substring(startIndex, endIndex - startIndex);
-            LoggingService.WriteLine($"Result: {result}");
+            _loggingService.WriteLine($"Result: {result}");
 
             return result;
         }
 
         private ClientResultData ParseResult(string html, bool useNewApi = false)
         {
-            LoggingService.WriteLine("Trying to parse the resulted client credentials...");
-            LoggingService.WriteLine($"Use new API: {useNewApi}");
-            LoggingService.WriteLine($"HTML to parse: {html}");
+            _loggingService.WriteLine("Trying to parse the resulted client credentials...");
+            _loggingService.WriteLine($"Use new API: {useNewApi}");
+            _loggingService.WriteLine($"HTML to parse: {html}");
 
             try
             {
@@ -510,19 +510,19 @@ namespace wallabag.Data.ViewModels
 
                 do
                 {
-                    int start = html.IndexOf(m_finalTokenStartString, lastIndex) + m_finalTokenStartString.Length;
-                    lastIndex = html.IndexOf(m_finalTokenEndString, start);
+                    int start = html.IndexOf(m_FINALTOKENSTARTSTRING, lastIndex) + m_FINALTOKENSTARTSTRING.Length;
+                    lastIndex = html.IndexOf(m_FINALTOKENENDSTRING, start);
 
-                    LoggingService.WriteLine($"Start index: {start}");
-                    LoggingService.WriteLine($"Last index: {lastIndex}");
+                    _loggingService.WriteLine($"Start index: {start}");
+                    _loggingService.WriteLine($"Last index: {lastIndex}");
 
                     string result = html.Substring(start, lastIndex - start);
 
-                    LoggingService.WriteLine($"Result: {result}");
+                    _loggingService.WriteLine($"Result: {result}");
 
                     results.Add(result);
 
-                    LoggingService.WriteLine($"Number of results: {results.Count}");
+                    _loggingService.WriteLine($"Number of results: {results.Count}");
 
                 } while (results.Count <= resultCount);
 
@@ -542,12 +542,12 @@ namespace wallabag.Data.ViewModels
                         Name = string.Empty
                     };
 
-                LoggingService.WriteObject(finalResult);
+                _loggingService.WriteObject(finalResult);
                 return finalResult;
             }
             catch (Exception e)
             {
-                LoggingService.TrackException(e);
+                _loggingService.TrackException(e);
                 Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("SomethingWentWrongMessage")));
                 return null;
             }

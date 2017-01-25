@@ -25,17 +25,17 @@ namespace wallabag.Data.ViewModels
 
         private void Add()
         {
-            LoggingService.WriteLine("Adding item to wallabag.");
-            LoggingService.WriteLine($"URL: {UriString}");
-            LoggingService.WriteLine($"Tags: {string.Join(",", Tags)}");
+            _loggingService.WriteLine("Adding item to wallabag.");
+            _loggingService.WriteLine($"URL: {UriString}");
+            _loggingService.WriteLine($"Tags: {string.Join(",", Tags)}");
 
             if (UriString.IsValidUri())
             {
-                LoggingService.WriteLine("URL is valid.");
+                _loggingService.WriteLine("URL is valid.");
                 var uri = new Uri(UriString);
 
-                LoggingService.WriteLine("Inserting new placeholder item into the database.");
-                Database.Insert(new Item()
+                _loggingService.WriteLine("Inserting new placeholder item into the database.");
+                _database.Insert(new Item()
                 {
                     Id = OfflineTaskService.LastItemId + 1,
                     Title = uri.Host,
@@ -49,8 +49,8 @@ namespace wallabag.Data.ViewModels
 
         private void Cancel()
         {
-            LoggingService.WriteLine("Cancelling the addition of another item. Closing dialog now.");
-            DialogService.HideCurrentDialog();
+            _loggingService.WriteLine("Cancelling the addition of another item. Closing dialog now.");
+            _dialogService.HideCurrentDialog();
         }
     }
 }

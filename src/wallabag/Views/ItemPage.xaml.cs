@@ -22,7 +22,7 @@ namespace wallabag.Views
     /// </summary>
     public sealed partial class ItemPage : Page
     {
-        private const string _scriptName = "changeHtmlAttributes";
+        private const string m_SCRIPTNAME = "changeHtmlAttributes";
         private bool _isCommandBarVisible = false;
         private bool _isCommandBarCompact = false;
 
@@ -231,7 +231,7 @@ namespace wallabag.Views
                 ViewModel.TextAlignment
             };
             ViewModel.UpdateBrushes();
-            return HtmlViewer.InvokeScriptAsync(_scriptName, arguments);
+            return HtmlViewer.InvokeScriptAsync(m_SCRIPTNAME, arguments);
         }
 
         private void OpenCommandsButton_Click(object sender, RoutedEventArgs e)

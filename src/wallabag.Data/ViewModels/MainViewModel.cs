@@ -28,7 +28,7 @@ namespace wallabag.Data.ViewModels
         public IncrementalObservableCollection<ItemViewModel> Items { get; set; }
 
         public Visibility OfflineTaskVisibility => OfflineTaskCount > 0 ? Visibility.Visible : Visibility.Collapsed;
-        public int OfflineTaskCount => Database.ExecuteScalar<int>("select count(*) from OfflineTask");
+        public int OfflineTaskCount => _database.ExecuteScalar<int>("select count(*) from OfflineTask");
         public bool IsSyncing { get; set; }
 
         public bool ItemsCountIsZero => Items.Count == 0;
@@ -67,11 +67,11 @@ namespace wallabag.Data.ViewModels
 
         public MainViewModel()
         {
-            LoggingService.WriteLine("Creating new instance of MainViewModel.");
+            _loggingService.WriteLine("Creating new instance of MainViewModel.");
 
-            AddCommand = new RelayCommand(async () => await DialogService.ShowAsync(Dialogs.AddItemDialog));
+            AddCommand = new RelayCommand(async () => await _dialogService.ShowAsync(Dialogs.AddItemDialog));
             SyncCommand = new RelayCommand(async () => await SyncAsync());
-            NavigateToSettingsPageCommand = new RelayCommand(() => Navigation.NavigateTo(Pages.SettingsPage));
+            NavigateToSettingsPageCommand = new RelayCommand(() => _navigationService.NavigateTo(Pages.SettingsPage));
 
             SetSortTypeFilterCommand = new RelayCommand<string>(filter => SetSortTypeFilter(filter));
             SetSortOrderCommand = new RelayCommand<string>(order => SetSortOrder(order));
@@ -87,7 +87,7 @@ namespace wallabag.Data.ViewModels
             CurrentSearchProperties.SearchStarted += (s, e) => StartSearch();
             CurrentSearchProperties.PropertyChanged += async (s, e) =>
             {
-                LoggingService.WriteLine($"The current search properties have been changed. PropertyName: {e.PropertyName}");
+                _loggingService.WriteLine($"The current search properties have been changed. PropertyName: {e.PropertyName}");
 
                 if (e.PropertyName != nameof(CurrentSearchProperties.Query))
                     await ReloadViewAsync();
@@ -101,7 +101,7 @@ namespace wallabag.Data.ViewModels
 
             OfflineTaskService.Tasks.CollectionChanged += async (s, e) =>
             {
-                LoggingService.WriteLine($"The number of offline tasks changed. {e.NewItems?.Count} new items, {e.OldItems?.Count} old items.");
+                _loggingService.WriteLine($"The number of offline tasks changed. {e.NewItems?.Count} new items, {e.OldItems?.Count} old items.");
 
                 RaisePropertyChanged(nameof(OfflineTaskCount));
                 RaisePropertyChanged(nameof(OfflineTaskVisibility));
@@ -113,8 +113,8 @@ namespace wallabag.Data.ViewModels
 
         private Task ApplyUIChangesForOfflineTaskAsync(OfflineTask task)
         {
-            LoggingService.WriteLine("Executing UI changes for offline task.");
-            LoggingService.WriteObject(task);
+            _loggingService.WriteLine("Executing UI changes for offline task.");
+            _loggingService.WriteObject(task);
 
             var item = default(ItemViewModel);
             bool orderAscending = CurrentSearchProperties.OrderAscending ?? false;
@@ -125,14 +125,14 @@ namespace wallabag.Data.ViewModels
 
                 if (item == null)
                 {
-                    LoggingService.WriteLine("The item doesn't seem to be longer existing in the database. Existing.");
+                    _loggingService.WriteLine("The item doesn't seem to be longer existing in the database. Existing.");
                     return Task.CompletedTask;
                 }
             }
 
             return CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
-                LoggingService.WriteLine("Running dispatcher to apply the changes...");
+                _loggingService.WriteLine("Running dispatcher to apply the changes...");
                 switch (task.Action)
                 {
                     case OfflineTask.OfflineTaskAction.MarkAsRead:
@@ -166,21 +166,21 @@ namespace wallabag.Data.ViewModels
 
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
         {
-            LoggingService.WriteLine("Loading more items from the database.");
-            LoggingService.WriteLineIf(_incrementalLoadingIsBlocked, "Incremental loading is blocked.");
+            _loggingService.WriteLine("Loading more items from the database.");
+            _loggingService.WriteLineIf(_incrementalLoadingIsBlocked, "Incremental loading is blocked.");
             if (_incrementalLoadingIsBlocked)
                 return new List<ItemViewModel>();
 
             var result = new List<ItemViewModel>();
 
-            LoggingService.WriteLine("Calling database for more items.");
+            _loggingService.WriteLine("Calling database for more items.");
             var database = await GetItemsForCurrentSearchPropertiesAsync(Items.Count, (int)count);
 
-            LoggingService.WriteLine($"Adding {database.Count} items to current view.");
+            _loggingService.WriteLine($"Adding {database.Count} items to current view.");
             foreach (var item in database)
                 result.Add(new ItemViewModel(item));
 
-            LoggingService.WriteLine("Fetching metadata for new items.");
+            _loggingService.WriteLine("Fetching metadata for new items.");
             await GetMetadataForItemsAsync(result);
 
             return result;
@@ -188,25 +188,25 @@ namespace wallabag.Data.ViewModels
 
         private async Task SyncAsync()
         {
-            LoggingService.WriteLine("Syncing with the server.");
+            _loggingService.WriteLine("Syncing with the server.");
             if (GeneralHelper.InternetConnectionIsAvailable == false)
             {
-                LoggingService.WriteLine("No internet connection available.");
+                _loggingService.WriteLine("No internet connection available.");
                 return;
             }
 
             IsSyncing = true;
-            LoggingService.WriteLine("Executing all offline tasks.");
+            _loggingService.WriteLine("Executing all offline tasks.");
             await OfflineTaskService.ExecuteAllAsync();
             int syncLimit = 24;
 
-            LoggingService.WriteLine("Fetching items from the server.");
-            var items = await Client.GetItemsAsync(
+            _loggingService.WriteLine("Fetching items from the server.");
+            var items = await _client.GetItemsAsync(
                 dateOrder: WallabagClient.WallabagDateOrder.ByLastModificationDate,
                 sortOrder: WallabagClient.WallabagSortOrder.Descending,
                 itemsPerPage: syncLimit);
 
-            LoggingService.WriteLineIf(items == null, "Fetching items failed.");
+            _loggingService.WriteLineIf(items == null, "Fetching items failed.");
 
             if (items != null)
             {
@@ -215,19 +215,19 @@ namespace wallabag.Data.ViewModels
                 foreach (var item in items)
                     itemList.Add(item);
 
-                LoggingService.WriteLine("Fetching items from the database to compare the new list with current items.");
-                var databaseList = Database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{syncLimit}", Array.Empty<object>());
+                _loggingService.WriteLine("Fetching items from the database to compare the new list with current items.");
+                var databaseList = _database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{syncLimit}", Array.Empty<object>());
                 var deletedItems = databaseList.Except(itemList);
 
-                LoggingService.WriteLine($"Number of deleted items: {deletedItems.Count()}");
+                _loggingService.WriteLine($"Number of deleted items: {deletedItems.Count()}");
 
-                LoggingService.WriteLine("Updating the database.");
-                Database.RunInTransaction(() =>
+                _loggingService.WriteLine("Updating the database.");
+                _database.RunInTransaction(() =>
                 {
                     foreach (var item in deletedItems)
-                        Database.Delete(item);
+                        _database.Delete(item);
 
-                    Database.InsertOrReplaceAll(itemList);
+                    _database.InsertOrReplaceAll(itemList);
                 });
 
                 if (Items.Count == 0 || databaseList[0].Equals(Items[0].Model) == false)
@@ -236,24 +236,24 @@ namespace wallabag.Data.ViewModels
                 Settings.General.LastSuccessfulSyncDateTime = DateTime.Now;
             }
 
-            LoggingService.WriteLine("Fetching the tags from the server.");
-            var tags = await Client.GetTagsAsync();
+            _loggingService.WriteLine("Fetching the tags from the server.");
+            var tags = await _client.GetTagsAsync();
 
-            LoggingService.WriteLineIf(tags == null, "Fetching tags failed.");
+            _loggingService.WriteLineIf(tags == null, "Fetching tags failed.");
 
             if (tags != null)
             {
-                LoggingService.WriteLine("Updating the database.");
+                _loggingService.WriteLine("Updating the database.");
 
-                Database.RunInTransaction(() =>
+                _database.RunInTransaction(() =>
                 {
                     foreach (var tag in tags)
-                        Database.InsertOrReplace((Tag)tag);
+                        _database.InsertOrReplace((Tag)tag);
                 });
             }
 
             IsSyncing = false;
-            LoggingService.WriteLine("Syncing completed.");
+            _loggingService.WriteLine("Syncing completed.");
         }
 
         // TODO: ICommand
@@ -261,27 +261,27 @@ namespace wallabag.Data.ViewModels
         {
             var item = args.ClickedItem as ItemViewModel;
 
-            LoggingService.WriteLine($"Clicked item: {item.Model.Id} ({item.Model.Title})");
+            _loggingService.WriteLine($"Clicked item: {item.Model.Id} ({item.Model.Title})");
 
-            Navigation.NavigateTo(Pages.ItemPage, item.Model.Id);
+            _navigationService.NavigateTo(Pages.ItemPage, item.Model.Id);
         }
 
         private void UpdatePageHeader()
         {
-            LoggingService.WriteLine("Updating page header.");
-            LoggingService.WriteLine($"Old value: {PageHeader}");
+            _loggingService.WriteLine("Updating page header.");
+            _loggingService.WriteLine($"Old value: {PageHeader}");
 
             if (IsSearchActive)
                 PageHeader = string.Format(GeneralHelper.LocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
             else
                 PageHeader = GeneralHelper.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
 
-            LoggingService.WriteLine($"New value: {PageHeader}");
+            _loggingService.WriteLine($"New value: {PageHeader}");
         }
 
         private async Task SearchQueryChangedAsync(AutoSuggestBoxTextChangedEventArgs args)
         {
-            LoggingService.WriteLine($"Search query changed: {CurrentSearchProperties.Query}");
+            _loggingService.WriteLine($"Search query changed: {CurrentSearchProperties.Query}");
 
             if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
                 return;
@@ -290,30 +290,30 @@ namespace wallabag.Data.ViewModels
             {
                 if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
                 {
-                    LoggingService.WriteLine("Updating list of suggestions.");
+                    _loggingService.WriteLine("Updating list of suggestions.");
 
-                    var suggestions = Database.Query<Item>($"SELECT Id,Title FROM Item WHERE Title LIKE '%{CurrentSearchProperties.Query}%' LIMIT 5");
+                    var suggestions = _database.Query<Item>($"SELECT Id,Title FROM Item WHERE Title LIKE '%{CurrentSearchProperties.Query}%' LIMIT 5");
                     SearchQuerySuggestions.Replace(suggestions);
                 }
             });
         }
         private async Task SearchQuerySubmittedAsync(AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            LoggingService.WriteLine($"Search query was submitted: {args.QueryText}");
-            LoggingService.WriteLineIf(args.ChosenSuggestion == null, "No suggestion was chosen.");
+            _loggingService.WriteLine($"Search query was submitted: {args.QueryText}");
+            _loggingService.WriteLineIf(args.ChosenSuggestion == null, "No suggestion was chosen.");
 
             if (args.ChosenSuggestion != null)
             {
                 var item = args.ChosenSuggestion as Item;
 
-                LoggingService.WriteLine($"Chosen suggestion: {item.Id} ({item.Title})");
-                Navigation.NavigateTo(Pages.ItemPage, item.Id);
+                _loggingService.WriteLine($"Chosen suggestion: {item.Id} ({item.Title})");
+                _navigationService.NavigateTo(Pages.ItemPage, item.Id);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(args.QueryText))
             {
-                LoggingService.WriteLine("Cancelling the search, because the query text is empty.");
+                _loggingService.WriteLine("Cancelling the search, because the query text is empty.");
                 CurrentSearchProperties.InvokeSearchCanceledEvent();
                 return;
             }
@@ -326,14 +326,14 @@ namespace wallabag.Data.ViewModels
             var selectedLanguage = args.AddedItems.FirstOrDefault() as Language;
             CurrentSearchProperties.Language = selectedLanguage;
 
-            LoggingService.WriteLine($"Language code changed to {selectedLanguage?.LanguageCode} ({selectedLanguage?.InternalLanguageCode}).");
+            _loggingService.WriteLine($"Language code changed to {selectedLanguage?.LanguageCode} ({selectedLanguage?.InternalLanguageCode}).");
         }
         private void TagChanged(SelectionChangedEventArgs args)
         {
             var selectedTag = args.AddedItems.FirstOrDefault() as Tag;
             CurrentSearchProperties.Tag = selectedTag;
 
-            LoggingService.WriteLine($"Language code changed to {selectedTag?.Label}.");
+            _loggingService.WriteLine($"Language code changed to {selectedTag?.Label}.");
         }
         private void SetSortTypeFilter(string filter)
         {
@@ -342,7 +342,7 @@ namespace wallabag.Data.ViewModels
             else
                 CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByReadingTime;
 
-            LoggingService.WriteLine($"Sort type changed to {CurrentSearchProperties.SortType}.");
+            _loggingService.WriteLine($"Sort type changed to {CurrentSearchProperties.SortType}.");
         }
         private void SetSortOrder(string order) => CurrentSearchProperties.OrderAscending = order == "asc";
 
@@ -351,7 +351,7 @@ namespace wallabag.Data.ViewModels
 
         private void StartSearch()
         {
-            LoggingService.WriteLine("Starting the search process.");
+            _loggingService.WriteLine("Starting the search process.");
 
             IsSearchActive = true;
             _previousItemTypeIndex = CurrentSearchProperties.ItemTypeIndex;
@@ -360,7 +360,7 @@ namespace wallabag.Data.ViewModels
         }
         private async void EndSearchAsync(object sender, BackRequestedEventArgs e)
         {
-            LoggingService.WriteLine("Ending the search process.");
+            _loggingService.WriteLine("Ending the search process.");
 
             IsSearchActive = false;
             CurrentSearchProperties.ItemTypeIndex = _previousItemTypeIndex;
@@ -384,7 +384,7 @@ namespace wallabag.Data.ViewModels
 
         private async Task ReloadViewAsync()
         {
-            LoggingService.WriteLine("Reloading the view.");
+            _loggingService.WriteLine("Reloading the view.");
 
             var databaseItems = await GetItemsForCurrentSearchPropertiesAsync();
             await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
@@ -398,7 +398,7 @@ namespace wallabag.Data.ViewModels
         }
         private Windows.Foundation.IAsyncAction GetMetadataForItemsAsync(IEnumerable<ItemViewModel> items)
         {
-            LoggingService.WriteLine($"Fetching metadata for {items.Count()} items.");
+            _loggingService.WriteLine($"Fetching metadata for {items.Count()} items.");
 
             return CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
@@ -411,7 +411,7 @@ namespace wallabag.Data.ViewModels
                         if (!LanguageSuggestions.Contains(translatedLanguage))
                         {
                             LanguageSuggestions.AddSorted(translatedLanguage, sortAscending: true);
-                            LoggingService.WriteLine($"Language code {translatedLanguage.LanguageCode} ({translatedLanguage.InternalLanguageCode}) is not in the list. Added.");
+                            _loggingService.WriteLine($"Language code {translatedLanguage.LanguageCode} ({translatedLanguage.InternalLanguageCode}) is not in the list. Added.");
                         }
                     }
                     else
@@ -419,7 +419,7 @@ namespace wallabag.Data.ViewModels
                         if (!LanguageSuggestions.Contains(Language.Unknown))
                         {
                             LanguageSuggestions.AddSorted(Language.Unknown, sortAscending: true);
-                            LoggingService.WriteLine("Added Language.Unknown to the list.");
+                            _loggingService.WriteLine("Added Language.Unknown to the list.");
                         }
                     }
 
@@ -428,7 +428,7 @@ namespace wallabag.Data.ViewModels
                         if (!TagSuggestions.Contains(tag))
                         {
                             TagSuggestions.AddSorted(tag, sortAscending: true);
-                            LoggingService.WriteLine($"Tag {tag.Label} is not in the list. Added.");
+                            _loggingService.WriteLine($"Tag {tag.Label} is not in the list. Added.");
                         }
                     }
                 }
@@ -439,7 +439,7 @@ namespace wallabag.Data.ViewModels
         }
         private Task<List<Item>> GetItemsForCurrentSearchPropertiesAsync(int offset = 0, int limit = 24)
         {
-            LoggingService.WriteLine($"Getting items for current search properties. Offset {offset}, Limit {limit}.");
+            _loggingService.WriteLine($"Getting items for current search properties. Offset {offset}, Limit {limit}.");
 
             return Task.Factory.StartNew(() =>
             {
@@ -499,23 +499,23 @@ namespace wallabag.Data.ViewModels
                         query += " ORDER BY CreationDate DESC";
                 }
 
-                Items.MaxItems = Database.ExecuteScalar<int>(query.Replace(queryStart, "SELECT count(*) FROM Item"), queryParameters.ToArray());
-                LoggingService.WriteLine($"Maximum number of items: {Items.MaxItems}");
+                Items.MaxItems = _database.ExecuteScalar<int>(query.Replace(queryStart, "SELECT count(*) FROM Item"), queryParameters.ToArray());
+                _loggingService.WriteLine($"Maximum number of items: {Items.MaxItems}");
 
                 query += " LIMIT ?,?";
                 queryParameters.Add(offset);
                 queryParameters.Add(limit);
 
-                LoggingService.WriteLine($"SQL query: {query}");
-                LoggingService.WriteLine($"SQL parameters: {string.Join(";", queryParameters)}");
+                _loggingService.WriteLine($"SQL query: {query}");
+                _loggingService.WriteLine($"SQL parameters: {string.Join(";", queryParameters)}");
 
-                return Database.Query<Item>(query, queryParameters.ToArray());
+                return _database.Query<Item>(query, queryParameters.ToArray());
             });
         }
 
         private string BuildSQLQuery(string start, List<string> queries)
         {
-            LoggingService.WriteLine($"Building the SQL query. Start: {start}");
+            _loggingService.WriteLine($"Building the SQL query. Start: {start}");
 
             string result = start;
             if (start.EndsWith(" ") == false)
@@ -531,7 +531,7 @@ namespace wallabag.Data.ViewModels
                 result += " ";
             }
 
-            LoggingService.WriteLine($"Final query: {result}");
+            _loggingService.WriteLine($"Final query: {result}");
             return result;
         }
 
@@ -541,7 +541,7 @@ namespace wallabag.Data.ViewModels
 
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
             {
-                LoggingService.WriteLine("Restoring search properties from page state.");
+                _loggingService.WriteLine("Restoring search properties from page state.");
                 string stateValue = state[nameof(CurrentSearchProperties)] as string;
                 CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
             }
@@ -556,8 +556,8 @@ namespace wallabag.Data.ViewModels
             {
                 var viewModel = ItemViewModel.FromId(message.ItemId);
 
-                LoggingService.WriteLine($"Updating item with ID {message.ItemId}.");
-                LoggingService.WriteLineIf(viewModel == null, "Item does not exist in the database!", LoggingCategory.Warning);
+                _loggingService.WriteLine($"Updating item with ID {message.ItemId}.");
+                _loggingService.WriteLineIf(viewModel == null, "Item does not exist in the database!", LoggingCategory.Warning);
 
                 if (viewModel != null && Items.Contains(viewModel))
                 {

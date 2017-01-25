@@ -8,7 +8,7 @@ namespace wallabag.Services
 {
     public class BackgroundTaskService : IBackgroundTaskService
     {
-        private const string _backgroundTaskName = "wallabagBackgroundSync";
+        private const string m_BACKGROUNDTASKNAME = "wallabagBackgroundSync";
         private IBackgroundTaskRegistration _backgroundTask;
 
         public async Task RegisterBackgroundTaskAsync()
@@ -20,7 +20,7 @@ namespace wallabag.Services
 
             var builder = new BackgroundTaskBuilder()
             {
-                Name = _backgroundTaskName,
+                Name = m_BACKGROUNDTASKNAME,
                 IsNetworkRequested = true
             };
             builder.SetTrigger(new TimeTrigger((uint)Settings.BackgroundTask.ExecutionInterval.TotalMinutes, false));
@@ -43,7 +43,7 @@ namespace wallabag.Services
                 bool taskRegistered = false;
                 foreach (var task in BackgroundTaskRegistration.AllTasks)
                 {
-                    if (task.Value.Name == _backgroundTaskName)
+                    if (task.Value.Name == m_BACKGROUNDTASKNAME)
                     {
                         taskRegistered = true;
                         _backgroundTask = task.Value;

@@ -64,9 +64,9 @@ namespace wallabag.Views
         }
 
         #region Context menu
-        private bool _IsShiftPressed = false;
-        private bool _IsPointerPressed = false;
-        private ItemViewModel _LastFocusedItemViewModel;
+        private bool _isShiftPressed = false;
+        private bool _isPointerPressed = false;
+        private ItemViewModel _lastFocusedItemViewModel;
 
         protected override void OnKeyDown(KeyRoutedEventArgs e)
         {
@@ -74,15 +74,15 @@ namespace wallabag.Views
                 EnableMultipleSelection();
 
             if (e.Key == VirtualKey.Shift)
-                _IsShiftPressed = true;
+                _isShiftPressed = true;
 
             // Shift+F10 or the 'Menu' key next to Right Ctrl on most keyboards
-            else if (_IsShiftPressed && e.Key == VirtualKey.F10
+            else if (_isShiftPressed && e.Key == VirtualKey.F10
                     || e.Key == VirtualKey.Application)
             {
                 var FocusedUIElement = FocusManager.GetFocusedElement() as UIElement;
                 if (FocusedUIElement is ContentControl)
-                    _LastFocusedItemViewModel = ((ContentControl)FocusedUIElement).Content as ItemViewModel;
+                    _lastFocusedItemViewModel = ((ContentControl)FocusedUIElement).Content as ItemViewModel;
 
                 ShowContextMenu(FocusedUIElement, new Point(0, 0));
                 e.Handled = true;
@@ -93,7 +93,7 @@ namespace wallabag.Views
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
             if (e.Key == VirtualKey.Shift)
-                _IsShiftPressed = false;
+                _isShiftPressed = false;
             else if (e.Key == VirtualKey.Control)
                 DisableMultipleSelection();
 
@@ -103,11 +103,11 @@ namespace wallabag.Views
         {
             if (e.HoldingState == Windows.UI.Input.HoldingState.Started)
             {
-                _LastFocusedItemViewModel = (e.OriginalSource as FrameworkElement).DataContext as ItemViewModel;
+                _lastFocusedItemViewModel = (e.OriginalSource as FrameworkElement).DataContext as ItemViewModel;
                 ShowContextMenu(null, e.GetPosition(null));
                 e.Handled = true;
 
-                _IsPointerPressed = false;
+                _isPointerPressed = false;
 
                 var itemsToCancel = VisualTreeHelper.FindElementsInHostCoordinates(e.GetPosition(null), ItemGridView);
                 foreach (var item in itemsToCancel)
@@ -118,15 +118,15 @@ namespace wallabag.Views
         }
         protected override void OnPointerPressed(PointerRoutedEventArgs e)
         {
-            _IsPointerPressed = true;
+            _isPointerPressed = true;
 
             base.OnPointerPressed(e);
         }
         protected override void OnRightTapped(RightTappedRoutedEventArgs e)
         {
-            if (_IsPointerPressed)
+            if (_isPointerPressed)
             {
-                _LastFocusedItemViewModel = (e.OriginalSource as FrameworkElement).DataContext as ItemViewModel;
+                _lastFocusedItemViewModel = (e.OriginalSource as FrameworkElement).DataContext as ItemViewModel;
                 ShowContextMenu(null, e.GetPosition(null));
 
                 e.Handled = true;
@@ -136,12 +136,12 @@ namespace wallabag.Views
         }
         private void ShowContextMenu(UIElement target, Point offset)
         {
-            if (_LastFocusedItemViewModel != null && !_IsMultipleSelectionEnabled)
+            if (_lastFocusedItemViewModel != null && !_isMultipleSelectionEnabled)
             {
                 var myFlyout = Resources["ItemContextMenuMenuFlyout"] as MenuFlyout;
 
                 foreach (var item in myFlyout.Items)
-                    item.DataContext = _LastFocusedItemViewModel;
+                    item.DataContext = _lastFocusedItemViewModel;
 
                 myFlyout.ShowAt(target, offset);
             }
@@ -149,20 +149,20 @@ namespace wallabag.Views
         #endregion
 
         #region Multiple selection
-        private bool _IsMultipleSelectionEnabled = false;
+        private bool _isMultipleSelectionEnabled = false;
 
         public MultipleSelectionViewModel SelectionViewModel { get; set; } = new MultipleSelectionViewModel();
 
         private void EnableMultipleSelection()
         {
-            _IsMultipleSelectionEnabled = true;
+            _isMultipleSelectionEnabled = true;
             VisualStateManager.GoToState(this, nameof(MultipleSelectionEnabled), false);
         }
         private void DisableMultipleSelection(bool forceDisable = false)
         {
             if (ItemGridView.SelectedItems.Count == 0 || forceDisable)
             {
-                _IsMultipleSelectionEnabled = false;
+                _isMultipleSelectionEnabled = false;
                 VisualStateManager.GoToState(this, nameof(MultipleSelectionDisabled), false);
             }
         }

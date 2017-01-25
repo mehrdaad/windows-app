@@ -30,20 +30,20 @@ namespace wallabag.Data.ViewModels
         [PreferredConstructor]
         public EditTagsViewModel()
         {
-            LoggingService.WriteLine("Creating new instance of EditTagsViewModel.");
+            _loggingService.WriteLine("Creating new instance of EditTagsViewModel.");
 
             FinishCommand = new RelayCommand(() => Finish());
             CancelCommand = new RelayCommand(() => Cancel());
 
             TagQueryChangedCommand = new RelayCommand<AutoSuggestBoxTextChangedEventArgs>(args =>
             {
-                LoggingService.WriteLine($"Tag query changed: {TagQuery} (Reason: {args.Reason.ToString()})");
+                _loggingService.WriteLine($"Tag query changed: {TagQuery} (Reason: {args.Reason.ToString()})");
                 if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
                 {
                     string suggestionString = TagQuery.ToLower().Split(',').Last();
-                    LoggingService.WriteLine($"Searching for tags beginning with '{suggestionString}' in the database.");
+                    _loggingService.WriteLine($"Searching for tags beginning with '{suggestionString}' in the database.");
                     Suggestions.Replace(
-                        Database.Table<Tag>()
+                        _database.Table<Tag>()
                             .Where(t => t.Label.ToLower().StartsWith(suggestionString))
                             .Except(Tags)
                             .Take(3)
@@ -52,18 +52,18 @@ namespace wallabag.Data.ViewModels
             });
             TagSubmittedCommand = new RelayCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args =>
             {
-                LoggingService.WriteLine($"Tag was submitted. Parameter is {args.ChosenSuggestion?.GetType()?.Name}.");
+                _loggingService.WriteLine($"Tag was submitted. Parameter is {args.ChosenSuggestion?.GetType()?.Name}.");
                 var suggestion = args.ChosenSuggestion as Tag;
 
                 if (suggestion != null && !Tags.Contains(suggestion))
                 {
-                    LoggingService.WriteLine("Tag wasn't in list yet. Added.");
+                    _loggingService.WriteLine("Tag wasn't in list yet. Added.");
                     Tags.Add(args.ChosenSuggestion as Tag);
                 }
                 else
                 {
                     var tags = args.QueryText.Split(',').ToList();
-                    LoggingService.WriteLine($"Adding {tags.Count} tags to the list.");
+                    _loggingService.WriteLine($"Adding {tags.Count} tags to the list.");
 
                     foreach (string item in tags)
                     {
@@ -80,7 +80,7 @@ namespace wallabag.Data.ViewModels
         }
         public EditTagsViewModel(Item item) : this()
         {
-            LoggingService.WriteLine($"Creating new instance of EditTagsViewModel for item {item.Id}.");
+            _loggingService.WriteLine($"Creating new instance of EditTagsViewModel for item {item.Id}.");
 
             Items.Add(item);
             _previousTags = item.Tags;
@@ -89,8 +89,8 @@ namespace wallabag.Data.ViewModels
 
         private void Finish()
         {
-            LoggingService.WriteLine($"Editing tags for {Items.Count} items.");
-            LoggingService.WriteLineIf(_previousTags != null, $"Number of previous tags: {_previousTags.Count()}");
+            _loggingService.WriteLine($"Editing tags for {Items.Count} items.");
+            _loggingService.WriteLineIf(_previousTags != null, $"Number of previous tags: {_previousTags.Count()}");
 
             if (_previousTags == null)
             {
@@ -107,8 +107,8 @@ namespace wallabag.Data.ViewModels
                 var newTags = Tags.Except(_previousTags).ToList();
                 var deletedTags = _previousTags.Except(Tags).ToList();
 
-                LoggingService.WriteLine($"Number of new tags: {newTags?.Count}");
-                LoggingService.WriteLine($"Number of deleted tags: {deletedTags?.Count}");
+                _loggingService.WriteLine($"Number of new tags: {newTags?.Count}");
+                _loggingService.WriteLine($"Number of deleted tags: {deletedTags?.Count}");
 
                 Items.First().Tags.Replace(Tags);
 
@@ -117,7 +117,7 @@ namespace wallabag.Data.ViewModels
         }
         private void Cancel()
         {
-            LoggingService.WriteLine("Cancelling the editing of tags.");
+            _loggingService.WriteLine("Cancelling the editing of tags.");
         }
     }
 }

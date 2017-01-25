@@ -7,7 +7,7 @@ namespace wallabag.Services
 {
     class LoggingService : ILoggingService
     {
-        private const string _schema = "[{0}] [{1}] {2}";
+        private const string m_SCHEMA = "[{0}] [{1}] {2}";
 
         public void TrackException(Exception e, LoggingCategory category = LoggingCategory.Critical, [CallerMemberName] string member = "", [CallerLineNumber] int lineNumber = 0)
             => Write(e.Message, category, member, lineNumber);
@@ -29,7 +29,7 @@ namespace wallabag.Services
 
         private void Write(string text, LoggingCategory category, string member, int lineNumber)
         {
-            System.Diagnostics.Debug.WriteLine(string.Format(_schema, DateTime.Now, category.ToString(), text), category.ToString());
+            System.Diagnostics.Debug.WriteLine(string.Format(m_SCHEMA, DateTime.Now, category.ToString(), text), category.ToString());
         }
     }
 }

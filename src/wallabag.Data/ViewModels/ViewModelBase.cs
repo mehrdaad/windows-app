@@ -10,11 +10,11 @@ namespace wallabag.Data.ViewModels
 {
     public class ViewModelBase : GalaSoft.MvvmLight.ViewModelBase, INavigable
     {
-        internal IWallabagClient Client => SimpleIoc.Default.GetInstance<IWallabagClient>();
-        internal static SQLiteConnection Database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
-        internal INavigationService Navigation => SimpleIoc.Default.GetInstance<INavigationService>();
-        internal IDialogService DialogService => SimpleIoc.Default.GetInstance<IDialogService>();
-        internal ILoggingService LoggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
+        internal IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
+        internal static SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
+        internal INavigationService _navigationService => SimpleIoc.Default.GetInstance<INavigationService>();
+        internal IDialogService _dialogService => SimpleIoc.Default.GetInstance<IDialogService>();
+        internal ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
 
         public virtual Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {

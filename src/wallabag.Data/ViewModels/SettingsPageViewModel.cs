@@ -147,7 +147,7 @@ namespace wallabag.Data.ViewModels
 
         public SettingsPageViewModel()
         {
-            LoggingService.WriteLine($"Creating a new instance of {nameof(SettingsPageViewModel)}.");
+            _loggingService.WriteLine($"Creating a new instance of {nameof(SettingsPageViewModel)}.");
 
             OpenDocumentationCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_documentationUri));
             OpenWallabagTwitterAccountCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(_twitterAccountUri));
@@ -162,7 +162,7 @@ namespace wallabag.Data.ViewModels
         [PreferredConstructor]
         public SettingsPageViewModel(IBackgroundTaskService backgroundTaskService) : this()
         {
-            LoggingService.WriteLine($"Creating a new instance of {nameof(SettingsPageViewModel)}. Type of parameter: {backgroundTaskService?.GetType()?.Name}");
+            _loggingService.WriteLine($"Creating a new instance of {nameof(SettingsPageViewModel)}. Type of parameter: {backgroundTaskService?.GetType()?.Name}");
             _backgroundTaskService = backgroundTaskService;
         }
 
@@ -172,13 +172,13 @@ namespace wallabag.Data.ViewModels
             {
                 if (BackgroundTaskIsEnabled)
                 {
-                    LoggingService.WriteLine("The background task options were changed. Re-registering the background task.");
+                    _loggingService.WriteLine("The background task options were changed. Re-registering the background task.");
                     _backgroundTaskService.UnregisterBackgroundTask();
                     return _backgroundTaskService.RegisterBackgroundTaskAsync();
                 }
                 else
                 {
-                    LoggingService.WriteLine("The background task options were changed. Unregistering the background task.");
+                    _loggingService.WriteLine("The background task options were changed. Unregistering the background task.");
                     _backgroundTaskService.UnregisterBackgroundTask();
                 }
             }
@@ -192,7 +192,7 @@ namespace wallabag.Data.ViewModels
         }
         private void TellFriends()
         {
-            LoggingService.WriteLine("Sharing info about wallabag with friends.");
+            _loggingService.WriteLine("Sharing info about wallabag with friends.");
             DataTransferManager.GetForCurrentView().DataRequested += (s, e) =>
             {
                 e.Request.Data.SetWebLink(new Uri("https://www.wallabag.org/"));
@@ -203,7 +203,7 @@ namespace wallabag.Data.ViewModels
         }
         private void Logout()
         {
-            LoggingService.WriteLine("Deleting all credentials...");
+            _loggingService.WriteLine("Deleting all credentials...");
             Settings.Authentication.AccessToken = string.Empty;
             Settings.Authentication.RefreshToken = string.Empty;
             Settings.Authentication.LastTokenRefreshDateTime = DateTime.MinValue;
@@ -212,9 +212,9 @@ namespace wallabag.Data.ViewModels
         }
         private void DeleteDatabase()
         {
-            LoggingService.WriteLine("Deleting the database...");
-            string path = Database.DatabasePath;
-            Database.Close();
+            _loggingService.WriteLine("Deleting the database...");
+            string path = _database.DatabasePath;
+            _database.Close();
 
             File.Delete(path);
 

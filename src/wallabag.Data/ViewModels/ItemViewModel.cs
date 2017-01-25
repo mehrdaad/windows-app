@@ -29,60 +29,60 @@ namespace wallabag.Data.ViewModels
 
         public ItemViewModel(Item Model)
         {
-            LoggingService.WriteLine("Creating new instance of ItemViewModel.");
-            LoggingService.WriteLine($"{Model.Id} | {Model.Title} | {Model.Url}");
+            _loggingService.WriteLine("Creating new instance of ItemViewModel.");
+            _loggingService.WriteLine($"{Model.Id} | {Model.Title} | {Model.Url}");
 
             this.Model = Model;
 
             (Model as INotifyPropertyChanged).PropertyChanged += (s, e) =>
             {
-                LoggingService.WriteLine($"Model with ID {Model.Id} was updated.");
+                _loggingService.WriteLine($"Model with ID {Model.Id} was updated.");
                 RaisePropertyChanged(nameof(Model));
             };
             Model.Tags.CollectionChanged += (s, e) =>
             {
-                LoggingService.WriteLine($"Tags of model with ID {Model.Id} were updated.");
+                _loggingService.WriteLine($"Tags of model with ID {Model.Id} were updated.");
                 RaisePropertyChanged(nameof(TagsString));
                 RaisePropertyChanged(nameof(TagsAreExisting));
             };
 
             MarkAsReadCommand = new RelayCommand(() =>
             {
-                LoggingService.WriteLine($"Marking item {Model.Id} as read.");
+                _loggingService.WriteLine($"Marking item {Model.Id} as read.");
                 Model.IsRead = true;
                 UpdateItem();
                 OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
             });
             UnmarkAsReadCommand = new RelayCommand(() =>
             {
-                LoggingService.WriteLine($"Marking item {Model.Id} as unread.");
+                _loggingService.WriteLine($"Marking item {Model.Id} as unread.");
                 Model.IsRead = false;
                 UpdateItem();
                 OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
             });
             MarkAsStarredCommand = new RelayCommand(() =>
             {
-                LoggingService.WriteLine($"Marking item {Model.Id} as favorite.");
+                _loggingService.WriteLine($"Marking item {Model.Id} as favorite.");
                 Model.IsStarred = true;
                 UpdateItem();
                 OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
             });
             UnmarkAsStarredCommand = new RelayCommand(() =>
             {
-                LoggingService.WriteLine($"Marking item {Model.Id} as unfavorite.");
+                _loggingService.WriteLine($"Marking item {Model.Id} as unfavorite.");
                 Model.IsStarred = false;
                 UpdateItem();
                 OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
             });
             DeleteCommand = new RelayCommand(() =>
             {
-                LoggingService.WriteLine($"Deleting item {Model.Id}.");
-                Database.Delete(Model);
+                _loggingService.WriteLine($"Deleting item {Model.Id}.");
+                _database.Delete(Model);
                 OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
             });
             ShareCommand = new RelayCommand(() =>
             {
-                LoggingService.WriteLine($"Sharing item {Model.Id}.");
+                _loggingService.WriteLine($"Sharing item {Model.Id}.");
                 DataTransferManager.GetForCurrentView().DataRequested += (s, args) =>
                 {
                     var data = args.Request.Data;
@@ -94,12 +94,12 @@ namespace wallabag.Data.ViewModels
             });
             EditTagsCommand = new RelayCommand(async () =>
             {
-                LoggingService.WriteLine($"Editing tags of item {Model.Id}.");
-                await DialogService.ShowAsync(Dialogs.EditTagsDialog, new EditTagsViewModel(this.Model));
+                _loggingService.WriteLine($"Editing tags of item {Model.Id}.");
+                await _dialogService.ShowAsync(Dialogs.EditTagsDialog, new EditTagsViewModel(this.Model));
             });
             OpenInBrowserCommand = new RelayCommand(async () =>
             {
-                LoggingService.WriteLine($"Opening item {Model.Id} in browser.");
+                _loggingService.WriteLine($"Opening item {Model.Id} in browser.");
                 await Launcher.LaunchUriAsync(new Uri(Model.Url));
             });
         }
@@ -109,7 +109,7 @@ namespace wallabag.Data.ViewModels
             var ls = SimpleIoc.Default.GetInstance<ILoggingService>();
             ls.WriteLine($"Creating ItemViewModel from item id: {itemId}");
 
-            var item = Database.Find<Item>(itemId);
+            var item = _database.Find<Item>(itemId);
             ls.WriteLineIf(item == null, $"Failed! Item does not exist in database!", LoggingCategory.Critical);
 
             if (item != null)
@@ -120,9 +120,9 @@ namespace wallabag.Data.ViewModels
 
         private void UpdateItem()
         {
-            LoggingService.WriteLine($"Updating item {Model.Id} in database.");
+            _loggingService.WriteLine($"Updating item {Model.Id} in database.");
             Model.LastModificationDate = DateTime.UtcNow;
-            Database.Update(Model);
+            _database.Update(Model);
         }
 
         public int CompareTo(object obj) => ((IComparable)Model).CompareTo((obj as ItemViewModel).Model);
