@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace wallabag.Data.ViewModels
         public ICommand TagQueryChangedCommand { get; private set; }
         public ICommand TagSubmittedCommand { get; private set; }
 
+        [PreferredConstructor]
         public EditTagsViewModel()
         {
             LoggingService.WriteLine("Creating new instance of EditTagsViewModel.");

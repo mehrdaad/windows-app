@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -16,6 +17,7 @@ namespace wallabag.Data.ViewModels
 
         public const string QRResultKey = "QRScanResult";
 
+        [PreferredConstructor]
         public QRScanPageViewModel()
         {
             LoggingService.WriteLine($"Creating new instance of {nameof(QRScanPageViewModel)}.");
