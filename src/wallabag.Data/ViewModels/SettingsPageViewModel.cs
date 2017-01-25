@@ -24,7 +24,7 @@ namespace wallabag.Data.ViewModels
         private Uri _mailUri = new Uri("mailto:jlnostr+wallabag@outlook.de");
         private Uri _githubIssueUri = new Uri("https://github.com/wallabag/windows-app/issues/new");
         private Uri _rateAppUri = new Uri("ms-windows-store://review/?ProductId=" + Package.Current.Id.FamilyName);
-        private IBackgroundTaskService _backgroundTaskService;
+        private IBackgroundTaskService _backgroundTaskService => SimpleIoc.Default.GetInstance<IBackgroundTaskService>();
 
         public bool SyncOnStartup
         {
@@ -159,13 +159,7 @@ namespace wallabag.Data.ViewModels
             DeleteDatabaseCommand = new RelayCommand(() => DeleteDatabase());
             VideoOpenModeRadioButtonCheckedCommand = new RelayCommand<string>(mode => VideoOpenModeRadioButtonChecked(mode));
         }
-        [PreferredConstructor]
-        public SettingsPageViewModel(IBackgroundTaskService backgroundTaskService) : this()
-        {
-            _loggingService.WriteLine($"Creating a new instance of {nameof(SettingsPageViewModel)}. Type of parameter: {backgroundTaskService?.GetType()?.Name}");
-            _backgroundTaskService = backgroundTaskService;
-        }
-
+       
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
             if (_backgroundTaskOptionsChanged)
