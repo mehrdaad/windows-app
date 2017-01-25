@@ -13,7 +13,6 @@ namespace wallabag.Data.ViewModels
         internal IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
         internal static SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
         internal INavigationService _navigationService => SimpleIoc.Default.GetInstance<INavigationService>();
-        internal IDialogService _dialogService => SimpleIoc.Default.GetInstance<IDialogService>();
         internal ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
 
         public virtual Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)

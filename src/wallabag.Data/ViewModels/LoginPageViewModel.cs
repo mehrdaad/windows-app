@@ -66,7 +66,7 @@ namespace wallabag.Data.ViewModels
             RegisterCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync((SelectedProvider as WallabagProvider).Url.Append("/register")),
                 () => RegistrationCanBeExecuted());
             WhatIsWallabagCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
-            ScanQRCodeCommand = new RelayCommand(() => _navigationService.NavigateTo(Pages.QRScanPage));
+            ScanQRCodeCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.QRScanPage));
 
             this.PropertyChanged += This_PropertyChanged;
         }
@@ -163,7 +163,7 @@ namespace wallabag.Data.ViewModels
                 Settings.Authentication.ClientSecret = _client.ClientSecret;
                 Settings.General.AllowCollectionOfTelemetryData = (bool)AllowCollectionOfTelemetryData;
 
-                _navigationService.NavigateTo(Pages.MainPage);
+                _navigationService.Navigate(Navigation.Pages.MainPage);
                 _navigationService.ClearHistory();
             }
         }

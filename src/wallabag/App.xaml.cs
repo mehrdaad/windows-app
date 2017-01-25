@@ -15,6 +15,7 @@ using wallabag.Services;
 using wallabag.Views;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using static wallabag.Data.Common.Navigation;
 
 namespace wallabag
 {
@@ -127,7 +128,6 @@ namespace wallabag
 
         private void RegisterServices()
         {
-            SimpleIoc.Default.Register<IDialogService, DialogService>();
             SimpleIoc.Default.Register<IBackgroundTaskService, BackgroundTaskService>();
             SimpleIoc.Default.Register<ILoggingService, LoggingService>();
             SimpleIoc.Default.Register<ISettingsService, SettingsService>();

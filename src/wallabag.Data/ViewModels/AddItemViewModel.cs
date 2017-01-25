@@ -49,8 +49,8 @@ namespace wallabag.Data.ViewModels
 
         private void Cancel()
         {
-            _loggingService.WriteLine("Cancelling the addition of another item. Closing dialog now.");
-            _dialogService.HideCurrentDialog();
+            _loggingService.WriteLine("Cancelling the addition of another item.");
+            _navigationService.GoBack();
         }
     }
 }

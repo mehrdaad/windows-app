@@ -132,7 +132,6 @@
     <Compile Include="Models\WallabagProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IBackgroundTaskService.cs" />
-    <Compile Include="Services\IDialogService.cs" />
     <Compile Include="Services\ILoggingService.cs" />
     <Compile Include="Services\INavigationService.cs" />
     <Compile Include="Services\ISettingsService.cs" />

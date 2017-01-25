@@ -3,11 +3,11 @@ using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.ComponentModel;
 using System.Windows.Input;
-using wallabag.Data.Common;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
+using static wallabag.Data.Common.Navigation;
 
 namespace wallabag.Data.ViewModels
 {
@@ -92,10 +92,10 @@ namespace wallabag.Data.ViewModels
                 };
                 DataTransferManager.ShowShareUI();
             });
-            EditTagsCommand = new RelayCommand(async () =>
+            EditTagsCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine($"Editing tags of item {Model.Id}.");
-                await _dialogService.ShowAsync(Dialogs.EditTagsDialog, new EditTagsViewModel(this.Model));
+                _navigationService.Navigate(Pages.EditTagsPage, new EditTagsViewModel(this.Model));
             });
             OpenInBrowserCommand = new RelayCommand(async () =>
             {

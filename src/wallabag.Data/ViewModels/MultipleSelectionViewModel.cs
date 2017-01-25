@@ -64,7 +64,7 @@ namespace wallabag.Data.ViewModels
                         item.UnmarkAsStarredCommand.Execute();
                 });
             }));
-            EditTagsCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(async () =>
+            EditTagsCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(() =>
             {
                 _loggingService.WriteLine($"Editing tags of {Items.Count} items...");
 
@@ -73,7 +73,7 @@ namespace wallabag.Data.ViewModels
                 foreach (var item in Items)
                     viewModel.Items.Add(item.Model);
 
-                await _dialogService.ShowAsync(Dialogs.EditTagsDialog, viewModel);
+                _navigationService.Navigate(Navigation.Pages.EditTagsPage, viewModel);
             }));
             OpenInBrowserCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(() =>
             {

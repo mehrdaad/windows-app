@@ -69,9 +69,9 @@ namespace wallabag.Data.ViewModels
         {
             _loggingService.WriteLine("Creating new instance of MainViewModel.");
 
-            AddCommand = new RelayCommand(async () => await _dialogService.ShowAsync(Dialogs.AddItemDialog));
+            AddCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.AddItemPage));
             SyncCommand = new RelayCommand(async () => await SyncAsync());
-            NavigateToSettingsPageCommand = new RelayCommand(() => _navigationService.NavigateTo(Pages.SettingsPage));
+            NavigateToSettingsPageCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.SettingsPage));
 
             SetSortTypeFilterCommand = new RelayCommand<string>(filter => SetSortTypeFilter(filter));
             SetSortOrderCommand = new RelayCommand<string>(order => SetSortOrder(order));
@@ -263,7 +263,7 @@ namespace wallabag.Data.ViewModels
 
             _loggingService.WriteLine($"Clicked item: {item.Model.Id} ({item.Model.Title})");
 
-            _navigationService.NavigateTo(Pages.ItemPage, item.Model.Id);
+            _navigationService.Navigate(Navigation.Pages.ItemPage, item.Model.Id);
         }
 
         private void UpdatePageHeader()
@@ -307,7 +307,7 @@ namespace wallabag.Data.ViewModels
                 var item = args.ChosenSuggestion as Item;
 
                 _loggingService.WriteLine($"Chosen suggestion: {item.Id} ({item.Title})");
-                _navigationService.NavigateTo(Pages.ItemPage, item.Id);
+                _navigationService.Navigate(Navigation.Pages.ItemPage, item.Id);
                 return;
             }
 
