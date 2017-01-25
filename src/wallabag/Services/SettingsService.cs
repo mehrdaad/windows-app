@@ -1,4 +1,5 @@
-﻿using wallabag.Data.Services;
+﻿using System;
+using wallabag.Data.Services;
 using Windows.Storage;
 
 namespace wallabag.Services
@@ -16,6 +17,8 @@ namespace wallabag.Services
         {
             if (Contains(key))
                 _container.Values[key] = value;
+            else if (typeof(T) == typeof(DateTime))
+                _container.Values.Add(key, value.ToString());
             else
                 _container.Values.Add(key, value);
 
@@ -24,7 +27,12 @@ namespace wallabag.Services
         public T GetValueOrDefault<T>(string key, T defaultValue = default(T))
         {
             if (Contains(key))
-                return (T)_container.Values[key];
+            {
+                if (typeof(T) == typeof(DateTime))
+                    return (T)(object)DateTime.Parse(_container.Values[key] as string);
+                else
+                    return (T)_container.Values[key];
+            }
             else
                 return defaultValue;
         }
