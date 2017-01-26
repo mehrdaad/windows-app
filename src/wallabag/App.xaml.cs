@@ -34,16 +34,8 @@ namespace wallabag
 #endif
 
             RegisterServices();
-
-            var bts = SimpleIoc.Default.GetInstance<IBackgroundTaskService>();
-
-            if (Settings.BackgroundTask.IsEnabled &&
-                bts.IsRegistered == false && bts.IsSupported)
-                return bts.RegisterBackgroundTaskAsync();
-
-            return Task.CompletedTask;
+            return EnsureRegistrationOfBackgroundTaskAsync();
         }
-
         public override Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
             if (args.Kind == ActivationKind.ShareTarget)
@@ -143,6 +135,16 @@ namespace wallabag
 
                 return ns;
             });
+        }
+        private Task EnsureRegistrationOfBackgroundTaskAsync()
+        {
+            var bts = SimpleIoc.Default.GetInstance<IBackgroundTaskService>();
+
+            if (Settings.BackgroundTask.IsEnabled &&
+                bts.IsRegistered == false && bts.IsSupported)
+                return bts.RegisterBackgroundTaskAsync();
+            else
+                return Task.CompletedTask;
         }
     }
 }
