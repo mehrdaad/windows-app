@@ -22,6 +22,7 @@ namespace wallabag.ViewModels
     [ImplementPropertyChanged]
     public class LoginPageViewModel : ViewModelBase
     {
+        private HttpClient _http;
         private bool _restoredFromPageState = false;
         private Frame _oldFrame;
 
@@ -52,6 +53,7 @@ namespace wallabag.ViewModels
 
         public LoginPageViewModel()
         {
+            _http = new HttpClient();
             Providers = new List<WallabagProvider>()
             {
                 //new WallabagProvider(new Uri("https://framabag.org"), "framabag", GeneralHelper.LocalizedResource("FramabagProviderDescription")),
@@ -165,15 +167,27 @@ namespace wallabag.ViewModels
         {
             ProgressDescription = GeneralHelper.LocalizedResource("TestingConfigurationMessage");
 
+            // Step 1: Validate the submitted URI, use HTTPS if no protocol is provided
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
                 Url = "https://" + Url;
 
             if (!Url.EndsWith("/"))
                 Url += "/";
 
-            try { await new HttpClient().GetAsync(new Uri(Url)); }
+            var newUri = new Uri(Url);
+
+            // Step 2: Check if the server is reachable
+            try { await _http.GetAsync(newUri); }
             catch { return false; }
 
+            // Step 3: Login to the server
+            var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+            var loginResponse = await _http.PostAsync(newUri.Append("/login_check"), loginContent);
+
+            if (!loginResponse.IsSuccessStatusCode || loginResponse.RequestMessage.RequestUri.Equals(newUri.Append("/login")))
+                return false;
+
+            // Step 3: Create the client, if necessary
             if (UseCustomSettings == false)
             {
                 App.Client.InstanceUri = new Uri(Url);
@@ -317,8 +331,6 @@ namespace wallabag.ViewModels
 
         #region Client creation
 
-        HttpClient _http;
-
         private const string m_loginStartString = "<input type=\"hidden\" name=\"_csrf_token\" value=\"";
         private const string m_tokenStartString = "<input type=\"hidden\" id=\"client__token\" name=\"client[_token]\" value=\"";
         private const string m_finalTokenStartString = "<strong><pre>";
@@ -336,7 +348,6 @@ namespace wallabag.ViewModels
 
             try
             {
-                _http = new HttpClient();
                 var instanceUri = new Uri(Url);
 
                 // Step 1: Login to get a cookie.
