@@ -35,7 +35,8 @@ namespace wallabag.Services
 
         internal static async Task ExecuteAllAsync()
         {
-            foreach (var task in Tasks)
+            var taskList = Tasks.ToList();
+            foreach (var task in taskList)
                 await ExecuteAsync(task);
         }
         private static async Task ExecuteAsync(OfflineTask task)
