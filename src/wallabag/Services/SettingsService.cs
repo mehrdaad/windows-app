@@ -1,48 +1,40 @@
-﻿using System;
-using wallabag.Data.Services;
+﻿using Template10.Services.SettingsService;
 using Windows.Storage;
 
 namespace wallabag.Services
 {
-    class SettingsService : ISettingsService
+    class SettingsService : Data.Services.ISettingsService
     {
-        private ApplicationDataContainer _container;
+        ISettingsHelper _helper;
 
+        // Set up the hook to the settings helper interface.
         public SettingsService()
         {
-            _container = ApplicationData.Current.RoamingSettings;
+            _helper = new SettingsHelper();
         }
 
         public bool AddOrUpdateValue<T>(string key, T value)
         {
-            if (Contains(key))
-                _container.Values[key] = value;
-            else if (typeof(T) == typeof(DateTime))
-                _container.Values.Add(key, value.ToString());
-            else
-                _container.Values.Add(key, value);
-
+            _helper.Write(key, value);
             return true;
         }
         public T GetValueOrDefault<T>(string key, T defaultValue = default(T))
         {
-            if (Contains(key))
-            {
-                if (typeof(T) == typeof(DateTime))
-                    return (T)(object)DateTime.Parse(_container.Values[key] as string);
-                else
-                    return (T)_container.Values[key];
-            }
-            else
-                return defaultValue;
+            return _helper.Read(key, defaultValue, SettingsStrategies.Local);
         }
 
-        public void Clear() => _container.Values.Clear();
-        public bool Contains(string key) => _container.Values.ContainsKey(key);
-        public void Remove(string key)
+        public void Clear()
         {
-            if (Contains(key))
-                _container.Values.Remove(key);
+            ApplicationData.Current.LocalSettings.Values.Clear();
+            ApplicationData.Current.RoamingSettings.Values.Clear();
+
+            foreach (var item in ApplicationData.Current.RoamingSettings.Containers)
+                ApplicationData.Current.RoamingSettings.DeleteContainer(item.Key);
+
+            foreach (var item in ApplicationData.Current.LocalSettings.Containers)
+                ApplicationData.Current.LocalSettings.DeleteContainer(item.Key);
         }
+        public bool Contains(string key) => _helper.Exists(key);
+        public void Remove(string key) => _helper.Remove(key);
     }
 }
