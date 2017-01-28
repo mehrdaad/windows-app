@@ -96,11 +96,10 @@ namespace wallabag.ViewModels
 
             OfflineTaskService.Tasks.CollectionChanged += async (s, e) =>
             {
-                RaisePropertyChanged(nameof(OfflineTaskCount));
-                RaisePropertyChanged(nameof(OfflineTaskVisibility));
-
                 if (e.NewItems != null && e.NewItems.Count > 0)
                     await ApplyUIChangesForOfflineTaskAsync(e.NewItems[0] as OfflineTask);
+
+                RaisePropertyChangesForOfflineTaskProperties();
             };
         }
 
@@ -149,6 +148,11 @@ namespace wallabag.ViewModels
                 }
             }).AsTask();
         }
+        private void RaisePropertyChangesForOfflineTaskProperties()
+        {
+            RaisePropertyChanged(nameof(OfflineTaskCount));
+            RaisePropertyChanged(nameof(OfflineTaskVisibility));
+        }
 
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
         {
@@ -173,7 +177,7 @@ namespace wallabag.ViewModels
                 return;
 
             IsSyncing = true;
-            await OfflineTaskService.ExecuteAllAsync();
+            await OfflineTaskService.ExecuteAllAsync().ContinueWith(x => RaisePropertyChangesForOfflineTaskProperties());
             int syncLimit = 24;
 
             var items = await App.Client.GetItemsAsync(
@@ -216,6 +220,7 @@ namespace wallabag.ViewModels
                 });
             }
 
+            RaisePropertyChangesForOfflineTaskProperties();
             IsSyncing = false;
         }
 

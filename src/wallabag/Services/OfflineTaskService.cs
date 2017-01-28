@@ -117,8 +117,8 @@ namespace wallabag.Services
 
             if (executionIsSuccessful)
             {
-                Tasks.Remove(task);
                 App.Database.Delete(task);
+                Tasks.Remove(task);
             }
         }
 
