@@ -51,6 +51,7 @@ namespace wallabag.Data.ViewModels
         public ICommand SyncCommand { get; private set; }
         public ICommand AddCommand { get; private set; }
         public ICommand NavigateToSettingsPageCommand { get; private set; }
+        public ICommand ItemClickCommand { get; private set; }
 
         public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties();
         public ObservableCollection<Item> SearchQuerySuggestions { get; set; } = new ObservableCollection<Item>();
@@ -72,6 +73,14 @@ namespace wallabag.Data.ViewModels
             AddCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.AddItemPage));
             SyncCommand = new RelayCommand(async () => await SyncAsync());
             NavigateToSettingsPageCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.SettingsPage));
+            ItemClickCommand = new RelayCommand<ItemClickEventArgs>(args =>
+            {
+                var item = args.ClickedItem as ItemViewModel;
+
+                _loggingService.WriteLine($"Clicked item: {item.Model.Id} ({item.Model.Title})");
+
+                _navigationService.Navigate(Navigation.Pages.ItemPage, item.Model.Id);
+            });
 
             SetSortTypeFilterCommand = new RelayCommand<string>(filter => SetSortTypeFilter(filter));
             SetSortOrderCommand = new RelayCommand<string>(order => SetSortOrder(order));
@@ -254,16 +263,6 @@ namespace wallabag.Data.ViewModels
 
             IsSyncing = false;
             _loggingService.WriteLine("Syncing completed.");
-        }
-
-        // TODO: ICommand
-        public void ItemClick(object sender, ItemClickEventArgs args)
-        {
-            var item = args.ClickedItem as ItemViewModel;
-
-            _loggingService.WriteLine($"Clicked item: {item.Model.Id} ({item.Model.Title})");
-
-            _navigationService.Navigate(Navigation.Pages.ItemPage, item.Model.Id);
         }
 
         private void UpdatePageHeader()
