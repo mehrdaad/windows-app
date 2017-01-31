@@ -5,16 +5,13 @@
     xmlns:controls="using:wallabag.Controls"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:wallabag.Common.Helpers"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:wallabag.Data.ViewModels"
-    xmlns:helpers="using:wallabag.Common.Helpers"
     helpers:TitleBarHelper.ResetToDefault="true"
+    DataContext="{Binding Main, Source={StaticResource Locator}}"
     mc:Ignorable="d">
-
-    <Page.DataContext>
-        <vm:MainViewModel />
-    </Page.DataContext>
 
     <Page.Resources>
         <MenuFlyout x:Key="ItemContextMenuMenuFlyout">

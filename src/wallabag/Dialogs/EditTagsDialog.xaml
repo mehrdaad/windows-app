@@ -5,19 +5,15 @@
     xmlns:controls="using:wallabag.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:wallabag.Data.ViewModels"
     x:Uid="EditTagsContentDialog"
     Title="EDIT TAGS"
+    DataContext="{Binding EditTags, Source={StaticResource Locator}}"
     PrimaryButtonCommand="{x:Bind ViewModel.FinishCommand}"
     PrimaryButtonText="Finish"
     SecondaryButtonCommand="{x:Bind ViewModel.CancelCommand}"
     SecondaryButtonText="Cancel"
     TitleTemplate="{StaticResource ContentDialogTitleDataTemplate}"
     mc:Ignorable="d">
-
-    <ContentDialog.DataContext>
-        <vm:EditTagsViewModel />
-    </ContentDialog.DataContext>
 
     <controls:TagsControl />
 

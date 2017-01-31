@@ -3,10 +3,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:helpers="using:wallabag.Common.Helpers"
-    xmlns:vm="using:wallabag.Data.ViewModels"
     helpers:TitleBarHelper.ButtonBackgroundColor="Transparent"
     helpers:TitleBarHelper.ButtonForegroundColor="{x:Bind ViewModel.ForegroundBrush.Color, Mode=OneWay}"
-    helpers:TitleBarHelper.IsVisible="false">
+    helpers:TitleBarHelper.IsVisible="false"
+    DataContext="{Binding ItemView, Source={StaticResource Locator}}">
+
     <Page.Resources>
         <Storyboard x:Name="ShowMinimalCommandBarStoryboard">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="commandsGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
@@ -126,10 +127,6 @@
                 Text="Open in browser" />
         </MenuFlyout>
     </Page.Resources>
-
-    <Page.DataContext>
-        <vm:ItemPageViewModel />
-    </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="{x:Bind ViewModel.ColorApplicationTheme, Mode=OneWay}">
         <WebView

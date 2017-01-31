@@ -6,11 +6,12 @@
     xmlns:helpers="using:wallabag.Common.Helpers"
     xmlns:m="using:wallabag.Data.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:wallabag.Data.ViewModels"
     helpers:TitleBarHelper.ButtonBackgroundColor="Transparent"
     helpers:TitleBarHelper.ButtonForegroundColor="White"
     helpers:TitleBarHelper.IsVisible="false"
+    DataContext="{Binding Login, Source={StaticResource Locator}}"
     mc:Ignorable="d">
+
     <Page.Resources>
         <Storyboard x:Name="ShowAlertGridStoryboard">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="AlertGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
@@ -47,10 +48,6 @@
             </ObjectAnimationUsingKeyFrames>
         </Storyboard>
     </Page.Resources>
-
-    <Page.DataContext>
-        <vm:LoginPageViewModel />
-    </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
         <Grid.RowDefinitions>

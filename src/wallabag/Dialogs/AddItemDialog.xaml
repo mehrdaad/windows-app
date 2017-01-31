@@ -8,16 +8,13 @@
     xmlns:vm="using:wallabag.Data.ViewModels"
     x:Uid="AddItemContentDialog"
     Title="ADD ITEM"
+    DataContext="{Binding AddItem, Source={StaticResource Locator}}"
     PrimaryButtonCommand="{x:Bind ViewModel.AddCommand}"
     PrimaryButtonText="Add"
     SecondaryButtonCommand="{x:Bind ViewModel.CancelCommand}"
     SecondaryButtonText="Cancel"
     TitleTemplate="{StaticResource ContentDialogTitleDataTemplate}"
     mc:Ignorable="d">
-
-    <ContentDialog.DataContext>
-        <vm:AddItemViewModel />
-    </ContentDialog.DataContext>
 
     <StackPanel>
         <TextBox

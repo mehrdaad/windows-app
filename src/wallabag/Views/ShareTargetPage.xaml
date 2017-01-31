@@ -5,10 +5,11 @@
     xmlns:controls="using:wallabag.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:wallabag.Data.ViewModels"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="{Binding AddItem, Source={StaticResource Locator}}"
     RequestedTheme="Dark"
     mc:Ignorable="d">
+
     <Page.Resources>
         <Storyboard x:Name="AddStoryboard">
             <DoubleAnimation
@@ -37,10 +38,6 @@
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Page.Resources>
-
-    <Page.DataContext>
-        <vm:AddItemViewModel />
-    </Page.DataContext>
 
     <Grid>
         <Grid.Background>
