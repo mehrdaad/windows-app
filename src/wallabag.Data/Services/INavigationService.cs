@@ -8,6 +8,9 @@ namespace wallabag.Data.Services
 
         void Navigate(Common.Navigation.Pages page);
         void Navigate(Common.Navigation.Pages page, object parameter);
+        void Navigate(Type page);
+        void Navigate(Type page, object parameter);
+
         void ClearHistory();
     }
 }

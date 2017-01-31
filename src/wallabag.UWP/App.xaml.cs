@@ -42,7 +42,7 @@ namespace wallabag
             if (args.Kind == ActivationKind.ShareTarget)
             {
                 SessionState["shareTarget"] = args;
-                // TODO: NavigationService.Navigate(Pages.ShareTargetPage); 
+                NavigationService.Navigate(typeof(ShareTargetPage));
             }
             else if (args.Kind == ActivationKind.Protocol)
             {

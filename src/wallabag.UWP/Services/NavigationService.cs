@@ -37,28 +37,35 @@ namespace wallabag.Services
         }
 
         public void GoBack() => BootStrapper.Current.NavigationService.GoBack();
-        public void Navigate(Pages pageKey) => HandleNavigationAsync(pageKey).ConfigureAwait(true);
-        public void Navigate(Pages pageKey, object parameter) => HandleNavigationAsync(pageKey, parameter).ConfigureAwait(true);
+        public void Navigate(Pages pageKey) => Navigate(GetPageType(pageKey));
+        public void Navigate(Pages pageKey, object parameter) => Navigate(GetPageType(pageKey), parameter);
+        public void Navigate(Type page) => Navigate(page, null);
+        public void Navigate(Type page, object parameter) => HandleNavigationAsync(page, parameter).ConfigureAwait(true);
 
-        private async Task HandleNavigationAsync(Pages pageKey, object parameter = null)
+        public void Configure(Pages pageKey, Type pageType)
         {
-            if (pageKey == Pages.AddItemPage)
+            var keys = BootStrapper.Current.PageKeys<Pages>();
+            keys.Add(pageKey, pageType);
+        }
+
+        private async Task HandleNavigationAsync(Type pageType, object parameter = null)
+        {
+            if (pageType == GetPageType(Pages.AddItemPage))
                 await new Dialogs.AddItemDialog().ShowAsync();
-            else if (pageKey == Pages.EditTagsPage)
+            else if (pageType == GetPageType(Pages.EditTagsPage))
                 await new Dialogs.EditTagsDialog().ShowAsync();
             else
             {
                 var ns = BootStrapper.Current.NavigationService;
-                _loggingService.WriteLine($"Navigating to {pageKey}. Type of parameter: {parameter?.GetType()?.Name}");
+                _loggingService.WriteLine($"Navigating to {pageType}. Type of parameter: {parameter?.GetType()?.Name}");
 
-                var newPageType = BootStrapper.Current.PageKeys<Pages>().First(p => p.Key == pageKey).Value;
                 var pageState = new Dictionary<string, object>();
 
                 var oldPage = ns.FrameFacade.Content as Page;
                 var oldViewModel = oldPage?.DataContext as INavigable;
 
                 _loggingService.WriteLine("Starting navigation...");
-                ns.FrameFacade.Navigate(newPageType, parameter, null);
+                ns.FrameFacade.Navigate(pageType, parameter, null);
 
                 if (oldViewModel != null)
                 {
@@ -79,12 +86,7 @@ namespace wallabag.Services
                 else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the ViewModel was null.");
             }
         }
-
-        public void Configure(Pages pageKey, Type pageType)
-        {
-            var keys = BootStrapper.Current.PageKeys<Pages>();
-            keys.Add(pageKey, pageType);
-        }
+        private Type GetPageType(Pages pageKey) => BootStrapper.Current.PageKeys<Pages>().First(i => i.Key == pageKey).Value;
 
         [Obsolete("Please use the Pages enumeration instead.", true)]
         public void NavigateTo(string pageKey) => throw new NotImplementedException();
