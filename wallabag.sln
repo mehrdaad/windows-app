@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26020.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wallabag", "src\wallabag\wallabag.csproj", "{322F2420-F94A-45DA-8734-8C5C01FC8C9E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wallabag.UWP", "src\wallabag.UWP\wallabag.csproj", "{322F2420-F94A-45DA-8734-8C5C01FC8C9E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wallabag.Data", "src\wallabag.Data\wallabag.Data.csproj", "{266A1FA2-218E-428B-8DC4-B13D2C386C32}"
 EndProject

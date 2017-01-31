@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddItemAppBarButton.Label" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="AddItemContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="AddItemContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="AddItemContentDialog.Title" xml:space="preserve">
+    <value>AJOUTER ARTICLE</value>
+  </data>
+  <data name="blackThemeButton.Label" xml:space="preserve">
+    <value>Noir</value>
+  </data>
+  <data name="CancelAppBarButton.Label" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="CantRetrieveContentsErrorMessage" xml:space="preserve">
+    <value>wallabag ne peut pas récupérer les contenus pour cet article.</value>
+  </data>
+  <data name="ClientIdTextBox.Header" xml:space="preserve">
+    <value>ID client</value>
+  </data>
+  <data name="ClientSecretTextBox.Header" xml:space="preserve">
+    <value>Secret client</value>
+  </data>
+  <data name="ContactDeveloperButton.Content" xml:space="preserve">
+    <value>Contacter le développeur par e-mail.</value>
+  </data>
+  <data name="ContinueButton.Content" xml:space="preserve">
+    <value>Continuer</value>
+  </data>
+  <data name="CreateIssueButton.Content" xml:space="preserve">
+    <value>Créer un ticket sur Github</value>
+  </data>
+  <data name="darkThemeButton.Label" xml:space="preserve">
+    <value>Sombre</value>
+  </data>
+  <data name="DeleteDatabaseButton.Content" xml:space="preserve">
+    <value>Supprimer la base de données</value>
+  </data>
+  <data name="DeleteMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="DeletePermanentlyButton.Content" xml:space="preserve">
+    <value>Supprimer définitivement</value>
+  </data>
+  <data name="DeleteWarningTextBlock.Text" xml:space="preserve">
+    <value>Cela va définitivement supprimer cet article de votre wallabag.</value>
+  </data>
+  <data name="DownloadingItemsTextBlock.Text" xml:space="preserve">
+    <value>Téléchargement des articles…</value>
+  </data>
+  <data name="EditAppBarButton.Label" xml:space="preserve">
+    <value>Éditer</value>
+  </data>
+  <data name="EditTagsContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Terminer</value>
+  </data>
+  <data name="EditTagsContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="EditTagsContentDialog.Title" xml:space="preserve">
+    <value>ÉDITER LES TAGS</value>
+  </data>
+  <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Éditer les tags</value>
+  </data>
+  <data name="EnterTagAutoSuggestBox.PlaceholderText" xml:space="preserve">
+    <value>entrez un tag…</value>
+  </data>
+  <data name="FollowOnTwitterButton.Content" xml:space="preserve">
+    <value>Suivre @wallabagapp sur Twitter</value>
+  </data>
+  <data name="GeneralSettingsPivotItem.Header" xml:space="preserve">
+    <value>Général</value>
+  </data>
+  <data name="InfoPivotItem.Header" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="ItemTypeFilterTitleTextBlock.Text" xml:space="preserve">
+    <value>TYPE DE L'ARTICLE</value>
+  </data>
+  <data name="LanguageComboBox.PlaceholderText" xml:space="preserve">
+    <value>sélectionnez une langue…</value>
+  </data>
+  <data name="LanguageFilterTitleTextBlock" xml:space="preserve">
+    <value>LANGUE</value>
+  </data>
+  <data name="lightThemeButton.Label" xml:space="preserve">
+    <value>Clair</value>
+  </data>
+  <data name="LikeMyWorkHeaderTextBlock.Text" xml:space="preserve">
+    <value>VOUS AIMEZ MON TRAVAIL ?</value>
+  </data>
+  <data name="LogoutButton.Content" xml:space="preserve">
+    <value>Se déconnecter</value>
+  </data>
+  <data name="MarkAsFavoriteMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Marquer comme favori</value>
+  </data>
+  <data name="MarkAsReadMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Marquer comme lu</value>
+  </data>
+  <data name="MiscHeaderTextBlock.Text" xml:space="preserve">
+    <value>DIVERS</value>
+  </data>
+  <data name="MultipleDevicesAlertTextBlock.Text" xml:space="preserve">
+    <value>L'usage de la même combinaison ID/secret sur de multiples appareils n'est pas recommandée et pourrait vous causer (beaucoup) de frustration.</value>
+  </data>
+  <data name="MultipleSelectionAppBarButton.Label" xml:space="preserve">
+    <value>Sélectionnez</value>
+  </data>
+  <data name="NavigateBackAfterReadingToggleSwitch.Header" xml:space="preserve">
+    <value>Retourner à la page précédente après la fin de la lecture</value>
+  </data>
+  <data name="NeedHelpHeaderTextBlock.Text" xml:space="preserve">
+    <value>BESOIN D'AIDE ?</value>
+  </data>
+  <data name="NoContentAvailableErrorMessage" xml:space="preserve">
+    <value>Il n'y a pas de contenu disponible. Peut-être que l'article n'a pas encore été ajouté.</value>
+  </data>
+  <data name="NoTagsInfoTextBlock.Text" xml:space="preserve">
+    <value>Pas de tags existants, pour le moment.</value>
+  </data>
+  <data name="NothingFoundTextBlock.Text" xml:space="preserve">
+    <value>Nous n'avons rien trouvé pour vous. Désolé.</value>
+  </data>
+  <data name="OpenDocumentationButton.Content" xml:space="preserve">
+    <value>Ouvrir la documentation</value>
+  </data>
+  <data name="OpenInBrowserButton.Content" xml:space="preserve">
+    <value>Ouvrir dans le navigateur</value>
+  </data>
+  <data name="OpenInBrowserMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Ouvrir dans le navigateur</value>
+  </data>
+  <data name="PasswordBox.Header" xml:space="preserve">
+    <value>Mot de passe</value>
+  </data>
+  <data name="RateAppButton.Content" xml:space="preserve">
+    <value>Notez et donnez votre avis sur l'application sur le Windows Store !</value>
+  </data>
+  <data name="ReadingSettingsPivotItem.Header" xml:space="preserve">
+    <value>Lecture</value>
+  </data>
+  <data name="ResetFilterButton.Content" xml:space="preserve">
+    <value>Remettre à zéro le filtre</value>
+  </data>
+  <data name="ResetWarningTextBlock.Text" xml:space="preserve">
+    <value>Ces deux actions nécessiteront un redémarrage manuel de cette application et sont irréversibles !</value>
+  </data>
+  <data name="SaveAppBarButton.Label" xml:space="preserve">
+    <value>Sauvegarder</value>
+  </data>
+  <data name="SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Rechercher…</value>
+  </data>
+  <data name="sepiaThemeButton.Label" xml:space="preserve">
+    <value>Sepia</value>
+  </data>
+  <data name="SettingsAppBarButton.Label" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="SettingsPageTitleTextBlock.Text" xml:space="preserve">
+    <value>PARAMÈTRES</value>
+  </data>
+  <data name="ShareMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Partager</value>
+  </data>
+  <data name="SortOrderFilterTitleTextBlock.Text" xml:space="preserve">
+    <value>ORDRE DE TRI</value>
+  </data>
+  <data name="SpecialThanksInfoTextBlock.Text" xml:space="preserve">
+    <value>Nicolas Lœuillet, Thomas Citharel et Jérémy Benoist pour avoir créé une application si excellente.</value>
+  </data>
+  <data name="SyncAppBarButton.Label" xml:space="preserve">
+    <value>Synchroniser</value>
+  </data>
+  <data name="SyncOnStartupToggleSwitch.Header" xml:space="preserve">
+    <value>Synchroniser au démarrage de l'application</value>
+  </data>
+  <data name="SyncReadingProgressToggleSwitch.Header" xml:space="preserve">
+    <value>Synchroniser la progression de lecture</value>
+  </data>
+  <data name="TagComboBox.PlaceholderText" xml:space="preserve">
+    <value>sélectionnez un tag…</value>
+  </data>
+  <data name="TagFilterTitleTextBlock.Text" xml:space="preserve">
+    <value>TAG</value>
+  </data>
+  <data name="TelemetryCollectionInfoTextBlock.Text" xml:space="preserve">
+    <value>Afin d'améliorer la stabilité générale de cette application, il est recommandé d'activer la soumission automatique de données de télémétrie anonymes. Toutefois, si vous voulez la désactiver pour des raisons de vie privée, vous pouvez également le faire.
+Les changements seront appliqués après le prochain redémarrage.</value>
+  </data>
+  <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
+    <value>Autoriser la collection de données de télémétrie.</value>
+  </data>
+  <data name="TellFriendsButton.Content" xml:space="preserve">
+    <value>Parlez à vos amis de wallabag !</value>
+  </data>
+  <data name="TellFriendsQuestion" xml:space="preserve">
+    <value>Avez-vous entendu parler de wallabag ?</value>
+  </data>
+  <data name="TestConfigurationTextBlock.Text" xml:space="preserve">
+    <value>Tester la configuration</value>
+  </data>
+  <data name="ThanksToHeaderTextBlock.Text" xml:space="preserve">
+    <value>MERCI À</value>
+  </data>
+  <data name="UnknownLanguageDisplayName" xml:space="preserve">
+    <value>inconnu</value>
+  </data>
+  <data name="UnmarkAsFavoriteMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Marquer comme non-favori</value>
+  </data>
+  <data name="UnmarkAsReadMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Marquer comme non-lu</value>
+  </data>
+  <data name="UrlTextBox.Header" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="UsedLibrariesHeaderTextBlock.Text" xml:space="preserve">
+    <value>BIBLIOTHÈQUES UTILISÉES</value>
+  </data>
+  <data name="UsernameTextBox.Header" xml:space="preserve">
+    <value>Identifiant</value>
+  </data>
+  <data name="VersionHeaderTextBlock.Text" xml:space="preserve">
+    <value>VERSION</value>
+  </data>
+  <data name="WallabagUrlTextBox.Header" xml:space="preserve">
+    <value>URL de votre instance wallabag</value>
+  </data>
+  <data name="WelcomeTextBlock.Text" xml:space="preserve">
+    <value>Bienvenue !</value>
+  </data>
+  <data name="UseCustomSettingsCheckBox.Content" xml:space="preserve">
+    <value>Utiliser des paramètres personnalisés</value>
+  </data>
+  <data name="ArchivedPivotItem.Header" xml:space="preserve">
+    <value>ARCHIVÉ</value>
+  </data>
+  <data name="FavoritesPivotItem.Header" xml:space="preserve">
+    <value>FAVORIS</value>
+  </data>
+  <data name="UnreadPivotItem.Header" xml:space="preserve">
+    <value>NON-LUS</value>
+  </data>
+  <data name="TelemetryDataCheckBox.Content" xml:space="preserve">
+    <value>Autoriser la collection de données télémétriques</value>
+  </data>
+  <data name="CreatingClientMessage" xml:space="preserve">
+    <value>Création d'un client…</value>
+  </data>
+  <data name="CredentialsWrongMessage" xml:space="preserve">
+    <value>La connexion n'a pas pu être établie. Vérifiez vos informations de connexion.</value>
+  </data>
+  <data name="DownloadingItemsWithProgress" xml:space="preserve">
+    <value>Téléchargement des articles… ({0}/{1})</value>
+  </data>
+  <data name="FirstStartContinueDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Nous continuons maintenant avec la configuration. Dans le cas le plus simple, vous avez juste besoin de votre nom d'utilisateur et de votre mot de passe.</value>
+  </data>
+  <data name="FirstStartContinueTextBlock.Text" xml:space="preserve">
+    <value>Continuons !</value>
+  </data>
+  <data name="FirstStartLastQuestionTextBlock.Text" xml:space="preserve">
+    <value>Une dernière question…</value>
+  </data>
+  <data name="FirstStartWelcomeDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Avant que vous puissiez mettre des liens dans votre bag, je dois vous demander : où voulez-vous que je les sauve ?</value>
+  </data>
+  <data name="FirstStartWelcomeTitleTextBlock.Text" xml:space="preserve">
+    <value>Salut !</value>
+  </data>
+  <data name="FramabagProviderDescription" xml:space="preserve">
+    <value>Les utilisateurs de Framabag sont toujours les bienvenus !</value>
+  </data>
+  <data name="OtherProviderDescription" xml:space="preserve">
+    <value>Si vous utilisez un autre fournisseur, cette option est pour vous.</value>
+  </data>
+  <data name="OtherProviderName" xml:space="preserve">
+    <value>autre</value>
+  </data>
+  <data name="RegisterButton.Content" xml:space="preserve">
+    <value>Vous n'avez pas encore de compte ? Créez-en un !</value>
+  </data>
+  <data name="SavingItemsInDatabaseMessage" xml:space="preserve">
+    <value>Sauvegarde des articles dans la base de données…</value>
+  </data>
+  <data name="TestingConfigurationMessage" xml:space="preserve">
+    <value>Test de la configuration…</value>
+  </data>
+  <data name="UrlFormatWrongMessage" xml:space="preserve">
+    <value>L'URL n'a pas un format correct.</value>
+  </data>
+  <data name="V2WallabagOrgProviderDescription" xml:space="preserve">
+    <value>Vous testez les dernières versions beta ?</value>
+  </data>
+  <data name="WhatIsWallabagButton.Content" xml:space="preserve">
+    <value>Qu'est-ce que wallabag ?</value>
+  </data>
+  <data name="VideoOpenModeDescriptionApp" xml:space="preserve">
+    <value>La vidéo sera lue dans une application native, si installée. Dans le cas contraire, le navigateur sera utilisé.</value>
+  </data>
+  <data name="VideoOpenModeDescriptionBrowser" xml:space="preserve">
+    <value>La vidéo sera lue dans le navigateur.</value>
+  </data>
+  <data name="VideoOpenModeDescriptionInline" xml:space="preserve">
+    <value>La vidéo sera lue directement dans l'article.</value>
+  </data>
+  <data name="SaveInWallabagMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Sauvegarder dans wallabag</value>
+  </data>
+  <data name="VideoOpenModeHeaderTextBlock.Text" xml:space="preserve">
+    <value>Comment les vidéos doivent-elle être lues ?</value>
+  </data>
+  <data name="OrderAscendingRadioButton.Tag" xml:space="preserve">
+    <value>trier par ordre ascendant</value>
+  </data>
+  <data name="OrderDescendingRadioButton.Tag" xml:space="preserve">
+    <value>trier par order descendant</value>
+  </data>
+  <data name="SortByDateRadioButton.Content" xml:space="preserve">
+    <value>par date</value>
+  </data>
+  <data name="SortByReadingTimeRadioButton.Content" xml:space="preserve">
+    <value>par temps de lecture</value>
+  </data>
+  <data name="SearchHeaderWithQuery" xml:space="preserve">
+    <value>Résultats de la recherche pour : {0}</value>
+  </data>
+  <data name="TitleBarVisibilityToggleSwitch.Header" xml:space="preserve">
+    <value>Visibilité de la barre de titre</value>
+  </data>
+  <data name="TitleBarVisibilityToggleSwitch.OffContent" xml:space="preserve">
+    <value>Cachée</value>
+  </data>
+  <data name="TitleBarVisibilityToggleSwitch.OnContent" xml:space="preserve">
+    <value>Visible</value>
+  </data>
+  <data name="BackgroundTaskDownloadNewItemsDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Avec ce paramètre vous pouvez demander à l'application de télécharger les nouveaux articles depuis le serveur. Dans le cas contraire uniquement les changements locaux seront envoyés depuis l'application au serveur.</value>
+  </data>
+  <data name="BackgroundTaskDownloadNewItemsToggleSwitch.Header" xml:space="preserve">
+    <value>Télécharger les nouveaux articles</value>
+  </data>
+  <data name="BackgroundTaskExecutionIntervalInMinutesTextBlock.Text" xml:space="preserve">
+    <value>toutes les {0} minutes</value>
+  </data>
+  <data name="BackgroundTaskExecutionIntervalSlider.Header" xml:space="preserve">
+    <value>Fréquence d'exécution</value>
+  </data>
+  <data name="BackgroundTaskPivotItem.Header" xml:space="preserve">
+    <value>Synchronisation en arrière-plan</value>
+  </data>
+  <data name="EnableBackgroundTaskToggleSwitch.Header" xml:space="preserve">
+    <value>Activer la synchronisation en arrière-plan</value>
+  </data>
+  <data name="LastExecutionOfBackgroundTaskTextBlock.Text" xml:space="preserve">
+    <value>Dernière exécution : {0}</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>jamais</value>
+  </data>
+  <data name="FilterButton.Label" xml:space="preserve">
+    <value>Filtre</value>
+  </data>
+  <data name="MadeByHeaderTextBlock.Text" xml:space="preserve">
+    <value>RÉALISÉ AVEC PASSION PAR</value>
+  </data>
+  <data name="HoldCameraOntoQRCodeMessage" xml:space="preserve">
+    <value>Placez votre appareil-photo face au QR code</value>
+  </data>
+  <data name="ScanQRCodeButton.Content" xml:space="preserve">
+    <value>Scannez le QR code pour la configuration</value>
+  </data>
+  <data name="NotSupportedOnThisDeviceTextBlock.Text" xml:space="preserve">
+    <value>Cette fonctionnalité n’est pas supporté par votre appareil. Mettez-le à jour avec une version plus récente de Windows pour pouvoir profiter de toutes les fonctionnalités de wallabag.</value>
+  </data>
+  <data name="WallabagItProviderDescription" xml:space="preserve">
+    <value>Sauvegardez des articles. Lisez-les plus tard. Lisez-les n'importe où.</value>
+  </data>
+</root>
