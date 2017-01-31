@@ -21,8 +21,8 @@ namespace wallabag
 {
     public sealed partial class App : BootStrapper
     {
-        private static IWallabagClient Client => SimpleIoc.Default.GetInstance<IWallabagClient>();
-        private static SQLiteConnection Database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
+        private IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
+        private SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
 
         public App() { InitializeComponent(); }
 
@@ -87,7 +87,7 @@ namespace wallabag
 
             if (Settings.BackgroundTask.DownloadNewItemsDuringExecution)
             {
-                var items = await Client.GetItemsAsync(
+                var items = await _client.GetItemsAsync(
                     dateOrder: WallabagClient.WallabagDateOrder.ByLastModificationDate,
                     sortOrder: WallabagClient.WallabagSortOrder.Descending,
                     since: Settings.General.LastSuccessfulSyncDateTime);
@@ -99,15 +99,15 @@ namespace wallabag
                     foreach (var item in items)
                         itemList.Add(item);
 
-                    var databaseList = Database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{itemList.Count}", Array.Empty<object>());
+                    var databaseList = _database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{itemList.Count}", Array.Empty<object>());
                     var deletedItems = databaseList.Except(itemList);
 
-                    Database.RunInTransaction(() =>
+                    _database.RunInTransaction(() =>
                     {
                         foreach (var item in deletedItems)
-                            Database.Delete(item);
+                            _database.Delete(item);
 
-                        Database.InsertOrReplaceAll(itemList);
+                        _database.InsertOrReplaceAll(itemList);
                     });
 
                     Settings.General.LastSuccessfulSyncDateTime = DateTime.Now;
