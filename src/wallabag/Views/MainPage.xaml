@@ -8,6 +8,8 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:wallabag.Data.ViewModels"
+    xmlns:helpers="using:wallabag.Common.Helpers"
+    helpers:TitleBarHelper.ResetToDefault="true"
     mc:Ignorable="d">
 
     <Page.DataContext>

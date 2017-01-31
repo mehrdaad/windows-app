@@ -149,25 +149,41 @@ namespace wallabag.Common.Helpers
             }
         }
 
-        public static Task ResetAsync()
+        public static readonly DependencyProperty ResetToDefaultProperty =
+                DependencyProperty.RegisterAttached("ResetToDefault", typeof(bool),
+                typeof(TitleBarHelper),
+                new PropertyMetadata(false, OnResetToDefaultPropertyChangedAsync));
+
+        public static bool GetResetToDefault(DependencyObject d)
         {
-            return CoreWindow.GetForCurrentThread().Dispatcher.RunTaskAsync(async () =>
+            return (bool)d.GetValue(ResetToDefaultProperty);
+        }
+
+        public static void SetResetToDefault(DependencyObject d, bool value)
+        {
+            d.SetValue(ResetToDefaultProperty, value);
+        }
+
+        private static async void OnResetToDefaultPropertyChangedAsync(DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue == false)
+                return;
+
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+
+            coreTitleBar.ExtendViewIntoTitleBar = false;
+            titleBar.BackgroundColor = null;
+            titleBar.ButtonBackgroundColor = null;
+            titleBar.ForegroundColor = null;
+            titleBar.ButtonForegroundColor = null;
+
+            if (GeneralHelper.IsPhone)
             {
-                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-                var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-
-                coreTitleBar.ExtendViewIntoTitleBar = false;
-                titleBar.BackgroundColor = null;
-                titleBar.ButtonBackgroundColor = null;
-                titleBar.ForegroundColor = null;
-                titleBar.ButtonForegroundColor = null;
-
-                if (GeneralHelper.IsPhone)
-                {
-                    var statusBar = StatusBar.GetForCurrentView();
-                    await statusBar.ShowAsync();
-                }
-            });
+                var statusBar = StatusBar.GetForCurrentView();
+                await statusBar.ShowAsync();
+            }
         }
     }
 }
