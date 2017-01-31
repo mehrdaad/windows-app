@@ -23,6 +23,7 @@ namespace wallabag
     {
         private IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
         private SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
+        private new INavigationService NavigationService => SimpleIoc.Default.GetInstance<INavigationService>();
 
         public App() { InitializeComponent(); }
 
@@ -41,7 +42,7 @@ namespace wallabag
             if (args.Kind == ActivationKind.ShareTarget)
             {
                 SessionState["shareTarget"] = args;
-                NavigationService.Navigate(typeof(Views.ShareTargetPage));
+                // TODO: NavigationService.Navigate(Pages.ShareTargetPage); 
             }
             else if (args.Kind == ActivationKind.Protocol)
             {
@@ -50,31 +51,32 @@ namespace wallabag
 
                 if (protocolParameter != null && protocolParameter.Server.IsValidUri())
                 {
-                    NavigationService.Navigate(typeof(LoginPage), protocolParameter);
-                    NavigationService.ClearCache();
+                    NavigationService.Navigate(Pages.LoginPage, protocolParameter);
                     NavigationService.ClearHistory();
                 }
             }
             else
             {
                 if (string.IsNullOrEmpty(Settings.Authentication.AccessToken) || string.IsNullOrEmpty(Settings.Authentication.RefreshToken))
-                    NavigationService.Navigate(typeof(Views.LoginPage));
+                    NavigationService.Navigate(Pages.LoginPage);
                 else
-                    NavigationService.Navigate(typeof(Views.MainPage));
+                    NavigationService.Navigate(Pages.MainPage);
             }
             return Task.CompletedTask;
         }
 
+        /*
         public override Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
-            return NavigationService?.SaveAsync();
+            // TODO: return NavigationService?.SaveAsync();
         }
 
         public override void OnResuming(object s, object e, AppExecutionState previousExecutionState)
         {
             if (previousExecutionState == AppExecutionState.Suspended)
-                NavigationService.Resuming();
+               //TODO: NavigationService.Resuming();
         }
+        */
 
         protected override async void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
