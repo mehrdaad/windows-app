@@ -83,7 +83,7 @@ namespace wallabag
             RegisterServices();
             var deferral = args.TaskInstance.GetDeferral();
 
-            await OfflineTaskService.ExecuteAllAsync();
+            await SimpleIoc.Default.GetInstance<IOfflineTaskService>().ExecuteAllAsync();
 
             if (Settings.BackgroundTask.DownloadNewItemsDuringExecution)
             {
@@ -135,6 +135,7 @@ namespace wallabag
 
                 return ns;
             });
+            SimpleIoc.Default.Register<IOfflineTaskService, OfflineTaskService>();
         }
         private Task EnsureRegistrationOfBackgroundTaskAsync()
         {

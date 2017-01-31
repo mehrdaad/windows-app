@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using PropertyChanged;
@@ -18,13 +19,14 @@ using wallabag.Data.Services;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 
 namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
     public class MainViewModel : ViewModelBase
     {
+        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
+
         public IncrementalObservableCollection<ItemViewModel> Items { get; set; }
 
         public Visibility OfflineTaskVisibility => OfflineTaskCount > 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -108,7 +110,7 @@ namespace wallabag.Data.ViewModels
             Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
 
-            OfflineTaskService.Tasks.CollectionChanged += async (s, e) =>
+            _offlineTaskService.Tasks.CollectionChanged += async (s, e) =>
             {
                 _loggingService.WriteLine($"The number of offline tasks changed. {e.NewItems?.Count} new items, {e.OldItems?.Count} old items.");
 
@@ -206,7 +208,7 @@ namespace wallabag.Data.ViewModels
 
             IsSyncing = true;
             _loggingService.WriteLine("Executing all offline tasks.");
-            await OfflineTaskService.ExecuteAllAsync();
+            await _offlineTaskService.ExecuteAllAsync();
             int syncLimit = 24;
 
             _loggingService.WriteLine("Fetching items from the server.");

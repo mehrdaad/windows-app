@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +12,8 @@ namespace wallabag.Data.ViewModels
 {
     public class AddItemViewModel : ViewModelBase
     {
+        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
+
         public string UriString { get; set; } = string.Empty;
         public IEnumerable<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
 
@@ -18,7 +21,7 @@ namespace wallabag.Data.ViewModels
         public ICommand CancelCommand { get; private set; }
 
         public AddItemViewModel()
-        {
+        {          
             AddCommand = new RelayCommand(() => Add());
             CancelCommand = new RelayCommand(() => Cancel());
         }
@@ -37,13 +40,13 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLine("Inserting new placeholder item into the database.");
                 _database.Insert(new Item()
                 {
-                    Id = OfflineTaskService.LastItemId + 1,
+                    Id = _offlineTaskService.LastItemId + 1,
                     Title = uri.Host,
                     Url = UriString,
                     Hostname = uri.Host
                 });
 
-                OfflineTaskService.Add(UriString, Tags.ToStringArray());
+                _offlineTaskService.Add(UriString, Tags.ToStringArray());
             }
         }
 

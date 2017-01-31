@@ -134,6 +134,7 @@
     <Compile Include="Services\IBackgroundTaskService.cs" />
     <Compile Include="Services\ILoggingService.cs" />
     <Compile Include="Services\INavigationService.cs" />
+    <Compile Include="Services\IOfflineTaskService.cs" />
     <Compile Include="Services\ISettingsService.cs" />
     <Compile Include="Services\OfflineTaskService.cs" />
     <Compile Include="Common\Settings.cs" />

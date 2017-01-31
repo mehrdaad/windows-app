@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,8 @@ namespace wallabag.Data.ViewModels
 {
     public class ItemPageViewModel : ViewModelBase
     {
+        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
+
         public ItemViewModel Item { get; set; }
         public string FormattedHtml { get; set; }
 
@@ -67,7 +70,7 @@ namespace wallabag.Data.ViewModels
                 _navigationService.GoBack();
             });
 
-            SaveRightClickLinkCommand = new RelayCommand(() => OfflineTaskService.Add(RightClickUri.ToString(), new List<string>()));
+            SaveRightClickLinkCommand = new RelayCommand(() => _offlineTaskService.Add(RightClickUri.ToString(), new List<string>()));
             OpenRightClickLinkInBrowserCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(RightClickUri));
         }
 

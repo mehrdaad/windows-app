@@ -14,6 +14,7 @@ namespace wallabag.Data.ViewModels
     public class EditTagsViewModel : ViewModelBase
     {
         private IEnumerable<Tag> _previousTags;
+        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
 
         public IList<Item> Items { get; set; } = new List<Item>();
         public ObservableCollection<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
@@ -96,7 +97,7 @@ namespace wallabag.Data.ViewModels
             {
                 foreach (var item in Items)
                 {
-                    OfflineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
+                    _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
 
                     foreach (var tag in Tags)
                         item.Tags.Add(tag);
@@ -112,7 +113,7 @@ namespace wallabag.Data.ViewModels
 
                 Items.First().Tags.Replace(Tags);
 
-                OfflineTaskService.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags);
+                _offlineTaskService.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags);
             }
         }
         private void Cancel()

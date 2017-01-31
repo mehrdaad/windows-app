@@ -13,6 +13,8 @@ namespace wallabag.Data.ViewModels
 {
     public class ItemViewModel : ViewModelBase, IComparable
     {
+        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
+
         public Item Model { get; private set; }
 
         public string TagsString => string.Join(", ", Model.Tags);
@@ -51,34 +53,34 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLine($"Marking item {Model.Id} as read.");
                 Model.IsRead = true;
                 UpdateItem();
-                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
+                _offlineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
             });
             UnmarkAsReadCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine($"Marking item {Model.Id} as unread.");
                 Model.IsRead = false;
                 UpdateItem();
-                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
+                _offlineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
             });
             MarkAsStarredCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine($"Marking item {Model.Id} as favorite.");
                 Model.IsStarred = true;
                 UpdateItem();
-                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
+                _offlineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
             });
             UnmarkAsStarredCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine($"Marking item {Model.Id} as unfavorite.");
                 Model.IsStarred = false;
                 UpdateItem();
-                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
+                _offlineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
             });
             DeleteCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine($"Deleting item {Model.Id}.");
                 _database.Delete(Model);
-                OfflineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
+                _offlineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
             });
             ShareCommand = new RelayCommand(() =>
             {

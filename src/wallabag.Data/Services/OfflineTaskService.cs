@@ -15,32 +15,25 @@ using static wallabag.Data.Models.OfflineTask;
 
 namespace wallabag.Data.Services
 {
-    public class OfflineTaskService
+    public class OfflineTaskService : IOfflineTaskService
     {
-        private static IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
-        private static SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
-        private static ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
+        private IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
+        private SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
+        private ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
 
-        private static ObservableCollection<OfflineTask> _tasks;
-        public static ObservableCollection<OfflineTask> Tasks
+        public ObservableCollection<OfflineTask> Tasks { get; private set; }
+
+        public OfflineTaskService()
         {
-            get
+            Tasks = new ObservableCollection<OfflineTask>(_database.Table<OfflineTask>());
+            Tasks.CollectionChanged += async (s, e) =>
             {
-                if (_tasks == null)
-                {
-                    _tasks = new ObservableCollection<OfflineTask>(_database.Table<OfflineTask>());
-                    _tasks.CollectionChanged += async (s, e) =>
-                     {
-                         if (e.NewItems != null && e.NewItems.Count > 0)
-                             await ExecuteAsync(e.NewItems[0] as OfflineTask);
-                     };
-                }
-
-                return _tasks;
-            }
+                if (e.NewItems != null && e.NewItems.Count > 0)
+                    await ExecuteAsync(e.NewItems[0] as OfflineTask);
+            };
         }
 
-        public static async Task ExecuteAllAsync()
+        public async Task ExecuteAllAsync()
         {
             _loggingService.WriteLine($"Executing all offline tasks. Number of tasks: {Tasks.Count}");
 
@@ -49,7 +42,7 @@ namespace wallabag.Data.Services
 
             _loggingService.WriteLine($"Execution finished. Number of failed tasks: {Tasks.Count}");
         }
-        private static async Task ExecuteAsync(OfflineTask task)
+        private async Task ExecuteAsync(OfflineTask task)
         {
             _loggingService.WriteLine($"Executing task {task.Id} with action {task.Action} for item {task.ItemId}.");
 
@@ -141,7 +134,7 @@ namespace wallabag.Data.Services
             _loggingService.WriteLineIf(!executionIsSuccessful, "Execution was not successful.", LoggingCategory.Warning);
         }
 
-        public static void Add(string url, IEnumerable<string> newTags)
+        public void Add(string url, IEnumerable<string> newTags)
         {
             _loggingService.WriteLine($"Adding task for URL '{url}' with {newTags.Count()} tags: {string.Join(",", newTags)}");
 
@@ -154,7 +147,7 @@ namespace wallabag.Data.Services
             };
             InsertTask(newTask);
         }
-        public static void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
+        public void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
             _loggingService.WriteLine($"Adding task for item {itemId} with action {action}. {addTagsList?.Count} new tags, {removeTagsList?.Count} removed tags.");
 
@@ -167,7 +160,7 @@ namespace wallabag.Data.Services
             };
             InsertTask(newTask);
         }
-        private static void InsertTask(OfflineTask newTask)
+        private void InsertTask(OfflineTask newTask)
         {
             _loggingService.WriteLine("Inserting task into database.");
 
@@ -175,6 +168,6 @@ namespace wallabag.Data.Services
             _database.Insert(newTask);
         }
 
-        internal static int LastItemId => _database.ExecuteScalar<int>("select Max(ID) from 'Item'");
+        public int LastItemId => _database.ExecuteScalar<int>("select Max(ID) from 'Item'");
     }
 }
