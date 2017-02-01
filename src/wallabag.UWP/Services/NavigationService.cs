@@ -93,5 +93,17 @@ namespace wallabag.Services
 
         [Obsolete("Please use the Pages enumeration instead.", true)]
         public void NavigateTo(string pageKey, object parameter) => throw new NotImplementedException();
+
+        public Task SaveAsync()
+        {
+            _loggingService.WriteLine("Saving navigation state.");
+            return BootStrapper.Current.NavigationService.SaveAsync();
+        }
+
+        public void Resume()
+        {
+            _loggingService.WriteLine("Restoring navigation state.");
+            BootStrapper.Current.NavigationService.Resuming();
+        }
     }
 }

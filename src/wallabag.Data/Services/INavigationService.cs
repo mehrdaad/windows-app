@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace wallabag.Data.Services
 {
@@ -12,5 +13,7 @@ namespace wallabag.Data.Services
         void Navigate(Type page, object parameter);
 
         void ClearHistory();
+        Task SaveAsync();
+        void Resume();
     }
 }

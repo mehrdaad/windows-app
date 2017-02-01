@@ -65,18 +65,16 @@ namespace wallabag
             return Task.CompletedTask;
         }
 
-        /*
         public override Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
-            // TODO: return NavigationService?.SaveAsync();
+            return NavigationService?.SaveAsync();
         }
 
         public override void OnResuming(object s, object e, AppExecutionState previousExecutionState)
         {
             if (previousExecutionState == AppExecutionState.Suspended)
-               //TODO: NavigationService.Resuming();
+                NavigationService.Resume();
         }
-        */
 
         protected override async void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
