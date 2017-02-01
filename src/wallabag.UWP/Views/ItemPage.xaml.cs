@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using wallabag.Data.Common;
+using wallabag.Common;
+using wallabag.Data.Common.Helpers;
 using wallabag.Data.ViewModels;
 using wallabag.Services;
 using Windows.Foundation;
@@ -62,14 +63,11 @@ namespace wallabag.Views
         {
             var titleBarBackgroundRectangle = FindName(nameof(TitleBarBackgroundRectangle)) as Rectangle;
 
-            // TODO: Add settings for WhiteOverlayForTitleBar!
-            //if (Settings..WhiteOverlayForTitleBar &&
-            //    GeneralHelper.DeviceFamilyOfCurrentDevice == DeviceFamily.Desktop)
-            //{
-            //    titleBarBackgroundRectangle.Visibility = Visibility.Visible;
-            //}
-            //else
-            //    titleBarBackgroundRectangle.Visibility = Visibility.Collapsed;
+            if (Settings.CustomSettings.WhiteOverlayForTitleBar &&
+                GeneralHelper.DeviceFamilyOfCurrentDevice == WindowsStateTriggers.DeviceFamily.Desktop)
+                titleBarBackgroundRectangle.Visibility = Visibility.Visible;
+            else
+                titleBarBackgroundRectangle.Visibility = Visibility.Collapsed;
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e) => HtmlViewer.NavigateToString("<p></p>");
 
