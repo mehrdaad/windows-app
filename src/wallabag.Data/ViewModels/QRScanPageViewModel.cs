@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
+using Windows.UI.Core;
 using ZXing.Mobile;
 
 namespace wallabag.Data.ViewModels
@@ -34,7 +36,7 @@ namespace wallabag.Data.ViewModels
         private async Task ScanAsync()
         {
             _loggingService.WriteLine("Scanning for wallabag QR code...");
-            await _scannerControl.StartScanningAsync(result =>
+            await _scannerControl.StartScanningAsync(async result =>
             {
                 _loggingService.WriteLine($"QR code found. Text: {result?.Text}");
                 bool success = string.IsNullOrEmpty(result?.Text) == false && result.Text.StartsWith("wallabag://");
@@ -42,9 +44,9 @@ namespace wallabag.Data.ViewModels
                 if (success)
                 {
                     _loggingService.WriteLine("QR code matches the protocol.");
-                    // TODO
-                    //SessionState.Add(QRResultKey, ProtocolHelper.Parse(result?.Text));
-                    //Dispatcher.Dispatch(() => NavigationService.GoBack());
+
+                    SessionState.Add(m_QRRESULTKEY, ProtocolHelper.Parse(result?.Text));
+                    await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () => _navigationService.GoBack());
                 }
             },
             new MobileBarcodeScanningOptions()

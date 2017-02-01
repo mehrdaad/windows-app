@@ -15,6 +15,8 @@ namespace wallabag.Data.ViewModels
         internal INavigationService _navigationService => SimpleIoc.Default.GetInstance<INavigationService>();
         internal ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
 
+        internal IDictionary<string, object> SessionState => SimpleIoc.Default.GetInstance<Dictionary<string, object>>("SessionState");
+
         public virtual Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
             return Task.CompletedTask;

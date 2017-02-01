@@ -339,9 +339,8 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLine($"Parameter existing. Setting it as {nameof(protocolSetupParameter)}.");
             }
 
-            // TODO: Implement SessionState
-            /* if (SessionState.ContainsKey(QRScanPageViewModel.QRResultKey))
-                protocolSetupParameter = SessionState[QRScanPageViewModel.QRResultKey] as ProtocolSetupNavigationParameter; */
+            if (SessionState.ContainsKey(QRScanPageViewModel.m_QRRESULTKEY))
+                protocolSetupParameter = SessionState[QRScanPageViewModel.m_QRRESULTKEY] as ProtocolSetupNavigationParameter;
 
             if (protocolSetupParameter != null)
             {

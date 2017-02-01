@@ -2,6 +2,7 @@
 using Microsoft.Practices.ServiceLocation;
 using SQLite.Net;
 using SQLite.Net.Platform.WinRT;
+using System.Collections.Generic;
 using System.IO;
 using wallabag.Api;
 using wallabag.Data.Common;
@@ -52,6 +53,7 @@ namespace wallabag.Data.ViewModels
 
                 return db;
             });
+            SimpleIoc.Default.Register(() => new Dictionary<string, object>(), "SessionState");
 
             SimpleIoc.Default.Register<AddItemViewModel>();
             SimpleIoc.Default.Register<EditTagsViewModel>();
