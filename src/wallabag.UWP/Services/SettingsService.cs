@@ -1,4 +1,5 @@
-﻿using wallabag.Data.Services;
+﻿using System.Collections.Generic;
+using wallabag.Data.Services;
 using Windows.Storage;
 
 namespace wallabag.Services
@@ -29,6 +30,23 @@ namespace wallabag.Services
 
         public bool Contains(string key, SettingStrategy strategy = SettingStrategy.Local, string containerName = "")
             => GetContainerForStrategyAndName(strategy, containerName).Values.ContainsKey(key);
+
+        public void ClearAll()
+        {
+            var containersToClear = new List<ApplicationDataContainer>
+            {
+                ApplicationData.Current.LocalSettings,
+                ApplicationData.Current.RoamingSettings
+            };
+
+            foreach (var container in containersToClear)
+            {
+                container.Values.Clear();
+
+                foreach (var item in container.Containers)
+                    container.DeleteContainer(item.Key);
+            }
+        }
 
         private ApplicationDataContainer GetContainerForStrategyAndName(SettingStrategy strategy, string containerName)
         {

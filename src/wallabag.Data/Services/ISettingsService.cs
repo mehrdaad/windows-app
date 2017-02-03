@@ -39,6 +39,11 @@
         /// <param name="key">Key to check</param>
         /// <returns>True if contains key, else false</returns>
         bool Contains(string key, SettingStrategy strategy = SettingStrategy.Local, string containerName = "");
+
+        /// <summary>
+        /// Removes all settings and all containers from the settings.
+        /// </summary>
+        void ClearAll();
     }
 
     public enum SettingStrategy
