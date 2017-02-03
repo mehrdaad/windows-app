@@ -13,32 +13,37 @@
         /// <param name="key">Key for settings</param>
         /// <param name="defaultValue">default value if not set</param>
         /// <returns>Value or default</returns>
-        T GetValueOrDefault<T>(string key, T defaultValue = default(T));
-        
+        T GetValueOrDefault<T>(string key, T defaultValue = default(T), SettingStrategy strategy = SettingStrategy.Local, string containerName = "");
+
         /// <summary>
         /// Adds or updates the value 
         /// </summary>
         /// <param name="key">Key for settting</param>
         /// <param name="value">Value to set</param>
-        /// <returns>True of was added or updated and you need to save it.</returns>
-        bool AddOrUpdateValue<T>(string key, T value);
+        void AddOrUpdateValue<T>(string key, T value, SettingStrategy strategy = SettingStrategy.Local, string containerName = "");
 
         /// <summary>
         /// Removes a desired key from the settings
         /// </summary>
         /// <param name="key">Key for setting</param>
-        void Remove(string key);
+        void Remove(string key, SettingStrategy strategy = SettingStrategy.Local, string containerName = "");
 
         /// <summary>
         /// Clear all keys from settings
         /// </summary>
-        void Clear();
+        void Clear(SettingStrategy strategy = SettingStrategy.Local, string containerName = "");
 
         /// <summary>
         /// Checks to see if the key has been added.
         /// </summary>
         /// <param name="key">Key to check</param>
         /// <returns>True if contains key, else false</returns>
-        bool Contains(string key);
+        bool Contains(string key, SettingStrategy strategy = SettingStrategy.Local, string containerName = "");
+    }
+
+    public enum SettingStrategy
+    {
+        Local,
+        Roaming
     }
 }

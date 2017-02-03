@@ -1,17 +1,16 @@
-﻿<t10:BootStrapper
+﻿<Application
     x:Class="wallabag.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:t10="using:Template10.Common"
     xmlns:vm="using:wallabag.Data.ViewModels">
 
-    <t10:BootStrapper.Resources>
+    <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Assets/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <vm:ViewModelLocator x:Name="Locator" />
         </ResourceDictionary>
-    </t10:BootStrapper.Resources>
+    </Application.Resources>
 
-</t10:BootStrapper>
+</Application>

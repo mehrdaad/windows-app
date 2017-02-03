@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Template10.Common;
 using wallabag.Data.Common;
 using wallabag.Data.Services;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static wallabag.Data.Common.Navigation;
 
@@ -14,39 +14,36 @@ namespace wallabag.Services
     class NavigationService : INavigationService
     {
         private ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
+        private ISettingsService _settingsService => SimpleIoc.Default.GetInstance<ISettingsService>();
 
-        public string CurrentPageKey
+        private Dictionary<Pages, Type> _keys;
+        private List<string> _history;
+
+        public NavigationService()
         {
-            get
+            _keys = new Dictionary<Pages, Type>();
+            _history = new List<string>();
+        }
+
+        public string CurrentPageKey { get; private set; }
+        public Frame Frame => Window.Current.Content as Frame;
+
+        public void ClearHistory() => _history.Clear();
+
+        public void GoBack()
+        {
+            if (Frame.CanGoBack)
             {
-                var currentPageType = BootStrapper.Current.NavigationService.CurrentPageType;
-                var dict = BootStrapper.Current.PageKeys<Pages>();
-
-                if (dict.ContainsValue(currentPageType))
-                    return dict.First(t => t.Value.FullName == currentPageType.FullName).Key.ToString();
-                else
-                    return "-EMPTY-";
+                _history.RemoveAt(_history.Count - 1);
+                Frame.GoBack();
             }
-
         }
-
-        public void ClearHistory()
-        {
-            BootStrapper.Current.NavigationService.ClearHistory();
-            BootStrapper.Current.NavigationService.ClearCache();
-        }
-
-        public void GoBack() => BootStrapper.Current.NavigationService.GoBack();
         public void Navigate(Pages pageKey) => Navigate(GetPageType(pageKey));
         public void Navigate(Pages pageKey, object parameter) => Navigate(GetPageType(pageKey), parameter);
         public void Navigate(Type page) => Navigate(page, null);
         public void Navigate(Type page, object parameter) => HandleNavigationAsync(page, parameter).ConfigureAwait(true);
 
-        public void Configure(Pages pageKey, Type pageType)
-        {
-            var keys = BootStrapper.Current.PageKeys<Pages>();
-            keys.Add(pageKey, pageType);
-        }
+        public void Configure(Pages pageKey, Type pageType) => _keys.Add(pageKey, pageType);
 
         private async Task HandleNavigationAsync(Type pageType, object parameter = null)
         {
@@ -56,16 +53,15 @@ namespace wallabag.Services
                 await new Dialogs.EditTagsDialog().ShowAsync();
             else
             {
-                var ns = BootStrapper.Current.NavigationService;
                 _loggingService.WriteLine($"Navigating to {pageType}. Type of parameter: {parameter?.GetType()?.Name}");
 
                 var pageState = new Dictionary<string, object>();
 
-                var oldPage = ns.FrameFacade.Content as Page;
+                var oldPage = Frame.Content as Page;
                 var oldViewModel = oldPage?.DataContext as INavigable;
 
                 _loggingService.WriteLine("Starting navigation...");
-                ns.FrameFacade.Navigate(pageType, parameter, null);
+                Frame.Navigate(pageType, parameter, null);
 
                 if (oldViewModel != null)
                 {
@@ -75,7 +71,7 @@ namespace wallabag.Services
                 else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedFromAsync)} wasn't executed because the ViewModel was null.");
 
                 // fetch (current which is now new)
-                var newPage = ns.FrameFacade.Content as Page;
+                var newPage = Frame.Content as Page;
                 var newViewModel = newPage?.DataContext as INavigable;
 
                 if (newViewModel != null)
@@ -86,7 +82,7 @@ namespace wallabag.Services
                 else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the ViewModel was null.");
             }
         }
-        private Type GetPageType(Pages pageKey) => BootStrapper.Current.PageKeys<Pages>().First(i => i.Key == pageKey).Value;
+        private Type GetPageType(Pages pageKey) => _keys.FirstOrDefault(i => i.Key == pageKey).Value;
 
         [Obsolete("Please use the Pages enumeration instead.", true)]
         public void NavigateTo(string pageKey) => throw new NotImplementedException();
@@ -94,16 +90,22 @@ namespace wallabag.Services
         [Obsolete("Please use the Pages enumeration instead.", true)]
         public void NavigateTo(string pageKey, object parameter) => throw new NotImplementedException();
 
+        private const string m_NAVIGATIONSTATESTRING = "NavigationState";
         public Task SaveAsync()
         {
             _loggingService.WriteLine("Saving navigation state.");
-            return BootStrapper.Current.NavigationService.SaveAsync();
+            string navState = Frame.GetNavigationState();
+
+            _settingsService.AddOrUpdateValue(m_NAVIGATIONSTATESTRING, navState);
+            return Task.CompletedTask;
         }
 
         public void Resume()
         {
             _loggingService.WriteLine("Restoring navigation state.");
-            BootStrapper.Current.NavigationService.Resuming();
+
+            string navState = _settingsService.GetValueOrDefault(m_NAVIGATIONSTATESTRING, string.Empty);
+            Frame.SetNavigationState(navState);
         }
     }
 }
