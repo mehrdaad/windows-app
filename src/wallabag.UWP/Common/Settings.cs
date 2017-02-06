@@ -12,8 +12,8 @@ namespace wallabag.Common
         {
             public static bool WhiteOverlayForTitleBar
             {
-                get { return SettingsService.GetValueOrDefault(nameof(WhiteOverlayForTitleBar), default(bool)); }
-                set { SettingsService.AddOrUpdateValue(nameof(WhiteOverlayForTitleBar), value); }
+                get { return SettingsService.GetValueOrDefault<bool>(nameof(WhiteOverlayForTitleBar), containerName: nameof(Settings.Appereance)); }
+                set { SettingsService.AddOrUpdateValue(nameof(WhiteOverlayForTitleBar), value, containerName: nameof(Settings.Appereance)); }
             }
         }
     }

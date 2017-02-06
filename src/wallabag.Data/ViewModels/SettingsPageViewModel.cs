@@ -82,10 +82,10 @@ namespace wallabag.Data.ViewModels
 
         public bool WhiteOverlayForTitleBar
         {
-            get { return Settings.SettingsService.GetValueOrDefault(nameof(WhiteOverlayForTitleBar), true); }
+            get { return Settings.SettingsService.GetValueOrDefault(nameof(WhiteOverlayForTitleBar), true, containerName: nameof(Settings.Appereance)); }
             set
             {
-                Settings.SettingsService.AddOrUpdateValue(nameof(WhiteOverlayForTitleBar), value);
+                Settings.SettingsService.AddOrUpdateValue(nameof(WhiteOverlayForTitleBar), value, containerName: nameof(Settings.Appereance));
                 RaisePropertyChanged();
             }
         }
@@ -159,7 +159,7 @@ namespace wallabag.Data.ViewModels
             DeleteDatabaseCommand = new RelayCommand(() => DeleteDatabase());
             VideoOpenModeRadioButtonCheckedCommand = new RelayCommand<string>(mode => VideoOpenModeRadioButtonChecked(mode));
         }
-       
+
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
             if (_backgroundTaskOptionsChanged)
