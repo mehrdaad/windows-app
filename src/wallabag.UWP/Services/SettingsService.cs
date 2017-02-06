@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using wallabag.Data.Services;
+using Windows.Foundation.Collections;
 using Windows.Storage;
 
 namespace wallabag.Services
@@ -8,28 +9,28 @@ namespace wallabag.Services
     {
         public T GetValueOrDefault<T>(string key, T defaultValue = default(T), SettingStrategy strategy = SettingStrategy.Local, string containerName = "")
         {
-            var container = GetContainerForStrategyAndName(strategy, containerName);
-            if (container.Values.ContainsKey(key))
-                return (T)container.Values[key];
+            var container = GetContainerValuesForStrategyAndContainerName(strategy, containerName);
+            if (container.ContainsKey(key))
+                return (T)container[key];
 
             return defaultValue;
         }
 
         public void AddOrUpdateValue<T>(string key, T value, SettingStrategy strategy = SettingStrategy.Local, string containerName = "")
         {
-            var container = GetContainerForStrategyAndName(strategy, containerName);
+            var container = GetContainerValuesForStrategyAndContainerName(strategy, containerName);
 
-            container.Values[key] = value;
+            container[key] = value;
         }
 
         public void Remove(string key, SettingStrategy strategy = SettingStrategy.Roaming, string containerName = "")
-            => GetContainerForStrategyAndName(strategy, containerName).Values.Remove(key);
+            => GetContainerValuesForStrategyAndContainerName(strategy, containerName).Remove(key);
 
         public void Clear(SettingStrategy strategy = SettingStrategy.Roaming, string containerName = "")
-            => GetContainerForStrategyAndName(strategy, containerName).Values.Clear();
+            => GetContainerValuesForStrategyAndContainerName(strategy, containerName).Clear();
 
         public bool Contains(string key, SettingStrategy strategy = SettingStrategy.Local, string containerName = "")
-            => GetContainerForStrategyAndName(strategy, containerName).Values.ContainsKey(key);
+            => GetContainerValuesForStrategyAndContainerName(strategy, containerName).ContainsKey(key);
 
         public void ClearAll()
         {
@@ -48,7 +49,7 @@ namespace wallabag.Services
             }
         }
 
-        private ApplicationDataContainer GetContainerForStrategyAndName(SettingStrategy strategy, string containerName)
+        private IPropertySet GetContainerValuesForStrategyAndContainerName(SettingStrategy strategy, string containerName)
         {
             var container = ApplicationData.Current.LocalSettings;
 
@@ -58,7 +59,7 @@ namespace wallabag.Services
             if (!string.IsNullOrWhiteSpace(containerName))
                 container = container.CreateContainer(containerName, ApplicationDataCreateDisposition.Always);
 
-            return container;
+            return container.Values;
         }
     }
 }
