@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using wallabag.Data.Services;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -9,18 +12,48 @@ namespace wallabag.Services
     {
         public T GetValueOrDefault<T>(string key, T defaultValue = default(T), SettingStrategy strategy = SettingStrategy.Local, string containerName = "")
         {
-            var container = GetContainerValuesForStrategyAndContainerName(strategy, containerName);
-            if (container.ContainsKey(key))
-                return (T)container[key];
+            try
+            {
+                var values = GetContainerValuesForStrategyAndContainerName(strategy, containerName);
 
-            return defaultValue;
+                if (values.ContainsKey(key))
+                {
+                    var container = values[key] as ApplicationDataCompositeValue;
+
+                    var type = typeof(T);
+                    if (container.ContainsKey("Type"))
+                        type = Type.GetType((string)container["Type"]);
+
+                    string value = null;
+                    if (container.ContainsKey("Value"))
+                        value = container["Value"] as string;
+
+                    var converted = (T)JsonConvert.DeserializeObject(value, type);
+                    return converted;
+                }
+                return defaultValue;
+            }
+            catch { return defaultValue; }
         }
 
         public void AddOrUpdateValue<T>(string key, T value, SettingStrategy strategy = SettingStrategy.Local, string containerName = "")
         {
-            var container = GetContainerValuesForStrategyAndContainerName(strategy, containerName);
+            var type = typeof(T);
 
-            container[key] = value;
+            if (value != null)
+                type = value.GetType();
+
+            var container = new ApplicationDataCompositeValue();
+            var converted = JsonConvert.SerializeObject(value, Formatting.None);
+
+            if (converted != null)
+                container["Value"] = converted;
+
+            if ((type != typeof(string) && !type.GetTypeInfo().IsValueType) || (type != typeof(T)))
+
+                container["Type"] = type.AssemblyQualifiedName;
+
+            GetContainerValuesForStrategyAndContainerName(strategy, containerName)[key] = container;
         }
 
         public void Remove(string key, SettingStrategy strategy = SettingStrategy.Roaming, string containerName = "")
