@@ -17,26 +17,24 @@ namespace wallabag.Services
         private ISettingsService _settingsService => SimpleIoc.Default.GetInstance<ISettingsService>();
 
         private Dictionary<Pages, Type> _keys;
-        private List<string> _history;
 
         public NavigationService()
         {
             _keys = new Dictionary<Pages, Type>();
-            _history = new List<string>();
         }
 
         public string CurrentPageKey { get; private set; }
         public Frame Frame => Window.Current.Content as Frame;
 
-        public void ClearHistory() => _history.Clear();
+        public void ClearHistory()
+        {
+            Frame.BackStack.Clear();
+        }
 
         public void GoBack()
         {
-            if (Frame.CanGoBack)
-            {
-                _history.RemoveAt(_history.Count - 1);
-                Frame.GoBack();
-            }
+            if (Frame.CanGoBack)           
+                Frame.GoBack();            
         }
         public void Navigate(Pages pageKey) => Navigate(GetPageType(pageKey));
         public void Navigate(Pages pageKey, object parameter) => Navigate(GetPageType(pageKey), parameter);
