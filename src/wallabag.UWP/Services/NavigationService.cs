@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using wallabag.Data.Common;
 using wallabag.Data.Services;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static wallabag.Data.Common.Navigation;
@@ -29,12 +30,16 @@ namespace wallabag.Services
         public void ClearHistory()
         {
             Frame.BackStack.Clear();
+            UpdateBackButtonVisibility();
         }
+        internal void UpdateBackButtonVisibility() => SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = Frame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
 
         public void GoBack()
         {
             if (Frame.CanGoBack)           
-                Frame.GoBack();            
+                Frame.GoBack();
+
+            UpdateBackButtonVisibility();
         }
         public void Navigate(Pages pageKey) => Navigate(GetPageType(pageKey));
         public void Navigate(Pages pageKey, object parameter) => Navigate(GetPageType(pageKey), parameter);
@@ -79,6 +84,8 @@ namespace wallabag.Services
                 }
                 else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the ViewModel was null.");
             }
+
+            UpdateBackButtonVisibility();
         }
         private Type GetPageType(Pages pageKey) => _keys.FirstOrDefault(i => i.Key == pageKey).Value;
 
