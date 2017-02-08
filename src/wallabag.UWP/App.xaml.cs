@@ -14,6 +14,7 @@ using wallabag.Services;
 using wallabag.Views;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static wallabag.Data.Common.Navigation;
@@ -135,6 +136,8 @@ namespace wallabag
                 if (Window.Current.Content == null)
                 {
                     var frame = new Frame();
+
+                    SystemNavigationManager.GetForCurrentView().BackRequested += (s, args) => _navigation.GoBack();
 
                     Window.Current.Content = frame;
                 }
