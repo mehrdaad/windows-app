@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wallabag", "src\wallabag.UW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wallabag.Data", "src\wallabag.Data\wallabag.Data.csproj", "{67F9D3A8-F71E-4428-913F-C37AE82CDB24}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wallabag.Tests", "src\wallabag.Tests\wallabag.Tests.csproj", "{59A37B78-4702-4084-8308-CC509B0EE828}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,22 @@ Global
 		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|x64.Build.0 = Release|Any CPU
 		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|x86.ActiveCfg = Release|Any CPU
 		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|x86.Build.0 = Release|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Debug|ARM.Build.0 = Debug|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Debug|x64.Build.0 = Debug|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Debug|x86.Build.0 = Debug|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Release|ARM.ActiveCfg = Release|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Release|ARM.Build.0 = Release|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Release|x64.ActiveCfg = Release|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Release|x64.Build.0 = Release|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Release|x86.ActiveCfg = Release|Any CPU
+		{59A37B78-4702-4084-8308-CC509B0EE828}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
