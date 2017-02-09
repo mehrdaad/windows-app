@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using wallabag.Data.Models;
 
 namespace wallabag.Data.Interfaces
 {
@@ -14,5 +15,6 @@ namespace wallabag.Data.Interfaces
         string GetLocalizedResource(string resourceName);
         Task RunOnUIThreadAsync(Action p);
         Task<string> GetArticleTemplateAsync();
+        void ShareItem(Item model);
     }
 }

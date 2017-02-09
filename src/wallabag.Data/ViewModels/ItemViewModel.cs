@@ -1,12 +1,11 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.ComponentModel;
 using System.Windows.Input;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.System;
 using static wallabag.Data.Common.Navigation;
 
 namespace wallabag.Data.ViewModels
@@ -85,24 +84,17 @@ namespace wallabag.Data.ViewModels
             ShareCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine($"Sharing item {Model.Id}.");
-                DataTransferManager.GetForCurrentView().DataRequested += (s, args) =>
-                {
-                    var data = args.Request.Data;
-
-                    data.SetWebLink(new Uri(Model.Url));
-                    data.Properties.Title = Model.Title;
-                };
-                DataTransferManager.ShowShareUI();
+                Device.ShareItem(Model);
             });
             EditTagsCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine($"Editing tags of item {Model.Id}.");
                 _navigationService.Navigate(Pages.EditTagsPage, new EditTagsViewModel(this.Model));
             });
-            OpenInBrowserCommand = new RelayCommand(async () =>
+            OpenInBrowserCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine($"Opening item {Model.Id} in browser.");
-                await Launcher.LaunchUriAsync(new Uri(Model.Url));
+                Device.LaunchUri(new Uri(Model.Url));
             });
         }
 
