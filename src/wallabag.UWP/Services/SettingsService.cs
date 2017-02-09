@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,8 +11,12 @@ namespace wallabag.Services
 {
     class SettingsService : ISettingsService
     {
+        private ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
+
         public T GetValueOrDefault<T>(string key, T defaultValue = default(T), SettingStrategy strategy = SettingStrategy.Local, string containerName = "")
         {
+            _loggingService.WriteLine($"Trying to fetch setting {key} from {strategy.ToString().ToLower()} container {containerName}.");
+
             try
             {
                 var values = GetContainerValuesForStrategyAndContainerName(strategy, containerName);
@@ -29,15 +34,26 @@ namespace wallabag.Services
                         value = container["Value"] as string;
 
                     var converted = (T)JsonConvert.DeserializeObject(value, type);
+
+                    _loggingService.WriteLine($"Returning value: {converted}");
+
                     return converted;
                 }
+
+                _loggingService.WriteLine($"Returning default value: {defaultValue}");
                 return defaultValue;
             }
-            catch { return defaultValue; }
+            catch
+            {
+                _loggingService.WriteLine($"Returning default value: {defaultValue}");
+                return defaultValue;
+            }
         }
 
         public void AddOrUpdateValue<T>(string key, T value, SettingStrategy strategy = SettingStrategy.Local, string containerName = "")
         {
+            _loggingService.WriteLine($"Adding setting {key} to {strategy.ToString().ToLower()} container {containerName} with value '{value}'.");
+
             var type = typeof(T);
 
             if (value != null)
@@ -50,7 +66,6 @@ namespace wallabag.Services
                 container["Value"] = converted;
 
             if ((type != typeof(string) && !type.GetTypeInfo().IsValueType) || (type != typeof(T)))
-
                 container["Type"] = type.AssemblyQualifiedName;
 
             GetContainerValuesForStrategyAndContainerName(strategy, containerName)[key] = container;
