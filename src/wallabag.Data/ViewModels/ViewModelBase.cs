@@ -21,12 +21,12 @@ namespace wallabag.Data.ViewModels
 
         public virtual Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
         public virtual Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
             base.Cleanup();
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
     }
 }
