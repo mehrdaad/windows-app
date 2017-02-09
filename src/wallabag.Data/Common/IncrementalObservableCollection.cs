@@ -1,35 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI.Xaml.Data;
+using wallabag.Data.Interfaces;
 
 namespace wallabag.Data.Common
 {
     public class IncrementalObservableCollection<T> : ObservableCollection<T>, ISupportIncrementalLoading
     {
-        private Func<uint, Task<List<T>>> load;
-        public bool HasMoreItems { get { return Items.Count < MaxItems; } }
+        private Func<int, Task<List<T>>> _loadDataAsync;
+        public bool HasMoreItems => Items.Count < MaxItems;
         public int MaxItems { get; set; }
 
-        public IncrementalObservableCollection(Func<uint, Task<List<T>>> load)
+        public IncrementalObservableCollection(Func<int, Task<List<T>>> load)
         {
-            this.load = load;
+            this._loadDataAsync = load;
         }
 
-        public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
+        public async Task<int> LoadMoreItemsAsync(int count)
         {
-            return AsyncInfo.Run(async c =>
-            {
-                var data = await load(count);
+            var data = await _loadDataAsync(count);
 
-                foreach (var item in data)
-                    Add(item);
+            foreach (var item in data)
+                Add(item);
 
-                return new LoadMoreItemsResult { Count = (uint)data.Count };
-            });
+            return data.Count;
         }
     }
 }
