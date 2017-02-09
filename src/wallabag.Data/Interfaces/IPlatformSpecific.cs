@@ -7,8 +7,10 @@ namespace wallabag.Data.Interfaces
     {
         bool HasACamera { get; }
         string DeviceName { get; }
+        bool InternetConnectionIsAvailable { get; }
 
         void LaunchUri(Uri uri, Uri fallback = default(Uri));
+        string GetLocalizedResource(string resourceName);
         Task RunOnUIThreadAsync(Action p);
     }
 }
