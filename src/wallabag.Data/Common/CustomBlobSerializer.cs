@@ -16,7 +16,7 @@ namespace wallabag.Data.Common
 
         public object Deserialize(byte[] data, Type type)
         {
-            string str = System.Text.Encoding.UTF8.GetString(data);
+            string str = System.Text.Encoding.UTF8.GetString(data, 0, data.Length);
 
             if (type == typeof(Uri))
                 return new Uri(str.Replace("\"", string.Empty));
