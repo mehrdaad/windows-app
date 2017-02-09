@@ -79,16 +79,7 @@ namespace wallabag.Data.ViewModels
                 }
             }
         }
-
-        public bool WhiteOverlayForTitleBar
-        {
-            get { return Settings.SettingsService.GetValueOrDefault(nameof(WhiteOverlayForTitleBar), true, containerName: nameof(Settings.Appereance)); }
-            set
-            {
-                Settings.SettingsService.AddOrUpdateValue(nameof(WhiteOverlayForTitleBar), value, containerName: nameof(Settings.Appereance));
-                RaisePropertyChanged();
-            }
-        }
+        
         public bool BackgroundTaskIsEnabled
         {
             get { return Settings.BackgroundTask.IsEnabled; }

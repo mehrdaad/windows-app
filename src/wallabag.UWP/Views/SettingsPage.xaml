@@ -139,7 +139,7 @@
                         Margin="0,32,0,0"
                         x:DeferLoadStrategy="Lazy"
                         Header="Visibility of the title bar"
-                        IsOn="{x:Bind ViewModel.WhiteOverlayForTitleBar, Mode=TwoWay}"
+                        IsOn="{x:Bind WhiteOverlayForTitleBar, Mode=TwoWay}"
                         OffContent="Hidden"
                         OnContent="Visible"
                         Visibility="Collapsed" />
