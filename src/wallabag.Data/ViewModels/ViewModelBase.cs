@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using wallabag.Api;
 using wallabag.Data.Common;
+using wallabag.Data.Interfaces;
 using wallabag.Data.Services;
 
 namespace wallabag.Data.ViewModels
@@ -16,6 +17,7 @@ namespace wallabag.Data.ViewModels
         internal ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
 
         internal IDictionary<string, object> SessionState => SimpleIoc.Default.GetInstance<Dictionary<string, object>>("SessionState");
+        internal IPlatformSpecific Device => SimpleIoc.Default.GetInstance<IPlatformSpecific>();
 
         public virtual Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
