@@ -30,7 +30,7 @@ namespace wallabag.Data.Common.Helpers
                 var x = new Uri(uriString);
                 return true;
             }
-            catch (UriFormatException) { return false; }
+            catch { return false; }
         }
     }
 }
