@@ -36,8 +36,8 @@ namespace wallabag.Services
 
         public void GoBack()
         {
-            if (Frame.CanGoBack)           
-                Frame.GoBack();
+            if (Frame.CanGoBack)
+                HandleNavigationAsync(null, navigateBack: true).ConfigureAwait(true);
 
             UpdateBackButtonVisibility();
         }
@@ -48,11 +48,14 @@ namespace wallabag.Services
 
         public void Configure(Pages pageKey, Type pageType) => _keys.Add(pageKey, pageType);
 
-        private async Task HandleNavigationAsync(Type pageType, object parameter = null)
+        private async Task HandleNavigationAsync(Type pageType, object parameter = null, bool navigateBack = false)
         {
-            if (pageType == GetPageType(Pages.AddItemPage))
+            if (pageType == null && navigateBack == false)
+                throw new ArgumentNullException(nameof(pageType));
+
+            if (pageType == GetPageType(Pages.AddItemPage) && !navigateBack)
                 await new Dialogs.AddItemDialog().ShowAsync();
-            else if (pageType == GetPageType(Pages.EditTagsPage))
+            else if (pageType == GetPageType(Pages.EditTagsPage) && !navigateBack)
                 await new Dialogs.EditTagsDialog().ShowAsync();
             else
             {
@@ -64,7 +67,11 @@ namespace wallabag.Services
                 var oldViewModel = oldPage?.DataContext as INavigable;
 
                 _loggingService.WriteLine("Starting navigation...");
-                Frame.Navigate(pageType, parameter, null);
+
+                if (navigateBack)
+                    Frame.GoBack();
+                else
+                    Frame.Navigate(pageType, parameter);
 
                 if (oldViewModel != null)
                 {
