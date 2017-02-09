@@ -36,7 +36,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common\CustomBlobSerializer.cs" />
-    <Compile Include="Common\Helpers\ColorHelper.cs" />
     <Compile Include="Common\Helpers\CommandHelper.cs" />
     <Compile Include="Common\Helpers\GeneralHelper.cs" />
     <Compile Include="Common\Helpers\ListHelper.cs" />

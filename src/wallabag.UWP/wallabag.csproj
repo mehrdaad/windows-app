@@ -101,6 +101,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\Helpers\ColorHelper.cs" />
     <Compile Include="Common\Helpers\TitleBarHelper.cs" />
     <Compile Include="Common\Helpers\WebViewHelper.cs" />
     <Compile Include="Common\Settings.cs" />
