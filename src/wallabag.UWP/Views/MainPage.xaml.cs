@@ -54,8 +54,9 @@ namespace wallabag.Views
             };
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            await Common.Helpers.TitleBarHelper.ResetToDefaultAsync();
             Messenger.Default.Register<CompleteMultipleSelectionMessage>(this, message => DisableMultipleSelection(true));
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)

@@ -149,27 +149,8 @@ namespace wallabag.Common.Helpers
             }
         }
 
-        public static readonly DependencyProperty ResetToDefaultProperty =
-                DependencyProperty.RegisterAttached("ResetToDefault", typeof(bool),
-                typeof(TitleBarHelper),
-                new PropertyMetadata(false, OnResetToDefaultPropertyChangedAsync));
-
-        public static bool GetResetToDefault(DependencyObject d)
+        public static async Task ResetToDefaultAsync()
         {
-            return (bool)d.GetValue(ResetToDefaultProperty);
-        }
-
-        public static void SetResetToDefault(DependencyObject d, bool value)
-        {
-            d.SetValue(ResetToDefaultProperty, value);
-        }
-
-        private static async void OnResetToDefaultPropertyChangedAsync(DependencyObject d,
-            DependencyPropertyChangedEventArgs e)
-        {
-            if ((bool)e.NewValue == false)
-                return;
-
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
 
