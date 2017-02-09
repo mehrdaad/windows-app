@@ -7,7 +7,6 @@ using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
-using Windows.UI.Xaml.Controls;
 
 namespace wallabag.Data.ViewModels
 {
@@ -36,34 +35,31 @@ namespace wallabag.Data.ViewModels
             FinishCommand = new RelayCommand(() => Finish());
             CancelCommand = new RelayCommand(() => Cancel());
 
-            TagQueryChangedCommand = new RelayCommand<AutoSuggestBoxTextChangedEventArgs>(args =>
+            TagQueryChangedCommand = new RelayCommand(() =>
             {
-                _loggingService.WriteLine($"Tag query changed: {TagQuery} (Reason: {args.Reason.ToString()})");
-                if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-                {
-                    string suggestionString = TagQuery.ToLower().Split(',').Last();
-                    _loggingService.WriteLine($"Searching for tags beginning with '{suggestionString}' in the database.");
-                    Suggestions.Replace(
-                        _database.Table<Tag>()
-                            .Where(t => t.Label.ToLower().StartsWith(suggestionString))
-                            .Except(Tags)
-                            .Take(3)
-                            .ToList());
-                }
+                _loggingService.WriteLine($"Tag query changed: {TagQuery}");
+
+                string suggestionString = TagQuery.ToLower().Split(',').Last();
+                _loggingService.WriteLine($"Searching for tags beginning with '{suggestionString}' in the database.");
+                Suggestions.Replace(
+                    _database.Table<Tag>()
+                        .Where(t => t.Label.ToLower().StartsWith(suggestionString))
+                        .Except(Tags)
+                        .Take(3)
+                        .ToList());
             });
-            TagSubmittedCommand = new RelayCommand<AutoSuggestBoxQuerySubmittedEventArgs>(args =>
+            TagSubmittedCommand = new RelayCommand<Tag>(suggestion =>
             {
-                _loggingService.WriteLine($"Tag was submitted. Parameter is {args.ChosenSuggestion?.GetType()?.Name}.");
-                var suggestion = args.ChosenSuggestion as Tag;
+                _loggingService.WriteLine($"Tag was submitted.");
 
                 if (suggestion != null && !Tags.Contains(suggestion))
                 {
                     _loggingService.WriteLine("Tag wasn't in list yet. Added.");
-                    Tags.Add(args.ChosenSuggestion as Tag);
+                    Tags.Add(suggestion);
                 }
                 else
                 {
-                    var tags = args.QueryText.Split(',').ToList();
+                    var tags = TagQuery.Split(',').ToList();
                     _loggingService.WriteLine($"Adding {tags.Count} tags to the list.");
 
                     foreach (string item in tags)

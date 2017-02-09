@@ -1,7 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using SQLite.Net;
-using SQLite.Net.Platform.WinRT;
 using System.Collections.Generic;
 using System.IO;
 using wallabag.Api;
@@ -44,9 +43,9 @@ namespace wallabag.Data.ViewModels
             });
             SimpleIoc.Default.Register<SQLiteConnection>(() =>
             {
-                string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path, "wallabag.db");
+                var device = SimpleIoc.Default.GetInstance<Interfaces.IPlatformSpecific>();
 
-                var db = new SQLiteConnection(new SQLitePlatformWinRT(), path, serializer: new CustomBlobSerializer());
+                var db = new SQLiteConnection(device.GetSQLitePlatform(), device.DatabasePath, serializer: new CustomBlobSerializer());
                 db.CreateTable<Item>();
                 db.CreateTable<Tag>();
                 db.CreateTable<OfflineTask>();
@@ -60,7 +59,6 @@ namespace wallabag.Data.ViewModels
             SimpleIoc.Default.Register<ItemPageViewModel>();
             SimpleIoc.Default.Register<LoginPageViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
-            SimpleIoc.Default.Register<QRScanPageViewModel>();
             SimpleIoc.Default.Register<SettingsPageViewModel>();
         }
 
@@ -69,7 +67,6 @@ namespace wallabag.Data.ViewModels
         public ItemPageViewModel ItemView => ServiceLocator.Current.GetInstance<ItemPageViewModel>();
         public LoginPageViewModel Login => ServiceLocator.Current.GetInstance<LoginPageViewModel>();
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
-        public QRScanPageViewModel QRScan => ServiceLocator.Current.GetInstance<QRScanPageViewModel>();
         public SettingsPageViewModel SettingsView => ServiceLocator.Current.GetInstance<SettingsPageViewModel>();
     }
 }

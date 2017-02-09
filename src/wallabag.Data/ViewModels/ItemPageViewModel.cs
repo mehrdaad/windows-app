@@ -267,7 +267,7 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLineIf(Item == null, "Item is null.", LoggingCategory.Warning);
             _loggingService.WriteLine($"Item title: {Item?.Model?.Title}");
 
-            if ((Item == null || string.IsNullOrEmpty(Item?.Model?.Content)) && GeneralHelper.InternetConnectionIsAvailable)
+            if ((Item == null || string.IsNullOrEmpty(Item?.Model?.Content)) && Device.InternetConnectionIsAvailable)
             {
                 _loggingService.WriteLine("Fetching item from server.");
                 var item = await _client.GetItemAsync(Item.Model.Id);
@@ -282,13 +282,13 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine("No content available.", LoggingCategory.Warning);
                 ErrorDuringInitialization = true;
-                ErrorDescription = GeneralHelper.LocalizedResource("NoContentAvailableErrorMessage");
+                ErrorDescription = Device.GetLocalizedResource("NoContentAvailableErrorMessage");
             }
             else if (Item?.Model?.Content?.Contains("wallabag can't retrieve contents for this article.") == true)
             {
                 _loggingService.WriteLine("wallabag can't retrieve content.", LoggingCategory.Warning);
                 ErrorDuringInitialization = true;
-                ErrorDescription = GeneralHelper.LocalizedResource("CantRetrieveContentsErrorMessage");
+                ErrorDescription = Device.GetLocalizedResource("CantRetrieveContentsErrorMessage");
             }
 
             if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)

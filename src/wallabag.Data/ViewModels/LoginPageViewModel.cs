@@ -49,9 +49,9 @@ namespace wallabag.Data.ViewModels
 
             Providers = new List<WallabagProvider>()
             {
-                //new WallabagProvider(new Uri("https://framabag.org"), "framabag", GeneralHelper.LocalizedResource("FramabagProviderDescription")),
-                new WallabagProvider(new Uri("https://app.wallabag.it"), "wallabag.it", GeneralHelper.LocalizedResource("WallabagItProviderDescription")),
-                new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", GeneralHelper.LocalizedResource("V2WallabagOrgProviderDescription")),
+                //new WallabagProvider(new Uri("https://framabag.org"), "framabag", Device.GetLocalizedResource("FramabagProviderDescription")),
+                new WallabagProvider(new Uri("https://app.wallabag.it"), "wallabag.it", Device.GetLocalizedResource("WallabagItProviderDescription")),
+                new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", Device.GetLocalizedResource("V2WallabagOrgProviderDescription")),
                 WallabagProvider.Other
             };
 
@@ -117,7 +117,7 @@ namespace wallabag.Data.ViewModels
             {
                 if (!Url.IsValidUri())
                 {
-                    Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("UrlFormatWrongMessage")));
+                    Messenger.Default.Send(new NotificationMessage(Device.GetLocalizedResource("UrlFormatWrongMessage")));
                     _loggingService.WriteLine($"URL was in a wrong format. Input: {Url}", LoggingCategory.Warning);
                     return;
                 }
@@ -132,7 +132,7 @@ namespace wallabag.Data.ViewModels
                 else
                 {
                     CurrentStep = 1;
-                    Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("CredentialsWrongMessage")));
+                    Messenger.Default.Send(new NotificationMessage(Device.GetLocalizedResource("CredentialsWrongMessage")));
                     _loggingService.WriteLine("The entered credentials are wrong.");
                     return;
                 }
@@ -161,7 +161,7 @@ namespace wallabag.Data.ViewModels
         {
             _loggingService.WriteLine("Testing configuration.");
             _loggingService.WriteLine($"URL: {Url}");
-            ProgressDescription = GeneralHelper.LocalizedResource("TestingConfigurationMessage");
+            ProgressDescription = Device.GetLocalizedResource("TestingConfigurationMessage");
 
             if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
             {
@@ -244,7 +244,7 @@ namespace wallabag.Data.ViewModels
         private async Task DownloadAndSaveItemsAndTagsAsync()
         {
             _loggingService.WriteLine("Downloading items and tags...");
-            ProgressDescription = GeneralHelper.LocalizedResource("DownloadingItemsTextBlock.Text");
+            ProgressDescription = Device.GetLocalizedResource("DownloadingItemsTextBlock.Text");
             int itemsPerPage = 100;
 
             var itemResponse = await _client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: itemsPerPage);
@@ -260,7 +260,7 @@ namespace wallabag.Data.ViewModels
                 for (int i = 2; i <= itemResponse.Pages; i++)
                 {
                     _loggingService.WriteLine($"Downloading items for page {i}...");
-                    ProgressDescription = string.Format(GeneralHelper.LocalizedResource("DownloadingItemsWithProgress"), items.Count, itemResponse.TotalNumberOfItems);
+                    ProgressDescription = string.Format(Device.GetLocalizedResource("DownloadingItemsWithProgress"), items.Count, itemResponse.TotalNumberOfItems);
                     items.AddRange(await _client.GetItemsAsync(itemsPerPage: itemsPerPage, pageNumber: i));
                 }
             }
@@ -268,7 +268,7 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLine("Downloading tags.");
             var tags = await _client.GetTagsAsync();
 
-            ProgressDescription = GeneralHelper.LocalizedResource("SavingItemsInDatabaseMessage");
+            ProgressDescription = Device.GetLocalizedResource("SavingItemsInDatabaseMessage");
 
             _loggingService.WriteLine("Saving results in database.");
             await Task.Run(() =>
@@ -363,7 +363,7 @@ namespace wallabag.Data.ViewModels
         public async Task<bool> CreateApiClientAsync()
         {
             _loggingService.WriteLine("Creating a new client...");
-            ProgressDescription = GeneralHelper.LocalizedResource("CreatingClientMessage");
+            ProgressDescription = Device.GetLocalizedResource("CreatingClientMessage");
 
             string token = string.Empty;
             bool useNewApi = false;
@@ -525,7 +525,7 @@ namespace wallabag.Data.ViewModels
             catch (Exception e)
             {
                 _loggingService.TrackException(e);
-                Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("SomethingWentWrongMessage")));
+                Messenger.Default.Send(new NotificationMessage(Device.GetLocalizedResource("SomethingWentWrongMessage")));
                 return null;
             }
         }

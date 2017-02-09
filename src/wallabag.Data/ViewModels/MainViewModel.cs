@@ -34,7 +34,7 @@ namespace wallabag.Data.ViewModels
         public bool OfflineTaskIndicatorIsVisible => OfflineTaskCount > 0;
         public bool ItemsCountIsZero => Items.Count == 0;
         public bool IsSyncing { get; set; }
-        public string PageHeader { get; set; } = GeneralHelper.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
+        public string PageHeader { get; set; }
 
         public ICommand SyncCommand { get; private set; }
         public ICommand AddCommand { get; private set; }
@@ -157,7 +157,7 @@ namespace wallabag.Data.ViewModels
         private async Task SyncAsync()
         {
             _loggingService.WriteLine("Syncing with the server.");
-            if (GeneralHelper.InternetConnectionIsAvailable == false)
+            if (Device.InternetConnectionIsAvailable == false)
             {
                 _loggingService.WriteLine("No internet connection available.");
                 return;
@@ -508,9 +508,9 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLine($"Old value: {PageHeader}");
 
             if (IsSearchActive)
-                PageHeader = string.Format(GeneralHelper.LocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
+                PageHeader = string.Format(Device.GetLocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
             else
-                PageHeader = GeneralHelper.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
+                PageHeader = Device.GetLocalizedResource("SearchBox.PlaceholderText").ToUpper();
 
             _loggingService.WriteLine($"New value: {PageHeader}");
         }

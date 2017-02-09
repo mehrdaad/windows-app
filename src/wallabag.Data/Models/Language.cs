@@ -31,7 +31,7 @@ namespace wallabag.Data.Models
                 {
                     InternalLanguageCode = null,
                     LanguageCode = null,
-                    DisplayName = GeneralHelper.LocalizedResource("UnknownLanguageDisplayName")
+                    DisplayName = Device.GetLocalizedResource("UnknownLanguageDisplayName")
                 };
             }
         }
