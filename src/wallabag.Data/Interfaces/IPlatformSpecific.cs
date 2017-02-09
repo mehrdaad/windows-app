@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace wallabag.Data.Interfaces
 {
@@ -8,5 +9,6 @@ namespace wallabag.Data.Interfaces
         string DeviceName { get; }
 
         void LaunchUri(Uri uri, Uri fallback = default(Uri));
+        Task RunOnUIThreadAsync(Action p);
     }
 }

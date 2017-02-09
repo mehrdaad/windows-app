@@ -4,10 +4,10 @@ using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using PropertyChanged;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Api;
@@ -16,57 +16,57 @@ using wallabag.Data.Common.Helpers;
 using wallabag.Data.Common.Messages;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
     public class MainViewModel : ViewModelBase
     {
-        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
+        private int _previousItemTypeIndex;
+        private bool _incrementalLoadingIsBlocked;
 
+        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
         public IncrementalObservableCollection<ItemViewModel> Items { get; set; }
 
-        public Visibility OfflineTaskVisibility => OfflineTaskCount > 0 ? Visibility.Visible : Visibility.Collapsed;
+        // General
+        [AlsoNotifyFor(nameof(OfflineTaskIndicatorIsVisible))]
         public int OfflineTaskCount => _database.ExecuteScalar<int>("select count(*) from OfflineTask");
-        public bool IsSyncing { get; set; }
-
+        public bool OfflineTaskIndicatorIsVisible => OfflineTaskCount > 0;
         public bool ItemsCountIsZero => Items.Count == 0;
-        public bool IsSearchActive { get; set; } = false;
+        public bool IsSyncing { get; set; }
         public string PageHeader { get; set; } = GeneralHelper.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
-
-        public bool? SortByCreationDate
-        {
-            get { return CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByCreationDate; }
-            set { CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByCreationDate; }
-        }
-        public bool? SortByReadingTime
-        {
-            get { return CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime; }
-            set { CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByReadingTime; }
-        }
-        public ICommand SetSortTypeFilterCommand { get; private set; }
-        public ICommand SetSortOrderCommand { get; private set; }
 
         public ICommand SyncCommand { get; private set; }
         public ICommand AddCommand { get; private set; }
         public ICommand NavigateToSettingsPageCommand { get; private set; }
         public ICommand ItemClickCommand { get; private set; }
 
+        // Search & filter
+        public bool IsSearchActive { get; set; } = false;
         public SearchProperties CurrentSearchProperties { get; private set; } = new SearchProperties();
-        public ObservableCollection<Item> SearchQuerySuggestions { get; set; } = new ObservableCollection<Item>();
+        public ObservableCollection<Item> ItemSuggestions { get; set; } = new ObservableCollection<Item>();
         public ObservableCollection<Language> LanguageSuggestions { get; set; } = new ObservableCollection<Language>();
         public ObservableCollection<Tag> TagSuggestions { get; set; } = new ObservableCollection<Tag>();
-        public ICommand SearchQueryChangedCommand { get; private set; }
+
         public ICommand SearchQuerySubmittedCommand { get; private set; }
-        public ICommand CloseSearchCommand { get; private set; }
-        public ICommand LanguageCodeChangedCommand { get; private set; }
-        public ICommand TagChangedCommand { get; private set; }
-        public ICommand ResetFilterLanguageCommand { get; private set; }
-        public ICommand ResetFilterTagCommand { get; private set; }
+        public ICommand ResetLanguageFilterCommand { get; private set; }
+        public ICommand ResetTagFilterCommand { get; private set; }
         public ICommand ResetFilterCommand { get; private set; }
+        public ICommand EndSearchCommand { get; private set; }
+
+        // Sorting
+        public bool SortByCreationDate
+        {
+            get => CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByCreationDate;
+            set => CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByCreationDate;
+        }
+        public bool SortByReadingTime
+        {
+            get => CurrentSearchProperties.SortType == SearchProperties.SearchPropertiesSortType.ByReadingTime;
+            set => CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByReadingTime;
+        }
+        public ICommand SetSortTypeCommand { get; private set; }
+        public ICommand SetSortOrderCommand { get; private set; }
 
         public MainViewModel()
         {
@@ -75,25 +75,19 @@ namespace wallabag.Data.ViewModels
             AddCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.AddItemPage));
             SyncCommand = new RelayCommand(async () => await SyncAsync());
             NavigateToSettingsPageCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.SettingsPage));
-            ItemClickCommand = new RelayCommand<ItemClickEventArgs>(args =>
+            ItemClickCommand = new RelayCommand<ItemViewModel>(item =>
             {
-                var item = args.ClickedItem as ItemViewModel;
-
                 _loggingService.WriteLine($"Clicked item: {item.Model.Id} ({item.Model.Title})");
-
                 _navigationService.Navigate(Navigation.Pages.ItemPage, item.Model.Id);
             });
 
-            SetSortTypeFilterCommand = new RelayCommand<string>(filter => SetSortTypeFilter(filter));
-            SetSortOrderCommand = new RelayCommand<string>(order => SetSortOrder(order));
-            SearchQueryChangedCommand = new RelayCommand<AutoSuggestBoxTextChangedEventArgs>(async args => await SearchQueryChangedAsync(args));
-            SearchQuerySubmittedCommand = new RelayCommand<AutoSuggestBoxQuerySubmittedEventArgs>(async args => await SearchQuerySubmittedAsync(args));
-            CloseSearchCommand = new RelayCommand(() => EndSearchAsync(this, null));
-            LanguageCodeChangedCommand = new RelayCommand<SelectionChangedEventArgs>(args => LanguageCodeChanged(args));
-            TagChangedCommand = new RelayCommand<SelectionChangedEventArgs>(args => TagChanged(args));
-            ResetFilterLanguageCommand = new RelayCommand(() => CurrentSearchProperties.Language = null);
-            ResetFilterTagCommand = new RelayCommand(() => CurrentSearchProperties.Tag = null);
+            SearchQuerySubmittedCommand = new RelayCommand(async () => await SearchQuerySubmittedAsync());
+            ResetLanguageFilterCommand = new RelayCommand(() => CurrentSearchProperties.Language = null);
+            ResetTagFilterCommand = new RelayCommand(() => CurrentSearchProperties.Tag = null);
             ResetFilterCommand = new RelayCommand(() => CurrentSearchProperties.Reset());
+            EndSearchCommand = new RelayCommand(async () => await EndSearchAsync());
+            SetSortTypeCommand = new RelayCommand<string>(filter => SetSortTypeFilter(filter));
+            SetSortOrderCommand = new RelayCommand<string>(order => SetSortOrder(order));
 
             CurrentSearchProperties.SearchStarted += (s, e) => StartSearch();
             CurrentSearchProperties.PropertyChanged += async (s, e) =>
@@ -115,86 +109,49 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLine($"The number of offline tasks changed. {e.NewItems?.Count} new items, {e.OldItems?.Count} old items.");
 
                 RaisePropertyChanged(nameof(OfflineTaskCount));
-                RaisePropertyChanged(nameof(OfflineTaskVisibility));
 
                 if (e.NewItems != null && e.NewItems.Count > 0)
                     await ApplyUIChangesForOfflineTaskAsync(e.NewItems[0] as OfflineTask);
             };
         }
 
-        private Task ApplyUIChangesForOfflineTaskAsync(OfflineTask task)
+        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
-            _loggingService.WriteLine("Executing UI changes for offline task.");
-            _loggingService.WriteObject(task);
+            _incrementalLoadingIsBlocked = true;
 
-            var item = default(ItemViewModel);
-            bool orderAscending = CurrentSearchProperties.OrderAscending ?? false;
-
-            if (task.Action != OfflineTask.OfflineTaskAction.Delete)
+            if (state.ContainsKey(nameof(CurrentSearchProperties)))
             {
-                item = ItemViewModel.FromId(task.ItemId);
-
-                if (item == null)
-                {
-                    _loggingService.WriteLine("The item doesn't seem to be longer existing in the database. Existing.");
-                    return Task.CompletedTask;
-                }
+                _loggingService.WriteLine("Restoring search properties from page state.");
+                string stateValue = state[nameof(CurrentSearchProperties)] as string;
+                CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
             }
 
-            return CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+            await ReloadViewAsync();
+            _incrementalLoadingIsBlocked = false;
+
+            if (Settings.General.SyncOnStartup)
+                await SyncAsync();
+
+            Messenger.Default.Register<UpdateItemMessage>(this, message =>
             {
-                _loggingService.WriteLine("Running dispatcher to apply the changes...");
-                switch (task.Action)
+                var viewModel = ItemViewModel.FromId(message.ItemId);
+
+                _loggingService.WriteLine($"Updating item with ID {message.ItemId}.");
+                _loggingService.WriteLineIf(viewModel == null, "Item does not exist in the database!", LoggingCategory.Warning);
+
+                if (viewModel != null && Items.Contains(viewModel))
                 {
-                    case OfflineTask.OfflineTaskAction.MarkAsRead:
-                        if (CurrentSearchProperties.ItemTypeIndex == 2)
-                            Items.AddSorted(item, sortAscending: orderAscending);
-                        else
-                            Items.Remove(item);
-                        break;
-                    case OfflineTask.OfflineTaskAction.UnmarkAsRead:
-                        if (CurrentSearchProperties.ItemTypeIndex == 2)
-                            Items.Remove(item);
-                        else
-                            Items.AddSorted(item, sortAscending: orderAscending);
-                        break;
-                    case OfflineTask.OfflineTaskAction.MarkAsStarred: break;
-                    case OfflineTask.OfflineTaskAction.UnmarkAsStarred:
-                        if (CurrentSearchProperties.ItemTypeIndex == 1)
-                            Items.Remove(item);
-                        break;
-                    case OfflineTask.OfflineTaskAction.EditTags: break;
-                    case OfflineTask.OfflineTaskAction.AddItem:
-                        if (CurrentSearchProperties.ItemTypeIndex == 0)
-                            Items.AddSorted(item, sortAscending: orderAscending);
-                        break;
-                    case OfflineTask.OfflineTaskAction.Delete:
-                        Items.Remove(Items.Where(i => i.Model.Id.Equals(task.ItemId)).First());
-                        break;
+                    Items.Remove(viewModel); // This is only working because the app is just comparing the ID's
+                    Items.AddSorted(viewModel, sortAscending: CurrentSearchProperties.OrderAscending == true);
                 }
-            }).AsTask();
+            });
         }
-
-        private async Task<List<ItemViewModel>> LoadMoreItemsAsync(uint count)
+        public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
-            _loggingService.WriteLine("Loading more items from the database.");
-            _loggingService.WriteLineIf(_incrementalLoadingIsBlocked, "Incremental loading is blocked.");
-            if (_incrementalLoadingIsBlocked)
-                return new List<ItemViewModel>();
+            string serializedSearchProperties = await Task.Run(() => JsonConvert.SerializeObject(CurrentSearchProperties));
+            pageState[nameof(CurrentSearchProperties)] = serializedSearchProperties;
 
-            var result = new List<ItemViewModel>();
-
-            _loggingService.WriteLine("Calling database for more items.");
-            var database = await GetItemsForCurrentSearchPropertiesAsync(Items.Count, (int)count);
-
-            _loggingService.WriteLine($"Adding {database.Count} items to current view.");
-            foreach (var item in database)
-                result.Add(new ItemViewModel(item));
-
-            _loggingService.WriteLine("Fetching metadata for new items.");
-            await GetMetadataForItemsAsync(result);
-
-            return result;
+            Messenger.Default.Unregister(this);
         }
 
         private async Task SyncAsync()
@@ -227,7 +184,7 @@ namespace wallabag.Data.ViewModels
                     itemList.Add(item);
 
                 _loggingService.WriteLine("Fetching items from the database to compare the new list with current items.");
-                var databaseList = _database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{syncLimit}", Array.Empty<object>());
+                var databaseList = _database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{syncLimit}", new object[0]);
                 var deletedItems = databaseList.Except(itemList);
 
                 _loggingService.WriteLine($"Number of deleted items: {deletedItems.Count()}");
@@ -266,142 +223,98 @@ namespace wallabag.Data.ViewModels
             IsSyncing = false;
             _loggingService.WriteLine("Syncing completed.");
         }
-
-        private void UpdatePageHeader()
-        {
-            _loggingService.WriteLine("Updating page header.");
-            _loggingService.WriteLine($"Old value: {PageHeader}");
-
-            if (IsSearchActive)
-                PageHeader = string.Format(GeneralHelper.LocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
-            else
-                PageHeader = GeneralHelper.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
-
-            _loggingService.WriteLine($"New value: {PageHeader}");
-        }
-
-        private async Task SearchQueryChangedAsync(AutoSuggestBoxTextChangedEventArgs args)
-        {
-            _loggingService.WriteLine($"Search query changed: {CurrentSearchProperties.Query}");
-
-            if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
-                return;
-
-            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
-            {
-                if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-                {
-                    _loggingService.WriteLine("Updating list of suggestions.");
-
-                    var suggestions = _database.Query<Item>($"SELECT Id,Title FROM Item WHERE Title LIKE '%{CurrentSearchProperties.Query}%' LIMIT 5");
-                    SearchQuerySuggestions.Replace(suggestions);
-                }
-            });
-        }
-        private async Task SearchQuerySubmittedAsync(AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            _loggingService.WriteLine($"Search query was submitted: {args.QueryText}");
-            _loggingService.WriteLineIf(args.ChosenSuggestion == null, "No suggestion was chosen.");
-
-            if (args.ChosenSuggestion != null)
-            {
-                var item = args.ChosenSuggestion as Item;
-
-                _loggingService.WriteLine($"Chosen suggestion: {item.Id} ({item.Title})");
-                _navigationService.Navigate(Navigation.Pages.ItemPage, item.Id);
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(args.QueryText))
-            {
-                _loggingService.WriteLine("Cancelling the search, because the query text is empty.");
-                CurrentSearchProperties.InvokeSearchCanceledEvent();
-                return;
-            }
-
-            UpdatePageHeader();
-            await ReloadViewAsync();
-        }
-        private void LanguageCodeChanged(SelectionChangedEventArgs args)
-        {
-            var selectedLanguage = args.AddedItems.FirstOrDefault() as Language;
-            CurrentSearchProperties.Language = selectedLanguage;
-
-            _loggingService.WriteLine($"Language code changed to {selectedLanguage?.LanguageCode} ({selectedLanguage?.InternalLanguageCode}).");
-        }
-        private void TagChanged(SelectionChangedEventArgs args)
-        {
-            var selectedTag = args.AddedItems.FirstOrDefault() as Tag;
-            CurrentSearchProperties.Tag = selectedTag;
-
-            _loggingService.WriteLine($"Language code changed to {selectedTag?.Label}.");
-        }
-        private void SetSortTypeFilter(string filter)
-        {
-            if (filter == "date")
-                CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByCreationDate;
-            else
-                CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByReadingTime;
-
-            _loggingService.WriteLine($"Sort type changed to {CurrentSearchProperties.SortType}.");
-        }
-        private void SetSortOrder(string order) => CurrentSearchProperties.OrderAscending = order == "asc";
-
-        private int _previousItemTypeIndex;
-        private bool _incrementalLoadingIsBlocked;
-
-        private void StartSearch()
-        {
-            _loggingService.WriteLine("Starting the search process.");
-
-            IsSearchActive = true;
-            _previousItemTypeIndex = CurrentSearchProperties.ItemTypeIndex;
-            SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => EndSearchAsync(s, e);
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-        }
-        private async void EndSearchAsync(object sender, BackRequestedEventArgs e)
-        {
-            _loggingService.WriteLine("Ending the search process.");
-
-            IsSearchActive = false;
-            CurrentSearchProperties.ItemTypeIndex = _previousItemTypeIndex;
-
-            SystemNavigationManager.GetForCurrentView().BackRequested -= (s, args) => EndSearchAsync(s, args);
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-
-            if (e != null)
-                e.Handled = true;
-
-            CurrentSearchProperties.InvokeSearchCanceledEvent();
-
-            if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
-            {
-                CurrentSearchProperties.Query = string.Empty;
-                await ReloadViewAsync();
-            }
-
-            UpdatePageHeader();
-        }
-
         private async Task ReloadViewAsync()
         {
             _loggingService.WriteLine("Reloading the view.");
 
             var databaseItems = await GetItemsForCurrentSearchPropertiesAsync();
-            await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-             {
-                 Items.Clear();
+            await Device.RunOnUIThreadAsync(() =>
+            {
+                Items.Clear();
 
-                 foreach (var item in databaseItems)
-                     Items.Add(new ItemViewModel(item));
-             });
+                foreach (var item in databaseItems)
+                    Items.Add(new ItemViewModel(item));
+            });
             await GetMetadataForItemsAsync(Items);
         }
-        private Windows.Foundation.IAsyncAction GetMetadataForItemsAsync(IEnumerable<ItemViewModel> items)
+        private Task ApplyUIChangesForOfflineTaskAsync(OfflineTask task)
         {
-            _loggingService.WriteLine($"Fetching metadata for {items.Count()} items.");
+            _loggingService.WriteLine("Executing UI changes for offline task.");
+            _loggingService.WriteObject(task);
 
-            return CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+            var item = default(ItemViewModel);
+            bool orderAscending = CurrentSearchProperties.OrderAscending ?? false;
+
+            if (task.Action != OfflineTask.OfflineTaskAction.Delete)
+            {
+                item = ItemViewModel.FromId(task.ItemId);
+
+                if (item == null)
+                {
+                    _loggingService.WriteLine("The item doesn't seem to be longer existing in the database. Existing.");
+                    return Task.FromResult(true);
+                }
+            }
+
+            return Device.RunOnUIThreadAsync(() =>
+            {
+                _loggingService.WriteLine("Running dispatcher to apply the changes...");
+                switch (task.Action)
+                {
+                    case OfflineTask.OfflineTaskAction.MarkAsRead:
+                        if (CurrentSearchProperties.ItemTypeIndex == 2)
+                            Items.AddSorted(item, sortAscending: orderAscending);
+                        else
+                            Items.Remove(item);
+                        break;
+                    case OfflineTask.OfflineTaskAction.UnmarkAsRead:
+                        if (CurrentSearchProperties.ItemTypeIndex == 2)
+                            Items.Remove(item);
+                        else
+                            Items.AddSorted(item, sortAscending: orderAscending);
+                        break;
+                    case OfflineTask.OfflineTaskAction.MarkAsStarred: break;
+                    case OfflineTask.OfflineTaskAction.UnmarkAsStarred:
+                        if (CurrentSearchProperties.ItemTypeIndex == 1)
+                            Items.Remove(item);
+                        break;
+                    case OfflineTask.OfflineTaskAction.EditTags: break;
+                    case OfflineTask.OfflineTaskAction.AddItem:
+                        if (CurrentSearchProperties.ItemTypeIndex == 0)
+                            Items.AddSorted(item, sortAscending: orderAscending);
+                        break;
+                    case OfflineTask.OfflineTaskAction.Delete:
+                        Items.Remove(Items.Where(i => i.Model.Id.Equals(task.ItemId)).First());
+                        break;
+                }
+            });
+        }
+        private async Task<List<ItemViewModel>> LoadMoreItemsAsync(int count)
+        {
+            _loggingService.WriteLine("Loading more items from the database.");
+            _loggingService.WriteLineIf(_incrementalLoadingIsBlocked, "Incremental loading is blocked.");
+            if (_incrementalLoadingIsBlocked)
+                return new List<ItemViewModel>();
+
+            var result = new List<ItemViewModel>();
+
+            _loggingService.WriteLine("Calling database for more items.");
+            var database = await GetItemsForCurrentSearchPropertiesAsync(Items.Count, (int)count);
+
+            _loggingService.WriteLine($"Adding {database.Count} items to current view.");
+            foreach (var item in database)
+                result.Add(new ItemViewModel(item));
+
+            _loggingService.WriteLine("Fetching metadata for new items.");
+            await GetMetadataForItemsAsync(result);
+
+            return result;
+        }
+        private Task GetMetadataForItemsAsync(IEnumerable<ItemViewModel> items)
+        {
+            _loggingService.WriteLine($"Fetching metadata for {items?.Count()} items.");
+
+            return Device.RunOnUIThreadAsync(() =>
             {
                 foreach (var item in items)
                 {
@@ -438,13 +351,14 @@ namespace wallabag.Data.ViewModels
                     LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.Unknown), 0);
             });
         }
+
         private Task<List<Item>> GetItemsForCurrentSearchPropertiesAsync(int offset = 0, int limit = 24)
         {
             _loggingService.WriteLine($"Getting items for current search properties. Offset {offset}, Limit {limit}.");
 
             return Task.Factory.StartNew(() =>
             {
-                string sqlPropertyString = string.Join(",", typeof(Item).GetProperties().Select(p => p.Name)).Replace($"{nameof(Item.Content)},", string.Empty);
+                string sqlPropertyString = string.Join(",", typeof(Item).GetRuntimeProperties().Select(p => p.Name)).Replace($"{nameof(Item.Content)},", string.Empty);
 
                 string queryStart = $"SELECT {sqlPropertyString} FROM Item";
                 var queryParts = new List<string>();
@@ -513,7 +427,93 @@ namespace wallabag.Data.ViewModels
                 return _database.Query<Item>(query, queryParameters.ToArray());
             });
         }
+        private async Task SearchQueryChangedAsync()
+        {
+            _loggingService.WriteLine($"Search query changed: {CurrentSearchProperties.Query}");
 
+            if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+                return;
+
+            await Device.RunOnUIThreadAsync(() =>
+            {
+                _loggingService.WriteLine("Updating list of suggestions.");
+
+                var suggestions = _database.Query<Item>($"SELECT Id,Title FROM Item WHERE Title LIKE '%{CurrentSearchProperties.Query}%' LIMIT 5");
+                ItemSuggestions.Replace(suggestions);
+            });
+        }
+        private async Task SearchQuerySubmittedAsync(Item chosenSuggestion = null)
+        {
+            _loggingService.WriteLine($"Search query was submitted: {CurrentSearchProperties.Query}");
+            _loggingService.WriteLineIf(chosenSuggestion == null, "No suggestion was chosen.");
+
+            if (chosenSuggestion != null)
+            {
+                var item = chosenSuggestion as Item;
+
+                _loggingService.WriteLine($"Chosen suggestion: {item.Id} ({item.Title})");
+                _navigationService.Navigate(Navigation.Pages.ItemPage, item.Id);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+            {
+                _loggingService.WriteLine("Cancelling the search, because the query text is empty.");
+                CurrentSearchProperties.InvokeSearchCanceledEvent();
+                return;
+            }
+
+            UpdatePageHeader();
+            await ReloadViewAsync();
+        }
+        private void SetSortTypeFilter(string filter)
+        {
+            if (filter == "date")
+                CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByCreationDate;
+            else
+                CurrentSearchProperties.SortType = SearchProperties.SearchPropertiesSortType.ByReadingTime;
+
+            _loggingService.WriteLine($"Sort type changed to {CurrentSearchProperties.SortType}.");
+        }
+        private void SetSortOrder(string order) => CurrentSearchProperties.OrderAscending = order == "asc";
+
+        private void StartSearch()
+        {
+            _loggingService.WriteLine("Starting the search process.");
+
+            IsSearchActive = true;
+            _previousItemTypeIndex = CurrentSearchProperties.ItemTypeIndex;
+        }
+        private async Task EndSearchAsync()
+        {
+            _loggingService.WriteLine("Ending the search process.");
+
+            IsSearchActive = false;
+            CurrentSearchProperties.ItemTypeIndex = _previousItemTypeIndex;
+
+            CurrentSearchProperties.InvokeSearchCanceledEvent();
+
+            if (!string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
+            {
+                CurrentSearchProperties.Query = string.Empty;
+                await ReloadViewAsync();
+            }
+
+            UpdatePageHeader();
+        }
+
+        private void UpdatePageHeader()
+        {
+            _loggingService.WriteLine("Updating page header.");
+            _loggingService.WriteLine($"Old value: {PageHeader}");
+
+            if (IsSearchActive)
+                PageHeader = string.Format(GeneralHelper.LocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
+            else
+                PageHeader = GeneralHelper.LocalizedResource("SearchBox.PlaceholderText").ToUpper();
+
+            _loggingService.WriteLine($"New value: {PageHeader}");
+        }
         private string BuildSQLQuery(string start, List<string> queries)
         {
             _loggingService.WriteLine($"Building the SQL query. Start: {start}");
@@ -534,45 +534,6 @@ namespace wallabag.Data.ViewModels
 
             _loggingService.WriteLine($"Final query: {result}");
             return result;
-        }
-
-        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
-        {
-            _incrementalLoadingIsBlocked = true;
-
-            if (state.ContainsKey(nameof(CurrentSearchProperties)))
-            {
-                _loggingService.WriteLine("Restoring search properties from page state.");
-                string stateValue = state[nameof(CurrentSearchProperties)] as string;
-                CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
-            }
-
-            await ReloadViewAsync();
-            _incrementalLoadingIsBlocked = false;
-
-            if (Settings.General.SyncOnStartup)
-                await SyncAsync();
-
-            Messenger.Default.Register<UpdateItemMessage>(this, message =>
-            {
-                var viewModel = ItemViewModel.FromId(message.ItemId);
-
-                _loggingService.WriteLine($"Updating item with ID {message.ItemId}.");
-                _loggingService.WriteLineIf(viewModel == null, "Item does not exist in the database!", LoggingCategory.Warning);
-
-                if (viewModel != null && Items.Contains(viewModel))
-                {
-                    Items.Remove(viewModel); // This is only working because the app is just comparing the ID's
-                    Items.AddSorted(viewModel, sortAscending: CurrentSearchProperties.OrderAscending == true);
-                }
-            });
-        }
-        public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
-        {
-            string serializedSearchProperties = await Task.Run(() => JsonConvert.SerializeObject(CurrentSearchProperties));
-            pageState[nameof(CurrentSearchProperties)] = serializedSearchProperties;
-
-            Messenger.Default.Unregister(this);
         }
     }
 }
