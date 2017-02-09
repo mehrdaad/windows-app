@@ -3,20 +3,14 @@ using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using wallabag.Api.Models;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
-using Windows.Devices.Enumeration;
-using Windows.Security.ExchangeActiveSyncProvisioning;
-using Windows.System;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.Web.Http;
 
 namespace wallabag.Data.ViewModels
 {
@@ -36,18 +30,18 @@ namespace wallabag.Data.ViewModels
         public string ProgressDescription { get; set; } = string.Empty;
 
         [DependsOn(nameof(SelectedProvider))]
-        public Visibility UrlFieldVisibility => ((SelectedProvider as WallabagProvider)?.Url == null) ? Visibility.Visible : Visibility.Collapsed;
+        public bool UrlFieldIsVisible => (SelectedProvider as WallabagProvider)?.Url == null;
 
         public List<WallabagProvider> Providers { get; set; }
         public object SelectedProvider { get; set; }
 
+        public bool CameraIsSupported { get; set; } = false;
+
         public RelayCommand PreviousCommand { get; private set; }
         public RelayCommand NextCommand { get; private set; }
         public RelayCommand RegisterCommand { get; private set; }
-        public ICommand WhatIsWallabagCommand { get; private set; }
-        public ICommand ScanQRCodeCommand { get; private set; }
-
-        public bool CameraIsSupported { get; set; } = false;
+        public RelayCommand WhatIsWallabagCommand { get; private set; }
+        public RelayCommand ScanQRCodeCommand { get; private set; }
 
         public LoginPageViewModel()
         {
@@ -63,9 +57,8 @@ namespace wallabag.Data.ViewModels
 
             PreviousCommand = new RelayCommand(() => Previous(), () => PreviousCanBeExecuted());
             NextCommand = new RelayCommand(async () => await NextAsync(), () => NextCanBeExecuted());
-            RegisterCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync((SelectedProvider as WallabagProvider).Url.Append("/register")),
-                () => RegistrationCanBeExecuted());
-            WhatIsWallabagCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(new Uri("vimeo://v/167435064"), new LauncherOptions() { FallbackUri = new Uri("https://vimeo.com/167435064") }));
+            RegisterCommand = new RelayCommand(() => Device.LaunchUri((SelectedProvider as WallabagProvider).Url.Append("/register")), () => RegistrationCanBeExecuted());
+            WhatIsWallabagCommand = new RelayCommand(() => Device.LaunchUri(new Uri("vimeo://v/167435064"), new Uri("https://vimeo.com/167435064")));
             ScanQRCodeCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.QRScanPage));
 
             this.PropertyChanged += This_PropertyChanged;
@@ -76,9 +69,6 @@ namespace wallabag.Data.ViewModels
             PreviousCommand.RaiseCanExecuteChanged();
             NextCommand.RaiseCanExecuteChanged();
             RegisterCommand.RaiseCanExecuteChanged();
-
-            if (e.PropertyName == nameof(CurrentStep))
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = PreviousCanBeExecuted() ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
         }
 
         private bool PreviousCanBeExecuted() => CurrentStep > 0 && CurrentStep != 2;
@@ -125,8 +115,7 @@ namespace wallabag.Data.ViewModels
 
             if (CurrentStep == 1)
             {
-                try { var x = new Uri(Url); }
-                catch (UriFormatException)
+                if (!Url.IsValidUri())
                 {
                     Messenger.Default.Send(new NotificationMessage(GeneralHelper.LocalizedResource("UrlFormatWrongMessage")));
                     _loggingService.WriteLine($"URL was in a wrong format. Input: {Url}", LoggingCategory.Warning);
@@ -297,20 +286,9 @@ namespace wallabag.Data.ViewModels
             });
         }
 
-        private void BackRequested(object sender, BackRequestedEventArgs e)
+        public override Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
-            _loggingService.WriteLine("User navigated back using the back button.");
-
-            e.Handled = true;
-            if (PreviousCanBeExecuted())
-                Previous();
-        }
-
-        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
-        {
-            SystemNavigationManager.GetForCurrentView().BackRequested += BackRequested;
-
-            CameraIsSupported = (await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture)).Count > 0;
+            CameraIsSupported = Device.HasACamera;
             _loggingService.WriteLine($"Camera is supported: {CameraIsSupported}");
 
             if (state.Count > 0)
@@ -352,12 +330,12 @@ namespace wallabag.Data.ViewModels
                 SelectedProvider = WallabagProvider.Other;
 
                 CurrentStep = 1;
-                return;
             }
+
+            return Task.FromResult(true);
         }
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
-            SystemNavigationManager.GetForCurrentView().BackRequested -= BackRequested;
             _loggingService.WriteLine("Saving page state.");
 
             pageState[nameof(Username)] = Username;
@@ -369,7 +347,7 @@ namespace wallabag.Data.ViewModels
             pageState[nameof(CurrentStep)] = CurrentStep;
             pageState[nameof(UseCustomSettings)] = UseCustomSettings;
 
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
 
         #region Client creation
@@ -401,7 +379,7 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLine($"URI: {instanceUri.Append("/login_check")}");
 
                 // Step 1: Login to get a cookie.
-                var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync()}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+                var loginContent = new StringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync()}", Encoding.UTF8, "application/x-www-form-urlencoded");
                 var loginResponse = await _http.PostAsync(instanceUri.Append("/login_check"), loginContent);
 
                 if (!loginResponse.IsSuccessStatusCode)
@@ -430,11 +408,11 @@ namespace wallabag.Data.ViewModels
                 stringContent = $"client[redirect_uris]={GetRedirectUri(useNewApi)}&client[save]=&client[_token]={token}";
 
                 if (useNewApi)
-                    stringContent = $"client[name]={new EasClientDeviceInformation().FriendlyName}&" + stringContent;
+                    stringContent = $"client[name]={Device.DeviceName}&" + stringContent;
 
                 _loggingService.WriteLine($"Content: {stringContent}");
 
-                var addContent = new HttpStringContent(stringContent, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+                var addContent = new StringContent(stringContent, Encoding.UTF8, "application/x-www-form-urlencoded");
                 var addResponse = _http.PostAsync(clientCreateUri, addContent);
 
                 message = await addResponse;
@@ -469,7 +447,7 @@ namespace wallabag.Data.ViewModels
             }
         }
 
-        private object GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(Url).Append(new EasClientDeviceInformation().FriendlyName);
+        private object GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(Url).Append(Device.DeviceName);
         private Task<string> GetCsrfTokenAsync() => GetStringFromHtmlSequenceAsync(new Uri(Url).Append("/login"), m_LOGINSTARTSTRING, m_HTMLINPUTENDSTRING);
 
         private async Task<string> GetStringFromHtmlSequenceAsync(Uri uri, string startString, string endString)
