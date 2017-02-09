@@ -54,7 +54,7 @@ namespace wallabag.Views
 
             (ViewModel as INotifyPropertyChanged).PropertyChanged += (s, e) =>
             {
-                if (e.PropertyName == nameof(ViewModel.FailureHasHappened))
+                if (e.PropertyName == nameof(ViewModel.ErrorDuringInitialization))
                     VisualStateManager.GoToState(this, nameof(ErrorState), false);
             };
         }

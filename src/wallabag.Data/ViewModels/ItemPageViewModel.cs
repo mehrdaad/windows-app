@@ -4,19 +4,13 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Services;
-using Windows.Storage;
-using Windows.System;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.Web.Http;
 
 namespace wallabag.Data.ViewModels
 {
@@ -27,25 +21,13 @@ namespace wallabag.Data.ViewModels
         public ItemViewModel Item { get; set; }
         public string FormattedHtml { get; set; }
 
-        public bool FailureHasHappened { get; set; }
-        public string FailureEmoji { get; set; }
-        public string FailureDescription { get; set; }
+        public bool ErrorDuringInitialization { get; set; }
+        public string ErrorDescription { get; set; }
 
-        private FontFamily _iconFontFamily = new FontFamily("Segoe MDL2 Assets");
-        private const string m_READGLYPH = "\uE001";
-        private const string m_UNREADGLYPH = "\uE18B";
-        private const string m_STARREDGLYPH = "\uE006";
-        private const string m_UNSTARREDGLYPH = "\uE007";
-        public FontIcon ChangeReadStatusButtonFontIcon { get; set; }
-        public FontIcon ChangeFavoriteStatusButtonFontIcon { get; set; }
         public ICommand ChangeReadStatusCommand { get; private set; }
         public ICommand ChangeFavoriteStatusCommand { get; private set; }
         public ICommand EditTagsCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
-
-        public SolidColorBrush ForegroundBrush { get; set; }
-        public SolidColorBrush BackgroundBrush { get; set; }
-        public ElementTheme ColorApplicationTheme { get; set; }
 
         public int FontSize { get; set; } = Settings.Appereance.FontSize;
         public string FontFamily { get; set; } = Settings.Appereance.FontFamily;
@@ -55,6 +37,7 @@ namespace wallabag.Data.ViewModels
         public Uri RightClickUri { get; set; }
         public ICommand SaveRightClickLinkCommand { get; private set; }
         public ICommand OpenRightClickLinkInBrowserCommand { get; private set; }
+        public string ReadingProgressContainerName => $"ReadingProgressContainer-{Settings.Authentication.ClientId}";
 
         public ItemPageViewModel()
         {
@@ -71,18 +54,17 @@ namespace wallabag.Data.ViewModels
             });
 
             SaveRightClickLinkCommand = new RelayCommand(() => _offlineTaskService.Add(RightClickUri.ToString(), new List<string>()));
-            OpenRightClickLinkInBrowserCommand = new RelayCommand(async () => await Launcher.LaunchUriAsync(RightClickUri));
+            OpenRightClickLinkInBrowserCommand = new RelayCommand(() => Device.LaunchUri(RightClickUri));
         }
 
         private async Task GenerateFormattedHtmlAsync()
         {
             _loggingService.WriteLine("Generating the HTML.");
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Article/article.html"));
-            string _template = await FileIO.ReadTextAsync(file);
+            string template = await Device.GetArticleTemplateAsync();
 
-            _loggingService.WriteLineIf(string.IsNullOrEmpty(_template), "The template is empty!", LoggingCategory.Critical);
+            _loggingService.WriteLineIf(string.IsNullOrEmpty(template), "The template is empty!", LoggingCategory.Critical);
 
-            string accentColor = Application.Current.Resources["SystemAccentColor"].ToString().Remove(1, 2);
+            string accentColor = Device.AccentColorHexCode;
             var styleSheetBuilder = new StringBuilder();
             styleSheetBuilder.Append("<style>");
             styleSheetBuilder.Append("hr {border-color: " + accentColor + " !important}");
@@ -107,7 +89,7 @@ namespace wallabag.Data.ViewModels
             }
 
             _loggingService.WriteLine("Formatting the template with the item properties.");
-            FormattedHtml = _template.FormatWith(new
+            FormattedHtml = template.FormatWith(new
             {
                 title = Item.Model.Title,
                 content = await SetupArticleForHtmlViewerAsync(),
@@ -141,7 +123,7 @@ namespace wallabag.Data.ViewModels
                     _loggingService.WriteLine($"Source of the image: {oldSource}");
 
                     if (!oldSource.Equals(Item.Model.PreviewImageUri?.ToString()) &&
-                        GeneralHelper.InternetConnectionIsAvailable)
+                        Device.InternetConnectionIsAvailable)
                     {
                         node.Attributes.Add("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
                         node.Attributes.Add("data-src", oldSource);
@@ -264,13 +246,9 @@ namespace wallabag.Data.ViewModels
                 if (Settings.Reading.SyncReadingProgress)
                 {
                     _loggingService.WriteLine($"Deleting reading progress.");
-                    var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{Settings.Authentication.ClientId}", ApplicationDataCreateDisposition.Always);
-                    if (readingSettingsContainer.Values.ContainsKey(Item.Model.Id.ToString()))
-                        _loggingService.WriteLine($"Success: {readingSettingsContainer.Values.Remove(Item.Model.Id.ToString())}");
+                    Settings.SettingsService.Remove(Item.Model.Id.ToString(), SettingStrategy.Roaming, ReadingProgressContainerName);
                 }
             }
-
-            UpdateReadIcon();
         }
         private void ChangeFavoriteStatus()
         {
@@ -279,61 +257,7 @@ namespace wallabag.Data.ViewModels
                 Item.UnmarkAsStarredCommand.Execute();
             else
                 Item.MarkAsStarredCommand.Execute();
-
-            UpdateFavoriteIcon();
         }
-        private void UpdateReadIcon()
-        {
-            _loggingService.WriteLine("Updating read icon.");
-
-            if (Item.Model.IsRead)
-                ChangeReadStatusButtonFontIcon = CreateFontIcon(m_UNREADGLYPH);
-            else
-                ChangeReadStatusButtonFontIcon = CreateFontIcon(m_READGLYPH);
-
-            _loggingService.WriteLine($"New glyph: {ChangeReadStatusButtonFontIcon.Glyph}");
-        }
-        private void UpdateFavoriteIcon()
-        {
-            _loggingService.WriteLine("Updating favorite icon.");
-
-            if (Item.Model.IsStarred)
-                ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(m_UNSTARREDGLYPH);
-            else
-                ChangeFavoriteStatusButtonFontIcon = CreateFontIcon(m_STARREDGLYPH);
-
-            _loggingService.WriteLine($"New glyph: {ChangeFavoriteStatusButtonFontIcon.Glyph}");
-        }
-        public void UpdateBrushes()
-        {
-            _loggingService.WriteLine($"Updating brushes for theme '{ColorScheme}'");
-            if (ColorScheme.Equals("light"))
-            {
-                ForegroundBrush = Color.FromArgb(0xFF, 0x44, 0x44, 0x44).ToSolidColorBrush();
-                BackgroundBrush = Colors.White.ToSolidColorBrush();
-                ColorApplicationTheme = ElementTheme.Light;
-            }
-            else if (ColorScheme.Equals("sepia"))
-            {
-                ForegroundBrush = Colors.Maroon.ToSolidColorBrush();
-                BackgroundBrush = Colors.Beige.ToSolidColorBrush();
-                ColorApplicationTheme = ElementTheme.Light;
-            }
-            else if (ColorScheme.Equals("dark"))
-            {
-                ForegroundBrush = Color.FromArgb(0xFF, 0xCC, 0xCC, 0xCC).ToSolidColorBrush();
-                BackgroundBrush = Color.FromArgb(0xFF, 0x33, 0x33, 0x33).ToSolidColorBrush();
-                ColorApplicationTheme = ElementTheme.Dark;
-            }
-            else if (ColorScheme.Equals("black"))
-            {
-                ForegroundBrush = Color.FromArgb(0xFF, 0xB3, 0xB3, 0xB3).ToSolidColorBrush();
-                BackgroundBrush = Colors.Black.ToSolidColorBrush();
-                ColorApplicationTheme = ElementTheme.Dark;
-            }
-        }
-
-        private FontIcon CreateFontIcon(string glyph) => new FontIcon() { Glyph = glyph, FontFamily = _iconFontFamily };
 
         public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
@@ -357,28 +281,22 @@ namespace wallabag.Data.ViewModels
             if (string.IsNullOrEmpty(Item?.Model?.Content))
             {
                 _loggingService.WriteLine("No content available.", LoggingCategory.Warning);
-                FailureHasHappened = true;
-                FailureEmoji = "😶";
-                FailureDescription = GeneralHelper.LocalizedResource("NoContentAvailableErrorMessage");
+                ErrorDuringInitialization = true;
+                ErrorDescription = GeneralHelper.LocalizedResource("NoContentAvailableErrorMessage");
             }
             else if (Item?.Model?.Content?.Contains("wallabag can't retrieve contents for this article.") == true)
             {
                 _loggingService.WriteLine("wallabag can't retrieve content.", LoggingCategory.Warning);
-                FailureHasHappened = true;
-                FailureEmoji = "😈";
-                FailureDescription = GeneralHelper.LocalizedResource("CantRetrieveContentsErrorMessage");
+                ErrorDuringInitialization = true;
+                ErrorDescription = GeneralHelper.LocalizedResource("CantRetrieveContentsErrorMessage");
             }
-
-            UpdateReadIcon();
-            UpdateFavoriteIcon();
-            UpdateBrushes();
 
             if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
             {
                 _loggingService.WriteLine("Fetching reading progress from roaming settings.");
-                var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{Settings.Authentication.ClientId}", ApplicationDataCreateDisposition.Always);
-                if (readingSettingsContainer.Values.ContainsKey(Item.Model.Id.ToString()))
-                    Item.Model.ReadingProgress = (double)readingSettingsContainer.Values[Item.Model.Id.ToString()];
+
+                if (Settings.SettingsService.Contains(Item.Model.Id.ToString(), SettingStrategy.Roaming, ReadingProgressContainerName))
+                    Item.Model.ReadingProgress = Settings.SettingsService.GetValueOrDefault<double>(Item.Model.Id.ToString(), strategy: SettingStrategy.Roaming, containerName: ReadingProgressContainerName);
 
                 _loggingService.WriteLine($"Reading progress: {Item.Model.ReadingProgress}");
             }
@@ -398,11 +316,10 @@ namespace wallabag.Data.ViewModels
             if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
             {
                 _loggingService.WriteLine("Setting reading progress in RoamingSettings.");
-                var readingSettingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer($"ReadingProgressContainer-{Settings.Authentication.ClientId}", ApplicationDataCreateDisposition.Always);
-                readingSettingsContainer.Values[Item.Model.Id.ToString()] = Item.Model.ReadingProgress;
+                Settings.SettingsService.AddOrUpdateValue(Item.Model.Id.ToString(), Item.Model.ReadingProgress, SettingStrategy.Roaming, ReadingProgressContainerName);
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
     }
 }
