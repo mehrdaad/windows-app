@@ -46,8 +46,6 @@
     <Compile Include="Common\Messages\UpdateItemMessage.cs" />
     <Compile Include="Common\Pages.cs" />
     <Compile Include="Common\Settings.cs" />
-    <Compile Include="Converters\BooleanNegationConverter.cs" />
-    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Interfaces\INavigable.cs" />
     <Compile Include="Interfaces\IPlatformSpecific.cs" />
     <Compile Include="Interfaces\ISupportIncrementalLoading.cs" />

@@ -109,6 +109,8 @@
     <Compile Include="Controls\TagsControl.xaml.cs">
       <DependentUpon>TagsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BooleanNegationConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Dialogs\EditTagsDialog.xaml.cs">
       <DependentUpon>EditTagsDialog.xaml</DependentUpon>
     </Compile>
