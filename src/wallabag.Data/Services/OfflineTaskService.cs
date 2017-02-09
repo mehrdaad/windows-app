@@ -46,7 +46,7 @@ namespace wallabag.Data.Services
         {
             _loggingService.WriteLine($"Executing task {task.Id} with action {task.Action} for item {task.ItemId}.");
 
-            if (GeneralHelper.InternetConnectionIsAvailable == false)
+            if (SimpleIoc.Default.GetInstance<Interfaces.IPlatformSpecific>().InternetConnectionIsAvailable == false)
             {
                 _loggingService.WriteLine("No internet connection available. Cancelled.");
                 return;
