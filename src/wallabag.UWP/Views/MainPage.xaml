@@ -368,7 +368,7 @@
                 x:Uid="SearchBox"
                 Margin="8"
                 VerticalAlignment="Center"
-                ItemsSource="{x:Bind ViewModel.SearchQuerySuggestions, Mode=OneWay}"
+                ItemsSource="{x:Bind ViewModel.ItemSuggestions, Mode=OneWay}"
                 PlaceholderText="Search…"
                 QueryIcon="Find"
                 QuerySubmitted="SearchBox_QuerySubmitted"
@@ -377,15 +377,12 @@
                     <core:EventTriggerBehavior EventName="QuerySubmitted">
                         <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQuerySubmittedCommand}" />
                     </core:EventTriggerBehavior>
-                    <core:EventTriggerBehavior EventName="TextChanged">
-                        <core:InvokeCommandAction Command="{x:Bind ViewModel.SearchQueryChangedCommand}" />
-                    </core:EventTriggerBehavior>
                 </interactivity:Interaction.Behaviors>
             </AutoSuggestBox>
             <AppBarButton
                 Grid.Column="1"
                 Click="CloseSearchButton_Click"
-                Command="{x:Bind ViewModel.CloseSearchCommand}"
+                Command="{x:Bind ViewModel.EndSearchCommand}"
                 Icon="Cancel" />
         </Grid>
         <Rectangle
@@ -457,7 +454,6 @@
                 <StackPanel>
                     <RadioButton
                         x:Uid="SortByDateRadioButton"
-                        Command="{x:Bind ViewModel.SetSortTypeFilterCommand}"
                         CommandParameter="date"
                         Content="by date"
                         IsChecked="{x:Bind ViewModel.SortByCreationDate, Mode=OneWay}"
@@ -465,7 +461,6 @@
                         Tag="&#xE163;" />
                     <RadioButton
                         x:Uid="SortByReadingTimeRadioButton"
-                        Command="{x:Bind ViewModel.SetSortTypeFilterCommand}"
                         CommandParameter="time"
                         Content="by reading time"
                         IsChecked="{x:Bind ViewModel.SortByReadingTime, Mode=OneWay}"
@@ -506,16 +501,10 @@
                     x:Uid="LanguageComboBox"
                     ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}"
                     PlaceholderText="select language…"
-                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=OneWay}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="SelectionChanged">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.LanguageCodeChangedCommand}" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </ComboBox>
+                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=TwoWay}" />
                 <Button
                     Grid.Column="1"
-                    Command="{x:Bind ViewModel.ResetFilterLanguageCommand}"
+                    Command="{x:Bind ViewModel.ResetLanguageFilterCommand}"
                     Style="{StaticResource ResetFilterTypeButtonStyle}" />
             </Grid>
             <TextBlock
@@ -531,16 +520,10 @@
                     x:Uid="TagComboBox"
                     ItemsSource="{x:Bind ViewModel.TagSuggestions, Mode=OneWay}"
                     PlaceholderText="select tag…"
-                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=OneWay}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="SelectionChanged">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.TagChangedCommand}" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </ComboBox>
+                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=TwoWay}" />
                 <Button
                     Grid.Column="1"
-                    Command="{x:Bind ViewModel.ResetFilterTagCommand}"
+                    Command="{x:Bind ViewModel.ResetTagFilterCommand}"
                     Style="{StaticResource ResetFilterTypeButtonStyle}" />
             </Grid>
 
@@ -602,7 +585,7 @@
             Background="{ThemeResource SystemControlBackgroundAccentBrush}"
             CornerRadius="8"
             RequestedTheme="Dark"
-            Visibility="{x:Bind ViewModel.OfflineTaskVisibility, Mode=OneWay}">
+            Visibility="{x:Bind ViewModel.OfflineTaskIndicatorIsVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
             <TextBlock
                 VerticalAlignment="Center"
                 FontSize="10"
