@@ -317,8 +317,9 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLine($"Parameter existing. Setting it as {nameof(protocolSetupParameter)}.");
             }
 
-            if (SessionState.ContainsKey(QRScanPageViewModel.m_QRRESULTKEY))
-                protocolSetupParameter = SessionState[QRScanPageViewModel.m_QRRESULTKEY] as ProtocolSetupNavigationParameter;
+            // TODO: Handle the activation via the QR code
+            //if (SessionState.ContainsKey(QRScanPageViewModel.m_QRRESULTKEY))
+            //    protocolSetupParameter = SessionState[QRScanPageViewModel.m_QRRESULTKEY] as ProtocolSetupNavigationParameter;
 
             if (protocolSetupParameter != null)
             {

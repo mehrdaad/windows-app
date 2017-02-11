@@ -1,7 +1,8 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Ioc;
+using PropertyChanged;
 using System;
 using System.Globalization;
-using wallabag.Data.Common.Helpers;
+using wallabag.Data.Interfaces;
 
 namespace wallabag.Data.Models
 {
@@ -31,7 +32,7 @@ namespace wallabag.Data.Models
                 {
                     InternalLanguageCode = null,
                     LanguageCode = null,
-                    DisplayName = Device.GetLocalizedResource("UnknownLanguageDisplayName")
+                    DisplayName = SimpleIoc.Default.GetInstance<IPlatformSpecific>().GetLocalizedResource("UnknownLanguageDisplayName")
                 };
             }
         }
