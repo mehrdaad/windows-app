@@ -68,6 +68,7 @@
     <Compile Include="CommandHelperTests.cs" />
     <Compile Include="ListHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtocolHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
