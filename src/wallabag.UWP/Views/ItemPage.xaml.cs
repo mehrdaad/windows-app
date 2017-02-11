@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using wallabag.Common;
+using wallabag.Common.Helpers;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.ViewModels;
 using wallabag.Services;
@@ -228,7 +229,6 @@ namespace wallabag.Views
                 ViewModel.FontSize.ToString(),
                 ViewModel.TextAlignment
             };
-            ViewModel.UpdateBrushes();
             return HtmlViewer.InvokeScriptAsync(m_SCRIPTNAME, arguments);
         }
 

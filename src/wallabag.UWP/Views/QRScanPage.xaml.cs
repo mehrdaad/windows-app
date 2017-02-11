@@ -15,8 +15,9 @@ namespace wallabag.Views
         {
             InitializeComponent();
 
-            DataContext = new QRScanPageViewModel(scannerControl);
-            scannerControl.TopText = GeneralHelper.LocalizedResource("HoldCameraOntoQRCodeMessage");
+            // TODO: Create a ViewModel for the QRScanPage       
+            //DataContext = new QRScanPageViewModel(scannerControl);
+            //scannerControl.TopText = GeneralHelper.LocalizedResource("HoldCameraOntoQRCodeMessage");
         }
     }
 }
