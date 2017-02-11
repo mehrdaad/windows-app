@@ -1,17 +1,17 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
 using System.Windows.Input;
-using System;
+using Xunit;
 
 namespace wallabag.Tests
 {
-    [TestClass]
     public class CommandHelperTests
     {
-        [TestMethod]
+        [Fact]
         public void CommandExecutionWithoutAParameterUsesNull()
         {
-            var myCommand = new TestCommand(parameter => {
-                Assert.IsNull(parameter);
+            var myCommand = new TestCommand(parameter =>
+            {
+                Assert.Null(parameter);
             });
             Data.Common.Helpers.CommandHelper.Execute(myCommand);
         }
