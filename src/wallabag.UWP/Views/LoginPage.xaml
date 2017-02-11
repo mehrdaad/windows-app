@@ -204,7 +204,7 @@
                                 InputScope="Url"
                                 PlaceholderText="https://"
                                 Text="{x:Bind ViewModel.Url, Mode=TwoWay}"
-                                Visibility="{x:Bind ViewModel.UrlFieldVisibility, Mode=OneWay}" />
+                                Visibility="{x:Bind ViewModel.UrlFieldIsVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <TextBox
                                 x:Uid="UsernameTextBox"
                                 Header="Username"
