@@ -64,7 +64,7 @@ namespace wallabag.Data.Models
             Language = null;
             Tag = null;
         }
-        internal void Replace(SearchProperties searchProperties)
+        public void Replace(SearchProperties searchProperties)
         {
             Query = searchProperties.Query;
             ItemTypeIndex = searchProperties.ItemTypeIndex;
