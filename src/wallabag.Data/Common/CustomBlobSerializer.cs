@@ -8,8 +8,7 @@ namespace wallabag.Data.Common
     {
         private JsonSerializerSettings _serializerSettings = new JsonSerializerSettings()
         {
-            TypeNameHandling = TypeNameHandling.All,
-            TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full
+            TypeNameHandling = TypeNameHandling.All
         };
 
         public bool CanDeserialize(Type type) => true;
