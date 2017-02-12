@@ -5,7 +5,7 @@ using wallabag.Data.Models;
 
 namespace wallabag.Data.Interfaces
 {
-    interface IPlatformSpecific
+    public interface IPlatformSpecific
     {
         bool HasACamera { get; }
         string DeviceName { get; }

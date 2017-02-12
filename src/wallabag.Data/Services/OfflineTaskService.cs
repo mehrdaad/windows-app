@@ -10,6 +10,7 @@ using wallabag.Api;
 using wallabag.Api.Models;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Common.Messages;
+using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using static wallabag.Data.Models.OfflineTask;
 
@@ -17,14 +18,20 @@ namespace wallabag.Data.Services
 {
     public class OfflineTaskService : IOfflineTaskService
     {
-        private IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
-        private SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
-        private ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
+        private readonly IWallabagClient _client;
+        private readonly SQLiteConnection _database;
+        private readonly ILoggingService _loggingService;
+        private readonly IPlatformSpecific _platform;
 
         public ObservableCollection<OfflineTask> Tasks { get; private set; }
 
-        public OfflineTaskService()
+        public OfflineTaskService(IWallabagClient client, SQLiteConnection database, ILoggingService loggingService, IPlatformSpecific platform)
         {
+            _client = client;
+            _database = database;
+            _loggingService = loggingService;
+            _platform = platform;
+
             Tasks = new ObservableCollection<OfflineTask>(_database.Table<OfflineTask>());
             Tasks.CollectionChanged += async (s, e) =>
             {
@@ -46,7 +53,7 @@ namespace wallabag.Data.Services
         {
             _loggingService.WriteLine($"Executing task {task.Id} with action {task.Action} for item {task.ItemId}.");
 
-            if (SimpleIoc.Default.GetInstance<Interfaces.IPlatformSpecific>().InternetConnectionIsAvailable == false)
+            if (_platform.InternetConnectionIsAvailable == false)
             {
                 _loggingService.WriteLine("No internet connection available. Cancelled.");
                 return;
