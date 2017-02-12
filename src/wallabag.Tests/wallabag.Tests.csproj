@@ -71,6 +71,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolHelperTests.cs" />
     <Compile Include="ItemTests.cs" />
+    <Compile Include="SearchPropertiesTests.cs" />
     <Compile Include="StringHelperTests.cs" />
     <Compile Include="UriHelperTests.cs" />
   </ItemGroup>
