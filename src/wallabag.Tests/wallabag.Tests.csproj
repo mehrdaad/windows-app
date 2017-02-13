@@ -86,6 +86,7 @@
     <Compile Include="ItemTests.cs" />
     <Compile Include="SearchPropertiesTests.cs" />
     <Compile Include="StringHelperTests.cs" />
+    <Compile Include="TestsHelper.cs" />
     <Compile Include="UriHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>

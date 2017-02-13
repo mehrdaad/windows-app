@@ -1,12 +1,10 @@
 ﻿using FakeItEasy;
-using SQLite.Net;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using wallabag.Api;
 using wallabag.Api.Models;
-using wallabag.Data.Common;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
@@ -25,7 +23,7 @@ namespace wallabag.Tests
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
             var loggingService = A.Fake<ILoggingService>();
-            var database = CreateFakeDatabase();
+            var database = TestsHelper.CreateFakeDatabase();
 
             A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(true);
             A.CallTo(() => client.AddAsync(A<Uri>.Ignored, A<IEnumerable<string>>.Ignored, A<string>.Ignored, A<CancellationToken>.Ignored)).Returns(new WallabagItem()
@@ -48,7 +46,7 @@ namespace wallabag.Tests
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
             var loggingService = A.Fake<ILoggingService>();
-            var database = CreateFakeDatabase();
+            var database = TestsHelper.CreateFakeDatabase();
 
             A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(false);
 
@@ -64,7 +62,7 @@ namespace wallabag.Tests
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
             var loggingService = A.Fake<ILoggingService>();
-            var database = CreateFakeDatabase();
+            var database = TestsHelper.CreateFakeDatabase();
 
             A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(false);
 
@@ -101,7 +99,7 @@ namespace wallabag.Tests
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
             var loggingService = A.Fake<ILoggingService>();
-            var database = CreateFakeDatabase();
+            var database = TestsHelper.CreateFakeDatabase();
 
             for (int i = 0; i < 3; i++)
                 database.Insert(new OfflineTask() { Id = i, ItemId = i });
@@ -117,7 +115,7 @@ namespace wallabag.Tests
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
             var loggingService = A.Fake<ILoggingService>();
-            var database = CreateFakeDatabase();
+            var database = TestsHelper.CreateFakeDatabase();
 
             A.CallTo(() => client.ArchiveAsync(A<WallabagItem>.Ignored, A<CancellationToken>.Ignored)).Returns(false);
 
@@ -135,16 +133,6 @@ namespace wallabag.Tests
 
             //TODO: Abstract the API layer of the database, so that even database interactions can be faked
             //A.CallTo(() => database.Delete<OfflineTask>(A<object>.Ignored)).MustNotHaveHappened();
-        }
-
-
-        private SQLiteConnection CreateFakeDatabase()
-        {
-            var db = new SQLiteConnection(new SQLite.Net.Platform.Win32.SQLitePlatformWin32(), "fakeDatabase.db", serializer: new CustomBlobSerializer());
-            db.CreateTable<OfflineTask>();
-            db.CreateTable<Tag>();
-            db.CreateTable<Item>();
-            return db;
         }
     }
 }
