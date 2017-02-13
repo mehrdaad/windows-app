@@ -17,7 +17,7 @@ namespace wallabag.Tests
     public class OfflineTaskServiceTests
     {
         [Fact]
-        public void AddingAnItemDoesExecuteTheProperActions()
+        public void AddingATaskExecutesItDirectly()
         {
             string uriString = "https://wallabag.org";
             var uriToTest = new Uri(uriString);
@@ -43,7 +43,7 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void ExecutingAnOfflineTaskWithoutInternetConnectionFails()
+        public void ExecutingAnOfflineTaskWithoutInternetConnectionDoesNotCallTheAPI()
         {
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
@@ -95,6 +95,47 @@ namespace wallabag.Tests
             A.CallTo(() => client.AddAsync(A<Uri>.Ignored, A<IEnumerable<string>>.Ignored, A<string>.Ignored, A<CancellationToken>.Ignored)).MustHaveHappened(Repeated.Exactly.Times(10));
         }
 
+        [Fact]
+        public void HavingItemsInTheDatabaseAtStartShouldIncludeThemOnInit()
+        {
+            var client = A.Fake<IWallabagClient>();
+            var platform = A.Fake<IPlatformSpecific>();
+            var loggingService = A.Fake<ILoggingService>();
+            var database = CreateFakeDatabase();
+
+            for (int i = 0; i < 3; i++)
+                database.Insert(new OfflineTask() { Id = i, ItemId = i });
+
+            var taskService = new OfflineTaskService(client, database, loggingService, platform);
+
+            Assert.Equal(database.ExecuteScalar<int>("select count(*) from OfflineTask"), taskService.Tasks.Count);
+        }
+
+        [Fact]
+        public void ExecutingATaskWithFalseAPIEndpointDoesNotRemoveThemFromTheDatabase()
+        {
+            var client = A.Fake<IWallabagClient>();
+            var platform = A.Fake<IPlatformSpecific>();
+            var loggingService = A.Fake<ILoggingService>();
+            var database = CreateFakeDatabase();
+
+            A.CallTo(() => client.ArchiveAsync(A<WallabagItem>.Ignored, A<CancellationToken>.Ignored)).Returns(false);
+
+            var taskService = new OfflineTaskService(client, database, loggingService, platform);
+            int count = taskService.Tasks.Count;
+            var task = new OfflineTask()
+            {
+                Action = OfflineTask.OfflineTaskAction.MarkAsRead,
+                ItemId = 0,
+                Id = 0
+            };
+            taskService.Tasks.Add(task);
+
+            Assert.Equal(count + 1, taskService.Tasks.Count);
+
+            //TODO: Abstract the API layer of the database, so that even database interactions can be faked
+            //A.CallTo(() => database.Delete<OfflineTask>(A<object>.Ignored)).MustNotHaveHappened();
+        }
 
 
         private SQLiteConnection CreateFakeDatabase()
