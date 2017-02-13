@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace wallabag.Data.Services
 {
-    public interface INavigationService : GalaSoft.MvvmLight.Views.INavigationService
+    public interface INavigationService
     {
         void Configure(Common.Navigation.Pages page, Type pageType);
 
@@ -12,6 +12,7 @@ namespace wallabag.Data.Services
         void Navigate(Type page);
         void Navigate(Type page, object parameter);
 
+        void GoBack();
         void ClearHistory();
         Task SaveAsync();
         void Resume();
