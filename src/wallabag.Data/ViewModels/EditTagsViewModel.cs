@@ -12,8 +12,12 @@ namespace wallabag.Data.ViewModels
 {
     public class EditTagsViewModel : ViewModelBase
     {
+        private readonly IOfflineTaskService _offlineTaskService;
+        private readonly ILoggingService _loggingService;
+        private readonly SQLite.Net.SQLiteConnection _database;
+        private readonly INavigationService _navigationService;
+
         private IEnumerable<Tag> _previousTags;
-        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
 
         public IList<Item> Items { get; set; } = new List<Item>();
         public ObservableCollection<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
@@ -28,8 +32,13 @@ namespace wallabag.Data.ViewModels
         public ICommand TagSubmittedCommand { get; private set; }
 
         [PreferredConstructor]
-        public EditTagsViewModel()
+        public EditTagsViewModel(IOfflineTaskService offlineTaskService, ILoggingService loggingService, SQLite.Net.SQLiteConnection database, INavigationService navigation)
         {
+            _offlineTaskService = offlineTaskService;
+            _loggingService = loggingService;
+            _database = database;
+            _navigationService = navigation;
+
             _loggingService.WriteLine("Creating new instance of EditTagsViewModel.");
 
             FinishCommand = new RelayCommand(() => Finish());
@@ -75,7 +84,8 @@ namespace wallabag.Data.ViewModels
                 }
             });
         }
-        public EditTagsViewModel(Item item) : this()
+        public EditTagsViewModel(Item item, IOfflineTaskService offlineTaskService, ILoggingService loggingService, SQLite.Net.SQLiteConnection database, INavigationService navigation)
+            : this(offlineTaskService, loggingService, database, navigation)
         {
             _loggingService.WriteLine($"Creating new instance of EditTagsViewModel for item {item.Id}.");
 
