@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="AddItemViewModelTests.cs" />
     <Compile Include="CommandHelperTests.cs" />
+    <Compile Include="EditTagsViewModelTests.cs" />
     <Compile Include="LanguageTests.cs" />
     <Compile Include="ListHelperTests.cs" />
     <Compile Include="OfflineTaskServiceTests.cs" />
