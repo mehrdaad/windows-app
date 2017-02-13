@@ -1,5 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
+using SQLite.Net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +12,10 @@ namespace wallabag.Data.ViewModels
 {
     public class AddItemViewModel : ViewModelBase
     {
-        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
+        private readonly IOfflineTaskService _offlineTaskService;
+        private readonly ILoggingService _loggingService;
+        private readonly SQLiteConnection _database;
+        private readonly INavigationService _navigationService;
 
         public string UriString { get; set; } = string.Empty;
         public IEnumerable<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
@@ -20,8 +23,13 @@ namespace wallabag.Data.ViewModels
         public ICommand AddCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 
-        public AddItemViewModel()
-        {          
+        public AddItemViewModel(IOfflineTaskService offlineTaskService, ILoggingService loggingService, SQLiteConnection database, INavigationService navigationService) 
+        {
+            _offlineTaskService = offlineTaskService;
+            _loggingService = loggingService;
+            _database = database;
+            _navigationService = navigationService;
+
             AddCommand = new RelayCommand(() => Add());
             CancelCommand = new RelayCommand(() => Cancel());
         }
