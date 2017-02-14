@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -8,15 +7,22 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using wallabag.Api;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
+using wallabag.Data.Interfaces;
 using wallabag.Data.Services;
 
 namespace wallabag.Data.ViewModels
 {
     public class ItemPageViewModel : ViewModelBase
     {
-        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
+        private readonly IOfflineTaskService _offlineTaskService;
+        private readonly ILoggingService _loggingService;
+        private readonly IPlatformSpecific _device;
+        private readonly INavigationService _navigationService;
+        private readonly IWallabagClient _client;
+        private readonly SQLite.Net.SQLiteConnection _database;
 
         public ItemViewModel Item { get; set; }
         public string FormattedHtml { get; set; }
@@ -39,13 +45,26 @@ namespace wallabag.Data.ViewModels
         public ICommand OpenRightClickLinkInBrowserCommand { get; private set; }
         public string ReadingProgressContainerName => $"ReadingProgressContainer-{Settings.Authentication.ClientId}";
 
-        public ItemPageViewModel()
+        public ItemPageViewModel(
+            IOfflineTaskService offlineTaskService,
+            ILoggingService loggingService,
+            IPlatformSpecific device,
+            INavigationService navigationService,
+            IWallabagClient client,
+            SQLite.Net.SQLiteConnection database)
         {
+            _offlineTaskService = offlineTaskService;
+            _loggingService = loggingService;
+            _device = device;
+            _navigationService = navigationService;
+            _client = client;
+            _database = database;
+
             _loggingService.WriteLine($"Initializing new instance of {nameof(ItemPageViewModel)}.");
 
             ChangeReadStatusCommand = new RelayCommand(() => ChangeReadStatus());
             ChangeFavoriteStatusCommand = new RelayCommand(() => ChangeFavoriteStatus());
-            EditTagsCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.EditTagsPage, new EditTagsViewModel(Item.Model)));
+            EditTagsCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.EditTagsPage, new EditTagsViewModel(Item.Model, _offlineTaskService, _loggingService, _database, _navigationService)));
             DeleteCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine("Deleting the current item.");
@@ -54,17 +73,17 @@ namespace wallabag.Data.ViewModels
             });
 
             SaveRightClickLinkCommand = new RelayCommand(() => _offlineTaskService.Add(RightClickUri.ToString(), new List<string>()));
-            OpenRightClickLinkInBrowserCommand = new RelayCommand(() => Device.LaunchUri(RightClickUri));
+            OpenRightClickLinkInBrowserCommand = new RelayCommand(() => _device.LaunchUri(RightClickUri));
         }
 
         private async Task GenerateFormattedHtmlAsync()
         {
             _loggingService.WriteLine("Generating the HTML.");
-            string template = await Device.GetArticleTemplateAsync();
+            string template = await _device.GetArticleTemplateAsync();
 
             _loggingService.WriteLineIf(string.IsNullOrEmpty(template), "The template is empty!", LoggingCategory.Critical);
 
-            string accentColor = Device.AccentColorHexCode;
+            string accentColor = _device.AccentColorHexCode;
             var styleSheetBuilder = new StringBuilder();
             styleSheetBuilder.Append("<style>");
             styleSheetBuilder.Append("hr {border-color: " + accentColor + " !important}");
@@ -123,7 +142,7 @@ namespace wallabag.Data.ViewModels
                     _loggingService.WriteLine($"Source of the image: {oldSource}");
 
                     if (!oldSource.Equals(Item.Model.PreviewImageUri?.ToString()) &&
-                        Device.InternetConnectionIsAvailable)
+                        _device.InternetConnectionIsAvailable)
                     {
                         node.Attributes.Add("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
                         node.Attributes.Add("data-src", oldSource);
@@ -267,7 +286,7 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLineIf(Item == null, "Item is null.", LoggingCategory.Warning);
             _loggingService.WriteLine($"Item title: {Item?.Model?.Title}");
 
-            if ((Item == null || string.IsNullOrEmpty(Item?.Model?.Content)) && Device.InternetConnectionIsAvailable)
+            if ((Item == null || string.IsNullOrEmpty(Item?.Model?.Content)) && _device.InternetConnectionIsAvailable)
             {
                 _loggingService.WriteLine("Fetching item from server.");
                 var item = await _client.GetItemAsync(Item.Model.Id);
@@ -282,13 +301,13 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine("No content available.", LoggingCategory.Warning);
                 ErrorDuringInitialization = true;
-                ErrorDescription = Device.GetLocalizedResource("NoContentAvailableErrorMessage");
+                ErrorDescription = _device.GetLocalizedResource("NoContentAvailableErrorMessage");
             }
             else if (Item?.Model?.Content?.Contains("wallabag can't retrieve contents for this article.") == true)
             {
                 _loggingService.WriteLine("wallabag can't retrieve content.", LoggingCategory.Warning);
                 ErrorDuringInitialization = true;
-                ErrorDescription = Device.GetLocalizedResource("CantRetrieveContentsErrorMessage");
+                ErrorDescription = _device.GetLocalizedResource("CantRetrieveContentsErrorMessage");
             }
 
             if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
