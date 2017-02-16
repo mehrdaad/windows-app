@@ -216,7 +216,7 @@ namespace wallabag.Data.ViewModels
             return document.DocumentNode.OuterHtml;
         }
 
-        private async Task<string> GetPreviewImageForVideoAsync(string videoProvider, string videoId)
+        public async Task<string> GetPreviewImageForVideoAsync(string videoProvider, string videoId)
         {
             string result = string.Empty;
 
