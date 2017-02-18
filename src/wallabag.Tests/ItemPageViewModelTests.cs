@@ -159,7 +159,7 @@ namespace wallabag.Tests
             }));
 
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database);
-            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item)));
+            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)));
 
             viewModel.Item = fakeItemViewModel;
 
@@ -194,7 +194,7 @@ namespace wallabag.Tests
             }));
 
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database);
-            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item)));
+            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)));
 
             viewModel.Item = fakeItemViewModel;
 
@@ -232,7 +232,7 @@ namespace wallabag.Tests
 
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
             {
-                Item = new ItemViewModel(item)
+                Item = new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)
             };
 
             viewModel.EditTagsCommand.Execute(null);
@@ -252,7 +252,7 @@ namespace wallabag.Tests
 
             var item = A.Fake<Item>(x => x.Wrapping(new Item() { Id = 1 }));
 
-            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item)));
+            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)));
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
             {
                 Item = fakeItemViewModel
@@ -296,7 +296,7 @@ namespace wallabag.Tests
             {
                 database.Insert(item);
 
-                var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item)));
+                var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)));
                 var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
                 {
                     Item = fakeItemViewModel
@@ -408,7 +408,7 @@ namespace wallabag.Tests
 
             database.Insert(fakeItem);
 
-            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(fakeItem)));
+            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(fakeItem, offlineTaskService, navigationService, loggingService, platform, database)));
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
             {
                 Item = fakeItemViewModel
