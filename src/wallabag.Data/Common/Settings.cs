@@ -140,6 +140,16 @@ namespace wallabag.Data.Common
             }
         }
 
-        public static ISettingsService SettingsService => SimpleIoc.Default.GetInstance<ISettingsService>();
+        public static void Configure(ISettingsService service) => SimpleIoc.Default.Register<ISettingsService>(() => service);
+        public static ISettingsService SettingsService
+        {
+            get
+            {
+                if (SimpleIoc.Default.IsRegistered<ISettingsService>())
+                    return SimpleIoc.Default.GetInstance<ISettingsService>();
+                else
+                    throw new NotImplementedException($"The {nameof(SettingsService)} wasn't configured yet. Please configure it using the {nameof(Configure)} method.");
+            }
+        }
     }
 }
