@@ -1,8 +1,11 @@
-﻿using SQLite.Net;
+﻿using FakeItEasy;
+using GalaSoft.MvvmLight.Ioc;
+using SQLite.Net;
 using System;
 using System.IO;
 using wallabag.Data.Common;
 using wallabag.Data.Models;
+using wallabag.Data.Services;
 
 namespace wallabag.Tests
 {
@@ -10,6 +13,8 @@ namespace wallabag.Tests
     {
         public static SQLiteConnection CreateFakeDatabase()
         {
+            SetupDefaultSettingsService();
+
             Directory.CreateDirectory("fakeDatabases");
             string filename = $"fakeDatabases\\{Guid.NewGuid()}.db";
 
@@ -18,6 +23,14 @@ namespace wallabag.Tests
             db.CreateTable<Tag>();
             db.CreateTable<Item>();
             return db;
+        }
+
+        internal static void SetupDefaultSettingsService()
+        {
+            if (SimpleIoc.Default.IsRegistered<ISettingsService>())
+                SimpleIoc.Default.Unregister<ISettingsService>();
+
+            SimpleIoc.Default.Register<ISettingsService>(() => A.Fake<ISettingsService>());
         }
     }
 }
