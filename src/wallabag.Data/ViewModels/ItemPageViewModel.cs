@@ -291,7 +291,7 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLine("Fetching item from server.");
                 var item = await _client.GetItemAsync(Item.Model.Id);
                 if (item != null)
-                    Item = new ItemViewModel(item);
+                    Item = new ItemViewModel(item, _offlineTaskService, _navigationService, _loggingService, _device, _database);
 
                 _loggingService.WriteLine($"Success: {item != null}");
                 _loggingService.WriteObject(item);
