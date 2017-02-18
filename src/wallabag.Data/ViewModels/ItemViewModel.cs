@@ -1,9 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Messaging;
+using SQLite.Net;
 using System;
 using System.ComponentModel;
 using System.Windows.Input;
+using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
 using static wallabag.Data.Common.Navigation;
@@ -12,7 +13,11 @@ namespace wallabag.Data.ViewModels
 {
     public class ItemViewModel : ViewModelBase, IComparable
     {
-        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
+        private readonly IOfflineTaskService _offlineTaskService;
+        private readonly INavigationService _navigationService;
+        private readonly ILoggingService _loggingService;
+        private readonly IPlatformSpecific _device;
+        private readonly SQLiteConnection _database;
 
         public Item Model { get; private set; }
 
@@ -28,86 +33,98 @@ namespace wallabag.Data.ViewModels
         public ICommand EditTagsCommand { get; private set; }
         public ICommand OpenInBrowserCommand { get; private set; }
 
-        public ItemViewModel(Item Model)
+        public ItemViewModel(Item item,
+            IOfflineTaskService offlineTaskService,
+            INavigationService navigation,
+            ILoggingService logging,
+            IPlatformSpecific device,
+            SQLiteConnection database)
         {
-            _loggingService.WriteLine("Creating new instance of ItemViewModel.");
-            _loggingService.WriteLine($"{Model.Id} | {Model.Title} | {Model.Url}");
+            Model = item;
+            _offlineTaskService = offlineTaskService;
+            _navigationService = navigation;
+            _loggingService = logging;
+            _device = device;
+            _database = database;
 
-            this.Model = Model;
-
-            (Model as INotifyPropertyChanged).PropertyChanged += (s, e) =>
+            (item as INotifyPropertyChanged).PropertyChanged += (s, e) =>
             {
-                _loggingService.WriteLine($"Model with ID {Model.Id} was updated.");
-                RaisePropertyChanged(nameof(Model));
+                _loggingService.WriteLine($"Model with ID {item.Id} was updated.");
+                RaisePropertyChanged(nameof(item));
             };
-            Model.Tags.CollectionChanged += (s, e) =>
+            item.Tags.CollectionChanged += (s, e) =>
             {
-                _loggingService.WriteLine($"Tags of model with ID {Model.Id} were updated.");
+                _loggingService.WriteLine($"Tags of model with ID {item.Id} were updated.");
                 RaisePropertyChanged(nameof(TagsString));
                 RaisePropertyChanged(nameof(TagsAreExisting));
             };
 
             MarkAsReadCommand = new RelayCommand(() =>
             {
-                _loggingService.WriteLine($"Marking item {Model.Id} as read.");
-                Model.IsRead = true;
+                _loggingService.WriteLine($"Marking item {item.Id} as read.");
+                item.IsRead = true;
                 UpdateItem();
-                _offlineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
+                _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
             });
             UnmarkAsReadCommand = new RelayCommand(() =>
             {
-                _loggingService.WriteLine($"Marking item {Model.Id} as unread.");
-                Model.IsRead = false;
+                _loggingService.WriteLine($"Marking item {item.Id} as unread.");
+                item.IsRead = false;
                 UpdateItem();
-                _offlineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
+                _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
             });
             MarkAsStarredCommand = new RelayCommand(() =>
             {
-                _loggingService.WriteLine($"Marking item {Model.Id} as favorite.");
-                Model.IsStarred = true;
+                _loggingService.WriteLine($"Marking item {item.Id} as favorite.");
+                item.IsStarred = true;
                 UpdateItem();
-                _offlineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
+                _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
             });
             UnmarkAsStarredCommand = new RelayCommand(() =>
             {
-                _loggingService.WriteLine($"Marking item {Model.Id} as unfavorite.");
-                Model.IsStarred = false;
+                _loggingService.WriteLine($"Marking item {item.Id} as unfavorite.");
+                item.IsStarred = false;
                 UpdateItem();
-                _offlineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
+                _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
             });
             DeleteCommand = new RelayCommand(() =>
             {
-                _loggingService.WriteLine($"Deleting item {Model.Id}.");
-                _database.Delete(Model);
-                _offlineTaskService.Add(Model.Id, OfflineTask.OfflineTaskAction.Delete);
+                _loggingService.WriteLine($"Deleting item {item.Id}.");
+                _database.Delete(item);
+                _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.Delete);
             });
             ShareCommand = new RelayCommand(() =>
             {
-                _loggingService.WriteLine($"Sharing item {Model.Id}.");
-                Device.ShareItem(Model);
+                _loggingService.WriteLine($"Sharing item {item.Id}.");
+                _device.ShareItem(item);
             });
             EditTagsCommand = new RelayCommand(() =>
             {
-                _loggingService.WriteLine($"Editing tags of item {Model.Id}.");
-                _navigationService.Navigate(Pages.EditTagsPage, new EditTagsViewModel(this.Model));
+                _loggingService.WriteLine($"Editing tags of item {item.Id}.");
+                _navigationService.Navigate(Pages.EditTagsPage, new EditTagsViewModel(Model, _offlineTaskService, _loggingService, _database, _navigationService));
             });
             OpenInBrowserCommand = new RelayCommand(() =>
             {
-                _loggingService.WriteLine($"Opening item {Model.Id} in browser.");
-                Device.LaunchUri(new Uri(Model.Url));
+                _loggingService.WriteLine($"Opening item {item.Id} in browser.");
+                _device.LaunchUri(new Uri(item.Url));
             });
         }
 
         public static ItemViewModel FromId(int itemId)
         {
-            var ls = SimpleIoc.Default.GetInstance<ILoggingService>();
-            ls.WriteLine($"Creating ItemViewModel from item id: {itemId}");
+            var logging = SimpleIoc.Default.GetInstance<ILoggingService>();
+            var database = SimpleIoc.Default.GetInstance<SQLiteConnection>();
+            var offlineTaskService = SimpleIoc.Default.GetInstance<IOfflineTaskService>();
+            var navigation = SimpleIoc.Default.GetInstance<INavigationService>();
+            var platform = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
 
-            var item = _database.Find<Item>(itemId);
-            ls.WriteLineIf(item == null, $"Failed! Item does not exist in database!", LoggingCategory.Critical);
+            logging.WriteLine($"Creating ItemViewModel from item id: {itemId}");
+
+            var item = database.Find<Item>(itemId);
+            logging.WriteLineIf(item == null, $"Failed! Item does not exist in database!", LoggingCategory.Critical);
 
             if (item != null)
-                return new ItemViewModel(item);
+                return new ItemViewModel(item, offlineTaskService, navigation, logging, platform, database);
             else
                 return null;
         }
