@@ -1,11 +1,12 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
 using PropertyChanged;
+using SQLite.Net;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Data.Common;
+using wallabag.Data.Interfaces;
 using wallabag.Data.Services;
 
 namespace wallabag.Data.ViewModels
@@ -13,12 +14,16 @@ namespace wallabag.Data.ViewModels
     [ImplementPropertyChanged]
     public class SettingsPageViewModel : ViewModelBase
     {
+        private readonly ILoggingService _loggingService;
+        private readonly IBackgroundTaskService _backgroundTaskService;
+        private readonly IPlatformSpecific _device;
+        private readonly SQLiteConnection _database;
+
         private Uri _documentationUri = new Uri("http://doc.wallabag.org/");
         private Uri _twitterAccountUri = new Uri("https://twitter.com/wallabagapp");
         private Uri _mailUri = new Uri("mailto:jlnostr+wallabag@outlook.de");
         private Uri _githubIssueUri = new Uri("https://github.com/wallabag/windows-app/issues/new");
-        private Uri _rateAppUri => Device.RateAppUri;
-        private IBackgroundTaskService _backgroundTaskService => SimpleIoc.Default.GetInstance<IBackgroundTaskService>();
+        private Uri _rateAppUri => _device.RateAppUri;
 
         public bool SyncOnStartup
         {
@@ -56,7 +61,7 @@ namespace wallabag.Data.ViewModels
                 RaisePropertyChanged();
             }
         }
-        public string VersionNumber => Device.AppVersion;
+        public string VersionNumber => _device.AppVersion;
         public string VideoOpenModeDescription
         {
             get
@@ -64,12 +69,12 @@ namespace wallabag.Data.ViewModels
                 switch (Settings.Reading.VideoOpenMode)
                 {
                     case Settings.Reading.WallabagVideoOpenMode.Browser:
-                        return Device.GetLocalizedResource("VideoOpenModeDescriptionBrowser");
+                        return _device.GetLocalizedResource("VideoOpenModeDescriptionBrowser");
                     case Settings.Reading.WallabagVideoOpenMode.App:
-                        return Device.GetLocalizedResource("VideoOpenModeDescriptionApp");
+                        return _device.GetLocalizedResource("VideoOpenModeDescriptionApp");
                     default:
                     case Settings.Reading.WallabagVideoOpenMode.Inline:
-                        return Device.GetLocalizedResource("VideoOpenModeDescriptionInline");
+                        return _device.GetLocalizedResource("VideoOpenModeDescriptionInline");
                 }
             }
         }
@@ -111,11 +116,11 @@ namespace wallabag.Data.ViewModels
         public bool VideoOpenModeIsBrowser => Settings.Reading.VideoOpenMode == Settings.Reading.WallabagVideoOpenMode.Browser;
 
         [DependsOn(nameof(BackgroundTaskExecutionInterval))]
-        public string BackgroundTaskExecutionIntervalDescription => string.Format(Device.GetLocalizedResource("BackgroundTaskExecutionIntervalInMinutesTextBlock.Text"), BackgroundTaskExecutionInterval);
+        public string BackgroundTaskExecutionIntervalDescription => string.Format(_device.GetLocalizedResource("BackgroundTaskExecutionIntervalInMinutesTextBlock.Text"), BackgroundTaskExecutionInterval);
         public string BackgroundTaskLastExecutionDescription
-        => string.Format(Device.GetLocalizedResource("LastExecutionOfBackgroundTaskTextBlock.Text"),
+        => string.Format(_device.GetLocalizedResource("LastExecutionOfBackgroundTaskTextBlock.Text"),
             Settings.BackgroundTask.LastExecution == DateTime.MinValue
-            ? Device.GetLocalizedResource("Never")
+            ? _device.GetLocalizedResource("Never")
             : Settings.BackgroundTask.LastExecution.ToString());
 
         private bool _backgroundTaskOptionsChanged = false;
@@ -128,15 +133,24 @@ namespace wallabag.Data.ViewModels
         public ICommand LogoutCommand { get; private set; }
         public ICommand DeleteDatabaseCommand { get; private set; }
 
-        public SettingsPageViewModel()
+        public SettingsPageViewModel(
+            ILoggingService logging,
+            IBackgroundTaskService backgroundTask,
+            IPlatformSpecific device,
+            SQLiteConnection database)
         {
+            _loggingService = logging;
+            _backgroundTaskService = backgroundTask;
+            _device = device;
+            _database = database;
+
             _loggingService.WriteLine($"Creating a new instance of {nameof(SettingsPageViewModel)}.");
 
-            OpenDocumentationCommand = new RelayCommand(() => Device.LaunchUri(_documentationUri));
-            OpenWallabagTwitterAccountCommand = new RelayCommand(() => Device.LaunchUri(_twitterAccountUri));
-            ContactDeveloperCommand = new RelayCommand(() => Device.LaunchUri(_mailUri));
-            CreateIssueCommand = new RelayCommand(() => Device.LaunchUri(_githubIssueUri));
-            RateAppCommand = new RelayCommand(() => Device.LaunchUri(_rateAppUri));
+            OpenDocumentationCommand = new RelayCommand(() => _device.LaunchUri(_documentationUri));
+            OpenWallabagTwitterAccountCommand = new RelayCommand(() => _device.LaunchUri(_twitterAccountUri));
+            ContactDeveloperCommand = new RelayCommand(() => _device.LaunchUri(_mailUri));
+            CreateIssueCommand = new RelayCommand(() => _device.LaunchUri(_githubIssueUri));
+            RateAppCommand = new RelayCommand(() => _device.LaunchUri(_rateAppUri));
             LogoutCommand = new RelayCommand(() => Logout());
             DeleteDatabaseCommand = new RelayCommand(() => DeleteDatabase());
         }
@@ -175,8 +189,8 @@ namespace wallabag.Data.ViewModels
             string path = _database.DatabasePath;
             _database.Close();
 
-            Device.DeleteDatabase();
-            Device.CloseApplication();
+            _device.DeleteDatabase();
+            _device.CloseApplication();
         }
     }
 }
