@@ -33,7 +33,7 @@ namespace wallabag.Tests
         [InlineData("en-GB", "en")]
         [InlineData("fr-FR", "fr")]
         [InlineData("en", "en")]
-        [InlineData("de", "en")]
+        [InlineData("de", "de")]
         [InlineData("fr", "fr")]
         public void LanguageCodeIsConvertedCorrect(string languageCode, string expectedResult)
         {
