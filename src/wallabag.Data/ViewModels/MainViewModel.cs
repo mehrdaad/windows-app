@@ -1,19 +1,20 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using PropertyChanged;
+using SQLite.Net;
 using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Api;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Common.Messages;
+using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
 
@@ -22,10 +23,15 @@ namespace wallabag.Data.ViewModels
     [ImplementPropertyChanged]
     public class MainViewModel : ViewModelBase
     {
+        private readonly ILoggingService _loggingService;
+        private readonly IOfflineTaskService _offlineTaskService;
+        private readonly INavigationService _navigationService;
+        private readonly IWallabagClient _client;
+        private readonly IPlatformSpecific _device;
+        private readonly SQLiteConnection _database;
+
         private int _previousItemTypeIndex;
         private bool _incrementalLoadingIsBlocked;
-
-        private IOfflineTaskService _offlineTaskService => SimpleIoc.Default.GetInstance<IOfflineTaskService>();
         public IncrementalObservableCollection<ItemViewModel> Items { get; set; }
 
         // General
@@ -68,8 +74,21 @@ namespace wallabag.Data.ViewModels
         public ICommand SetSortTypeCommand { get; private set; }
         public ICommand SetSortOrderCommand { get; private set; }
 
-        public MainViewModel()
+        public MainViewModel(
+            ILoggingService logging,
+            IOfflineTaskService offlineTaskService,
+            INavigationService navigation,
+            IWallabagClient client,
+            IPlatformSpecific platform,
+            SQLiteConnection database)
         {
+            _loggingService = logging;
+            _offlineTaskService = offlineTaskService;
+            _navigationService = navigation;
+            _client = client;
+            _device = platform;
+            _database = database;
+
             _loggingService.WriteLine("Creating new instance of MainViewModel.");
 
             AddCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.AddItemPage));
@@ -157,7 +176,7 @@ namespace wallabag.Data.ViewModels
         private async Task SyncAsync()
         {
             _loggingService.WriteLine("Syncing with the server.");
-            if (Device.InternetConnectionIsAvailable == false)
+            if (_device.InternetConnectionIsAvailable == false)
             {
                 _loggingService.WriteLine("No internet connection available.");
                 return;
@@ -228,12 +247,12 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLine("Reloading the view.");
 
             var databaseItems = await GetItemsForCurrentSearchPropertiesAsync();
-            await Device.RunOnUIThreadAsync(() =>
+            await _device.RunOnUIThreadAsync(() =>
             {
                 Items.Clear();
 
                 foreach (var item in databaseItems)
-                    Items.Add(new ItemViewModel(item));
+                    Items.Add(new ItemViewModel(item, _offlineTaskService, _navigationService, _loggingService, _device, _database));
             });
             await GetMetadataForItemsAsync(Items);
         }
@@ -256,7 +275,7 @@ namespace wallabag.Data.ViewModels
                 }
             }
 
-            return Device.RunOnUIThreadAsync(() =>
+            return _device.RunOnUIThreadAsync(() =>
             {
                 _loggingService.WriteLine("Running dispatcher to apply the changes...");
                 switch (task.Action)
@@ -303,7 +322,7 @@ namespace wallabag.Data.ViewModels
 
             _loggingService.WriteLine($"Adding {database.Count} items to current view.");
             foreach (var item in database)
-                result.Add(new ItemViewModel(item));
+                result.Add(new ItemViewModel(item, _offlineTaskService, _navigationService, _loggingService, _device, _database));
 
             _loggingService.WriteLine("Fetching metadata for new items.");
             await GetMetadataForItemsAsync(result);
@@ -314,7 +333,7 @@ namespace wallabag.Data.ViewModels
         {
             _loggingService.WriteLine($"Fetching metadata for {items?.Count()} items.");
 
-            return Device.RunOnUIThreadAsync(() =>
+            return _device.RunOnUIThreadAsync(() =>
             {
                 foreach (var item in items)
                 {
@@ -434,7 +453,7 @@ namespace wallabag.Data.ViewModels
             if (string.IsNullOrWhiteSpace(CurrentSearchProperties.Query))
                 return;
 
-            await Device.RunOnUIThreadAsync(() =>
+            await _device.RunOnUIThreadAsync(() =>
             {
                 _loggingService.WriteLine("Updating list of suggestions.");
 
@@ -508,9 +527,9 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLine($"Old value: {PageHeader}");
 
             if (IsSearchActive)
-                PageHeader = string.Format(Device.GetLocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
+                PageHeader = string.Format(_device.GetLocalizedResource("SearchHeaderWithQuery").ToUpper(), "\"" + CurrentSearchProperties.Query + "\"");
             else
-                PageHeader = Device.GetLocalizedResource("SearchBox.PlaceholderText").ToUpper();
+                PageHeader = _device.GetLocalizedResource("SearchBox.PlaceholderText").ToUpper();
 
             _loggingService.WriteLine($"New value: {PageHeader}");
         }
