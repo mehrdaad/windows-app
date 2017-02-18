@@ -1,18 +1,25 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
+using SQLite.Net;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Common.Messages;
+using wallabag.Data.Services;
 
 namespace wallabag.Data.ViewModels
 {
     [ImplementPropertyChanged]
     public class MultipleSelectionViewModel : ViewModelBase
     {
+        private readonly ILoggingService _loggingService;
+        private readonly IOfflineTaskService _offlineTaskService;
+        private readonly INavigationService _navigationService;
+        private readonly SQLiteConnection _database;
+
         public List<ItemViewModel> Items { get; set; }
 
         public ICommand MarkAsReadCommand { get; private set; }
@@ -23,8 +30,17 @@ namespace wallabag.Data.ViewModels
         public ICommand OpenInBrowserCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
 
-        public MultipleSelectionViewModel()
+        public MultipleSelectionViewModel(
+            ILoggingService logging,
+            IOfflineTaskService offlineTaskService,
+            INavigationService navigationService,
+            SQLiteConnection database)
         {
+            _loggingService = logging;
+            _offlineTaskService = offlineTaskService;
+            _navigationService = navigationService;
+            _database = database;
+
             _loggingService.WriteLine("Creating new instance of MultipleSelectionViewModel.");
             Items = new List<ItemViewModel>();
 
@@ -68,7 +84,7 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine($"Editing tags of {Items.Count} items...");
 
-                var viewModel = new EditTagsViewModel();
+                var viewModel = new EditTagsViewModel(_offlineTaskService, _loggingService, _database, _navigationService);
 
                 foreach (var item in Items)
                     viewModel.Items.Add(item.Model);
