@@ -38,11 +38,8 @@ namespace wallabag.Data.ViewModels
         public int CurrentStep { get; set; } = 0;
         public string ProgressDescription { get; set; } = string.Empty;
 
-        [DependsOn(nameof(SelectedProvider))]
-        public bool UrlFieldIsVisible => (SelectedProvider as WallabagProvider)?.Url == null;
-
         public List<WallabagProvider> Providers { get; set; }
-        public object SelectedProvider { get; set; }
+        public WallabagProvider SelectedProvider { get; set; }
 
         public bool CameraIsSupported { get; set; } = false;
 
@@ -261,7 +258,7 @@ namespace wallabag.Data.ViewModels
 
             return result;
         }
-        private async Task DownloadAndSaveItemsAndTagsAsync()
+        public async Task DownloadAndSaveItemsAndTagsAsync()
         {
             _loggingService.WriteLine("Downloading items and tags...");
             ProgressDescription = _device.GetLocalizedResource("DownloadingItemsTextBlock.Text");
@@ -468,7 +465,7 @@ namespace wallabag.Data.ViewModels
             }
         }
 
-        private object GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(Url).Append(_device.DeviceName);
+        public Uri GetRedirectUri(bool useNewApi) => useNewApi ? default(Uri) : new Uri(Url).Append(_device.DeviceName);
         private Task<string> GetCsrfTokenAsync() => GetStringFromHtmlSequenceAsync(new Uri(Url).Append("/login"), m_LOGINSTARTSTRING, m_HTMLINPUTENDSTRING);
 
         private async Task<string> GetStringFromHtmlSequenceAsync(Uri uri, string startString, string endString)

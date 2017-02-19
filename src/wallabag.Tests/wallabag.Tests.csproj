@@ -103,6 +103,7 @@
     <Compile Include="ItemViewModelTests.cs" />
     <Compile Include="LanguageTests.cs" />
     <Compile Include="ListHelperTests.cs" />
+    <Compile Include="LoginPageViewModelTests.cs" />
     <Compile Include="OfflineTaskServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolHelperTests.cs" />
