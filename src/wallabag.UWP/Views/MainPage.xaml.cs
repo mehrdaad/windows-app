@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
 using System.Linq;
 using wallabag.Controls;
@@ -152,7 +153,7 @@ namespace wallabag.Views
         #region Multiple selection
         private bool _isMultipleSelectionEnabled = false;
 
-        public MultipleSelectionViewModel SelectionViewModel { get; set; } = new MultipleSelectionViewModel();
+        public MultipleSelectionViewModel SelectionViewModel { get; set; } = SimpleIoc.Default.GetInstance<MultipleSelectionViewModel>();
 
         private void EnableMultipleSelection()
         {
