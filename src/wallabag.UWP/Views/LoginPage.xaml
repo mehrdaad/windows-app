@@ -143,7 +143,7 @@
                         Style="{StaticResource CustomSubTitleTextBlockStyle}"
                         Text="Before you can send links to my bag, I need to ask you: Where should I save them?" />
 
-                    <ListView ItemsSource="{x:Bind ViewModel.Providers}" SelectedItem="{x:Bind ViewModel.SelectedProvider, Mode=TwoWay}">
+                    <ListView ItemsSource="{x:Bind ViewModel.Providers}" SelectedItem="{x:Bind ViewModel.SelectedProvider, Mode=TwoWay, Converter={StaticResource ExplicitTypeConverter}}">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="m:WallabagProvider">
                                 <StackPanel>
