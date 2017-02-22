@@ -456,14 +456,14 @@
                         x:Uid="SortByDateRadioButton"
                         CommandParameter="date"
                         Content="by date"
-                        IsChecked="{x:Bind ViewModel.SortByCreationDate, Mode=OneWay}"
+                        IsChecked="{x:Bind ViewModel.SortByCreationDate, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}"
                         Style="{StaticResource ExpandableIconRadioButtonStyle}"
                         Tag="&#xE163;" />
                     <RadioButton
                         x:Uid="SortByReadingTimeRadioButton"
                         CommandParameter="time"
                         Content="by reading time"
-                        IsChecked="{x:Bind ViewModel.SortByReadingTime, Mode=OneWay}"
+                        IsChecked="{x:Bind ViewModel.SortByReadingTime, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}"
                         Style="{StaticResource ExpandableIconRadioButtonStyle}"
                         Tag="&#xE2AD;" />
                 </StackPanel>
@@ -501,7 +501,7 @@
                     x:Uid="LanguageComboBox"
                     ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}"
                     PlaceholderText="select language…"
-                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=TwoWay}" />
+                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=TwoWay, Converter={StaticResource ExplicitTypeConverter}}" />
                 <Button
                     Grid.Column="1"
                     Command="{x:Bind ViewModel.ResetLanguageFilterCommand}"
@@ -520,7 +520,7 @@
                     x:Uid="TagComboBox"
                     ItemsSource="{x:Bind ViewModel.TagSuggestions, Mode=OneWay}"
                     PlaceholderText="select tag…"
-                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=TwoWay}" />
+                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=TwoWay, Converter={StaticResource ExplicitTypeConverter}}" />
                 <Button
                     Grid.Column="1"
                     Command="{x:Bind ViewModel.ResetTagFilterCommand}"

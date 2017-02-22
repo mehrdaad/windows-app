@@ -115,6 +115,16 @@ namespace wallabag.Data.ViewModels
         public bool VideoOpenModeIsApp => Settings.Reading.VideoOpenMode == Settings.Reading.WallabagVideoOpenMode.App;
         public bool VideoOpenModeIsBrowser => Settings.Reading.VideoOpenMode == Settings.Reading.WallabagVideoOpenMode.Browser;
 
+        public void SetVideoOpenMode(Settings.Reading.WallabagVideoOpenMode mode)
+        {
+            Settings.Reading.VideoOpenMode = mode;
+
+            RaisePropertyChanged(nameof(VideoOpenModeIsApp));
+            RaisePropertyChanged(nameof(VideoOpenModeIsInline));
+            RaisePropertyChanged(nameof(VideoOpenModeIsBrowser));
+            RaisePropertyChanged(nameof(VideoOpenModeDescription));
+        }
+
         [DependsOn(nameof(BackgroundTaskExecutionInterval))]
         public string BackgroundTaskExecutionIntervalDescription => string.Format(_device.GetLocalizedResource("BackgroundTaskExecutionIntervalInMinutesTextBlock.Text"), BackgroundTaskExecutionInterval);
         public string BackgroundTaskLastExecutionDescription

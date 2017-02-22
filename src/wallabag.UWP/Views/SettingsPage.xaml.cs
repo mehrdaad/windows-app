@@ -23,5 +23,15 @@ namespace wallabag.Views
         {
             InitializeComponent();
         }
+
+        private void VideoOpenModeRadioButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            if (sender == BrowserVideoOpenModeRadioButton)
+                ViewModel.SetVideoOpenMode(Data.Common.Settings.Reading.WallabagVideoOpenMode.Browser);
+            else if (sender == AppVideoOpenModeRadioButton)
+                ViewModel.SetVideoOpenMode(Data.Common.Settings.Reading.WallabagVideoOpenMode.App);
+            else if (sender == InlineVideoOpenModeRadioButton)
+                ViewModel.SetVideoOpenMode(Data.Common.Settings.Reading.WallabagVideoOpenMode.Inline);
+        }
     }
 }

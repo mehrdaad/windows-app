@@ -23,7 +23,7 @@ namespace wallabag.Views
     [ImplementPropertyChanged]
     public sealed partial class MainPage : Page
     {
-        public MainViewModel ViewModel { get { return DataContext as MainViewModel; } }
+        public MainViewModel ViewModel => DataContext as MainViewModel;
 
         public MainPage()
         {

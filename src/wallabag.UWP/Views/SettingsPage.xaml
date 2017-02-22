@@ -110,22 +110,22 @@
                             </Style>
                         </Grid.Resources>
                         <RadioButton
-                            Command="{x:Bind ViewModel.VideoOpenModeRadioButtonCheckedCommand}"
-                            CommandParameter="inline"
+                            x:Name="InlineVideoOpenModeRadioButton"
+                            Click="VideoOpenModeRadioButton_Click"
                             Content="Inline"
-                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsInline, Mode=OneWay}" />
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsInline, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}" />
                         <RadioButton
+                            x:Name="AppVideoOpenModeRadioButton"
+                            Click="VideoOpenModeRadioButton_Click"
                             Grid.Column="1"
-                            Command="{x:Bind ViewModel.VideoOpenModeRadioButtonCheckedCommand}"
-                            CommandParameter="app"
                             Content="App"
-                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsApp, Mode=OneWay}" />
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsApp, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}" />
                         <RadioButton
+                            x:Name="BrowserVideoOpenModeRadioButton"
+                            Click="VideoOpenModeRadioButton_Click"
                             Grid.Column="2"
-                            Command="{x:Bind ViewModel.VideoOpenModeRadioButtonCheckedCommand}"
-                            CommandParameter="browser"
                             Content="Browser"
-                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsBrowser, Mode=OneWay}" />
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsBrowser, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}" />
                         <TextBlock
                             Grid.Row="1"
                             Grid.ColumnSpan="3"
@@ -314,15 +314,6 @@
                             Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
                             <Button.Tag>
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE19F;" />
-                            </Button.Tag>
-                        </Button>
-                        <Button
-                            x:Uid="TellFriendsButton"
-                            Command="{x:Bind ViewModel.TellFriendsCommand}"
-                            Content="Tell your friends about wallabag!"
-                            Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
-                            <Button.Tag>
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
                             </Button.Tag>
                         </Button>
                         <TextBlock
