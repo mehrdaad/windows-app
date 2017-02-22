@@ -1,16 +1,17 @@
-﻿using System;
+﻿using PropertyChanged;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using wallabag.Common;
 using wallabag.Common.Helpers;
-using wallabag.Data.Common.Helpers;
 using wallabag.Data.ViewModels;
-using wallabag.Services;
 using Windows.Foundation;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
@@ -22,6 +23,7 @@ namespace wallabag.Views
     /// <summary>
     /// Eine leere Seite, die eigenständig verwendet oder zu der innerhalb eines Rahmens navigiert werden kann.
     /// </summary>
+    [ImplementPropertyChanged]
     public sealed partial class ItemPage : Page
     {
         private const string m_SCRIPTNAME = "changeHtmlAttributes";
@@ -29,6 +31,10 @@ namespace wallabag.Views
         private bool _isCommandBarCompact = false;
 
         public ItemPageViewModel ViewModel => DataContext as ItemPageViewModel;
+
+        public SolidColorBrush ForegroundBrush { get; set; }
+        public SolidColorBrush BackgroundBrush { get; set; }
+        public ElementTheme ColorApplicationTheme { get; set; }
 
         public ItemPage()
         {
@@ -58,6 +64,8 @@ namespace wallabag.Views
                 if (e.PropertyName == nameof(ViewModel.ErrorDuringInitialization))
                     VisualStateManager.GoToState(this, nameof(ErrorState), false);
             };
+
+            UpdateBrushesAndTheme();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -192,8 +200,38 @@ namespace wallabag.Views
             else if (button == blackThemeButton)
                 ViewModel.ColorScheme = "black";
 
+            UpdateBrushesAndTheme();
             await InvokeChangeHtmlAttributesAsync();
         }
+
+        private void UpdateBrushesAndTheme()
+        {
+            if (ViewModel.ColorScheme.Equals("light"))
+            {
+                ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x44, 0x44, 0x44));
+                BackgroundBrush = new SolidColorBrush(Colors.White);
+                ColorApplicationTheme = ElementTheme.Light;
+            }
+            else if (ViewModel.ColorScheme.Equals("sepia"))
+            {
+                ForegroundBrush = new SolidColorBrush(Colors.Maroon);
+                BackgroundBrush = new SolidColorBrush(Colors.Beige);
+                ColorApplicationTheme = ElementTheme.Light;
+            }
+            else if (ViewModel.ColorScheme.Equals("dark"))
+            {
+                ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xCC, 0xCC, 0xCC));
+                BackgroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0x33));
+                ColorApplicationTheme = ElementTheme.Dark;
+            }
+            else if (ViewModel.ColorScheme.Equals("black"))
+            {
+                ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xB3, 0xB3, 0xB3));
+                BackgroundBrush = new SolidColorBrush(Colors.Black);
+                ColorApplicationTheme = ElementTheme.Dark;
+            }
+        }
+
         private async void ChangeFontFamilyAsync(object sender, RoutedEventArgs e)
         {
             if (ViewModel.FontFamily.Equals("serif"))

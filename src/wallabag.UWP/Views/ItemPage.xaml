@@ -3,12 +3,15 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:helpers="using:wallabag.Common.Helpers"
+    xmlns:converters="using:wallabag.Converters"
     helpers:TitleBarHelper.ButtonBackgroundColor="Transparent"
-    helpers:TitleBarHelper.ButtonForegroundColor="{x:Bind ViewModel.ForegroundBrush.Color, Mode=OneWay}"
+    helpers:TitleBarHelper.ButtonForegroundColor="{x:Bind ForegroundBrush.Color, Mode=OneWay}"
     helpers:TitleBarHelper.IsVisible="false"
     DataContext="{Binding ItemView, Source={StaticResource Locator}}">
 
     <Page.Resources>
+        <converters:BooleanToIconConverter x:Key="BooleanToIconConverter"/>
+
         <Storyboard x:Name="ShowMinimalCommandBarStoryboard">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="commandsGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
                 <DiscreteObjectKeyFrame KeyTime="0">
@@ -128,7 +131,7 @@
         </MenuFlyout>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="{x:Bind ViewModel.ColorApplicationTheme, Mode=OneWay}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="{x:Bind ColorApplicationTheme, Mode=OneWay}">
         <WebView
             x:Name="HtmlViewer"
             helpers:WebViewHelper.Html="{x:Bind ViewModel.FormattedHtml}"
@@ -145,7 +148,7 @@
             Height="32"
             VerticalAlignment="Top"
             x:DeferLoadStrategy="Lazy"
-            Fill="{x:Bind ViewModel.BackgroundBrush, Mode=OneWay}"
+            Fill="{x:Bind BackgroundBrush, Mode=OneWay}"
             Opacity="0.9"
             Visibility="Collapsed" />
 
@@ -153,7 +156,7 @@
             x:Name="progressRing"
             Width="64"
             Height="64"
-            Foreground="{x:Bind ViewModel.ForegroundBrush, Mode=OneWay}"
+            Foreground="{x:Bind ForegroundBrush, Mode=OneWay}"
             IsActive="True" />
 
         <StackPanel VerticalAlignment="Bottom">
@@ -184,10 +187,10 @@
                             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Command="{x:Bind ViewModel.ChangeFavoriteStatusCommand}" Icon="{x:Bind ViewModel.ChangeFavoriteStatusButtonFontIcon, Mode=OneWay}" />
+                    <AppBarButton Command="{x:Bind ViewModel.ChangeFavoriteStatusCommand}" Icon="{x:Bind ViewModel.Item.Model.IsStarred, Mode=OneWay, Converter={StaticResource BooleanToIconConverter}}" />
                     <AppBarButton
                         Command="{x:Bind ViewModel.ChangeReadStatusCommand}"
-                        Icon="{x:Bind ViewModel.ChangeReadStatusButtonFontIcon, Mode=OneWay}"
+                        Icon="{x:Bind ViewModel.Item.Model.IsRead, Mode=OneWay, Converter={StaticResource BooleanToIconConverter}, ConverterParameter=read}"
                         Style="{StaticResource AccentColorAppBarButton}" />
                     <AppBarButton Command="{x:Bind ViewModel.EditTagsCommand}" Icon="Tag" />
                     <AppBarButton Icon="Delete">
@@ -319,15 +322,7 @@
             VerticalAlignment="Center"
             x:DeferLoadStrategy="Lazy"
             Visibility="Collapsed">
-            <TextBlock
-                FontFamily="Segoe UI Emoji"
-                FontSize="60"
-                Text="{x:Bind ViewModel.FailureEmoji, Mode=OneWay}"
-                TextAlignment="Center" />
-            <TextBlock
-                Margin="0,8,0,0"
-                Style="{StaticResource InfoTextBlockStyle}"
-                Text="{x:Bind ViewModel.FailureDescription, Mode=OneWay}" />
+            <!-- TODO: Replace the failure indicator by a more general way, maybe using an IDialogService-->
             <Button
                 x:Uid="OpenInBrowserButton"
                 Margin="0,12,0,0"
