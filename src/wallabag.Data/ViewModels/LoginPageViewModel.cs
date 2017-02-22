@@ -38,6 +38,9 @@ namespace wallabag.Data.ViewModels
         public int CurrentStep { get; set; } = 0;
         public string ProgressDescription { get; set; } = string.Empty;
 
+        [DependsOn(nameof(SelectedProvider))]
+        public bool UrlFieldIsVisible => SelectedProvider == WallabagProvider.Other;
+
         public List<WallabagProvider> Providers { get; set; }
         public WallabagProvider SelectedProvider { get; set; }
 
