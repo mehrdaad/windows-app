@@ -1,6 +1,8 @@
 ﻿using System;
+using FakeItEasy;
 using System.Windows.Input;
 using Xunit;
+using wallabag.Data.Common.Helpers;
 
 namespace wallabag.Tests
 {
@@ -9,26 +11,13 @@ namespace wallabag.Tests
         [Fact]
         public void CommandExecutionWithoutAParameterUsesNull()
         {
-            var myCommand = new TestCommand(parameter =>
-            {
-                Assert.Null(parameter);
-            });
-            Data.Common.Helpers.CommandHelper.Execute(myCommand);
-        }
+            var fakeCommand = A.Fake<ICommand>();
 
-        public class TestCommand : ICommand
-        {
-            private Action<object> _action;
+            A.CallTo(() => fakeCommand.Execute(A<object>.That.IsNull())).Invokes(x => Assert.Null(x.Arguments.Get<object>(0)));
 
-            public event EventHandler CanExecuteChanged;
-            public bool CanExecute(object parameter) => true;
+            fakeCommand.Execute();
 
-            public void Execute(object parameter) => _action.Invoke(parameter);
-
-            public TestCommand(Action<object> action)
-            {
-                _action = action;
-            }
+            A.CallTo(() => fakeCommand.Execute(A<object>.That.IsNull())).MustHaveHappened();
         }
     }
 }
