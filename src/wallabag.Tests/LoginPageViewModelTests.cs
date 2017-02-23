@@ -74,6 +74,8 @@ namespace wallabag.Tests
 
             var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database);
 
+            viewModel.ScanQRCodeCommand.Execute();
+
             A.CallTo(() => navigation.Navigate(Data.Common.Navigation.Pages.QRScanPage)).MustHaveHappened();
         }
 
