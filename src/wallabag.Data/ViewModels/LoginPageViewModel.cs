@@ -179,7 +179,7 @@ namespace wallabag.Data.ViewModels
             }
         }
 
-        private async Task<bool> TestConfigurationAsync()
+        public async Task<bool> TestConfigurationAsync()
         {
             _loggingService.WriteLine("Testing configuration.");
             _loggingService.WriteLine($"URL: {Url}");

@@ -203,5 +203,126 @@ namespace wallabag.Tests
             Assert.Equal("user", viewModel.Username);
             Assert.Equal("http://test.de", viewModel.Url);
         }
+
+        [Fact]
+        public void TheUrlFieldIsInvisibleIfTheSelectedProviderUrlIsNotNull()
+        {
+            var logging = A.Fake<ILoggingService>();
+            var navigation = A.Fake<INavigationService>();
+            var device = A.Fake<IPlatformSpecific>();
+            var client = A.Fake<IWallabagClient>();
+            var apiService = A.Fake<IApiClientCreationService>();
+            var database = TestsHelper.CreateFakeDatabase();
+            var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database)
+            {
+                SelectedProvider = new WallabagProvider(new Uri("https://test.de"), "My provider")
+            };
+
+            Assert.NotNull(viewModel.SelectedProvider.Url);
+            Assert.True(viewModel.UrlFieldIsVisible);
+        }
+
+        [Fact]
+        public async Task ClientIsCreatedIfTheClientCredentialsAreUnset()
+        {
+            var logging = A.Fake<ILoggingService>();
+            var navigation = A.Fake<INavigationService>();
+            var device = A.Fake<IPlatformSpecific>();
+            var client = A.Fake<IWallabagClient>();
+            var apiService = A.Fake<IApiClientCreationService>();
+            var database = TestsHelper.CreateFakeDatabase();
+            var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database)
+            {
+                Url = "https://test.de",
+                Username = "myuser",
+                Password = "password"
+            };
+
+            Assert.True(string.IsNullOrEmpty(viewModel.ClientId));
+            Assert.True(string.IsNullOrEmpty(viewModel.ClientSecret));
+
+            await viewModel.TestConfigurationAsync();
+
+            A.CallTo(() => apiService.CreateClientAsync(A<string>.Ignored, A<string>.That.IsEqualTo("myuser"), A<string>.That.IsEqualTo("password"))).MustHaveHappened();
+        }
+
+        [Fact]
+        public async Task ClientIsCreatedIfTheClientCredentialsAreUnsetEvenIfTheUserCheckedTheCustomSettings()
+        {
+            var logging = A.Fake<ILoggingService>();
+            var navigation = A.Fake<INavigationService>();
+            var device = A.Fake<IPlatformSpecific>();
+            var client = A.Fake<IWallabagClient>();
+            var apiService = A.Fake<IApiClientCreationService>();
+            var database = TestsHelper.CreateFakeDatabase();
+            var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database)
+            {
+                Url = "https://test.de",
+                Username = "myuser",
+                Password = "password",
+                UseCustomSettings = true
+            };
+
+            Assert.True(string.IsNullOrEmpty(viewModel.ClientId));
+            Assert.True(string.IsNullOrEmpty(viewModel.ClientSecret));
+
+            await viewModel.TestConfigurationAsync();
+
+            A.CallTo(() => apiService.CreateClientAsync(A<string>.Ignored, A<string>.That.IsEqualTo("myuser"), A<string>.That.IsEqualTo("password"))).MustHaveHappened();
+        }
+
+        [Fact]
+        public async Task IfClientCreationWasSuccessfulThenDownloadsAreWorkingFine()
+        {
+            var logging = A.Fake<ILoggingService>();
+            var navigation = A.Fake<INavigationService>();
+            var device = A.Fake<IPlatformSpecific>();
+            var client = A.Fake<IWallabagClient>();
+            var apiService = A.Fake<IApiClientCreationService>();
+            var database = TestsHelper.CreateFakeDatabase();
+            var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database)
+            {
+                Url = "https://test.de",
+                Username = "myuser",
+                Password = "password"
+            };
+
+            Assert.True(string.IsNullOrEmpty(viewModel.ClientId));
+            Assert.True(string.IsNullOrEmpty(viewModel.ClientSecret));
+
+            A.CallTo(() => apiService.CreateClientAsync(
+                A<string>.Ignored,
+                A<string>.That.IsEqualTo("myuser"),
+                A<string>.That.IsEqualTo("password")))
+                .Returns(new ClientCreationData()
+                {
+                    Id = "myId",
+                    Name = "test",
+                    Secret = "secret"
+                });
+            A.CallTo(() => client.RequestTokenAsync(
+                A<string>.That.IsEqualTo("myuser"),
+                A<string>.That.IsEqualTo("password"),
+                A<CancellationToken>.Ignored))
+                .Returns(true);
+
+            bool configurationIsValid = await viewModel.TestConfigurationAsync();
+            Assert.True(configurationIsValid);
+
+            await viewModel.DownloadAndSaveItemsAndTagsAsync();
+
+            A.CallTo(() => apiService.CreateClientAsync(A<string>.Ignored, A<string>.That.IsEqualTo("myuser"), A<string>.That.IsEqualTo("password"))).MustHaveHappened();
+            A.CallTo(() => client.GetItemsWithEnhancedMetadataAsync(
+                A<bool?>.Ignored,
+                A<bool?>.Ignored,
+                A<WallabagClient.WallabagDateOrder>.Ignored,
+                A<WallabagClient.WallabagSortOrder>.Ignored,
+                A<int?>.Ignored,
+                A<int?>.Ignored,
+                A<DateTime?>.Ignored,
+                A<IEnumerable<string>>.Ignored,
+                A<CancellationToken>.Ignored)).MustHaveHappened();
+            A.CallTo(() => client.GetTagsAsync(A<CancellationToken>.Ignored)).MustHaveHappened();
+        }
     }
 }
