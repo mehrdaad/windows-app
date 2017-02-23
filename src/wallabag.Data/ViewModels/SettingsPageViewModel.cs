@@ -199,7 +199,7 @@ namespace wallabag.Data.ViewModels
             string path = _database.DatabasePath;
             _database.Close();
 
-            _device.DeleteDatabase();
+            _device.DeleteDatabaseAsync();
             _device.CloseApplication();
         }
     }

@@ -45,7 +45,7 @@ namespace wallabag.Data.ViewModels
             {
                 var device = SimpleIoc.Default.GetInstance<Interfaces.IPlatformSpecific>();
 
-                var db = new SQLiteConnection(device.GetSQLitePlatform(), device.DatabasePath, serializer: new CustomBlobSerializer());
+                var db = new SQLiteConnection(device.GetSQLitePlatform(), device.GetDatabasePathAsync().Result, serializer: new CustomBlobSerializer());
                 db.CreateTable<Item>();
                 db.CreateTable<Tag>();
                 db.CreateTable<OfflineTask>();

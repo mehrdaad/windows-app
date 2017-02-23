@@ -7,13 +7,13 @@ namespace wallabag.Data.Interfaces
 {
     public interface IPlatformSpecific
     {
-        bool HasACamera { get; }
+        Task<bool> GetHasCameraAsync();
+
         string DeviceName { get; }
         bool InternetConnectionIsAvailable { get; }
         string AccentColorHexCode { get; }
         Uri RateAppUri { get; }
-        string AppVersion { get; set; }
-        string DatabasePath { get; set; }
+        string AppVersion { get; }
 
         void LaunchUri(Uri uri, Uri fallback = default(Uri));
         string GetLocalizedResource(string resourceName);
@@ -21,7 +21,9 @@ namespace wallabag.Data.Interfaces
         Task<string> GetArticleTemplateAsync();
         void ShareItem(Item model);
         void CloseApplication();
-        void DeleteDatabase();
+
+        Task<string> GetDatabasePathAsync();
+        Task DeleteDatabaseAsync();
         ISQLitePlatform GetSQLitePlatform();
     }
 }

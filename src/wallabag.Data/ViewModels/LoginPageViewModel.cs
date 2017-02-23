@@ -306,9 +306,9 @@ namespace wallabag.Data.ViewModels
             });
         }
 
-        public override Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
+        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
-            CameraIsSupported = _device.HasACamera;
+            CameraIsSupported = await _device.GetHasCameraAsync();
             _loggingService.WriteLine($"Camera is supported: {CameraIsSupported}");
 
             if (state.Count > 0)
@@ -352,8 +352,6 @@ namespace wallabag.Data.ViewModels
 
                 CurrentStep = 1;
             }
-
-            return Task.FromResult(true);
         }
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {

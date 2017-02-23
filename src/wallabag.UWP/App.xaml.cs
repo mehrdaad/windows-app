@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using wallabag.Api;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
+using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
 using wallabag.Services;
@@ -102,6 +103,7 @@ namespace wallabag
                 return ns;
             });
             SimpleIoc.Default.Register<IOfflineTaskService, OfflineTaskService>();
+            SimpleIoc.Default.Register<IPlatformSpecific, Common.PlatformSpecific>();
         }
 
         private async void StartupOrchestratorAsync(IActivatedEventArgs e, StartKind kind)
