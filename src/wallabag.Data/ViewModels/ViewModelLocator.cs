@@ -6,6 +6,7 @@ using System.IO;
 using wallabag.Api;
 using wallabag.Data.Common;
 using wallabag.Data.Models;
+using wallabag.Data.Services;
 
 namespace wallabag.Data.ViewModels
 {
@@ -53,6 +54,9 @@ namespace wallabag.Data.ViewModels
                 return db;
             });
             SimpleIoc.Default.Register(() => new Dictionary<string, object>(), "SessionState");
+
+            SimpleIoc.Default.Register<IApiClientCreationService, ApiClientCreationService>();
+            SimpleIoc.Default.Register<IOfflineTaskService, OfflineTaskService>();
 
             SimpleIoc.Default.Register<AddItemViewModel>();
             SimpleIoc.Default.Register<EditTagsViewModel>();

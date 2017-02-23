@@ -102,7 +102,6 @@ namespace wallabag
 
                 return ns;
             });
-            SimpleIoc.Default.Register<IOfflineTaskService, OfflineTaskService>();
             SimpleIoc.Default.Register<IPlatformSpecific, Common.PlatformSpecific>();
         }
 
