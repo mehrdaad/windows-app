@@ -24,11 +24,12 @@ namespace wallabag.Tests
             var navigation = A.Fake<INavigationService>();
             var device = A.Fake<IPlatformSpecific>();
             var client = A.Fake<IWallabagClient>();
+            var apiService = A.Fake<IApiClientCreationService>();
             var database = TestsHelper.CreateFakeDatabase();
 
             var uriToTest = new Uri("https://test.de");
 
-            var viewModel = new LoginPageViewModel(logging, navigation, device, client, database)
+            var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database)
             {
                 SelectedProvider = new Data.Models.WallabagProvider(uriToTest, "My test provider")
             };
@@ -47,11 +48,12 @@ namespace wallabag.Tests
             var navigation = A.Fake<INavigationService>();
             var device = A.Fake<IPlatformSpecific>();
             var client = A.Fake<IWallabagClient>();
+            var apiService = A.Fake<IApiClientCreationService>();
             var database = TestsHelper.CreateFakeDatabase();
 
             var uriToTest = new Uri("https://test.de");
 
-            var viewModel = new LoginPageViewModel(logging, navigation, device, client, database)
+            var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database)
             {
                 SelectedProvider = null
             };
@@ -67,9 +69,10 @@ namespace wallabag.Tests
             var navigation = A.Fake<INavigationService>();
             var device = A.Fake<IPlatformSpecific>();
             var client = A.Fake<IWallabagClient>();
+            var apiService = A.Fake<IApiClientCreationService>();
             var database = TestsHelper.CreateFakeDatabase();
 
-            var viewModel = new LoginPageViewModel(logging, navigation, device, client, database);
+            var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database);
 
             A.CallTo(() => navigation.Navigate(Data.Common.Navigation.Pages.QRScanPage)).MustHaveHappened();
         }
@@ -78,32 +81,27 @@ namespace wallabag.Tests
         public void RedirectUriReturnsNullIfApiVersionIsNewer()
         {
             var logging = A.Fake<ILoggingService>();
-            var navigation = A.Fake<INavigationService>();
             var device = A.Fake<IPlatformSpecific>();
             var client = A.Fake<IWallabagClient>();
-            var database = TestsHelper.CreateFakeDatabase();
 
-            var viewModel = new LoginPageViewModel(logging, navigation, device, client, database);
+            var uriToTest = new Uri("https://test.de");
+            var apiService = new ApiClientCreationService(logging, client, device);
 
-            Assert.Null(viewModel.GetRedirectUri(true));
+            Assert.Null(apiService.GetRedirectUri(uriToTest, true));
         }
 
         [Fact]
         public void RedirectUriReturnsNullIfApiVersionIsOld()
         {
             var logging = A.Fake<ILoggingService>();
-            var navigation = A.Fake<INavigationService>();
             var device = A.Fake<IPlatformSpecific>();
             var client = A.Fake<IWallabagClient>();
-            var database = TestsHelper.CreateFakeDatabase();
 
             var uriToTest = new Uri("https://test.de");
-            var viewModel = new LoginPageViewModel(logging, navigation, device, client, database)
-            {
-                Url = uriToTest.ToString()
-            };
+            var apiService = new ApiClientCreationService(logging, client, device);
 
-            var redirectUri = viewModel.GetRedirectUri(false);
+            var redirectUri = apiService.GetRedirectUri(uriToTest, false);
+
             Assert.NotNull(redirectUri);
             Assert.True(uriToTest.IsBaseOf(redirectUri));
 
@@ -117,8 +115,9 @@ namespace wallabag.Tests
             var navigation = A.Fake<INavigationService>();
             var device = A.Fake<IPlatformSpecific>();
             var client = A.Fake<IWallabagClient>();
+            var apiService = A.Fake<IApiClientCreationService>();
             var database = TestsHelper.CreateFakeDatabase();
-            var viewModel = new LoginPageViewModel(logging, navigation, device, client, database);
+            var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database);
 
             A.CallTo(() => client.GetItemsWithEnhancedMetadataAsync(
                 A<bool?>.Ignored,
@@ -192,8 +191,9 @@ namespace wallabag.Tests
             var navigation = A.Fake<INavigationService>();
             var device = A.Fake<IPlatformSpecific>();
             var client = A.Fake<IWallabagClient>();
+            var apiService = A.Fake<IApiClientCreationService>();
             var database = TestsHelper.CreateFakeDatabase();
-            var viewModel = new LoginPageViewModel(logging, navigation, device, client, database);
+            var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database);
 
             var param = new ProtocolSetupNavigationParameter("user", "http://test.de");
 

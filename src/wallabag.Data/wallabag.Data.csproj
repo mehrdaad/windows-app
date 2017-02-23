@@ -49,6 +49,7 @@
     <Compile Include="Interfaces\INavigable.cs" />
     <Compile Include="Interfaces\IPlatformSpecific.cs" />
     <Compile Include="Interfaces\ISupportIncrementalLoading.cs" />
+    <Compile Include="Models\ClientCreationData.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Language.cs" />
     <Compile Include="Models\OfflineTask.cs" />
@@ -57,6 +58,8 @@
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\WallabagProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ApiClientCreationService.cs" />
+    <Compile Include="Services\IApiClientCreationService.cs" />
     <Compile Include="Services\IBackgroundTaskService.cs" />
     <Compile Include="Services\ILoggingService.cs" />
     <Compile Include="Services\INavigationService.cs" />
