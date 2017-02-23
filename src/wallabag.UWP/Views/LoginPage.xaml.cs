@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using wallabag.Data.ViewModels;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
@@ -20,6 +21,15 @@ namespace wallabag.Views
             InitializeComponent();
 
             ShowAlertGridStoryboard.Completed += (s, e) => HideAlertGridStoryboard.Begin();
+            SystemNavigationManager.GetForCurrentView().BackRequested += LoginPage_BackRequested;
+        }
+
+        private void LoginPage_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            e.Handled = true;
+
+            if (ViewModel.PreviousCommand.CanExecute(null))
+                ViewModel.CurrentStep--;
         }
 
         private void IgnorePointerWheel(object sender, PointerRoutedEventArgs e) => e.Handled = true;
@@ -34,7 +44,22 @@ namespace wallabag.Views
                 ShowAlertGridStoryboard.Begin();
                 AlertDescriptionTextBlock.Text = message.Notification;
             });
+
+            ViewModel.PropertyChanged += (s, args) =>
+            {
+                if (args.PropertyName.Equals(nameof(ViewModel.CurrentStep)))
+                {
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                        ViewModel.PreviousCommand.CanExecute(null) ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+                }
+            };
         }
-        protected override void OnNavigatedFrom(NavigationEventArgs e) => Messenger.Default.Unregister(this);
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            Messenger.Default.Unregister(this);
+            SystemNavigationManager.GetForCurrentView().BackRequested -= LoginPage_BackRequested;
+        }
+
+
     }
 }
