@@ -65,6 +65,7 @@ namespace wallabag.Data.ViewModels
             SimpleIoc.Default.Register<LoginPageViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<SettingsPageViewModel>();
+            SimpleIoc.Default.Register<MultipleSelectionViewModel>();
         }
 
         public AddItemViewModel AddItem => ServiceLocator.Current.GetInstance<AddItemViewModel>();
