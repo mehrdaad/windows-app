@@ -44,7 +44,8 @@ namespace wallabag.Data.Services
         {
             _loggingService.WriteLine($"Executing all offline tasks. Number of tasks: {Tasks.Count}");
 
-            foreach (var task in Tasks)
+            var tasks = Tasks.ToList();
+            foreach (var task in tasks)
                 await ExecuteAsync(task);
 
             _loggingService.WriteLine($"Execution finished. Number of failed tasks: {Tasks.Count}");

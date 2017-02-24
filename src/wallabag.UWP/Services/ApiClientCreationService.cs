@@ -55,8 +55,8 @@ namespace wallabag.Services
                 var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync(instanceUri)}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
                 var loginResponse = await _http.PostAsync(instanceUri.Append("/login_check"), loginContent);
 
-                // TODO: Apparently the HttpClient doesn't handle cookies properly. Find a workaround for this issue.
-                // In the meantime, an UWP implementation based on the Windows.Web.HttpClient is used.
+                if (!loginResponse.IsSuccessStatusCode || loginResponse.RequestMessage.RequestUri.Equals(instanceUri.Append("/login")))
+                    return new ClientCreationData();
 
                 if (!loginResponse.IsSuccessStatusCode)
                 {

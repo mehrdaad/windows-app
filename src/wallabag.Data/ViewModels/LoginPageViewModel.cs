@@ -208,7 +208,7 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLine("Server was not reachable.", LoggingCategory.Info);
                 return false;
             }
-
+            
             _loggingService.WriteLineIf(UseCustomSettings == true, "User wants to use custom settings.");
             if (UseCustomSettings == false || (
                     UseCustomSettings == true &&
