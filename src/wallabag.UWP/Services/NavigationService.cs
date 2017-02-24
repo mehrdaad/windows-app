@@ -73,6 +73,8 @@ namespace wallabag.Services
                 else
                     Frame.Navigate(pageType, parameter);
 
+                UpdateBackButtonVisibility();
+
                 if (oldViewModel != null)
                 {
                     _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedFromAsync)} from old ViewModel ({oldViewModel?.GetType()?.Name ?? "NULL"}).");
@@ -91,8 +93,6 @@ namespace wallabag.Services
                 }
                 else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the ViewModel was null.");
             }
-
-            UpdateBackButtonVisibility();
         }
         private Type GetPageType(Pages pageKey) => _keys.FirstOrDefault(i => i.Key == pageKey).Value;
 
