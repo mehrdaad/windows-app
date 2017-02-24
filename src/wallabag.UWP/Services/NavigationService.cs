@@ -24,7 +24,7 @@ namespace wallabag.Services
             _keys = new Dictionary<Pages, Type>();
         }
 
-        public string CurrentPageKey { get; private set; }
+        public Pages CurrentPage { get; private set; }
         public Frame Frame => Window.Current.Content as Frame;
 
         public void ClearHistory()
@@ -50,9 +50,6 @@ namespace wallabag.Services
 
         private async Task HandleNavigationAsync(Type pageType, object parameter = null, bool navigateBack = false)
         {
-            if (pageType == null && navigateBack == false)
-                throw new ArgumentNullException(nameof(pageType));
-
             if (pageType == GetPageType(Pages.AddItemPage) && !navigateBack)
                 await new Dialogs.AddItemDialog().ShowAsync();
             else if (pageType == GetPageType(Pages.EditTagsPage) && !navigateBack)
@@ -95,12 +92,6 @@ namespace wallabag.Services
             }
         }
         private Type GetPageType(Pages pageKey) => _keys.FirstOrDefault(i => i.Key == pageKey).Value;
-
-        [Obsolete("Please use the Pages enumeration instead.", true)]
-        public void NavigateTo(string pageKey) => throw new NotImplementedException();
-
-        [Obsolete("Please use the Pages enumeration instead.", true)]
-        public void NavigateTo(string pageKey, object parameter) => throw new NotImplementedException();
 
         private const string m_NAVIGATIONSTATESTRING = "NavigationState";
         public Task SaveAsync()
