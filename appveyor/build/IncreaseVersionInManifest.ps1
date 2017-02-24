@@ -1,4 +1,4 @@
-﻿$manifestfile = Get-Item -Path "$ENV:APPVEYOR_BUILD_FOLDER\src\wallabag\Package.appxmanifest"
+﻿$manifestfile = Get-Item -Path "$ENV:APPVEYOR_BUILD_FOLDER\src\wallabag.UWP\Package.appxmanifest"
   
 $manifestXml = New-Object -TypeName System.Xml.XmlDocument
 $manifestXml.Load($manifestfile.Fullname)

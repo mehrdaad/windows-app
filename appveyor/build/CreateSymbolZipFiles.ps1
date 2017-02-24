@@ -4,7 +4,7 @@ $rootPath = $ENV:APPVEYOR_BUILD_FOLDER
 $versionNumber = $ENV:APPVEYOR_BUILD_VERSION
 $platforms = "x86|x64|ARM".Split("|")
 
-$appSymbolsDirectory = Resolve-Path ([System.IO.Path]::Combine($rootPath, "src\wallabag\AppPackages\*_Test\"))
+$appSymbolsDirectory = Resolve-Path ([System.IO.Path]::Combine($rootPath, "src\wallabag.UWP\AppPackages\*_Test\"))
 $finalSymbolRootDirectory = [System.IO.Path]::Combine($rootPath, "hockeyapp-symbols")
 
 if ([System.IO.DirectoryInfo]::new($finalSymbolRootDirectory).Exists -eq $false)
@@ -14,7 +14,7 @@ if ([System.IO.DirectoryInfo]::new($finalSymbolRootDirectory).Exists -eq $false)
     foreach ($platform in $platforms)
     {
         $resultSymbolDirectory = [System.IO.Directory]::CreateDirectory("$finalSymbolRootDirectory\$platform")
-        $librariesSymbolDirectory = [System.IO.Path]::Combine($rootPath, "src\wallabag\obj\$platform\Release\ilc\in\")
+        $librariesSymbolDirectory = [System.IO.Path]::Combine($rootPath, "src\wallabag.UWP\obj\$platform\Release\ilc\in\")
                
         Write-Host "Extracting $platform symbols for application..."
 		$appSymFile = Get-ChildItem -Path $appSymbolsDirectory -Filter "wallabag_*_$platform.appxsym" | Select-Object -First 1

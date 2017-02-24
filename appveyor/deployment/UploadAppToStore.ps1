@@ -1,6 +1,6 @@
 Add-Type -Assembly System.IO.Compression.FileSystem
 
-$uploadDirectory = "$ENV:APPVEYOR_BUILD_FOLDER\src\wallabag\AppPackages"
+$uploadDirectory = "$ENV:APPVEYOR_BUILD_FOLDER\src\wallabag.UWP\AppPackages"
 
 $tenantID = $ENV:STORE_TENANT_ID
 $clientID = $ENV:STORE_CLIENT_ID
