@@ -10,7 +10,7 @@ namespace wallabag.Converters
         {
             bool val = (bool)value;
 
-            if (parameter.ToString() == "read")
+            if (parameter?.ToString() == "read")
             {
                 if (val)
                     return CreateFontIcon("\uE18B");
