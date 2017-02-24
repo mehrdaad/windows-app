@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using wallabag.Api;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
+using wallabag.Data.Services;
+using Windows.Web.Http;
 
-namespace wallabag.Data.Services
+namespace wallabag.Services
 {
     public class ApiClientCreationService : IApiClientCreationService
     {
@@ -52,7 +52,7 @@ namespace wallabag.Data.Services
                 _loggingService.WriteLine($"URI: {instanceUri.Append("/login_check")}");
 
                 // Step 1: Login to get a cookie.
-                var loginContent = new StringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync(instanceUri)}", Encoding.UTF8, "application/x-www-form-urlencoded");
+                var loginContent = new HttpStringContent($"_username={System.Net.WebUtility.UrlEncode(Username)}&_password={System.Net.WebUtility.UrlEncode(Password)}&_csrf_token={await GetCsrfTokenAsync(instanceUri)}", Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
                 var loginResponse = await _http.PostAsync(instanceUri.Append("/login_check"), loginContent);
 
                 // TODO: Apparently the HttpClient doesn't handle cookies properly. Find a workaround for this issue.
@@ -88,7 +88,7 @@ namespace wallabag.Data.Services
 
                 _loggingService.WriteLine($"Content: {stringContent}");
 
-                var addContent = new StringContent(stringContent, Encoding.UTF8, "application/x-www-form-urlencoded");
+                var addContent = new HttpStringContent(stringContent, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
                 var addResponse = _http.PostAsync(clientCreateUri, addContent);
 
                 message = await addResponse;

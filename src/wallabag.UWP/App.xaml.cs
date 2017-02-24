@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
-using Microsoft.HockeyApp;
 using SQLite.Net;
 using System;
 using System.Collections.Generic;
@@ -103,6 +102,7 @@ namespace wallabag
                 return ns;
             });
             SimpleIoc.Default.Register<IPlatformSpecific, Common.PlatformSpecific>();
+            SimpleIoc.Default.Register<IApiClientCreationService, Services.ApiClientCreationService>();
         }
 
         private async void StartupOrchestratorAsync(IActivatedEventArgs e, StartKind kind)

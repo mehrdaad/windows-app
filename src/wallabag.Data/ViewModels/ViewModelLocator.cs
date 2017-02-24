@@ -55,7 +55,8 @@ namespace wallabag.Data.ViewModels
             });
             SimpleIoc.Default.Register(() => new Dictionary<string, object>(), "SessionState");
 
-            SimpleIoc.Default.Register<IApiClientCreationService, ApiClientCreationService>();
+            // TODO: Re-enable the generic ApiClientCreationService if cookie issue is done.
+            //SimpleIoc.Default.Register<IApiClientCreationService, ApiClientCreationService>();
             SimpleIoc.Default.Register<IOfflineTaskService, OfflineTaskService>();
 
             SimpleIoc.Default.Register<AddItemViewModel>();
