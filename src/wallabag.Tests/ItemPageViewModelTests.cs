@@ -16,7 +16,7 @@ namespace wallabag.Tests
     public class ItemPageViewModelTests
     {
         [Fact]
-        public async Task NavigationWithoutAParameterReportsError()
+        public async Task NavigationWithAWrongParameterReportsError()
         {
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var loggingService = A.Fake<ILoggingService>();
@@ -33,7 +33,7 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public async Task NavigationWithoutAnEmptyArticleFails()
+        public async Task NavigationWithAnEmptyArticleFails()
         {
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var loggingService = A.Fake<ILoggingService>();
@@ -78,7 +78,7 @@ namespace wallabag.Tests
             A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(true);
 
             // This is our custom template to see if the formatting was fine
-            A.CallTo(() => platform.GetArticleTemplateAsync()).Returns("Title: {{title}}");
+            A.CallTo(() => platform.GetArticleTemplateAsync()).Returns("{{title}}");
 
             // Return an item if asked for
             A.CallTo(() => client.GetItemAsync(A<int>.That.IsEqualTo(1), A<CancellationToken>.Ignored)).Returns(new WallabagItem()
@@ -106,7 +106,7 @@ namespace wallabag.Tests
             A.CallTo(() => platform.GetArticleTemplateAsync()).MustHaveHappened();
             Assert.False(viewModel.ErrorDuringInitialization);
             Assert.False(string.IsNullOrEmpty(viewModel.FormattedHtml));
-            Assert.Equal("Title: This is my title", viewModel.FormattedHtml);
+            Assert.Equal("This is my title", viewModel.FormattedHtml);
         }
 
         [Fact]
@@ -133,12 +133,11 @@ namespace wallabag.Tests
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database);
             await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>());
 
-            // Everything should be fine and our custom template should be applied
             A.CallTo(() => platform.InternetConnectionIsAvailable).MustHaveHappened();
             A.CallTo(() => client.GetItemAsync(A<int>.That.IsEqualTo(1), A<CancellationToken>.Ignored)).MustNotHaveHappened();
             A.CallTo(() => platform.GetArticleTemplateAsync()).MustNotHaveHappened();
             Assert.True(viewModel.ErrorDuringInitialization);
-            Assert.True(string.IsNullOrEmpty(viewModel.FormattedHtml));
+            Assert.True(string.IsNullOrEmpty(viewModel?.FormattedHtml));
         }
 
         [Fact]
@@ -151,28 +150,24 @@ namespace wallabag.Tests
             var client = A.Fake<IWallabagClient>();
             var database = TestsHelper.CreateFakeDatabase();
 
-            var item = A.Fake<Item>(x => x.Wrapping(new Item()
+            var item = new Item()
             {
                 Id = 1,
                 Content = string.Empty,
                 IsRead = false
-            }));
+            };
 
-            var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database);
-            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)));
-
-            viewModel.Item = fakeItemViewModel;
+            var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
+            {
+                Item = new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)
+            };
 
             Assert.False(viewModel.Item.Model.IsRead);
 
             viewModel.ChangeReadStatusCommand.Execute(null);
-
-            A.CallTo(() => fakeItemViewModel.MarkAsReadCommand).MustHaveHappened();
             Assert.True(viewModel.Item.Model.IsRead);
 
             viewModel.ChangeReadStatusCommand.Execute(null);
-
-            A.CallTo(() => fakeItemViewModel.UnmarkAsReadCommand).MustHaveHappened();
             Assert.False(viewModel.Item.Model.IsRead);
         }
 
@@ -186,28 +181,23 @@ namespace wallabag.Tests
             var client = A.Fake<IWallabagClient>();
             var database = TestsHelper.CreateFakeDatabase();
 
-            var item = A.Fake<Item>(x => x.Wrapping(new Item()
+            var item = new Item()
             {
                 Id = 1,
                 Content = string.Empty,
                 IsStarred = false
-            }));
+            };
 
-            var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database);
-            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)));
-
-            viewModel.Item = fakeItemViewModel;
-
+            var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
+            {
+                Item = new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)
+            };
             Assert.False(viewModel.Item.Model.IsStarred);
 
             viewModel.ChangeFavoriteStatusCommand.Execute(null);
-
-            A.CallTo(() => fakeItemViewModel.MarkAsStarredCommand).MustHaveHappened();
             Assert.True(viewModel.Item.Model.IsStarred);
 
             viewModel.ChangeFavoriteStatusCommand.Execute(null);
-
-            A.CallTo(() => fakeItemViewModel.UnmarkAsStarredCommand).MustHaveHappened();
             Assert.False(viewModel.Item.Model.IsStarred);
         }
 
@@ -221,14 +211,14 @@ namespace wallabag.Tests
             var client = A.Fake<IWallabagClient>();
             var database = TestsHelper.CreateFakeDatabase();
 
-            var item = A.Fake<Item>(x => x.Wrapping(new Item()
+            var item = new Item()
             {
                 Id = 1,
                 Tags = new System.Collections.ObjectModel.ObservableCollection<Tag>()
                 {
                     new Tag() { Label = "test" }
                 }
-            }));
+            };
 
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
             {
@@ -237,7 +227,7 @@ namespace wallabag.Tests
 
             viewModel.EditTagsCommand.Execute(null);
 
-            A.CallTo(() => navigationService.Navigate(A<Data.Common.Navigation.Pages>.That.IsEqualTo(Data.Common.Navigation.Pages.EditTagsPage))).MustHaveHappened();
+            A.CallTo(() => navigationService.Navigate(A<Data.Common.Navigation.Pages>.That.IsEqualTo(Data.Common.Navigation.Pages.EditTagsPage), A<object>.Ignored)).MustHaveHappened();
         }
 
         [Fact]
@@ -250,7 +240,7 @@ namespace wallabag.Tests
             var client = A.Fake<IWallabagClient>();
             var database = TestsHelper.CreateFakeDatabase();
 
-            var item = A.Fake<Item>(x => x.Wrapping(new Item() { Id = 1 }));
+            var item = new Item() { Id = 1 };
 
             var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)));
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
@@ -261,7 +251,6 @@ namespace wallabag.Tests
             viewModel.DeleteCommand.Execute(null);
 
             A.CallTo(() => navigationService.GoBack()).MustHaveHappened();
-            A.CallTo(() => fakeItemViewModel.DeleteCommand).MustHaveHappened();
         }
 
         [Fact]
@@ -276,18 +265,20 @@ namespace wallabag.Tests
 
             var fakeItems = new List<Item>
             {
-                A.Fake<Item>(x => x.Wrapping(new Item()
+                new Item()
                 {
                     Id = 1,
                     Hostname = "youtube.com",
+                    Content = "test content",
                     PreviewImageUri = new Uri("https://test.de")
-                })),
-                A.Fake<Item>(x => x.Wrapping(new Item()
+                },
+                new Item()
                 {
                     Id = 2,
                     Hostname = "vimeo.com",
+                    Content = "test content",
                     PreviewImageUri = new Uri("https://test.de")
-                }))
+                }
             };
 
             A.CallTo(() => platform.GetArticleTemplateAsync()).Returns("{{imageHeader}}");
@@ -296,7 +287,7 @@ namespace wallabag.Tests
             {
                 database.Insert(item);
 
-                var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database)));
+                var fakeItemViewModel = new ItemViewModel(item, offlineTaskService, navigationService, loggingService, platform, database);
                 var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
                 {
                     Item = fakeItemViewModel
@@ -347,7 +338,6 @@ namespace wallabag.Tests
             viewModel.SaveRightClickLinkCommand.Execute(null);
 
             A.CallTo(() => offlineTaskService.Add(A<string>.Ignored, A<IEnumerable<string>>.Ignored)).MustHaveHappened();
-            A.CallTo(() => client.AddAsync(A<Uri>.That.IsEqualTo(viewModel.RightClickUri), A<IEnumerable<string>>.Ignored, A<string>.Ignored, A<CancellationToken>.Ignored)).MustHaveHappened();
         }
 
         [Fact]
@@ -373,8 +363,8 @@ namespace wallabag.Tests
         }
 
         [Theory]
-        [InlineData("<iframe src='https://player.vimeo.com/video/203689226?byline=0&portrait=0' width='640' height='360' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>", "https://i.vimeocdn.com/video/618033580_640.jpg")]
-        [InlineData("<iframe src='https://player.vimeo.com/video/192147860' width='640' height='360' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>", "https://i.vimeocdn.com/video/603421417_640.jpg")]
+        [InlineData("<iframe src='https://player.vimeo.com/video/203689226?byline=0&portrait=0' width='640' height='360' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>", "http://i.vimeocdn.com/video/618033580_640.jpg")]
+        [InlineData("<iframe src='https://player.vimeo.com/video/192147860' width='640' height='360' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>", "http://i.vimeocdn.com/video/603421417_640.jpg")]
         [InlineData("<iframe width='560' height='315' src='https://www.youtube.com/embed/lp00DMy3aVw' frameborder='0' allowfullscreen></iframe>", "http://img.youtube.com/vi/lp00DMy3aVw/0.jpg")]
         [InlineData("<iframe width='560' height='315' src='https://www.youtube.com/embed/v2H4l9RpkwM' frameborder='0' allowfullscreen></iframe>", "http://img.youtube.com/vi/v2H4l9RpkwM/0.jpg")]
         public async Task VideoPreviewImageIsCorrectlyFetchedFromIFrames(string iframe, string expectedResult)
@@ -386,7 +376,7 @@ namespace wallabag.Tests
             var client = A.Fake<IWallabagClient>();
             var database = TestsHelper.CreateFakeDatabase();
 
-            var fakeItem = A.Fake<Item>(x => x.Wrapping(new Item()
+            var fakeItem = new Item()
             {
                 Id = 1,
                 Hostname = "wallabag.it",
@@ -402,13 +392,13 @@ namespace wallabag.Tests
                 Title = "My title",
                 Url = "https://wallabag.it",
                 PreviewImageUri = new Uri("https://test.de")
-            }));
+            };
 
             A.CallTo(() => platform.GetArticleTemplateAsync()).Returns("{{content}}");
 
             database.Insert(fakeItem);
 
-            var fakeItemViewModel = A.Fake<ItemViewModel>(x => x.WithArgumentsForConstructor(() => new ItemViewModel(fakeItem, offlineTaskService, navigationService, loggingService, platform, database)));
+            var fakeItemViewModel = new ItemViewModel(fakeItem, offlineTaskService, navigationService, loggingService, platform, database);
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
             {
                 Item = fakeItemViewModel

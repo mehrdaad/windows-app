@@ -6,7 +6,7 @@ namespace wallabag.Tests
     public class ListHelperTests
     {
         [Fact]
-        public void AscendingOrderSortsItemsAscending()
+        public void AddingAnItemInAscendingOrderPutsItInRow()
         {
             var items = CreateTestList();
 
@@ -19,7 +19,7 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void DescendingOrderSortsItemsDescending()
+        public void AddingAnItemByDefaultUsesTheDescendingOrder()
         {
             var items = CreateTestList();
 
@@ -28,7 +28,7 @@ namespace wallabag.Tests
 
             Assert.True(items.Count == 10);
             Assert.True(items.Contains(testItem));
-            Assert.True(items[5] == testItem);
+            Assert.True(items[0] == testItem);
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace wallabag.Tests
 
             for (int i = 0; i < 3; i++)
                 newItems.Add($"New {i}");
-            
+
             Data.Common.Helpers.ListHelper.Replace(items, newItems);
 
             Assert.True(items.Count == newItems.Count);

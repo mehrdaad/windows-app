@@ -95,9 +95,9 @@ namespace wallabag.Data.ViewModels
 
             string imageHeader = string.Empty;
 
-            if (Item.Model.Hostname.Contains("youtube.com") == false &&
-                Item.Model.Hostname.Contains("vimeo.com") == false &&
-                Item.Model.PreviewImageUri != null)
+            if (Item?.Model?.Hostname?.Contains("youtube.com") == false &&
+                Item?.Model?.Hostname?.Contains("vimeo.com") == false &&
+                Item?.Model?.PreviewImageUri != null)
             {
                 _loggingService.WriteLine($"Image header is set to: {Item.Model.PreviewImageUri.ToString()}");
                 imageHeader = Item.Model.PreviewImageUri.ToString();
@@ -281,7 +281,13 @@ namespace wallabag.Data.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
             _loggingService.WriteLine($"Navigation parameter: {parameter}");
-            Item = ItemViewModel.FromId((int)parameter);
+            Item = ItemViewModel.FromId(
+                (int)parameter,
+                _loggingService,
+                _database,
+                _offlineTaskService,
+                _navigationService,
+                _device);
 
             _loggingService.WriteLineIf(Item == null, "Item is null.", LoggingCategory.Warning);
             _loggingService.WriteLine($"Item title: {Item?.Model?.Title}");
@@ -291,7 +297,9 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLine("Fetching item from server.");
                 var item = await _client.GetItemAsync(Item.Model.Id);
                 if (item != null)
+                {
                     Item = new ItemViewModel(item, _offlineTaskService, _navigationService, _loggingService, _device, _database);
+                }
 
                 _loggingService.WriteLine($"Success: {item != null}");
                 _loggingService.WriteObject(item);
@@ -309,6 +317,9 @@ namespace wallabag.Data.ViewModels
                 ErrorDuringInitialization = true;
                 ErrorDescription = _device.GetLocalizedResource("CantRetrieveContentsErrorMessage");
             }
+
+            if (ErrorDuringInitialization)
+                return;
 
             if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
             {

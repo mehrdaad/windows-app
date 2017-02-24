@@ -10,14 +10,14 @@ namespace wallabag.Data.Models
         public string InternalLanguageCode { get; set; }
         public string LanguageCode { get; set; }
         public string DisplayName { get; set; }
-        public bool IsUnknown { get { return InternalLanguageCode == null; } }
+        public bool IsUnknown => string.IsNullOrEmpty(InternalLanguageCode);
 
         public Language(string languageCode)
         {
             if (!string.IsNullOrEmpty(languageCode))
             {
                 InternalLanguageCode = languageCode;
-                LanguageCode = languageCode.Substring(0, 2);
+                LanguageCode = languageCode.Substring(0, 2).ToLower();
                 DisplayName = new CultureInfo(LanguageCode).DisplayName;
             }
         }

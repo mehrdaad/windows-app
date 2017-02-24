@@ -66,7 +66,7 @@ namespace wallabag.Data.ViewModels
                     _loggingService.WriteLine("Tag wasn't in list yet. Added.");
                     Tags.Add(suggestion);
                 }
-                else
+                else if (!string.IsNullOrEmpty(TagQuery))
                 {
                     var tags = TagQuery.Split(',').ToList();
                     _loggingService.WriteLine($"Adding {tags.Count} tags to the list.");
@@ -97,7 +97,6 @@ namespace wallabag.Data.ViewModels
         private void Finish()
         {
             _loggingService.WriteLine($"Editing tags for {Items.Count} items.");
-            _loggingService.WriteLineIf(_previousTags != null, $"Number of previous tags: {_previousTags.Count()}");
 
             if (_previousTags == null)
             {
@@ -111,6 +110,8 @@ namespace wallabag.Data.ViewModels
             }
             else
             {
+                _loggingService.WriteLine($"Number of previous tags: {_previousTags.Count()}");
+
                 var newTags = Tags.Except(_previousTags).ToList();
                 var deletedTags = _previousTags.Except(Tags).ToList();
 
@@ -121,10 +122,13 @@ namespace wallabag.Data.ViewModels
 
                 _offlineTaskService.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags);
             }
+
+            _navigationService.GoBack();
         }
         private void Cancel()
         {
             _loggingService.WriteLine("Cancelling the editing of tags.");
+            _navigationService.GoBack();
         }
     }
 }

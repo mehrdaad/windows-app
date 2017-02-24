@@ -8,7 +8,9 @@ namespace wallabag.Data.Common
     {
         private JsonSerializerSettings _serializerSettings = new JsonSerializerSettings()
         {
-            TypeNameHandling = TypeNameHandling.All
+            TypeNameHandling = TypeNameHandling.All,
+            NullValueHandling = NullValueHandling.Ignore,
+            ObjectCreationHandling = ObjectCreationHandling.Auto
         };
 
         public bool CanDeserialize(Type type) => true;

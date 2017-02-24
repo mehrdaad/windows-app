@@ -296,7 +296,7 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLine($"Total number of items: {itemResponse.TotalNumberOfItems}");
             _loggingService.WriteLine($"Pages: {itemResponse.Pages}");
 
-            var items = itemResponse.Items as List<WallabagItem>;
+            var items = itemResponse?.Items as List<WallabagItem>;
 
             // For users with a lot of items
             if (itemResponse.Pages > 1)

@@ -65,8 +65,10 @@ namespace wallabag.Data.Models
         public static implicit operator Item(WallabagItem i)
         {
             var convertedTags = new ObservableCollection<Tag>();
-            foreach (var item in i.Tags)
-                convertedTags.Add(item);
+
+            if (i?.Tags != null)
+                foreach (var item in i.Tags)
+                    convertedTags.Add(item);
 
             return new Item()
             {
@@ -88,14 +90,31 @@ namespace wallabag.Data.Models
                 Tags = convertedTags
             };
         }
-        public int CompareTo(object obj) => CreationDate.CompareTo((obj as Item).CreationDate);
+        public int CompareTo(object obj)
+        {
+            var objectToCompare = obj as Item;
+
+            if (objectToCompare != null)
+            {
+                int creationDateComparison = CreationDate.CompareTo(objectToCompare.CreationDate);
+                if (creationDateComparison == 0)
+                    return Id.CompareTo(objectToCompare.Id);
+                else
+                    return creationDateComparison;
+            }
+            else
+                throw new ArgumentException($"An {nameof(Item)} cannot be compared with a {obj?.GetType().FullName ?? null}.");
+        }
         public override string ToString() => Title ?? string.Empty;
         public override bool Equals(object obj)
         {
             if (obj != null && obj.GetType().Equals(typeof(Item)))
             {
                 var comparedItem = obj as Item;
-                return Id.Equals(comparedItem.Id);
+                bool idEquals = Id.Equals(comparedItem.Id);
+                bool modificationDateEquals = LastModificationDate.Equals(comparedItem.LastModificationDate);
+
+                return idEquals && modificationDateEquals;
             }
             return false;
         }

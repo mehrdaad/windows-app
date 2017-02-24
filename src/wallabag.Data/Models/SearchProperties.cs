@@ -30,6 +30,9 @@ namespace wallabag.Data.Models
 
                 if (!string.IsNullOrWhiteSpace(value) && string.IsNullOrWhiteSpace(oldValue))
                     SearchStarted?.Invoke(this, this);
+
+                if (string.IsNullOrWhiteSpace(value) && !string.IsNullOrWhiteSpace(oldValue))
+                    SearchCanceled?.Invoke(this, this);
             }
         }
 

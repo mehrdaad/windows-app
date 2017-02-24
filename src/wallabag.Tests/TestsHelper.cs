@@ -25,12 +25,15 @@ namespace wallabag.Tests
             return db;
         }
 
-        internal static void SetupDefaultSettingsService()
+        private static void SetupDefaultSettingsService()
         {
-            if (SimpleIoc.Default.IsRegistered<ISettingsService>())
-                SimpleIoc.Default.Unregister<ISettingsService>();
-
-            SimpleIoc.Default.Register<ISettingsService>(() => A.Fake<ISettingsService>());
+            try
+            {
+                bool isRegistered = SimpleIoc.Default.IsRegistered<ISettingsService>();
+                if (!isRegistered)
+                    SimpleIoc.Default.Register(() => A.Fake<ISettingsService>());
+            }
+            catch { }
         }
     }
 }

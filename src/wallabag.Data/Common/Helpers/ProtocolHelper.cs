@@ -11,6 +11,8 @@ namespace wallabag.Data.Common.Helpers
 
             if (str.StartsWith(PROTOCOL_HANDLER))
                 str = str.Remove(0, PROTOCOL_HANDLER.Length);
+            else
+                return result;
 
             var split = str.Split('@');
 

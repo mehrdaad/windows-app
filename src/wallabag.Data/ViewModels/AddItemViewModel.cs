@@ -55,6 +55,7 @@ namespace wallabag.Data.ViewModels
                 });
 
                 _offlineTaskService.Add(UriString, Tags.ToStringArray());
+                _navigationService.GoBack();
             }
         }
 

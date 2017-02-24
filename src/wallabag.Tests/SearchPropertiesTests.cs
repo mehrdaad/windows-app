@@ -25,8 +25,10 @@ namespace wallabag.Tests
         [Fact]
         public void ChangingTheQueryFromSomethingToEmptyFiresSearchCanceledEvent()
         {
-            var sp = new SearchProperties() { Query = "Test Query" };
+            var sp = new SearchProperties();
             bool searchCanceled = false;
+
+            sp.Query = "test";
 
             sp.SearchCanceled += (s, e) =>
             {

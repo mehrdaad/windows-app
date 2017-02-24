@@ -25,7 +25,7 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void ChangingTheQueryUpdatesTheSuggestions()
+        public void InvokingTheQueryUpdateUpdatesTheSuggestions()
         {
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var loggingService = A.Fake<ILoggingService>();
@@ -46,13 +46,14 @@ namespace wallabag.Tests
                 database.Insert(tag);
             }
 
-            var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
-            viewModel.TagQuery = nameof(EditTagsViewModelTests);
-
-            Assert.Collection(viewModel.Suggestions, tag =>
+            var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService)
             {
-                Assert.Contains(nameof(EditTagsViewModel), tag.Label);
-            });
+                TagQuery = nameof(EditTagsViewModelTests)
+            };
+            viewModel.TagQueryChangedCommand.Execute(null);
+
+            Assert.Equal(3, viewModel.Suggestions.Count);
+            Assert.Contains(nameof(EditTagsViewModel), viewModel.Suggestions[0].Label);
         }
 
         [Fact]
@@ -71,12 +72,13 @@ namespace wallabag.Tests
             };
 
             viewModel.TagSubmittedCommand.Execute(tagToTest);
-            Assert.Equal(1, viewModel.Suggestions.Count);
-            Assert.Equal(tagToTest, viewModel.Suggestions[1]);
+
+            Assert.Equal(1, viewModel.Tags.Count);
+            Assert.Equal(tagToTest, viewModel.Tags[0]);
         }
 
         [Fact]
-        public void SubmittingADuplicateDoesNotAddItToTheSuggestionList()
+        public void SubmittingADuplicateDoesNotAddItToTheTagList()
         {
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var loggingService = A.Fake<ILoggingService>();
@@ -91,12 +93,12 @@ namespace wallabag.Tests
             };
 
             viewModel.TagSubmittedCommand.Execute(tagToTest);
-            Assert.Equal(1, viewModel.Suggestions.Count);
-            Assert.Equal(tagToTest, viewModel.Suggestions[1]);
+            Assert.Equal(1, viewModel.Tags.Count);
+            Assert.Equal(tagToTest, viewModel.Tags[0]);
 
             viewModel.TagSubmittedCommand.Execute(tagToTest);
-            Assert.Equal(1, viewModel.Suggestions.Count);
-            Assert.Equal(tagToTest, viewModel.Suggestions[1]);
+            Assert.Equal(1, viewModel.Tags.Count);
+            Assert.Equal(tagToTest, viewModel.Tags[0]);
         }
 
         [Fact]
@@ -114,10 +116,10 @@ namespace wallabag.Tests
 
             viewModel.TagSubmittedCommand.Execute(null);
             Assert.Equal(3, viewModel.Tags.Count);
-            Assert.Collection(viewModel.Tags, tag =>
-            {
+
+            foreach (var tag in viewModel.Tags)
                 Assert.Matches("test[1-3]", tag.Label);
-            });
+
             Assert.False(viewModel.TagsCountIsZero);
         }
 
@@ -136,10 +138,10 @@ namespace wallabag.Tests
 
             viewModel.TagSubmittedCommand.Execute(null);
             Assert.Equal(2, viewModel.Tags.Count);
-            Assert.Collection(viewModel.Tags, tag =>
-            {
-                Assert.Matches("test[1-3]", tag.Label);
-            });
+
+            foreach (var tag in viewModel.Tags)
+                Assert.Matches("test[1-2]", tag.Label);
+
             Assert.False(viewModel.TagsCountIsZero);
         }
 
@@ -204,7 +206,7 @@ namespace wallabag.Tests
                 }
             };
 
-            viewModel.Tags.Add(new Tag());
+            viewModel.Tags.Add(new Tag() { Id = 1, Label = "test" });
             viewModel.FinishCommand.Execute(null);
 
             A.CallTo(() => offlineTaskService.Add(A<int>.Ignored, OfflineTask.OfflineTaskAction.EditTags, A<List<Tag>>.Ignored, A<List<Tag>>.Ignored)).MustHaveHappened(Repeated.Exactly.Twice);
@@ -257,6 +259,8 @@ namespace wallabag.Tests
 
             var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
             viewModel.TagQuery = "test1,test2,random";
+
+            viewModel.TagQueryChangedCommand.Execute(null);
 
             Assert.Equal(1, viewModel.Suggestions.Count);
             Assert.Equal("random tag", viewModel.Suggestions[0].Label);

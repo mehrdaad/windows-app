@@ -153,7 +153,13 @@ namespace wallabag.Data.ViewModels
 
             Messenger.Default.Register<UpdateItemMessage>(this, message =>
             {
-                var viewModel = ItemViewModel.FromId(message.ItemId);
+                var viewModel = ItemViewModel.FromId(
+                    message.ItemId,
+                    _loggingService,
+                    _database,
+                    _offlineTaskService,
+                    _navigationService,
+                    _device);
 
                 _loggingService.WriteLine($"Updating item with ID {message.ItemId}.");
                 _loggingService.WriteLineIf(viewModel == null, "Item does not exist in the database!", LoggingCategory.Warning);
@@ -266,7 +272,13 @@ namespace wallabag.Data.ViewModels
 
             if (task.Action != OfflineTask.OfflineTaskAction.Delete)
             {
-                item = ItemViewModel.FromId(task.ItemId);
+                item = ItemViewModel.FromId(
+                    task.ItemId,
+                    _loggingService,
+                    _database,
+                    _offlineTaskService,
+                    _navigationService,
+                    _device);
 
                 if (item == null)
                 {

@@ -24,7 +24,7 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void AddingAnUriDoesExecuteTheOfflineTaskService()
+        public void AddingAnUriDoesExecuteTheOfflineTaskServiceAndNavigatesBack()
         {
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var loggingService = A.Fake<ILoggingService>();

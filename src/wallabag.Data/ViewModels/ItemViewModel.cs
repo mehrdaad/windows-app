@@ -110,18 +110,20 @@ namespace wallabag.Data.ViewModels
             });
         }
 
-        public static ItemViewModel FromId(int itemId)
+        public static ItemViewModel FromId(
+            int itemId,
+            ILoggingService logging,
+            SQLiteConnection database,
+            IOfflineTaskService offlineTaskService,
+            INavigationService navigation,
+            IPlatformSpecific platform)
         {
-            var logging = SimpleIoc.Default.GetInstance<ILoggingService>();
-            var database = SimpleIoc.Default.GetInstance<SQLiteConnection>();
-            var offlineTaskService = SimpleIoc.Default.GetInstance<IOfflineTaskService>();
-            var navigation = SimpleIoc.Default.GetInstance<INavigationService>();
-            var platform = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
-
             logging.WriteLine($"Creating ItemViewModel from item id: {itemId}");
 
             var item = database.Find<Item>(itemId);
-            logging.WriteLineIf(item == null, $"Failed! Item does not exist in database!", LoggingCategory.Critical);
+
+            if (item == null)
+                logging.WriteLine($"Failed! Item does not exist in database!", LoggingCategory.Critical);
 
             if (item != null)
                 return new ItemViewModel(item, offlineTaskService, navigation, logging, platform, database);

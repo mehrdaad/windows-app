@@ -18,10 +18,11 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void InvalidProtocolHandlerThrowsArgumentException()
+        public void InvalidProtocolHandlerReturnsNull()
         {
             string protocol = "mytest://username@https://localhost/";
-            Assert.Throws<ArgumentException>(() => ProtocolHelper.Parse(protocol));
+            var result = ProtocolHelper.Parse(protocol);
+            Assert.Null(result);
         }
 
         [Fact]

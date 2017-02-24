@@ -11,7 +11,7 @@ namespace wallabag.Data.Common.Helpers
             if (format == null)
                 throw new ArgumentNullException(nameof(format));
 
-            var r = new Regex(@"(?<start>\{)+(?<property>[\w\.\[\]]+)(?<format>:[^}]+)?(?<end>\})+",
+            var r = new Regex(@"(?<start>\{{2})+(?<property>[\w\.\[\]]+)(?<format>:[^}]+)?(?<end>\}{2})+",
                     RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
             string rewrittenFormat = r.Replace(format, delegate (Match m)
@@ -23,7 +23,7 @@ namespace wallabag.Data.Common.Helpers
 
                 object value = (propertyGroup.Value == null)
                            ? source
-                           : source.GetType().GetRuntimeProperty(propertyGroup.Value).GetValue(source);
+                           : source?.GetType()?.GetRuntimeProperty(propertyGroup.Value)?.GetValue(source) ?? string.Empty;
 
                 return value.ToString();
             });

@@ -14,7 +14,7 @@ namespace wallabag.Tests
         [Fact]
         public void WhenModelIsUpdatedTheViewModelIsUpdatedToo()
         {
-            var item = A.Fake<Item>();
+            var item = new Item();
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var navigation = A.Fake<INavigationService>();
             var logging = A.Fake<ILoggingService>();
@@ -34,6 +34,9 @@ namespace wallabag.Tests
                 eventWasFired = true;
                 Assert.True(e.PropertyName == nameof(ItemViewModel.Model));
             };
+
+            viewModel.RaisePropertyChanged(nameof(viewModel.Model));
+
             Assert.True(eventWasFired);
         }
 
@@ -71,11 +74,11 @@ namespace wallabag.Tests
         [Fact]
         public void MarkingAnItemAsReadInvokesProperActions()
         {
-            var item = A.Fake<Item>(x => x.WithArgumentsForConstructor(() => new Item()
+            var item = new Item()
             {
                 Id = 10,
                 IsRead = false
-            }));
+            };
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var navigation = A.Fake<INavigationService>();
             var logging = A.Fake<ILoggingService>();
@@ -108,11 +111,11 @@ namespace wallabag.Tests
         [Fact]
         public void MarkingAnItemAsUnreadInvokesProperActions()
         {
-            var item = A.Fake<Item>(x => x.WithArgumentsForConstructor(() => new Item()
+            var item = new Item()
             {
                 Id = 10,
                 IsRead = true
-            }));
+            };
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var navigation = A.Fake<INavigationService>();
             var logging = A.Fake<ILoggingService>();
@@ -145,11 +148,11 @@ namespace wallabag.Tests
         [Fact]
         public void MarkingAnItemAsStarredInvokesProperActions()
         {
-            var item = A.Fake<Item>(x => x.WithArgumentsForConstructor(() => new Item()
+            var item = new Item()
             {
                 Id = 10,
                 IsStarred = false
-            }));
+            };
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var navigation = A.Fake<INavigationService>();
             var logging = A.Fake<ILoggingService>();
@@ -182,11 +185,11 @@ namespace wallabag.Tests
         [Fact]
         public void MarkingAnItemAsUnstarredInvokesProperActions()
         {
-            var item = A.Fake<Item>(x => x.WithArgumentsForConstructor(() => new Item()
+            var item = new Item()
             {
                 Id = 10,
-                IsStarred = true
-            }));
+                IsStarred = false
+            };
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var navigation = A.Fake<INavigationService>();
             var logging = A.Fake<ILoggingService>();
@@ -219,10 +222,7 @@ namespace wallabag.Tests
         [Fact]
         public void DeletingAnItemInvokesProperActions()
         {
-            var item = A.Fake<Item>(x => x.WithArgumentsForConstructor(() => new Item()
-            {
-                Id = 10
-            }));
+            var item = new Item() { Id = 10 };
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var navigation = A.Fake<INavigationService>();
             var logging = A.Fake<ILoggingService>();
@@ -237,7 +237,7 @@ namespace wallabag.Tests
                 logging,
                 device,
                 database);
-            
+
             viewModel.DeleteCommand.Execute(null);
 
             A.CallTo(() => offlineTaskService.Add(
