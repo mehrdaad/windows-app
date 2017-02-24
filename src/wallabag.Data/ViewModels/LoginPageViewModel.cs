@@ -181,25 +181,28 @@ namespace wallabag.Data.ViewModels
 
         public async Task<bool> TestConfigurationAsync()
         {
+            string urlToTest = Url;
+
             _loggingService.WriteLine("Testing configuration.");
-            _loggingService.WriteLine($"URL: {Url}");
+            _loggingService.WriteLine($"URL: {urlToTest}");
             ProgressDescription = _device.GetLocalizedResource("TestingConfigurationMessage");
 
-            if (!Url.StartsWith("https://") && !Url.StartsWith("http://"))
+            if (!urlToTest.StartsWith("https://") && !urlToTest.StartsWith("http://"))
             {
                 _loggingService.WriteLine("URL doesn't start with protocol, using HTTPS.");
-                Url = "https://" + Url;
+                urlToTest = "https://" + urlToTest;
             }
 
-            if (!Url.EndsWith("/"))
+            if (!urlToTest.EndsWith("/"))
             {
-                Url += "/";
+                urlToTest += "/";
                 _loggingService.WriteLine("URL doesn't end with a slash. Added it.");
             }
 
-            _loggingService.WriteLine($"URL to test: {Url}");
+            Url = urlToTest;
+            _loggingService.WriteLine($"URL to test: {urlToTest}");
 
-            try { await new HttpClient().GetAsync(new Uri(Url)); }
+            try { await new HttpClient().GetAsync(new Uri(urlToTest)); }
             catch
             {
                 _loggingService.WriteLine("Server was not reachable.", LoggingCategory.Info);
@@ -207,32 +210,31 @@ namespace wallabag.Data.ViewModels
             }
 
             _loggingService.WriteLineIf(UseCustomSettings == true, "User wants to use custom settings.");
-            if (UseCustomSettings == false)
+            if (UseCustomSettings == false || (
+                    UseCustomSettings == true &&
+                    string.IsNullOrWhiteSpace(ClientSecret) &&
+                    string.IsNullOrWhiteSpace(ClientId)
+                ))
             {
-                _client.InstanceUri = new Uri(Url);
-                _loggingService.WriteLine($"Instance URI of the client: {_client.InstanceUri}");
-
-                bool clientCreationIsSuccessful = (await _apiClientService.CreateClientAsync(Url, Username, Password)).Success;
-                _loggingService.WriteLineIf(clientCreationIsSuccessful, "Client creation is successful.");
-
-                if (clientCreationIsSuccessful == false &&
-                    Url.StartsWith("https://"))
+                bool clientCreationIsSuccessful = await TestClientCreationWithUrlAsync(new Uri(urlToTest));
+                if (!clientCreationIsSuccessful && urlToTest.StartsWith("https://"))
                 {
                     _loggingService.WriteLine("Client creation was not successful. Trying again with HTTP.");
-                    Url = Url.Replace("https://", "http://");
-                    _client.InstanceUri = new Uri(Url);
+                    urlToTest = urlToTest.Replace("https://", "http://");
 
-                    if ((await _apiClientService.CreateClientAsync(Url, Username, Password)).Success == false)
-                    {
-                        _loggingService.WriteLine("Client creation failed.");
-                        return false;
-                    }
+                    clientCreationIsSuccessful = await TestClientCreationWithUrlAsync(new Uri(urlToTest));
+                }
+
+                if (!clientCreationIsSuccessful)
+                {
+                    _loggingService.WriteLine("Client creation failed.");
+                    return false;
                 }
             }
 
             _client.ClientId = ClientId;
             _client.ClientSecret = ClientSecret;
-            _client.InstanceUri = new Uri(Url);
+            _client.InstanceUri = new Uri(urlToTest);
 
             _loggingService.WriteLine("Request authentication tokens.");
             bool result = await _client.RequestTokenAsync(Username, Password).ContinueWith(x =>
@@ -244,12 +246,12 @@ namespace wallabag.Data.ViewModels
             });
             _loggingService.WriteLineIf(result, "Authentication tokens successful requested.");
 
-            if (result == false && Url.StartsWith("https://"))
+            if (result == false && urlToTest.StartsWith("https://"))
             {
                 _loggingService.WriteLine("Authentication tokens couldn't be requested. Trying again with HTTP.");
 
-                Url = Url.Replace("https://", "http://");
-                _client.InstanceUri = new Uri(Url);
+                urlToTest = urlToTest.Replace("https://", "http://");
+                _client.InstanceUri = new Uri(urlToTest);
 
                 result = await _client.RequestTokenAsync(Username, Password).ContinueWith(x =>
                 {
@@ -261,8 +263,28 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLineIf(result == false, "Authentication tokens couldn't be requested.");
             }
 
+            if (result)
+                Url = urlToTest;
+
             return result;
         }
+
+        private async Task<bool> TestClientCreationWithUrlAsync(Uri urlToTest)
+        {
+            _client.InstanceUri = urlToTest;
+            _loggingService.WriteLine($"Instance URI of the client: {_client.InstanceUri}");
+
+            var clientData = await _apiClientService.CreateClientAsync(urlToTest.ToString(), Username, Password);
+            if (clientData.Success)
+            {
+                _loggingService.WriteLine("Client creation was successful.");
+                ClientId = clientData.Id;
+                ClientSecret = clientData.Secret;
+            }
+
+            return clientData.Success;
+        }
+
         public async Task DownloadAndSaveItemsAndTagsAsync()
         {
             _loggingService.WriteLine("Downloading items and tags...");
