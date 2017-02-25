@@ -2,15 +2,15 @@
     x:Class="wallabag.Views.ItemPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:helpers="using:wallabag.Common.Helpers"
     xmlns:converters="using:wallabag.Converters"
+    xmlns:helpers="using:wallabag.Common.Helpers"
     helpers:TitleBarHelper.ButtonBackgroundColor="Transparent"
     helpers:TitleBarHelper.ButtonForegroundColor="{x:Bind ForegroundBrush.Color, Mode=OneWay}"
     helpers:TitleBarHelper.IsVisible="false"
     DataContext="{Binding ItemView, Source={StaticResource Locator}}">
 
     <Page.Resources>
-        <converters:BooleanToIconConverter x:Key="BooleanToIconConverter"/>
+        <converters:BooleanToIconConverter x:Key="BooleanToIconConverter" />
 
         <Storyboard x:Name="ShowMinimalCommandBarStoryboard">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="commandsGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
@@ -134,7 +134,7 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="{x:Bind ColorApplicationTheme, Mode=OneWay}">
         <WebView
             x:Name="HtmlViewer"
-            helpers:WebViewHelper.Html="{x:Bind ViewModel.FormattedHtml}"
+            helpers:WebViewHelper.Html="{x:Bind ViewModel.FormattedHtml, Mode=OneWay}"
             NavigationCompleted="HtmlViewer_NavigationCompleted"
             Opacity="0"
             RenderTransformOrigin="0.5,0.5">
@@ -322,7 +322,7 @@
             VerticalAlignment="Center"
             x:DeferLoadStrategy="Lazy"
             Visibility="Collapsed">
-            <!-- TODO: Replace the failure indicator by a more general way, maybe using an IDialogService-->
+            <!--  TODO: Replace the failure indicator by a more general way, maybe using an IDialogService  -->
             <Button
                 x:Uid="OpenInBrowserButton"
                 Margin="0,12,0,0"
