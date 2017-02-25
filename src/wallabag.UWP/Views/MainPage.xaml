@@ -260,6 +260,7 @@
                     x:Name="ItemGridView"
                     Padding="4"
                     IsItemClickEnabled="True"
+                    ItemClick="ItemGridView_ItemClick"
                     ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
                     MinItemHeight="175"
                     MinItemWidth="300">
@@ -334,11 +335,6 @@
                             </RelativePanel>
                         </DataTemplate>
                     </controls:AdaptiveGridView.ItemTemplate>
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="ItemClick">
-                            <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickCommand}" />
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
                 </controls:AdaptiveGridView>
             </PivotItem>
             <PivotItem x:Uid="FavoritesPivotItem" Header="FAVORITES" />

@@ -199,5 +199,8 @@ namespace wallabag.Views
             lastPivotItem.Content = null;
             currentPivotItem.Content = gridView;
         }
+
+        private void ItemGridView_ItemClick(object sender, ItemClickEventArgs e)
+            => ViewModel.ItemClickCommand.Execute(e.ClickedItem);
     }
 }
