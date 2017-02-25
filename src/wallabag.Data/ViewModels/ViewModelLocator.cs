@@ -68,11 +68,11 @@ namespace wallabag.Data.ViewModels
             SimpleIoc.Default.Register<MultipleSelectionViewModel>();
         }
 
-        public AddItemViewModel AddItem => ServiceLocator.Current.GetInstance<AddItemViewModel>();
-        public EditTagsViewModel EditTags => ServiceLocator.Current.GetInstance<EditTagsViewModel>();
-        public ItemPageViewModel ItemView => ServiceLocator.Current.GetInstance<ItemPageViewModel>();
-        public LoginPageViewModel Login => ServiceLocator.Current.GetInstance<LoginPageViewModel>();
-        public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
-        public SettingsPageViewModel SettingsView => ServiceLocator.Current.GetInstance<SettingsPageViewModel>();
+        public AddItemViewModel AddItem => SimpleIoc.Default.GetInstance<AddItemViewModel>();
+        public EditTagsViewModel EditTags => SimpleIoc.Default.GetInstance<EditTagsViewModel>();
+        public ItemPageViewModel ItemView => SimpleIoc.Default.GetInstanceWithoutCaching<ItemPageViewModel>();
+        public LoginPageViewModel Login => SimpleIoc.Default.GetInstance<LoginPageViewModel>();
+        public MainViewModel Main => SimpleIoc.Default.GetInstance<MainViewModel>();
+        public SettingsPageViewModel SettingsView => SimpleIoc.Default.GetInstance<SettingsPageViewModel>();
     }
 }
