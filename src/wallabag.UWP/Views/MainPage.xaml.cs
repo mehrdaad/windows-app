@@ -201,6 +201,9 @@ namespace wallabag.Views
         }
 
         private void ItemGridView_ItemClick(object sender, ItemClickEventArgs e)
-            => ViewModel.ItemClickCommand.Execute(e.ClickedItem);
+        {
+            if (e.ClickedItem != null)
+                ViewModel.ItemClickCommand.Execute(e.ClickedItem);
+        }
     }
 }
