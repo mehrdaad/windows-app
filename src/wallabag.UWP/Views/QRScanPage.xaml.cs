@@ -1,5 +1,4 @@
-﻿using wallabag.Data.Common.Helpers;
-using wallabag.Data.ViewModels;
+﻿using wallabag.Data.ViewModels;
 using Windows.UI.Xaml.Controls;
 
 // Die Elementvorlage "Leere Seite" wird unter https://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
@@ -11,13 +10,13 @@ namespace wallabag.Views
     /// </summary>
     public sealed partial class QRScanPage : Page
     {
+        public QRScanPageViewModel ViewModel => DataContext as QRScanPageViewModel;
+
         public QRScanPage()
         {
             InitializeComponent();
-
-            // TODO: Create a ViewModel for the QRScanPage       
-            //DataContext = new QRScanPageViewModel(scannerControl);
-            //scannerControl.TopText = GeneralHelper.LocalizedResource("HoldCameraOntoQRCodeMessage");
+            scannerControl.TopText = ViewModel.Description;
+            scannerControl.StartScanning(result => ViewModel.LastScanResult = result, ViewModel.ScanOptions);
         }
     }
 }
