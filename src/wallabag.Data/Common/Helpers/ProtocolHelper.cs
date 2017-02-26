@@ -1,25 +1,31 @@
-﻿using wallabag.Data.Models;
+﻿using System.Text.RegularExpressions;
+using wallabag.Data.Models;
 
 namespace wallabag.Data.Common.Helpers
 {
     public static class ProtocolHelper
     {
-        private const string PROTOCOL_HANDLER = "wallabag://";
+        private static Regex _protocolRegex => new Regex("wallabag://(?<username>[a-zA-Z ]+)@(?<server>[a-zA-Z://.]+)");
+
         public static ProtocolSetupNavigationParameter Parse(string str)
         {
             ProtocolSetupNavigationParameter result = null;
 
-            if (str.StartsWith(PROTOCOL_HANDLER))
-                str = str.Remove(0, PROTOCOL_HANDLER.Length);
-            else
-                return result;
+            var match = _protocolRegex.Match(str);
 
-            var split = str.Split('@');
+            if (match.Success)
+            {
+                string user = match.Groups["username"].Value;
+                string server = match.Groups["server"].Value
+                    .Replace("https//", "https://")
+                    .Replace("http//", "http://");
 
-            if (split.Length == 2)
-                result = new ProtocolSetupNavigationParameter(split[0], split[1].Replace("https//", "https://").Replace("http//", "http://"));
+                result = new ProtocolSetupNavigationParameter(user, server);
+            }
 
             return result;
         }
+
+        public static bool Validate(string str) => _protocolRegex.Match(str).Success;
     }
 }

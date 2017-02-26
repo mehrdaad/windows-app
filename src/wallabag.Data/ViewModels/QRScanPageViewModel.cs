@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text.RegularExpressions;
+using wallabag.Data.Common.Helpers;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Services;
 using ZXing;
@@ -40,8 +42,7 @@ namespace wallabag.Data.ViewModels
 
         private void ScanResultChanged()
         {
-            bool success = string.IsNullOrEmpty(_lastScanResult?.Text) == false && _lastScanResult.Text.StartsWith("wallabag://");
-            if (success)
+            if (ProtocolHelper.Validate(_lastScanResult?.Text))
             {
                 _navigation.GoBack();
 
