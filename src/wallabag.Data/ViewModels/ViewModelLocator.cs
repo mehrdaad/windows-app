@@ -2,7 +2,6 @@
 using Microsoft.Practices.ServiceLocation;
 using SQLite.Net;
 using System.Collections.Generic;
-using System.IO;
 using wallabag.Api;
 using wallabag.Data.Common;
 using wallabag.Data.Models;
@@ -66,6 +65,7 @@ namespace wallabag.Data.ViewModels
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<SettingsPageViewModel>();
             SimpleIoc.Default.Register<MultipleSelectionViewModel>();
+            SimpleIoc.Default.Register<QRScanPageViewModel>();
         }
 
         public AddItemViewModel AddItem => SimpleIoc.Default.GetInstance<AddItemViewModel>();
@@ -74,5 +74,6 @@ namespace wallabag.Data.ViewModels
         public LoginPageViewModel Login => SimpleIoc.Default.GetInstance<LoginPageViewModel>();
         public MainViewModel Main => SimpleIoc.Default.GetInstance<MainViewModel>();
         public SettingsPageViewModel SettingsView => SimpleIoc.Default.GetInstance<SettingsPageViewModel>();
+        public QRScanPageViewModel QRScan => SimpleIoc.Default.GetInstance<QRScanPageViewModel>();
     }
 }
