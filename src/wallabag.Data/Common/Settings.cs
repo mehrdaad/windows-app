@@ -101,17 +101,17 @@ namespace wallabag.Data.Common
             }
             public static int FontSize
             {
-                get { return SettingsService.GetValueOrDefault(nameof(FontSize), 16); }
+                get { return SettingsService.GetValueOrDefault(nameof(FontSize), 16, containerName: nameof(Appereance)); }
                 set { SettingsService.AddOrUpdateValue(nameof(FontSize), value, containerName: nameof(Appereance)); }
             }
             public static string FontFamily
             {
-                get { return SettingsService.GetValueOrDefault(nameof(FontFamily), "serif"); }
+                get { return SettingsService.GetValueOrDefault(nameof(FontFamily), "serif", containerName: nameof(Appereance)); }
                 set { SettingsService.AddOrUpdateValue(nameof(FontFamily), value, containerName: nameof(Appereance)); }
             }
             public static string TextAlignment
             {
-                get { return SettingsService.GetValueOrDefault(nameof(TextAlignment), "left"); }
+                get { return SettingsService.GetValueOrDefault(nameof(TextAlignment), "left", containerName: nameof(Appereance)); }
                 set { SettingsService.AddOrUpdateValue(nameof(TextAlignment), value, containerName: nameof(Appereance)); }
             }
         }
