@@ -31,8 +31,7 @@ namespace wallabag.Data.ViewModels
         private readonly SQLiteConnection _database;
 
         private int _previousItemTypeIndex;
-        private bool _incrementalLoadingIsBlocked;
-        public IncrementalObservableCollection<ItemViewModel> Items { get; set; }
+        public ObservableCollection<ItemViewModel> Items { get; set; }
 
         // General
         [AlsoNotifyFor(nameof(OfflineTaskIndicatorIsVisible))]
@@ -120,7 +119,7 @@ namespace wallabag.Data.ViewModels
                 RaisePropertyChanged(nameof(SortByReadingTime));
             };
 
-            Items = new IncrementalObservableCollection<ItemViewModel>(async count => await LoadMoreItemsAsync(count));
+            Items = new ObservableCollection<ItemViewModel>();
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
 
             _offlineTaskService.Tasks.CollectionChanged += async (s, e) =>
@@ -136,8 +135,6 @@ namespace wallabag.Data.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
-            _incrementalLoadingIsBlocked = true;
-
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
             {
                 _loggingService.WriteLine("Restoring search properties from page state.");
@@ -146,7 +143,6 @@ namespace wallabag.Data.ViewModels
             }
 
             await ReloadViewAsync();
-            _incrementalLoadingIsBlocked = false;
 
             if (Settings.General.SyncOnStartup)
                 await SyncAsync();
@@ -323,9 +319,6 @@ namespace wallabag.Data.ViewModels
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(int count)
         {
             _loggingService.WriteLine("Loading more items from the database.");
-            _loggingService.WriteLineIf(_incrementalLoadingIsBlocked, "Incremental loading is blocked.");
-            if (_incrementalLoadingIsBlocked)
-                return new List<ItemViewModel>();
 
             var result = new List<ItemViewModel>();
 
@@ -445,12 +438,9 @@ namespace wallabag.Data.ViewModels
                         query += " ORDER BY CreationDate DESC";
                 }
 
-                Items.MaxItems = _database.ExecuteScalar<int>(query.Replace(queryStart, "SELECT count(*) FROM Item"), queryParameters.ToArray());
-                _loggingService.WriteLine($"Maximum number of items: {Items.MaxItems}");
-
-                query += " LIMIT ?,?";
-                queryParameters.Add(offset);
-                queryParameters.Add(limit);
+                //query += " LIMIT ?,?";
+                //queryParameters.Add(offset);
+                //queryParameters.Add(limit);
 
                 _loggingService.WriteLine($"SQL query: {query}");
                 _loggingService.WriteLine($"SQL parameters: {string.Join(";", queryParameters)}");

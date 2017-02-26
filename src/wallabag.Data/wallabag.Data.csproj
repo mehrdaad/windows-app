@@ -41,14 +41,12 @@
     <Compile Include="Common\Helpers\ProtocolHelper.cs" />
     <Compile Include="Common\Helpers\StringHelper.cs" />
     <Compile Include="Common\Helpers\UriHelper.cs" />
-    <Compile Include="Common\IncrementalObservableCollection.cs" />
     <Compile Include="Common\Messages\CompleteMultipleSelectionMessage.cs" />
     <Compile Include="Common\Messages\UpdateItemMessage.cs" />
     <Compile Include="Common\Pages.cs" />
     <Compile Include="Common\Settings.cs" />
     <Compile Include="Interfaces\INavigable.cs" />
     <Compile Include="Interfaces\IPlatformSpecific.cs" />
-    <Compile Include="Interfaces\ISupportIncrementalLoading.cs" />
     <Compile Include="Models\ClientCreationData.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Language.cs" />
