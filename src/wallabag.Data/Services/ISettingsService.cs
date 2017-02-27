@@ -1,4 +1,6 @@
-﻿namespace wallabag.Data.Services
+﻿using System.Collections.Generic;
+
+namespace wallabag.Data.Services
 {
     /// <summary>
     /// Main interface for settings
@@ -44,6 +46,13 @@
         /// Removes all settings and all containers from the settings.
         /// </summary>
         void ClearAll();
+
+        /// <summary>
+        /// Returns a whole container dictionary.
+        /// </summary>
+        /// <param name="containerName">The name of the container.</param>
+        /// <returns>A <see cref="Dictionary{TKey, TValue}"/> containing all the values.</returns>
+        IDictionary<string, object> GetContainer(string containerName, SettingStrategy strategy = SettingStrategy.Local);
     }
 
     public enum SettingStrategy

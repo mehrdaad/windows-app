@@ -59,7 +59,6 @@ namespace wallabag.Services
             {
                 _loggingService.WriteLine($"Navigating to {pageType}. Type of parameter: {parameter?.GetType()?.Name}");
 
-                var pageState = new Dictionary<string, object>();
 
                 var oldPage = Frame.Content as Page;
                 var oldViewModel = oldPage?.DataContext as INavigable;
@@ -76,7 +75,7 @@ namespace wallabag.Services
                 if (oldViewModel != null)
                 {
                     _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedFromAsync)} from old ViewModel ({oldViewModel?.GetType()?.Name ?? "NULL"}).");
-                    await oldViewModel.OnNavigatedFromAsync(pageState);
+                    await oldViewModel.OnNavigatedFromAsync(GetPageStateForPage(oldPage));
                 }
                 else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedFromAsync)} wasn't executed because the ViewModel was null.");
 
@@ -87,11 +86,18 @@ namespace wallabag.Services
                 if (newViewModel != null)
                 {
                     _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedToAsync)} from new ViewModel ({newViewModel?.GetType()?.Name ?? "NULL"}).");
-                    await newViewModel.OnNavigatedToAsync(parameter, pageState);
+                    await newViewModel.OnNavigatedToAsync(parameter, GetPageStateForPage(newPage));
                 }
                 else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the ViewModel was null.");
             }
         }
+
+        private IDictionary<string, object> GetPageStateForPage(Page page)
+        {
+            string pageKey = $"{page.GetType().FullName}-SuspensionState";
+            return Settings.SettingsService.GetContainer(pageKey);
+        }
+
         private Type GetPageType(Pages pageKey) => _keys.FirstOrDefault(i => i.Key == pageKey).Value;
 
         private const string m_NAVIGATIONSTATESTRING = "NavigationState";
