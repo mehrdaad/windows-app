@@ -17,6 +17,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 using static wallabag.Data.Common.Navigation;
 
 namespace wallabag
@@ -136,8 +137,10 @@ namespace wallabag
                 // if there no pre-existing root then generate root
                 if (Window.Current.Content == null)
                 {
-                    var frame = new Frame();
-
+                    var frame = new Frame()
+                    {
+                        ContentTransitions = new TransitionCollection { new NavigationThemeTransition() }
+                    };
                     SystemNavigationManager.GetForCurrentView().BackRequested += (s, args) => _navigation.GoBack();
 
                     Window.Current.Content = frame;

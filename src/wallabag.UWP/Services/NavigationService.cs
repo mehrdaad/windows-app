@@ -8,6 +8,7 @@ using wallabag.Data.Services;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 using static wallabag.Data.Common.Navigation;
 
 namespace wallabag.Services
@@ -68,7 +69,7 @@ namespace wallabag.Services
                 if (navigateBack)
                     Frame.GoBack();
                 else
-                    Frame.Navigate(pageType, parameter);
+                    Frame.Navigate(pageType, parameter, new DrillInNavigationTransitionInfo());
 
                 UpdateBackButtonVisibility();
 
