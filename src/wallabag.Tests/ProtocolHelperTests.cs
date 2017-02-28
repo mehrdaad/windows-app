@@ -26,36 +26,30 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void EmptyUsernameReturnsValidResult()
+        public void EmptyUsernameReturnsInvalidResult()
         {
             string protocol = "wallabag://@https://localhost/";
             var result = ProtocolHelper.Parse(protocol);
 
-            Assert.NotNull(result);
-            Assert.Equal(result.Server, "https://localhost/");
-            Assert.Equal(result.Username, string.Empty);
+            Assert.Null(result);
         }
 
         [Fact]
-        public void EmptyServerReturnsValidResult()
+        public void EmptyServerReturnsInvalidResult()
         {
             string protocol = "wallabag://username@";
             var result = ProtocolHelper.Parse(protocol);
 
-            Assert.NotNull(result);
-            Assert.Equal(result.Server, string.Empty);
-            Assert.Equal(result.Username, "username");
+            Assert.Null(result);
         }
 
         [Fact]
-        public void EmptyUsernameAndServerReturnsValidResult()
+        public void EmptyUsernameAndServerReturnsInvalidResult()
         {
             string protocol = "wallabag://@";
             var result = ProtocolHelper.Parse(protocol);
 
-            Assert.NotNull(result);
-            Assert.Equal(result.Server, string.Empty);
-            Assert.Equal(result.Username, string.Empty);
+            Assert.Null(result);
         }
     }
 }
