@@ -111,6 +111,6 @@ namespace wallabag.Services
         }
 
         public IDictionary<string, object> GetContainer(string containerName, SettingStrategy strategy = SettingStrategy.Local)
-            => GetContainerValuesForStrategyAndContainerName(strategy, containerName).Values as IDictionary<string, object>;
+            => GetContainerValuesForStrategyAndContainerName(strategy, containerName);
     }
 }
