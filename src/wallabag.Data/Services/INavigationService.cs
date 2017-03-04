@@ -15,6 +15,6 @@ namespace wallabag.Data.Services
         void GoBack();
         void ClearHistory();
         Task SaveAsync();
-        void Resume();
+        Task ResumeAsync();
     }
 }

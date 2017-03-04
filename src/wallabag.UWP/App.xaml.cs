@@ -83,10 +83,10 @@ namespace wallabag
 
             deferral.Complete();
         }
-        public void OnResuming(object s, object e, AppExecutionState previousExecutionState)
+        public async void OnResuming(object s, object e, AppExecutionState previousExecutionState)
         {
             if (previousExecutionState == AppExecutionState.Suspended)
-                _navigation.Resume();
+                await _navigation.ResumeAsync();
         }
 
         private void RegisterServices()

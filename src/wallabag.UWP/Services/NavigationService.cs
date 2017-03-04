@@ -25,8 +25,9 @@ namespace wallabag.Services
             _keys = new Dictionary<Pages, Type>();
         }
 
-        public Pages CurrentPage { get; private set; }
         public Frame Frame => Window.Current.Content as Frame;
+        public Pages CurrentPage { get; private set; }
+        public object CurrentParameter { get; private set; }
 
         public void ClearHistory()
         {
@@ -59,10 +60,7 @@ namespace wallabag.Services
             {
                 _loggingService.WriteLine($"Navigating to {pageType}. Type of parameter: {parameter?.GetType()?.Name}");
 
-
                 var oldPage = Frame.Content as Page;
-                var oldViewModel = oldPage?.DataContext as INavigable;
-
                 _loggingService.WriteLine("Starting navigation...");
 
                 if (navigateBack)
@@ -72,24 +70,37 @@ namespace wallabag.Services
 
                 UpdateBackButtonVisibility();
 
-                if (oldViewModel != null)
-                {
-                    _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedFromAsync)} from old ViewModel ({oldViewModel?.GetType()?.Name ?? "NULL"}).");
-                    await oldViewModel.OnNavigatedFromAsync(GetPageStateForPage(oldPage));
-                }
-                else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedFromAsync)} wasn't executed because the ViewModel was null.");
+                CurrentPage = _keys.Where(i => i.Value == pageType).First().Key;
+                CurrentParameter = parameter;
 
-                // fetch (current which is now new)
-                var newPage = Frame.Content as Page;
-                var newViewModel = newPage?.DataContext as INavigable;
-
-                if (newViewModel != null)
-                {
-                    _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedToAsync)} from new ViewModel ({newViewModel?.GetType()?.Name ?? "NULL"}).");
-                    await newViewModel.OnNavigatedToAsync(parameter, GetPageStateForPage(newPage));
-                }
-                else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the ViewModel was null.");
+                await HandleOnNavigatedFromAsync(oldPage);
+                await HandleOnNavigatedToAsync(parameter);
             }
+        }
+
+        private async Task HandleOnNavigatedToAsync(object parameter)
+        {
+            // fetch (current which is now new)
+            var newPage = Frame.Content as Page;
+            var newViewModel = newPage?.DataContext as INavigable;
+
+            if (newViewModel != null)
+            {
+                _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedToAsync)} from new ViewModel ({newViewModel?.GetType()?.Name ?? "NULL"}).");
+                await newViewModel.OnNavigatedToAsync(parameter, GetPageStateForPage(newPage));
+            }
+            else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the ViewModel was null.");
+        }
+
+        private async Task HandleOnNavigatedFromAsync(Page oldPage)
+        {
+            var oldViewModel = oldPage?.DataContext as INavigable;
+            if (oldViewModel != null)
+            {
+                _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedFromAsync)} from old ViewModel ({oldViewModel?.GetType()?.Name ?? "NULL"}).");
+                await oldViewModel.OnNavigatedFromAsync(GetPageStateForPage(oldPage));
+            }
+            else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedFromAsync)} wasn't executed because the ViewModel was null.");
         }
 
         private IDictionary<string, object> GetPageStateForPage(Page page)
@@ -101,21 +112,30 @@ namespace wallabag.Services
         private Type GetPageType(Pages pageKey) => _keys.FirstOrDefault(i => i.Key == pageKey).Value;
 
         private const string m_NAVIGATIONSTATESTRING = "NavigationState";
+        private const string m_SUSPENSIONSTATEPREFIX = "SuspensionState-";
         public Task SaveAsync()
         {
             _loggingService.WriteLine("Saving navigation state.");
             string navState = Frame.GetNavigationState();
 
             _settingsService.AddOrUpdateValue(m_NAVIGATIONSTATESTRING, navState);
-            return Task.CompletedTask;
+            _settingsService.AddOrUpdateValue($"{m_SUSPENSIONSTATEPREFIX}{nameof(CurrentPage)}", CurrentPage);
+            _settingsService.AddOrUpdateValue($"{m_SUSPENSIONSTATEPREFIX}{nameof(CurrentParameter)}", CurrentParameter);
+
+            return HandleOnNavigatedFromAsync(Frame.Content as Page);
         }
 
-        public void Resume()
+        public Task ResumeAsync()
         {
             _loggingService.WriteLine("Restoring navigation state.");
 
             string navState = _settingsService.GetValueOrDefault(m_NAVIGATIONSTATESTRING, string.Empty);
+            CurrentPage = _settingsService.GetValueOrDefault<Pages>($"{m_SUSPENSIONSTATEPREFIX}{nameof(CurrentPage)}");
+            CurrentParameter = _settingsService.GetValueOrDefault<object>($"{m_SUSPENSIONSTATEPREFIX}{nameof(CurrentParameter)}");
+
             Frame.SetNavigationState(navState);
+
+            return HandleOnNavigatedToAsync(CurrentParameter);
         }
     }
 }
