@@ -450,6 +450,7 @@
                 <StackPanel>
                     <RadioButton
                         x:Uid="SortByDateRadioButton"
+                        Command="{x:Bind ViewModel.SetSortTypeCommand}"
                         CommandParameter="date"
                         Content="by date"
                         IsChecked="{x:Bind ViewModel.SortByCreationDate, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}"
@@ -457,6 +458,7 @@
                         Tag="&#xE163;" />
                     <RadioButton
                         x:Uid="SortByReadingTimeRadioButton"
+                        Command="{x:Bind ViewModel.SetSortTypeCommand}"
                         CommandParameter="time"
                         Content="by reading time"
                         IsChecked="{x:Bind ViewModel.SortByReadingTime, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}"
