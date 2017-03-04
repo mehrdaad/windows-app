@@ -203,7 +203,7 @@ namespace wallabag.Tests
 
             await viewModel.OnNavigatedToAsync(param, new Dictionary<string, object>());
 
-            Assert.Equal(WallabagProvider.Other, viewModel.SelectedProvider);
+            Assert.True(WallabagProvider.GetOther(device).Equals(viewModel.SelectedProvider));
             Assert.Equal("user", viewModel.Username);
             Assert.Equal("http://test.de", viewModel.Url);
         }

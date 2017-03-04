@@ -39,7 +39,7 @@ namespace wallabag.Data.ViewModels
         public string ProgressDescription { get; set; } = string.Empty;
 
         [DependsOn(nameof(SelectedProvider))]
-        public bool UrlFieldIsVisible => SelectedProvider == WallabagProvider.Other;
+        public bool UrlFieldIsVisible => SelectedProvider == WallabagProvider.GetOther(_device);
 
         public List<WallabagProvider> Providers { get; set; }
         public WallabagProvider SelectedProvider { get; set; }
@@ -74,7 +74,7 @@ namespace wallabag.Data.ViewModels
                 //new WallabagProvider(new Uri("https://framabag.org"), "framabag", Device.GetLocalizedResource("FramabagProviderDescription")),
                 new WallabagProvider(new Uri("https://app.wallabag.it"), "wallabag.it", _device.GetLocalizedResource("WallabagItProviderDescription")),
                 new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", _device.GetLocalizedResource("V2WallabagOrgProviderDescription")),
-                WallabagProvider.Other
+                WallabagProvider.GetOther(_device)
             };
 
             PreviousCommand = new RelayCommand(() => Previous(), () => PreviousCanBeExecuted());
@@ -372,7 +372,7 @@ namespace wallabag.Data.ViewModels
                 Username = protocolSetupParameter.Username;
                 Url = protocolSetupParameter.Server;
 
-                SelectedProvider = WallabagProvider.Other;
+                SelectedProvider = WallabagProvider.GetOther(_device);
 
                 CurrentStep = 1;
             }
