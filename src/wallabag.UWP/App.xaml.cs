@@ -75,9 +75,13 @@ namespace wallabag
             return Task.CompletedTask;
         }
 
-        public Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
+        public async Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
-            return _navigation?.SaveAsync();
+            var deferral = e.SuspendingOperation.GetDeferral();
+
+            await _navigation?.SaveAsync();
+
+            deferral.Complete();
         }
         public void OnResuming(object s, object e, AppExecutionState previousExecutionState)
         {
