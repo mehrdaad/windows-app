@@ -36,13 +36,8 @@ namespace wallabag.Services
         }
         internal void UpdateBackButtonVisibility() => SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = Frame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
 
-        public void GoBack()
-        {
-            if (Frame.CanGoBack)
-                HandleNavigationAsync(null, navigateBack: true).ConfigureAwait(true);
+        public void GoBack() => HandleNavigationAsync(null, navigateBack: true).ConfigureAwait(true);
 
-            UpdateBackButtonVisibility();
-        }
         public void Navigate(Pages pageKey) => Navigate(GetPageType(pageKey));
         public void Navigate(Pages pageKey, object parameter) => Navigate(GetPageType(pageKey), parameter);
         public void Navigate(Type page) => Navigate(page, null);
@@ -52,30 +47,38 @@ namespace wallabag.Services
 
         private async Task HandleNavigationAsync(Type pageType, object parameter = null, bool navigateBack = false)
         {
-            if (pageType == GetPageType(Pages.AddItemPage) && !navigateBack)
-                await new Dialogs.AddItemDialog().ShowAsync();
-            else if (pageType == GetPageType(Pages.EditTagsPage) && !navigateBack)
-                await new Dialogs.EditTagsDialog().ShowAsync();
+            var oldPage = Frame.Content as Page;
+
+            if (navigateBack)
+            {
+                _loggingService.WriteLine("Navigating one step back.");
+
+                if (Frame.CanGoBack)
+                    Frame.GoBack();
+
+                CurrentPage = _keys.Where(i => i.Value == oldPage.GetType()).First().Key;
+                CurrentParameter = null;
+            }
             else
             {
-                _loggingService.WriteLine($"Navigating to {pageType}. Type of parameter: {parameter?.GetType()?.Name}");
-
-                var oldPage = Frame.Content as Page;
-                _loggingService.WriteLine("Starting navigation...");
-
-                if (navigateBack)
-                    Frame.GoBack();
+                if (pageType == GetPageType(Pages.AddItemPage))
+                    await new Dialogs.AddItemDialog().ShowAsync();
+                else if (pageType == GetPageType(Pages.EditTagsPage))
+                    await new Dialogs.EditTagsDialog().ShowAsync();
                 else
+                {
+                    _loggingService.WriteLine($"Navigating to {pageType}. Type of parameter: {parameter?.GetType()?.Name}");
+
                     Frame.Navigate(pageType, parameter, new DrillInNavigationTransitionInfo());
 
-                UpdateBackButtonVisibility();
-
-                CurrentPage = _keys.Where(i => i.Value == pageType).First().Key;
-                CurrentParameter = parameter;
-
-                await HandleOnNavigatedFromAsync(oldPage);
-                await HandleOnNavigatedToAsync(parameter);
+                    CurrentPage = _keys.Where(i => i.Value == pageType).First().Key;
+                    CurrentParameter = parameter;
+                }
             }
+
+            UpdateBackButtonVisibility();
+            await HandleOnNavigatedFromAsync(oldPage);
+            await HandleOnNavigatedToAsync(parameter);
         }
 
         private async Task HandleOnNavigatedToAsync(object parameter)
