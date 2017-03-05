@@ -504,4 +504,7 @@
   <data name="SomethingWentWrongMessage" xml:space="preserve">
     <value>Etwas ist schiefgelaufen. Versuche es bitte erneut.</value>
   </data>
+  <data name="UrlDoesNotLeadToValidInstanceMessage" xml:space="preserve">
+    <value>Die eingegebene URL führt nicht zu einer unterstützten wallabag-Instanz.</value>
+  </data>
 </root>

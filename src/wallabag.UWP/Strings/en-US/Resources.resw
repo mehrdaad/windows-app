@@ -504,4 +504,7 @@
   <data name="SomethingWentWrongMessage" xml:space="preserve">
     <value>Something went wrong. Please try it again.</value>
   </data>
+  <data name="UrlDoesNotLeadToValidInstanceMessage" xml:space="preserve">
+    <value>The URL you entered did not lead to a supported wallabag instance.</value>
+  </data>
 </root>

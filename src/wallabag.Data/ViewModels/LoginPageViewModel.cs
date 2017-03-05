@@ -156,7 +156,6 @@ namespace wallabag.Data.ViewModels
                 else
                 {
                     CurrentStep = 1;
-                    Messenger.Default.Send(new NotificationMessage(_device.GetLocalizedResource("CredentialsWrongMessage")));
                     _loggingService.WriteLine("The entered credentials are wrong.");
                     return;
                 }
@@ -204,13 +203,27 @@ namespace wallabag.Data.ViewModels
             Url = urlToTest;
             _loggingService.WriteLine($"URL to test: {urlToTest}");
 
-            try { await new HttpClient().GetAsync(new Uri(urlToTest)); }
+            try
+            {
+                var temporaryResult = await new HttpClient().GetAsync(new Uri(urlToTest));
+
+                if (temporaryResult.IsSuccessStatusCode)
+                {                  
+                    if ((await temporaryResult.Content.ReadAsStringAsync()).Contains("/themes/_global/img/appicon/apple-touch-icon"))
+                    {
+                        _loggingService.WriteLine("User entered URL which doesn't lead to a wallabag instance.");
+                        Messenger.Default.Send(new NotificationMessage(_device.GetLocalizedResource("UrlDoesNotLeadToValidInstanceMessage")));
+                        return false;
+                    }
+                }
+            }
             catch
             {
-                _loggingService.WriteLine("Server was not reachable.", LoggingCategory.Info);
+                _loggingService.WriteLine("Server was not reachable.");
+                Messenger.Default.Send(new NotificationMessage(_device.GetLocalizedResource("CredentialsWrongMessage")));
                 return false;
             }
-            
+
             _loggingService.WriteLineIf(UseCustomSettings == true, "User wants to use custom settings.");
             if (UseCustomSettings == false || (
                     UseCustomSettings == true &&
@@ -230,6 +243,7 @@ namespace wallabag.Data.ViewModels
                 if (!clientCreationIsSuccessful)
                 {
                     _loggingService.WriteLine("Client creation failed.");
+                    Messenger.Default.Send(new NotificationMessage(_device.GetLocalizedResource("CredentialsWrongMessage")));
                     return false;
                 }
             }
@@ -267,6 +281,8 @@ namespace wallabag.Data.ViewModels
 
             if (result)
                 Url = urlToTest;
+            else
+                Messenger.Default.Send(new NotificationMessage(_device.GetLocalizedResource("CredentialsWrongMessage")));
 
             return result;
         }
