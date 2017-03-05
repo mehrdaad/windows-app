@@ -39,7 +39,7 @@ namespace wallabag.Data.ViewModels
         public string ProgressDescription { get; set; } = string.Empty;
 
         [DependsOn(nameof(SelectedProvider))]
-        public bool UrlFieldIsVisible => SelectedProvider == WallabagProvider.GetOther(_device);
+        public bool UrlFieldIsVisible => SelectedProvider?.Url == null;
 
         public List<WallabagProvider> Providers { get; set; }
         public WallabagProvider SelectedProvider { get; set; }
@@ -104,7 +104,7 @@ namespace wallabag.Data.ViewModels
         {
             var selectedProvider = SelectedProvider as WallabagProvider;
 
-            return selectedProvider != null && selectedProvider.Url != null;
+            return selectedProvider?.Url != null;
         }
 
         private void Previous()
@@ -130,6 +130,8 @@ namespace wallabag.Data.ViewModels
             {
                 if (Url.IsValidUri() == false)
                     Url = selectedProvider?.Url == null ? "https://" : selectedProvider.Url.ToString();
+
+                RaisePropertyChanged(nameof(UrlFieldIsVisible));
 
                 CurrentStep += 1;
                 return;

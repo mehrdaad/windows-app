@@ -229,6 +229,26 @@ namespace wallabag.Tests
         }
 
         [Fact]
+        public void TheUrlFieldIsVisibleIfTheSelectedProviderUrlIsNotNull()
+        {
+            var logging = A.Fake<ILoggingService>();
+            var navigation = A.Fake<INavigationService>();
+            var device = A.Fake<IPlatformSpecific>();
+            var client = A.Fake<IWallabagClient>();
+            var apiService = A.Fake<IApiClientCreationService>();
+            var database = TestsHelper.CreateFakeDatabase();
+            var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database)
+            {
+                SelectedProvider = WallabagProvider.GetOther(device)
+            };
+
+            viewModel.RaisePropertyChanged(nameof(viewModel.SelectedProvider));
+
+            Assert.Null(viewModel.SelectedProvider.Url);
+            Assert.True(viewModel.UrlFieldIsVisible);
+        }
+
+        [Fact]
         public async Task ClientIsCreatedIfTheClientCredentialsAreUnset()
         {
             var logging = A.Fake<ILoggingService>();
