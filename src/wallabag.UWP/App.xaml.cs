@@ -145,7 +145,11 @@ namespace wallabag
                     {
                         ContentTransitions = new TransitionCollection { new NavigationThemeTransition() }
                     };
-                    SystemNavigationManager.GetForCurrentView().BackRequested += (s, args) => _navigation.GoBack();
+                    SystemNavigationManager.GetForCurrentView().BackRequested += (s, args) =>
+                    {
+                        args.Handled = true;
+                        _navigation.GoBack();
+                    };
 
                     Window.Current.Content = frame;
                 }
