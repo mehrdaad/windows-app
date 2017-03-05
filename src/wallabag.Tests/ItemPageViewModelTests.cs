@@ -363,8 +363,8 @@ namespace wallabag.Tests
         }
 
         [Theory]
-        [InlineData("<iframe src='https://player.vimeo.com/video/203689226?byline=0&portrait=0' width='640' height='360' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>", "http://i.vimeocdn.com/video/618033580_640.jpg")]
-        [InlineData("<iframe src='https://player.vimeo.com/video/192147860' width='640' height='360' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>", "http://i.vimeocdn.com/video/603421417_640.jpg")]
+        [InlineData("<iframe src='https://player.vimeo.com/video/203689226?byline=0&portrait=0' width='640' height='360' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>", "https?://i.vimeocdn.com/video/618033580_640.jpg")]
+        [InlineData("<iframe src='https://player.vimeo.com/video/192147860' width='640' height='360' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>", "https?://i.vimeocdn.com/video/603421417_640.jpg")]
         [InlineData("<iframe width='560' height='315' src='https://www.youtube.com/embed/lp00DMy3aVw' frameborder='0' allowfullscreen></iframe>", "http://img.youtube.com/vi/lp00DMy3aVw/0.jpg")]
         [InlineData("<iframe width='560' height='315' src='https://www.youtube.com/embed/v2H4l9RpkwM' frameborder='0' allowfullscreen></iframe>", "http://img.youtube.com/vi/v2H4l9RpkwM/0.jpg")]
         public async Task VideoPreviewImageIsCorrectlyFetchedFromIFrames(string iframe, string expectedResult)
@@ -406,7 +406,7 @@ namespace wallabag.Tests
             await viewModel.OnNavigatedToAsync(fakeItem.Id, new Dictionary<string, object>());
 
             Assert.False(viewModel.ErrorDuringInitialization);
-            Assert.Contains(expectedResult, viewModel.FormattedHtml);
+            Assert.Matches(expectedResult, viewModel.FormattedHtml);
         }
     }
 }
