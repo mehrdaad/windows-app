@@ -388,7 +388,7 @@
     <value>Eine letzte Frage…</value>
   </data>
   <data name="FirstStartWelcomeDescriptionTextBlock.Text" xml:space="preserve">
-    <value>Bevor du Links an meine Tasche senden kannst, muss ich dir eine Frage stellen: Wo soll ich diese speichern?</value>
+    <value>Wo soll ich deine Artikel speichern?</value>
   </data>
   <data name="FirstStartWelcomeTitleTextBlock.Text" xml:space="preserve">
     <value>Hi!</value>
