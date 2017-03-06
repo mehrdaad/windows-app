@@ -208,8 +208,8 @@ namespace wallabag.Data.ViewModels
                 var temporaryResult = await new HttpClient().GetAsync(new Uri(urlToTest));
 
                 if (temporaryResult.IsSuccessStatusCode)
-                {                  
-                    if ((await temporaryResult.Content.ReadAsStringAsync()).Contains("/themes/_global/img/appicon/apple-touch-icon"))
+                {
+                    if (!(await temporaryResult.Content.ReadAsStringAsync()).Contains("input type=\"hidden\" name=\"_csrf_token\""))
                     {
                         _loggingService.WriteLine("User entered URL which doesn't lead to a wallabag instance.");
                         Messenger.Default.Send(new NotificationMessage(_device.GetLocalizedResource("UrlDoesNotLeadToValidInstanceMessage")));
