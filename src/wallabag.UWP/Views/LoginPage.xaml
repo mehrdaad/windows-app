@@ -101,78 +101,82 @@
                     <Setter Property="TextWrapping" Value="Wrap" />
                 </Style>
                 <Style x:Key="ProviderNameTextBlockStyle" TargetType="TextBlock">
-                    <Setter Property="Margin" Value="12,6,12,0" />
                     <Setter Property="TextWrapping" Value="Wrap" />
+                    <Setter Property="FontWeight" Value="SemiBold" />
                 </Style>
                 <Style
                     x:Key="ProviderDescriptionTextBlockStyle"
                     BasedOn="{StaticResource ProviderNameTextBlockStyle}"
                     TargetType="TextBlock">
                     <Setter Property="FontSize" Value="13.333" />
-                    <Setter Property="Margin" Value="12,2,12,6" />
+                    <Setter Property="Margin" Value="0,2,0,0" />
                     <Setter Property="Opacity" Value="0.8" />
+                    <Setter Property="FontWeight" Value="Normal" />
                 </Style>
                 <Style
                     x:Key="CustomTitleTextBlockStyle"
                     BasedOn="{StaticResource TitleTextBlockStyle}"
                     TargetType="TextBlock">
-                    <Setter Property="Margin" Value="12,24,12,0" />
+                    <Setter Property="Margin" Value="12,0" />
                     <Setter Property="TextAlignment" Value="Center" />
                 </Style>
                 <Style x:Key="CustomSubTitleTextBlockStyle" TargetType="TextBlock">
                     <Setter Property="Margin" Value="12,6,12,16" />
                     <Setter Property="TextWrapping" Value="Wrap" />
+                    <Setter Property="TextAlignment" Value="Center" />
                 </Style>
                 <Style TargetType="RadioButton">
                     <Setter Property="Margin" Value="12,0" />
                 </Style>
+                <Style BasedOn="{StaticResource TextBlockButtonStyle}" TargetType="Button">
+                    <Setter Property="Margin" Value="12,0,4,4" />
+                </Style>
             </FlipView.Resources>
             <FlipViewItem>
-                <StackPanel VerticalAlignment="Center">
-                    <Image
-                        Width="150"
-                        Height="150"
-                        Margin="0,32,0,0"
-                        Source="ms-appx:///Assets/Square150x150Logo/Square150x150Logo.png" />
-                    <TextBlock
-                        x:Uid="FirstStartWelcomeTitleTextBlock"
-                        Style="{StaticResource CustomTitleTextBlockStyle}"
-                        Text="Hi!" />
-                    <TextBlock
-                        x:Uid="FirstStartWelcomeDescriptionTextBlock"
-                        Style="{StaticResource CustomSubTitleTextBlockStyle}"
-                        Text="Before you can send links to my bag, I need to ask you: Where should I save them?" />
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel VerticalAlignment="Center">
+                        <Image
+                            Width="150"
+                            Height="150"
+                            Margin="0,32,0,0"
+                            Source="ms-appx:///Assets/Square150x150Logo/Square150x150Logo.png" />
+                        <TextBlock
+                            x:Uid="FirstStartWelcomeTitleTextBlock"
+                            Style="{StaticResource CustomTitleTextBlockStyle}"
+                            Text="Hi!" />
+                        <TextBlock
+                            x:Uid="FirstStartWelcomeDescriptionTextBlock"
+                            Style="{StaticResource CustomSubTitleTextBlockStyle}"
+                            Text="Where should I save your articles?" />
 
-                    <ListView ItemsSource="{x:Bind ViewModel.Providers}" SelectedItem="{x:Bind ViewModel.SelectedProvider, Mode=TwoWay, Converter={StaticResource ExplicitTypeConverter}}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="m:WallabagProvider">
-                                <StackPanel>
-                                    <TextBlock Style="{StaticResource ProviderNameTextBlockStyle}" Text="{x:Bind Name}" />
-                                    <TextBlock Style="{StaticResource ProviderDescriptionTextBlockStyle}" Text="{x:Bind ShortDescription}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    <Button
-                        x:Uid="ScanQRCodeButton"
-                        Margin="4,8,4,4"
-                        Command="{x:Bind ViewModel.ScanQRCodeCommand}"
-                        Content="Scan QR code for configuration"
-                        Style="{StaticResource TextBlockButtonStyle}"
-                        Visibility="{x:Bind ViewModel.CameraIsSupported, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <Button
-                        x:Uid="RegisterButton"
-                        Margin="4,6,4,4"
-                        Command="{x:Bind ViewModel.RegisterCommand, Mode=OneWay}"
-                        Content="Don't have an account yet? Create one!"
-                        Style="{StaticResource TextBlockButtonStyle}" />
-                    <Button
-                        x:Uid="WhatIsWallabagButton"
-                        Margin="4,0,4,4"
-                        Command="{x:Bind ViewModel.WhatIsWallabagCommand}"
-                        Content="What is wallabag?"
-                        Style="{StaticResource TextBlockButtonStyle}" />
-                </StackPanel>
+                        <ListView
+                            Margin="0,0,0,16"
+                            ItemsSource="{x:Bind ViewModel.Providers}"
+                            SelectedItem="{x:Bind ViewModel.SelectedProvider, Mode=TwoWay, Converter={StaticResource ExplicitTypeConverter}}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="m:WallabagProvider">
+                                    <StackPanel Margin="8">
+                                        <TextBlock Style="{StaticResource ProviderNameTextBlockStyle}" Text="{x:Bind Name}" />
+                                        <TextBlock Style="{StaticResource ProviderDescriptionTextBlockStyle}" Text="{x:Bind ShortDescription}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <Button
+                            x:Uid="ScanQRCodeButton"
+                            Command="{x:Bind ViewModel.ScanQRCodeCommand}"
+                            Content="Scan QR code for configuration"
+                            Visibility="{x:Bind ViewModel.CameraIsSupported, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <Button
+                            x:Uid="RegisterButton"
+                            Command="{x:Bind ViewModel.RegisterCommand, Mode=OneWay}"
+                            Content="Don't have an account yet? Create one!" />
+                        <Button
+                            x:Uid="WhatIsWallabagButton"
+                            Command="{x:Bind ViewModel.WhatIsWallabagCommand}"
+                            Content="What is wallabag?" />
+                    </StackPanel>
+                </ScrollViewer>
             </FlipViewItem>
             <FlipViewItem>
                 <Grid>
