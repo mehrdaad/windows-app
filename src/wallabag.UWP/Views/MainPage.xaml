@@ -259,6 +259,7 @@
                 <controls:AdaptiveGridView
                     x:Name="ItemGridView"
                     Padding="4"
+                    IsItemHeightLocked="True"
                     IsItemClickEnabled="True"
                     ItemClick="ItemGridView_ItemClick"
                     ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
