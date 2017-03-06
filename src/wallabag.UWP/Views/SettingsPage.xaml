@@ -245,8 +245,6 @@
                             <LineBreak />
                             <Hyperlink NavigateUri="https://github.com/oysteinkrog/SQLite.Net-PCL" UnderlineStyle="None">• SQLite.Net-PCL</Hyperlink>
                             <LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/Windows-XAML/Template10" UnderlineStyle="None">• Template10</Hyperlink>
-                            <LineBreak />
                             <Hyperlink NavigateUri="https://github.com/jlnostr/wallabag-api" UnderlineStyle="None">• wallabag-api</Hyperlink>
                             <LineBreak />
                             <Hyperlink NavigateUri="https://github.com/dotMorten/WindowsStateTriggers" UnderlineStyle="None">• WindowsStateTriggers</Hyperlink>
