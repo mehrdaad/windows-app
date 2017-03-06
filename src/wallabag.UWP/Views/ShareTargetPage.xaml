@@ -39,19 +39,7 @@
         </Storyboard>
     </Page.Resources>
 
-    <Grid>
-        <Grid.Background>
-            <SolidColorBrush Opacity=".7" Color="{ThemeResource SystemAccentColor}" />
-        </Grid.Background>
-
-        <Rectangle>
-            <Rectangle.Fill>
-                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Offset="0" Color="{ThemeResource SystemAccentColor}" />
-                    <GradientStop Offset="1" />
-                </LinearGradientBrush>
-            </Rectangle.Fill>
-        </Rectangle>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel
             x:Name="stackPanel"
             Padding="24"
