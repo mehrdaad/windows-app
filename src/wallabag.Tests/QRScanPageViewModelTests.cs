@@ -15,8 +15,9 @@ namespace wallabag.Tests
         {
             var navigation = A.Fake<INavigationService>();
             var device = A.Fake<IPlatformSpecific>();
+            var logging = A.Fake<ILoggingService>();
 
-            var viewModel = new QRScanPageViewModel(device, navigation);
+            var viewModel = new QRScanPageViewModel(device, navigation, logging);
             viewModel.LastScanResult = new Result(
                 "wallabag://test@test.de",
                 Array.Empty<byte>(),
@@ -37,8 +38,9 @@ namespace wallabag.Tests
         {
             var navigation = A.Fake<INavigationService>();
             var device = A.Fake<IPlatformSpecific>();
+            var logging = A.Fake<ILoggingService>();
 
-            var viewModel = new QRScanPageViewModel(device, navigation);
+            var viewModel = new QRScanPageViewModel(device, navigation, logging);
             viewModel.LastScanResult = new Result(
                 schema,
                 Array.Empty<byte>(),

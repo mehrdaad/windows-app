@@ -12,6 +12,7 @@ namespace wallabag.Data.ViewModels
     {
         private readonly IPlatformSpecific _device;
         private readonly INavigationService _navigation;
+        private readonly ILoggingService _logging;
 
         public MobileBarcodeScanner Scanner { get; private set; }
         public MobileBarcodeScanningOptions ScanOptions => new ZXing.Mobile.MobileBarcodeScanningOptions()
@@ -20,6 +21,8 @@ namespace wallabag.Data.ViewModels
             PossibleFormats = new System.Collections.Generic.List<ZXing.BarcodeFormat>() { ZXing.BarcodeFormat.QR_CODE }
         };
         public string Description { get; private set; }
+
+        public const string m_QRRESULTKEY = "QRResult";
 
         private Result _lastScanResult;
         public Result LastScanResult
@@ -32,23 +35,31 @@ namespace wallabag.Data.ViewModels
             }
         }
 
-        public QRScanPageViewModel(IPlatformSpecific device, INavigationService navigation)
+        public QRScanPageViewModel(
+            IPlatformSpecific device,
+            INavigationService navigation,
+            ILoggingService logging)
         {
             _device = device;
             _navigation = navigation;
+            _logging = logging;
 
             Description = _device.GetLocalizedResource("HoldCameraOntoQRCodeMessage");
         }
 
         private void ScanResultChanged()
         {
+            _logging.WriteLine("Scan result changed.");
             if (ProtocolHelper.Validate(_lastScanResult?.Text))
             {
-                _navigation.GoBack();
+                _logging.WriteLine($"Scan result ('{_lastScanResult?.Text}') is valid.");
+                var result = ProtocolHelper.Parse(_lastScanResult?.Text);
 
-                // TODO
-                //SessionState.Add(QRResultKey, ProtocolHelper.Parse(result?.Text));
-                //Dispatcher.Dispatch(() => NavigationService.GoBack());
+                _logging.WriteLine($"Resulted server: {result.Server}");
+                _logging.WriteLine($"Resulted username: {result.Username}");
+
+                SessionState.Add(m_QRRESULTKEY, result);
+                _navigation.GoBack();
             }
         }
     }
