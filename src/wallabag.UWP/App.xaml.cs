@@ -145,11 +145,7 @@ namespace wallabag
                     {
                         ContentTransitions = new TransitionCollection { new NavigationThemeTransition() }
                     };
-                    SystemNavigationManager.GetForCurrentView().BackRequested += (s, args) =>
-                    {
-                        args.Handled = true;
-                        _navigation.GoBack();
-                    };
+                    SystemNavigationManager.GetForCurrentView().BackRequested += GlobalBackRequested;
 
                     Window.Current.Content = frame;
                 }
@@ -169,6 +165,12 @@ namespace wallabag
 
                 Window.Current.Activate();
             }
+        }
+
+        public static void GlobalBackRequested(object sender, BackRequestedEventArgs e)
+        {
+            e.Handled = true;
+            SimpleIoc.Default.GetInstance<INavigationService>().GoBack();
         }
 
         private void SetupLifecycleListeners()

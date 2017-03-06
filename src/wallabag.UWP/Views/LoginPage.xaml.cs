@@ -21,7 +21,6 @@ namespace wallabag.Views
             InitializeComponent();
 
             ShowAlertGridStoryboard.Completed += (s, e) => HideAlertGridStoryboard.Begin();
-            SystemNavigationManager.GetForCurrentView().BackRequested += LoginPage_BackRequested;
         }
 
         private void LoginPage_BackRequested(object sender, BackRequestedEventArgs e)
@@ -38,6 +37,10 @@ namespace wallabag.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            var snm = SystemNavigationManager.GetForCurrentView();
+            snm.BackRequested -= App.GlobalBackRequested;
+            snm.BackRequested += LoginPage_BackRequested;
 
             Messenger.Default.Register<NotificationMessage>(this, message =>
             {
@@ -58,6 +61,7 @@ namespace wallabag.Views
         {
             Messenger.Default.Unregister(this);
             SystemNavigationManager.GetForCurrentView().BackRequested -= LoginPage_BackRequested;
+            SystemNavigationManager.GetForCurrentView().BackRequested += App.GlobalBackRequested;
         }
 
 
