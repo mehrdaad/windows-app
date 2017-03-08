@@ -259,7 +259,7 @@ namespace wallabag.Tests
             var database = TestsHelper.CreateFakeDatabase();
             var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database)
             {
-                Url = "https://test.de",
+                Url = "http://v2.wallabag.org",
                 Username = "myuser",
                 Password = "password"
             };
@@ -283,7 +283,7 @@ namespace wallabag.Tests
             var database = TestsHelper.CreateFakeDatabase();
             var viewModel = new LoginPageViewModel(logging, navigation, device, client, apiService, database)
             {
-                Url = "https://test.de",
+                Url = "http://v2.wallabag.org",
                 Username = "myuser",
                 Password = "password",
                 UseCustomSettings = true
