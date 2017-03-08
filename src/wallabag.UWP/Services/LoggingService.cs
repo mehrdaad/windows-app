@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using wallabag.Data.Services;
 
@@ -8,6 +9,9 @@ namespace wallabag.Services
     class LoggingService : ILoggingService
     {
         private const string m_SCHEMA = "[{0}] [{1}] {2}";
+        private List<string> _lines = new List<string>();
+
+        public string Log => string.Join("\r\n", _lines);
 
         public void TrackException(Exception e, LoggingCategory category = LoggingCategory.Critical, [CallerMemberName] string member = "", [CallerLineNumber] int lineNumber = 0)
             => Write(e.Message, category, member, lineNumber);
@@ -29,7 +33,10 @@ namespace wallabag.Services
 
         private void Write(string text, LoggingCategory category, string member, int lineNumber)
         {
-            System.Diagnostics.Debug.WriteLine(string.Format(m_SCHEMA, DateTime.Now, category.ToString(), text), category.ToString());
+            string line = string.Format(m_SCHEMA, DateTime.Now, category.ToString(), text);
+
+            System.Diagnostics.Debug.WriteLine(line, category.ToString());
+            _lines.Add(line);
         }
     }
 }
