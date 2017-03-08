@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using Microsoft.HockeyApp;
 using SQLite.Net;
 using System;
 using System.Collections.Generic;
@@ -40,10 +41,18 @@ namespace wallabag
 
         public Task OnInitializeAsync(IActivatedEventArgs args)
         {
-#if DEBUG == false
-            if (Settings.General.AllowCollectionOfTelemetryData)
-                HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
-#endif
+            if (!Package.Current.IsDevelopmentMode && Settings.General.AllowCollectionOfTelemetryData)
+                HockeyClient.Current
+                    .Configure("842955f8fd3b4191972db776265d81c4")
+                    .SetExceptionDescriptionLoader(ex =>
+                   {
+                       var file = ApplicationData.Current.TemporaryFolder.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists).AsTask().Result;
+                       var lines = FileIO.ReadLinesAsync(file).AsTask().Result;
+
+                       int numberOfLogEntries = 250;
+
+                       return string.Join("\r\n", lines.Skip(Math.Max(0, lines.Count - numberOfLogEntries)));
+                   });
 
             App.Current.UnhandledException += async (s, e) => await SaveLogsToFile();
 
