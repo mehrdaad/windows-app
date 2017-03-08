@@ -217,9 +217,11 @@ namespace wallabag.Data.ViewModels
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
-                _loggingService.WriteLine("Server was not reachable.");
+                _loggingService.WriteLine("A connection to the server could not be established.");
+                _loggingService.TrackException(e);
+
                 Messenger.Default.Send(new NotificationMessage(_device.GetLocalizedResource("CredentialsWrongMessage")));
                 return false;
             }
