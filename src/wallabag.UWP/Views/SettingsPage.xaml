@@ -81,6 +81,14 @@
                         x:Uid="TelemetryDataToggleSwitch"
                         Header="Allow collection of telemetry data"
                         IsOn="{x:Bind ViewModel.AllowCollectionOfTelemetryData, Mode=TwoWay}" />
+                    <TextBlock
+                        x:Uid="NeedHelpHeaderTextBlock"
+                        Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                        Text="NEED HELP?" />
+                    <Button
+                        x:Uid="ContactDeveloperButton"
+                        Click="ContactDeveloperButton_Click"
+                        Content="Contact developer" />
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="ReadingSettingsPivotItem" Header="Reading">
@@ -116,14 +124,14 @@
                             IsChecked="{x:Bind ViewModel.VideoOpenModeIsInline, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}" />
                         <RadioButton
                             x:Name="AppVideoOpenModeRadioButton"
-                            Click="VideoOpenModeRadioButton_Click"
                             Grid.Column="1"
+                            Click="VideoOpenModeRadioButton_Click"
                             Content="App"
                             IsChecked="{x:Bind ViewModel.VideoOpenModeIsApp, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}" />
                         <RadioButton
                             x:Name="BrowserVideoOpenModeRadioButton"
-                            Click="VideoOpenModeRadioButton_Click"
                             Grid.Column="2"
+                            Click="VideoOpenModeRadioButton_Click"
                             Content="Browser"
                             IsChecked="{x:Bind ViewModel.VideoOpenModeIsBrowser, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}" />
                         <TextBlock
