@@ -14,6 +14,7 @@ using wallabag.Services;
 using wallabag.Views;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -43,6 +44,8 @@ namespace wallabag
             if (Settings.General.AllowCollectionOfTelemetryData)
                 HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
 #endif
+
+            App.Current.UnhandledException += async (s, e) => await SaveLogsToFile();
 
             RegisterServices();
             return EnsureRegistrationOfBackgroundTaskAsync();
@@ -80,6 +83,7 @@ namespace wallabag
             var deferral = e.SuspendingOperation.GetDeferral();
 
             await _navigation?.SaveAsync();
+            await SaveLogsToFile();
 
             deferral.Complete();
         }
@@ -88,6 +92,16 @@ namespace wallabag
             if (previousExecutionState == AppExecutionState.Suspended)
                 await _navigation.ResumeAsync();
         }
+
+        public async Task SaveLogsToFile()
+        {
+            string log = SimpleIoc.Default.GetInstance<ILoggingService>().Log;
+            var file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists);
+
+            await FileIO.WriteTextAsync(file, log);
+        }
+
+        #region Application setup
 
         private void RegisterServices()
         {
@@ -197,6 +211,8 @@ namespace wallabag
                 finally { deferral.Complete(); }
             };
         }
+
+        #endregion
 
         #region Application overrides
 
