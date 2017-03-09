@@ -34,14 +34,16 @@ namespace wallabag
 
         public Dictionary<string, object> SessionState => SimpleIoc.Default.GetInstance<Dictionary<string, object>>("SessionState");
 
-        public App() { InitializeComponent(); }
+        public App() => InitializeComponent();
 
         public enum StartKind { Launch, Activate }
         public enum AppExecutionState { Suspended, Terminated, Prelaunch }
 
         public Task OnInitializeAsync(IActivatedEventArgs args)
         {
-            if (!Package.Current.IsDevelopmentMode && Settings.General.AllowCollectionOfTelemetryData)
+            RegisterServices();
+
+            if (!System.Diagnostics.Debugger.IsAttached && Settings.General.AllowCollectionOfTelemetryData)
                 HockeyClient.Current
                     .Configure("842955f8fd3b4191972db776265d81c4")
                     .SetExceptionDescriptionLoader(ex =>
@@ -56,7 +58,6 @@ namespace wallabag
 
             App.Current.UnhandledException += async (s, e) => await SaveLogsToFile();
 
-            RegisterServices();
             return EnsureRegistrationOfBackgroundTaskAsync();
         }
         public Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
@@ -114,23 +115,26 @@ namespace wallabag
 
         private void RegisterServices()
         {
-            SimpleIoc.Default.Register<IBackgroundTaskService, BackgroundTaskService>();
-            SimpleIoc.Default.Register<ILoggingService, LoggingService>();
-            SimpleIoc.Default.Register<ISettingsService, SettingsService>();
-            SimpleIoc.Default.Register<INavigationService>(() =>
+            if (!SimpleIoc.Default.IsRegistered<ILoggingService>())
             {
-                var ns = new NavigationService();
+                SimpleIoc.Default.Register<ILoggingService, LoggingService>();
+                SimpleIoc.Default.Register<IBackgroundTaskService, BackgroundTaskService>();
+                SimpleIoc.Default.Register<ISettingsService, SettingsService>();
+                SimpleIoc.Default.Register<INavigationService>(() =>
+                {
+                    var ns = new NavigationService();
 
-                ns.Configure(Pages.ItemPage, typeof(ItemPage));
-                ns.Configure(Pages.LoginPage, typeof(LoginPage));
-                ns.Configure(Pages.MainPage, typeof(MainPage));
-                ns.Configure(Pages.QRScanPage, typeof(QRScanPage));
-                ns.Configure(Pages.SettingsPage, typeof(SettingsPage));
+                    ns.Configure(Pages.ItemPage, typeof(ItemPage));
+                    ns.Configure(Pages.LoginPage, typeof(LoginPage));
+                    ns.Configure(Pages.MainPage, typeof(MainPage));
+                    ns.Configure(Pages.QRScanPage, typeof(QRScanPage));
+                    ns.Configure(Pages.SettingsPage, typeof(SettingsPage));
 
-                return ns;
-            });
-            SimpleIoc.Default.Register<IPlatformSpecific, Common.PlatformSpecific>();
-            SimpleIoc.Default.Register<IApiClientCreationService, Services.ApiClientCreationService>();
+                    return ns;
+                });
+                SimpleIoc.Default.Register<IPlatformSpecific, Common.PlatformSpecific>();
+                SimpleIoc.Default.Register<IApiClientCreationService, Services.ApiClientCreationService>();
+            }
         }
 
         private async void StartupOrchestratorAsync(IActivatedEventArgs e, StartKind kind)
@@ -225,7 +229,7 @@ namespace wallabag
 
         #region Application overrides
 
-        protected override sealed void OnActivated(IActivatedEventArgs e) { StartupOrchestratorAsync(e, StartKind.Activate); }
+        protected override sealed void OnActivated(IActivatedEventArgs e) => StartupOrchestratorAsync(e, StartKind.Activate);
         protected override sealed void OnCachedFileUpdaterActivated(CachedFileUpdaterActivatedEventArgs e) => StartupOrchestratorAsync(e, StartKind.Activate);
         protected override sealed void OnFileActivated(FileActivatedEventArgs e) => StartupOrchestratorAsync(e, StartKind.Activate);
         protected override sealed void OnFileOpenPickerActivated(FileOpenPickerActivatedEventArgs e) => StartupOrchestratorAsync(e, StartKind.Activate);
@@ -284,7 +288,8 @@ namespace wallabag
             var bts = SimpleIoc.Default.GetInstance<IBackgroundTaskService>();
 
             if (Settings.BackgroundTask.IsEnabled &&
-                bts.IsRegistered == false && bts.IsSupported)
+                !bts.IsRegistered &&
+                bts.IsSupported)
                 return bts.RegisterBackgroundTaskAsync();
             else
                 return Task.CompletedTask;

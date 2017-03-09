@@ -48,8 +48,8 @@ namespace wallabag.Common
             }
         }
 
-        public async Task<string> GetDatabasePathAsync()
-            => (await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", CreationCollisionOption.OpenIfExists)).Path;
+        public string GetDatabasePath()
+            => ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", CreationCollisionOption.OpenIfExists).AsTask().Result.Path;
 
         public void CloseApplication() => Application.Current.Exit();
 

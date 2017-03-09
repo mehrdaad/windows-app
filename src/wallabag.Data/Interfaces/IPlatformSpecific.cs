@@ -22,7 +22,7 @@ namespace wallabag.Data.Interfaces
         void ShareItem(Item model);
         void CloseApplication();
 
-        Task<string> GetDatabasePathAsync();
+        string GetDatabasePath();
         Task DeleteDatabaseAsync();
         ISQLitePlatform GetSQLitePlatform();
     }

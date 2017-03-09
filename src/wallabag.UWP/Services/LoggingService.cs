@@ -35,7 +35,9 @@ namespace wallabag.Services
         {
             string line = string.Format(m_SCHEMA, DateTime.Now, category.ToString(), text);
 
-            System.Diagnostics.Debug.WriteLine(line, category.ToString());
+            if (System.Diagnostics.Debugger.IsAttached)
+                System.Diagnostics.Debug.WriteLine(line, category.ToString());
+
             _lines.Add(line);
         }
     }
