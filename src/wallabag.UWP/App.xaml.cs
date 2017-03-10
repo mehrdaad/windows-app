@@ -27,6 +27,7 @@ namespace wallabag
     public sealed partial class App : Application
     {
         private bool _firstActivationExecuted;
+        private const string m_MIGRATED = "MigratedToSeparatedPlatform";
 
         private IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
         private SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
@@ -39,9 +40,21 @@ namespace wallabag
         public enum StartKind { Launch, Activate }
         public enum AppExecutionState { Suspended, Terminated, Prelaunch }
 
-        public Task OnInitializeAsync(IActivatedEventArgs args)
+        public async Task OnInitializeAsync(IActivatedEventArgs args)
         {
             RegisterServices();
+
+            if (!Settings.SettingsService.Contains(m_MIGRATED))
+            {
+                var device = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
+                await device.DeleteDatabaseAsync();
+
+                Settings.Authentication.AccessToken = string.Empty;
+                Settings.Authentication.RefreshToken = string.Empty;
+
+                Settings.SettingsService.AddOrUpdateValue(m_MIGRATED, true);
+                device.CloseApplication();
+            }
 
             if (!System.Diagnostics.Debugger.IsAttached && Settings.General.AllowCollectionOfTelemetryData)
                 HockeyClient.Current
@@ -58,7 +71,7 @@ namespace wallabag
 
             App.Current.UnhandledException += async (s, e) => await SaveLogsToFile();
 
-            return EnsureRegistrationOfBackgroundTaskAsync();
+            await EnsureRegistrationOfBackgroundTaskAsync();
         }
         public Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
