@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SQLite.Net;
 using System;
+using System.Collections.Generic;
 
 namespace wallabag.Data.Common
 {
@@ -8,9 +9,7 @@ namespace wallabag.Data.Common
     {
         private JsonSerializerSettings _serializerSettings = new JsonSerializerSettings()
         {
-            TypeNameHandling = TypeNameHandling.All,
-            NullValueHandling = NullValueHandling.Ignore,
-            ObjectCreationHandling = ObjectCreationHandling.Auto
+            Converters = new List<JsonConverter>() { new JsonTagConverter() }
         };
 
         public bool CanDeserialize(Type type) => true;
@@ -22,7 +21,7 @@ namespace wallabag.Data.Common
             if (type == typeof(Uri))
                 return new Uri(str.Replace("\"", string.Empty));
             else
-                return JsonConvert.DeserializeObject(str, _serializerSettings);
+                return JsonConvert.DeserializeObject(str, type, _serializerSettings);
         }
 
         public byte[] Serialize<T>(T obj)

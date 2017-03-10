@@ -113,6 +113,7 @@
     <Compile Include="EditTagsViewModelTests.cs" />
     <Compile Include="ItemPageViewModelTests.cs" />
     <Compile Include="ItemViewModelTests.cs" />
+    <Compile Include="JsonSerializationTests.cs" />
     <Compile Include="LanguageTests.cs" />
     <Compile Include="ListHelperTests.cs" />
     <Compile Include="LoginPageViewModelTests.cs" />
