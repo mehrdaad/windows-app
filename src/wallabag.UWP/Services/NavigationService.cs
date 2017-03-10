@@ -56,7 +56,7 @@ namespace wallabag.Services
                 if (Frame.CanGoBack)
                     Frame.GoBack();
 
-                CurrentPage = _keys.Where(i => i.Value == oldPage.GetType()).First().Key;
+                CurrentPage = _keys.Where(i => i.Value == Frame.Content.GetType()).First().Key;
                 CurrentParameter = null;
             }
             else
@@ -77,28 +77,34 @@ namespace wallabag.Services
             }
 
             UpdateBackButtonVisibility();
-            await HandleOnNavigatedFromAsync(oldPage);
-            await HandleOnNavigatedToAsync(parameter);
+
+            if (oldPage?.GetType() != GetPageType(CurrentPage))
+            {
+                await HandleOnNavigatedFromAsync(oldPage);
+                await HandleOnNavigatedToAsync(parameter, navigateBack);
+            }
         }
 
-        private async Task HandleOnNavigatedToAsync(object parameter)
+        private async Task HandleOnNavigatedToAsync(object parameter, bool navigatedBack)
         {
             // fetch (current which is now new)
             var newPage = Frame.Content as Page;
-            var newViewModel = newPage?.DataContext as INavigable;
 
-            if (newViewModel != null)
+            if (newPage?.DataContext is INavigable newViewModel &&
+                !(navigatedBack && newPage.NavigationCacheMode == Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled))
             {
                 _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedToAsync)} from new ViewModel ({newViewModel?.GetType()?.Name ?? "NULL"}).");
                 await newViewModel.OnNavigatedToAsync(parameter, GetPageStateForPage(newPage));
             }
-            else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the ViewModel was null.");
+            else if (newPage.NavigationCacheMode == Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled)
+                _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the Page has set its {nameof(newPage.NavigationCacheMode)} property to Enabled.");
+            else
+                _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the ViewModel was null.");
         }
 
         private async Task HandleOnNavigatedFromAsync(Page oldPage)
         {
-            var oldViewModel = oldPage?.DataContext as INavigable;
-            if (oldViewModel != null)
+            if (oldPage?.DataContext is INavigable oldViewModel)
             {
                 _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedFromAsync)} from old ViewModel ({oldViewModel?.GetType()?.Name ?? "NULL"}).");
                 await oldViewModel.OnNavigatedFromAsync(GetPageStateForPage(oldPage));
@@ -138,7 +144,7 @@ namespace wallabag.Services
 
             Frame.SetNavigationState(navState);
 
-            return HandleOnNavigatedToAsync(CurrentParameter);
+            return HandleOnNavigatedToAsync(CurrentParameter, false);
         }
     }
 }
