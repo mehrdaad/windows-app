@@ -94,7 +94,7 @@ namespace wallabag.Services
                 !(navigatedBack && newPage.NavigationCacheMode == Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled))
             {
                 _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedToAsync)} from new ViewModel ({newViewModel?.GetType()?.Name ?? "NULL"}).");
-                await newViewModel.OnNavigatedToAsync(parameter, GetPageStateForPage(newPage));
+                await newViewModel.OnNavigatedToAsync(parameter, GetSuspensionStateForPage(newPage));
             }
             else if (newPage.NavigationCacheMode == Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled)
                 _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the Page has set its {nameof(newPage.NavigationCacheMode)} property to Enabled.");
@@ -107,17 +107,47 @@ namespace wallabag.Services
             if (oldPage?.DataContext is INavigable oldViewModel)
             {
                 _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedFromAsync)} from old ViewModel ({oldViewModel?.GetType()?.Name ?? "NULL"}).");
-                await oldViewModel.OnNavigatedFromAsync(GetPageStateForPage(oldPage));
+
+                var suspensionState = GetSuspensionStateForPage(oldPage);
+                await oldViewModel.OnNavigatedFromAsync(suspensionState);
+                SetTimestampForSuspensionState(suspensionState);
             }
             else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedFromAsync)} wasn't executed because the ViewModel was null.");
         }
 
-        private IDictionary<string, object> GetPageStateForPage(Page page)
+        readonly string key = "SuspensionCacheDate";
+        private IDictionary<string, object> GetSuspensionStateForPage(Page page)
         {
-            string pageKey = $"{page.GetType().FullName}-SuspensionState";
-            return Settings.SettingsService.GetContainer(pageKey);
-        }
+            _loggingService.WriteLine($"Returning suspension state for {page.GetType().Name}");
 
+            string pageKey = $"{page.GetType().Name}-SuspensionState";
+            var values = Settings.SettingsService.GetContainer(pageKey);
+
+            if (values.ContainsKey(key))
+            {
+                if (DateTime.TryParse(values[key]?.ToString(), out var age))
+                {
+                    // Page cache will expire after three days
+                    var setting = TimeSpan.FromDays(3);
+                    var expires = DateTime.Now.Subtract(setting);
+                    bool expired = expires <= age;
+
+                    if (expired)
+                    {
+                        values.Clear();
+                        SetTimestampForSuspensionState(values);
+                    }
+                    // else happiness
+                }
+                else
+                    SetTimestampForSuspensionState(values);
+            }
+            else
+                SetTimestampForSuspensionState(values);
+
+            return values;
+        }
+        private void SetTimestampForSuspensionState(IDictionary<string, object> values) => values[key] = DateTime.Now.ToString();
         private Type GetPageType(Pages pageKey) => _keys.FirstOrDefault(i => i.Key == pageKey).Value;
 
         private const string m_NAVIGATIONSTATESTRING = "NavigationState";
