@@ -1,131 +1,179 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using wallabag.Data.Common;
 using wallabag.Data.Services;
+using wallabag.Dialogs;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
-using static wallabag.Data.Common.Navigation;
 
 namespace wallabag.Services
 {
     class NavigationService : INavigationService
     {
-        private ILoggingService _loggingService => SimpleIoc.Default.GetInstance<ILoggingService>();
-        private ISettingsService _settingsService => SimpleIoc.Default.GetInstance<ISettingsService>();
+        private readonly Dictionary<Navigation.Pages, Type> _keys;
+        private ILoggingService _logging => SimpleIoc.Default.GetInstance<ILoggingService>();
+        private ISettingsService _settingService => SimpleIoc.Default.GetInstance<ISettingsService>();
 
-        private Dictionary<Pages, Type> _keys;
+        private Frame _frame => Window.Current.Content as Frame;
+        private object _currentParameter;
+        private bool _dialogIsOpen = false;
+        private ContentDialog _currentDialog;
 
         public NavigationService()
         {
-            _keys = new Dictionary<Pages, Type>();
+            _keys = new Dictionary<Navigation.Pages, Type>();
+
+            _frame.RegisterPropertyChangedCallback(Frame.BackStackDepthProperty, (s, e) => UpdateShellBackButtonVisibility());
         }
 
-        public Frame Frame => Window.Current.Content as Frame;
-        public Pages CurrentPage { get; private set; }
-        public object CurrentParameter { get; private set; }
+        public void Configure(Navigation.Pages page, Type pageType) => _keys.Add(page, pageType);
 
+        #region Navigation
+
+        public void Navigate(Navigation.Pages page) => Navigate(page, null);
+        public void Navigate(Navigation.Pages page, object parameter)
+        {
+            if (page == Navigation.Pages.AddItemPage)
+                HandleDialogNavigationAsync(new AddItemDialog(), parameter).ConfigureAwait(true);
+            else if (page == Navigation.Pages.EditTagsPage)
+                HandleDialogNavigationAsync(new EditTagsDialog(), parameter).ConfigureAwait(true);
+            else
+                Navigate(_keys[page], parameter);
+        }
+        public void Navigate(Type pageType) => Navigate(pageType, null);
+        public void Navigate(Type pageType, object parameter)
+        {
+            HandlePageNavigationAsync(() =>
+            {
+                _logging.WriteLine($"Opening {pageType.Name} with parameter: {parameter}");
+                _frame.Navigate(pageType, parameter, new Windows.UI.Xaml.Media.Animation.DrillInNavigationTransitionInfo());
+            }, parameter).ConfigureAwait(true);
+        }
+        public void GoBack()
+        {
+            if (_frame.CanGoBack && !_dialogIsOpen)
+            {
+                _logging.WriteLine("Navigating one step back.");
+
+                HandlePageNavigationAsync(() => _frame.GoBack()).ConfigureAwait(true);
+            }
+            else if (_dialogIsOpen)
+            {
+                _logging.WriteLine("Hiding current dialog.");
+                _currentDialog.Hide();
+            }
+        }
         public void ClearHistory()
         {
-            Frame.BackStack.Clear();
-            UpdateBackButtonVisibility();
-        }
-        internal void UpdateBackButtonVisibility() => SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = Frame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
-
-        public void GoBack() => HandleNavigationAsync(null, navigateBack: true).ConfigureAwait(true);
-
-        public void Navigate(Pages pageKey) => Navigate(GetPageType(pageKey));
-        public void Navigate(Pages pageKey, object parameter) => Navigate(GetPageType(pageKey), parameter);
-        public void Navigate(Type page) => Navigate(page, null);
-        public void Navigate(Type page, object parameter) => HandleNavigationAsync(page, parameter).ConfigureAwait(true);
-
-        public void Configure(Pages pageKey, Type pageType) => _keys.Add(pageKey, pageType);
-
-        private async Task HandleNavigationAsync(Type pageType, object parameter = null, bool navigateBack = false)
-        {
-            var oldPage = Frame.Content as Page;
-
-            if (navigateBack)
-            {
-                _loggingService.WriteLine("Navigating one step back.");
-
-                if (Frame.CanGoBack)
-                    Frame.GoBack();
-
-                CurrentPage = _keys.Where(i => i.Value == Frame.Content.GetType()).First().Key;
-                CurrentParameter = null;
-            }
-            else
-            {
-                if (pageType == GetPageType(Pages.AddItemPage))
-                    await new Dialogs.AddItemDialog().ShowAsync();
-                else if (pageType == GetPageType(Pages.EditTagsPage))
-                    await new Dialogs.EditTagsDialog().ShowAsync();
-                else
-                {
-                    _loggingService.WriteLine($"Navigating to {pageType}. Type of parameter: {parameter?.GetType()?.Name}");
-
-                    Frame.Navigate(pageType, parameter, new DrillInNavigationTransitionInfo());
-
-                    CurrentPage = _keys.Where(i => i.Value == pageType).First().Key;
-                    CurrentParameter = parameter;
-                }
-            }
-
-            UpdateBackButtonVisibility();
-
-            if (oldPage?.GetType() != GetPageType(CurrentPage))
-            {
-                await HandleOnNavigatedFromAsync(oldPage);
-                await HandleOnNavigatedToAsync(parameter, navigateBack);
-            }
+            _frame.BackStack.Clear();
+            UpdateShellBackButtonVisibility();
         }
 
-        private async Task HandleOnNavigatedToAsync(object parameter, bool navigatedBack)
+        private Task HandleDialogNavigationAsync(ContentDialog dialog, object parameter)
         {
-            // fetch (current which is now new)
-            var newPage = Frame.Content as Page;
+            _logging.WriteLine($"Opening {dialog.GetType().Name} with parameter: {parameter}");
+            _currentDialog = dialog;
 
-            if (newPage?.DataContext is INavigable newViewModel &&
-                !(navigatedBack && newPage.NavigationCacheMode == Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled))
+            dialog.Opened += async (s, e) =>
             {
-                _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedToAsync)} from new ViewModel ({newViewModel?.GetType()?.Name ?? "NULL"}).");
-                await newViewModel.OnNavigatedToAsync(parameter, GetSuspensionStateForPage(newPage));
-            }
-            else if (newPage.NavigationCacheMode == Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled)
-                _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the Page has set its {nameof(newPage.NavigationCacheMode)} property to Enabled.");
-            else
-                _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedToAsync)} wasn't executed because the ViewModel was null.");
+                _logging.WriteLine($"Opened {s.GetType().Name}.");
+                _dialogIsOpen = true;
+                await HandleOnNavigatedToAsync(dialog.DataContext as INavigable, parameter);
+            };
+            dialog.Closed += (s, e) =>
+            {
+                _logging.WriteLine($"Closed {s.GetType().Name}.");
+                _dialogIsOpen = false;
+            };
+
+            return dialog.ShowAsync().AsTask();
+        }
+        private async Task HandlePageNavigationAsync(Action navigationAction, object parameter = null)
+        {
+            var oldViewModel = (_frame.Content as Page)?.DataContext as INavigable;
+
+            navigationAction.Invoke();
+
+            if (oldViewModel != null)
+                await HandleOnNavigatedFromAsync(oldViewModel);
+
+            var newPage = _frame.Content as Page;
+
+            bool ignoreNavigationCacheMode = oldViewModel == null;
+            if (newPage.DataContext is INavigable newViewModel &&
+                (ignoreNavigationCacheMode || newPage.NavigationCacheMode != Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled))
+                await HandleOnNavigatedToAsync(newViewModel, parameter);
+
+            UpdateShellBackButtonVisibility();
         }
 
-        private async Task HandleOnNavigatedFromAsync(Page oldPage)
+        private Task HandleOnNavigatedToAsync(INavigable viewModel, object parameter)
         {
-            if (oldPage?.DataContext is INavigable oldViewModel)
-            {
-                _loggingService.WriteLine($"Executing {nameof(INavigable.OnNavigatedFromAsync)} from old ViewModel ({oldViewModel?.GetType()?.Name ?? "NULL"}).");
+            string viewModelName = viewModel.GetType().Name;
+            _logging.WriteLine($"Executing {nameof(INavigable.OnNavigatedToAsync)} from new ViewModel ({viewModelName}) with parameter: {parameter}");
 
-                var suspensionState = GetSuspensionStateForPage(oldPage);
-                await oldViewModel.OnNavigatedFromAsync(suspensionState);
-                SetTimestampForSuspensionState(suspensionState);
-            }
-            else _loggingService.WriteLine($"{nameof(INavigable.OnNavigatedFromAsync)} wasn't executed because the ViewModel was null.");
+            _currentParameter = parameter;
+
+            return viewModel.OnNavigatedToAsync(parameter, GetSuspensionStateForPage(viewModelName));
         }
 
-        readonly string key = "SuspensionCacheDate";
-        private IDictionary<string, object> GetSuspensionStateForPage(Page page)
+        private async Task HandleOnNavigatedFromAsync(INavigable viewModel)
         {
-            _loggingService.WriteLine($"Returning suspension state for {page.GetType().Name}");
+            string viewModelName = viewModel.GetType().Name;
+            _logging.WriteLine($"Executing {nameof(INavigable.OnNavigatedFromAsync)} from new ViewModel ({viewModelName}).");
 
-            string pageKey = $"{page.GetType().Name}-SuspensionState";
+            var suspensionState = GetSuspensionStateForPage(viewModelName);
+            await viewModel.OnNavigatedFromAsync(suspensionState);
+
+            SetTimestampForSuspensionState(suspensionState);
+        }
+
+        #endregion
+
+        #region Suspension
+
+        private readonly string FrameNavigationState = "FrameNavigationState";
+        private readonly string CurrentParameter = "SuspensionCurrentParameter";
+        private readonly string SuspensionCacheDateKey = "Suspension.Cache.Date";
+
+        public Task SaveAsync()
+        {
+            _logging.WriteLine("Saving navigation state.");
+
+            _settingService.AddOrUpdateValue(FrameNavigationState, _frame.GetNavigationState());
+            _settingService.AddOrUpdateValue(CurrentParameter, _currentParameter);
+
+            return HandleOnNavigatedFromAsync((_frame.Content as Page).DataContext as INavigable);
+        }
+        public Task ResumeAsync()
+        {
+            _logging.WriteLine("Restoring current navigation state.");
+
+            string navigationState = _settingService.GetValueOrDefault<string>(FrameNavigationState);
+            if (!string.IsNullOrEmpty(navigationState))
+                _frame.SetNavigationState(navigationState);
+
+            _currentParameter = _settingService.GetValueOrDefault<object>(CurrentParameter);
+
+            return HandleOnNavigatedToAsync((_frame.Content as Page).DataContext as INavigable, _currentParameter);
+        }
+
+        private void SetTimestampForSuspensionState(IDictionary<string, object> suspensionState)
+            => suspensionState[SuspensionCacheDateKey] = DateTime.Now.ToString();
+
+        private IDictionary<string, object> GetSuspensionStateForPage(string viewModelName)
+        {
+            _logging.WriteLine($"Returning suspension state for {viewModelName}");
+
+            string pageKey = $"{viewModelName}-SuspensionState";
             var values = Settings.SettingsService.GetContainer(pageKey);
 
-            if (values.ContainsKey(key))
+            if (values.ContainsKey(SuspensionCacheDateKey))
             {
-                if (DateTime.TryParse(values[key]?.ToString(), out var age))
+                if (DateTime.TryParse(values[SuspensionCacheDateKey]?.ToString(), out var age))
                 {
                     // Page cache will expire after three days
                     var setting = TimeSpan.FromDays(3);
@@ -147,34 +195,11 @@ namespace wallabag.Services
 
             return values;
         }
-        private void SetTimestampForSuspensionState(IDictionary<string, object> values) => values[key] = DateTime.Now.ToString();
-        private Type GetPageType(Pages pageKey) => _keys.FirstOrDefault(i => i.Key == pageKey).Value;
 
-        private const string m_NAVIGATIONSTATESTRING = "NavigationState";
-        private const string m_SUSPENSIONSTATEPREFIX = "SuspensionState-";
-        public Task SaveAsync()
-        {
-            _loggingService.WriteLine("Saving navigation state.");
-            string navState = Frame.GetNavigationState();
+        #endregion
 
-            _settingsService.AddOrUpdateValue(m_NAVIGATIONSTATESTRING, navState);
-            _settingsService.AddOrUpdateValue($"{m_SUSPENSIONSTATEPREFIX}{nameof(CurrentPage)}", CurrentPage);
-            _settingsService.AddOrUpdateValue($"{m_SUSPENSIONSTATEPREFIX}{nameof(CurrentParameter)}", CurrentParameter);
-
-            return HandleOnNavigatedFromAsync(Frame.Content as Page);
-        }
-
-        public Task ResumeAsync()
-        {
-            _loggingService.WriteLine("Restoring navigation state.");
-
-            string navState = _settingsService.GetValueOrDefault(m_NAVIGATIONSTATESTRING, string.Empty);
-            CurrentPage = _settingsService.GetValueOrDefault<Pages>($"{m_SUSPENSIONSTATEPREFIX}{nameof(CurrentPage)}");
-            CurrentParameter = _settingsService.GetValueOrDefault<object>($"{m_SUSPENSIONSTATEPREFIX}{nameof(CurrentParameter)}");
-
-            Frame.SetNavigationState(navState);
-
-            return HandleOnNavigatedToAsync(CurrentParameter, false);
-        }
+        private void UpdateShellBackButtonVisibility()
+            => SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility
+                = _frame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
     }
 }
