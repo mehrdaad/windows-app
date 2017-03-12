@@ -318,16 +318,26 @@
         <StackPanel
             x:Name="failureOverlay"
             Grid.Row="1"
+            Margin="16,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             x:DeferLoadStrategy="Lazy"
-            Visibility="Collapsed">
-            <!--  TODO: Replace the failure indicator by a more general way, maybe using an IDialogService  -->
+            Visibility="{x:Bind ViewModel.ErrorDuringInitialization, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Visible}">
+            <TextBlock
+                Margin="-8,0,0,0"
+                FontSize="42"
+                Text="😞"
+                TextAlignment="Center" />
+            <TextBlock
+                Margin="0,16"
+                FontSize="20"
+                Style="{StaticResource TitleTextBlockStyle}"
+                Text="{x:Bind ViewModel.ErrorDescription, Mode=OneWay}"
+                TextAlignment="Center" />
             <Button
                 x:Uid="OpenInBrowserButton"
-                Margin="0,12,0,0"
                 HorizontalAlignment="Center"
-                Command="{x:Bind ViewModel.Item.OpenInBrowserCommand}"
+                Command="{x:Bind ViewModel.Item.OpenInBrowserCommand, Mode=OneWay}"
                 Content="Open in browser" />
         </StackPanel>
         <VisualStateManager.VisualStateGroups>
