@@ -19,7 +19,7 @@ namespace wallabag.Data.ViewModels
 
         private IEnumerable<Tag> _previousTags;
 
-        public IList<Item> Items { get; set; } = new List<Item>();
+        public List<Item> Items { get; set; } = new List<Item>();
         public ObservableCollection<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
         public ObservableCollection<Tag> Suggestions { get; set; } = new ObservableCollection<Tag>();
         public bool TagsCountIsZero => Tags.Count == 0;
@@ -83,17 +83,22 @@ namespace wallabag.Data.ViewModels
                 }
 
                 TagQuery = string.Empty;
+                RaisePropertyChanged(nameof(TagsCountIsZero));
             });
         }
 
         public override Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
-            int itemId = (int)parameter;
-            var item = _database.Get<Item>(itemId);
+            if (parameter is int itemId)
+            {
+                var item = _database.Get<Item>(itemId);
 
-            Items.Add(item);
-            _previousTags = item.Tags;
-            Tags = new ObservableCollection<Tag>(item.Tags);
+                Items.Add(item);
+                _previousTags = item.Tags;
+                Tags = new ObservableCollection<Tag>(item.Tags);
+            }
+            else if (parameter is List<Item> itemList)
+                Items.AddRange(itemList);
 
             return Task.FromResult(true);
         }

@@ -18,7 +18,10 @@ namespace wallabag.Controls
         }
 
         private void TagsListView_ItemClick(object sender, ItemClickEventArgs e)
-            => ViewModel.Tags.Remove(e.ClickedItem as Tag);
+        {
+            ViewModel.Tags.Remove(e.ClickedItem as Tag);
+            ViewModel.RaisePropertyChanged(nameof(ViewModel.TagsCountIsZero));
+        }
 
         private void AutoSuggestBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {

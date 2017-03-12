@@ -68,8 +68,8 @@ namespace wallabag.Data.ViewModels
             SimpleIoc.Default.Register<QRScanPageViewModel>();
         }
 
-        public AddItemViewModel AddItem => SimpleIoc.Default.GetInstance<AddItemViewModel>();
-        public EditTagsViewModel EditTags => SimpleIoc.Default.GetInstance<EditTagsViewModel>();
+        public AddItemViewModel AddItem => SimpleIoc.Default.GetInstanceWithoutCaching<AddItemViewModel>();
+        public EditTagsViewModel EditTags => SimpleIoc.Default.GetInstanceWithoutCaching<EditTagsViewModel>();
         public ItemPageViewModel ItemView => SimpleIoc.Default.GetInstanceWithoutCaching<ItemPageViewModel>();
         public LoginPageViewModel Login => SimpleIoc.Default.GetInstance<LoginPageViewModel>();
         public MainViewModel Main => SimpleIoc.Default.GetInstance<MainViewModel>();

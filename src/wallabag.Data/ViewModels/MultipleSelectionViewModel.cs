@@ -84,12 +84,11 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine($"Editing tags of {Items.Count} items...");
 
-                var viewModel = new EditTagsViewModel(_offlineTaskService, _loggingService, _database, _navigationService);
-
+                var itemList = new List<Models.Item>();
                 foreach (var item in Items)
-                    viewModel.Items.Add(item.Model);
+                    itemList.Add(item.Model);
 
-                _navigationService.Navigate(Navigation.Pages.EditTagsPage, viewModel);
+                _navigationService.Navigate(Navigation.Pages.EditTagsPage, itemList);
             }));
             OpenInBrowserCommand = new RelayCommand(() => ExecuteMultipleSelectionAction(() =>
             {
