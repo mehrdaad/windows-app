@@ -64,7 +64,7 @@ namespace wallabag.Data.ViewModels
 
             ChangeReadStatusCommand = new RelayCommand(() => ChangeReadStatus());
             ChangeFavoriteStatusCommand = new RelayCommand(() => ChangeFavoriteStatus());
-            EditTagsCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.EditTagsPage, new EditTagsViewModel(Item.Model, _offlineTaskService, _loggingService, _database, _navigationService)));
+            EditTagsCommand = new RelayCommand(() => _navigationService.Navigate(Navigation.Pages.EditTagsPage, Item.Model.Id));
             DeleteCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine("Deleting the current item.");

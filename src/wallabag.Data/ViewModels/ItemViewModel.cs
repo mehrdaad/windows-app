@@ -101,7 +101,7 @@ namespace wallabag.Data.ViewModels
             EditTagsCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine($"Editing tags of item {item.Id}.");
-                _navigationService.Navigate(Pages.EditTagsPage, new EditTagsViewModel(Model, _offlineTaskService, _loggingService, _database, _navigationService));
+                _navigationService.Navigate(Pages.EditTagsPage, Model.Id);
             });
             OpenInBrowserCommand = new RelayCommand(() =>
             {

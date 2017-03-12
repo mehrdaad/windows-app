@@ -1,8 +1,8 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Models;
@@ -31,7 +31,6 @@ namespace wallabag.Data.ViewModels
         public ICommand TagQueryChangedCommand { get; private set; }
         public ICommand TagSubmittedCommand { get; private set; }
 
-        [PreferredConstructor]
         public EditTagsViewModel(IOfflineTaskService offlineTaskService, ILoggingService loggingService, SQLite.Net.SQLiteConnection database, INavigationService navigation)
         {
             _offlineTaskService = offlineTaskService;
@@ -84,14 +83,17 @@ namespace wallabag.Data.ViewModels
                 }
             });
         }
-        public EditTagsViewModel(Item item, IOfflineTaskService offlineTaskService, ILoggingService loggingService, SQLite.Net.SQLiteConnection database, INavigationService navigation)
-            : this(offlineTaskService, loggingService, database, navigation)
+
+        public override Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
         {
-            _loggingService.WriteLine($"Creating new instance of EditTagsViewModel for item {item.Id}.");
+            int itemId = (int)parameter;
+            var item = _database.Get<Item>(itemId);
 
             Items.Add(item);
             _previousTags = item.Tags;
             Tags = new ObservableCollection<Tag>(item.Tags);
+
+            return Task.FromResult(true);
         }
 
         private void Finish()
