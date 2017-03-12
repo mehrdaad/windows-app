@@ -81,6 +81,8 @@ namespace wallabag.Data.ViewModels
                         }
                     }
                 }
+
+                TagQuery = string.Empty;
             });
         }
 

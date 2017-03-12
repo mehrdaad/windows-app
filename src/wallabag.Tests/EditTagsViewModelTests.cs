@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
 using wallabag.Data.ViewModels;
@@ -146,6 +147,26 @@ namespace wallabag.Tests
         }
 
         [Fact]
+        public void SubmittingWillClearTheQueryAfterwards()
+        {
+            var offlineTaskService = A.Fake<IOfflineTaskService>();
+            var loggingService = A.Fake<ILoggingService>();
+            var database = TestsHelper.CreateFakeDatabase();
+            var navigationService = A.Fake<INavigationService>();
+
+            var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService)
+            {
+                TagQuery = "test1"
+            };
+
+            viewModel.TagSubmittedCommand.Execute(null);
+            Assert.Equal(1, viewModel.Tags.Count);
+
+            Assert.False(viewModel.TagsCountIsZero);
+            Assert.True(string.IsNullOrEmpty(viewModel.TagQuery));
+        }
+
+        [Fact]
         public void AddingMultipleItemsWithTagsDoesntAddThemToTheCurrentTagList()
         {
             var offlineTaskService = A.Fake<IOfflineTaskService>();
@@ -167,7 +188,7 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void AddingOneItemWithTagsDoesAddThemToTheCurrentTagList()
+        public async Task AddingOneItemWithTagsDoesAddThemToTheCurrentTagList()
         {
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var loggingService = A.Fake<ILoggingService>();
@@ -176,6 +197,7 @@ namespace wallabag.Tests
 
             var item = new Item()
             {
+                Id = 1,
                 Tags = new System.Collections.ObjectModel.ObservableCollection<Tag>()
                 {
                     new Tag() { Id = 1, Label = "test" },
@@ -183,7 +205,11 @@ namespace wallabag.Tests
                     new Tag() { Id = 3, Label = "test" },
                 }
             };
-            var viewModel = new EditTagsViewModel(item, offlineTaskService, loggingService, database, navigationService);
+
+            database.Insert(item);
+
+            var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
+            await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>());
 
             Assert.Equal(3, viewModel.Tags.Count);
             Assert.False(viewModel.TagsCountIsZero);
@@ -213,7 +239,7 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void RemovingAnTagAndAddingAnotherExecutesTheProperActions()
+        public async Task RemovingAnTagAndAddingAnotherExecutesTheProperActions()
         {
             var offlineTaskService = A.Fake<IOfflineTaskService>();
             var loggingService = A.Fake<ILoggingService>();
@@ -224,6 +250,7 @@ namespace wallabag.Tests
             var tagToAdd = new Tag() { Id = 4, Label = "test" };
             var item = new Item()
             {
+                Id = 1,
                 Tags = new System.Collections.ObjectModel.ObservableCollection<Tag>()
                 {
                     new Tag() { Id = 1, Label = "test" },
@@ -231,7 +258,10 @@ namespace wallabag.Tests
                     new Tag() { Id = 3, Label = "test" },
                 }
             };
-            var viewModel = new EditTagsViewModel(item, offlineTaskService, loggingService, database, navigationService);
+            database.Insert(item);
+
+            var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
+            await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>());
 
             Assert.Equal(3, viewModel.Tags.Count);
 
@@ -257,9 +287,10 @@ namespace wallabag.Tests
             // Fake some tags
             database.Insert(new Tag() { Id = 0, Label = "random tag" });
 
-            var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
-            viewModel.TagQuery = "test1,test2,random";
-
+            var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService)
+            {
+                TagQuery = "test1,test2,random"
+            };
             viewModel.TagQueryChangedCommand.Execute(null);
 
             Assert.Equal(1, viewModel.Suggestions.Count);
@@ -274,9 +305,11 @@ namespace wallabag.Tests
             var database = TestsHelper.CreateFakeDatabase();
             var navigationService = A.Fake<INavigationService>();
 
-            var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
-            viewModel.TagQuery = ",  ,";
-
+            var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService)
+            {
+                TagQuery = ",  ,"
+            };
+            viewModel.TagSubmittedCommand.Execute(null);
             Assert.Equal(0, viewModel.Suggestions.Count);
         }
     }
