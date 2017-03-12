@@ -116,6 +116,7 @@ namespace wallabag.Data.ViewModels
                     foreach (var tag in Tags)
                         item.Tags.Add(tag);
                 }
+                _database.UpdateAll(Items);
             }
             else
             {
@@ -128,6 +129,7 @@ namespace wallabag.Data.ViewModels
                 _loggingService.WriteLine($"Number of deleted tags: {deletedTags?.Count}");
 
                 Items.First().Tags.Replace(Tags);
+                _database.Update(Items.First());
 
                 _offlineTaskService.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags);
             }
