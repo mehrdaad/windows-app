@@ -20,7 +20,7 @@
                 Text="😞" />
             <TextBlock
                 x:Uid="NoTagsInfoTextBlock"
-                VerticalAlignment="Center"               
+                VerticalAlignment="Center"
                 Text="No tags added, yet." />
         </StackPanel>
         <ListView
@@ -67,6 +67,8 @@
             ItemsSource="{x:Bind ViewModel.Suggestions, Mode=OneWay}"
             PlaceholderText="enter a tag…"
             QueryIcon="Add"
-            Text="{x:Bind ViewModel.TagQuery, Mode=TwoWay}" />
+            QuerySubmitted="AutoSuggestBox_QuerySubmitted"
+            Text="{x:Bind ViewModel.TagQuery, Mode=TwoWay}"
+            TextChanged="AutoSuggestBox_TextChanged" />
     </Grid>
 </UserControl>

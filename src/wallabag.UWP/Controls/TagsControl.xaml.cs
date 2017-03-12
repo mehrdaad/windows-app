@@ -18,9 +18,7 @@ namespace wallabag.Controls
         }
 
         private void TagsListView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            ViewModel.Tags.Remove(e.ClickedItem as Tag);
-        }
+            => ViewModel.Tags.Remove(e.ClickedItem as Tag);
 
         private void AutoSuggestBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
@@ -37,5 +35,11 @@ namespace wallabag.Controls
                 textBox.Text = string.Empty;
             }
         }
+
+        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+            => ViewModel.TagQueryChangedCommand.Execute(null);
+
+        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+            => ViewModel.TagSubmittedCommand.Execute(args.ChosenSuggestion);
     }
 }
