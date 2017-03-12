@@ -124,7 +124,7 @@ namespace wallabag.Data.ViewModels
 
             _offlineTaskService.Tasks.CollectionChanged += async (s, e) =>
             {
-                _loggingService.WriteLine($"The number of offline tasks changed. {e.NewItems?.Count} new items, {e.OldItems?.Count} old items.");
+                _loggingService.WriteLine($"The number of offline tasks changed. {e.NewItems?.Count ?? 0} new items, {e.OldItems?.Count ?? 0} old items.");
 
                 RaisePropertyChanged(nameof(OfflineTaskCount));
 
@@ -291,13 +291,13 @@ namespace wallabag.Data.ViewModels
                     case OfflineTask.OfflineTaskAction.MarkAsRead:
                         if (CurrentSearchProperties.ItemTypeIndex == 2)
                             Items.AddSorted(item, sortAscending: orderAscending);
-                        else
+                        else if (CurrentSearchProperties.ItemTypeIndex == 0)
                             Items.Remove(item);
                         break;
                     case OfflineTask.OfflineTaskAction.UnmarkAsRead:
                         if (CurrentSearchProperties.ItemTypeIndex == 2)
                             Items.Remove(item);
-                        else
+                        else if (CurrentSearchProperties.ItemTypeIndex == 0)
                             Items.AddSorted(item, sortAscending: orderAscending);
                         break;
                     case OfflineTask.OfflineTaskAction.MarkAsStarred: break;
@@ -305,7 +305,10 @@ namespace wallabag.Data.ViewModels
                         if (CurrentSearchProperties.ItemTypeIndex == 1)
                             Items.Remove(item);
                         break;
-                    case OfflineTask.OfflineTaskAction.EditTags: break;
+                    case OfflineTask.OfflineTaskAction.EditTags:
+                        Items.Remove(item);
+                        Items.AddSorted(item, sortAscending: orderAscending);
+                        break;
                     case OfflineTask.OfflineTaskAction.AddItem:
                         if (CurrentSearchProperties.ItemTypeIndex == 0)
                             Items.AddSorted(item, sortAscending: orderAscending);
