@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
 using SQLite.Net;
 using System;
 using System.ComponentModel;
@@ -51,12 +50,6 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine($"Model with ID {item.Id} was updated.");
                 RaisePropertyChanged(nameof(item));
-            };
-            item.Tags.CollectionChanged += (s, e) =>
-            {
-                _loggingService.WriteLine($"Tags of model with ID {item.Id} were updated.");
-                RaisePropertyChanged(nameof(TagsString));
-                RaisePropertyChanged(nameof(TagsAreExisting));
             };
 
             MarkAsReadCommand = new RelayCommand(() =>
