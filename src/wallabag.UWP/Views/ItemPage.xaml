@@ -182,7 +182,7 @@
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                    <AppBarButton Command="{x:Bind ViewModel.Item.ShareCommand}">
+                    <AppBarButton Command="{x:Bind ViewModel.Item.ShareCommand, Mode=OneWay}">
                         <AppBarButton.Icon>
                             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;" />
                         </AppBarButton.Icon>
