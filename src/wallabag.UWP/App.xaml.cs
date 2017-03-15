@@ -77,8 +77,9 @@ namespace wallabag
         {
             if (args.Kind == ActivationKind.ShareTarget)
             {
-                SessionState["shareTarget"] = args;
-                _navigation.Navigate(typeof(ShareTargetPage));
+                var frame = new Frame();
+                frame.Navigate(typeof(ShareTargetPage), (args as ShareTargetActivatedEventArgs).ShareOperation);
+                Window.Current.Content = frame;
             }
             else if (args.Kind == ActivationKind.Protocol)
             {

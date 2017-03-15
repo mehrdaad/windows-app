@@ -41,17 +41,15 @@ namespace wallabag.Services
             else if (page == Navigation.Pages.EditTagsPage)
                 HandleDialogNavigationAsync(new EditTagsDialog(), parameter).ConfigureAwait(true);
             else
-                Navigate(_keys[page], parameter);
+                HandlePageNavigationAsync(() =>
+                {
+                    var pageType = _keys[page];
+
+                    _logging.WriteLine($"Opening {pageType.Name} with parameter: {parameter}");
+                    _frame.Navigate(pageType, parameter, new Windows.UI.Xaml.Media.Animation.DrillInNavigationTransitionInfo());
+                }, parameter).ConfigureAwait(true);
         }
-        public void Navigate(Type pageType) => Navigate(pageType, null);
-        public void Navigate(Type pageType, object parameter)
-        {
-            HandlePageNavigationAsync(() =>
-            {
-                _logging.WriteLine($"Opening {pageType.Name} with parameter: {parameter}");
-                _frame.Navigate(pageType, parameter, new Windows.UI.Xaml.Media.Animation.DrillInNavigationTransitionInfo());
-            }, parameter).ConfigureAwait(true);
-        }
+
         public void GoBack()
         {
             if (_frame.CanGoBack && !_dialogIsOpen)
