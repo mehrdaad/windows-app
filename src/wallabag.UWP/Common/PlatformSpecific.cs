@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.Devices.Enumeration;
@@ -74,7 +75,7 @@ namespace wallabag.Common
             => Launcher.LaunchUriAsync(uri, new LauncherOptions() { FallbackUri = fallback }).AsTask().ConfigureAwait(false);
 
         public Task RunOnUIThreadAsync(Action p)
-            => CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => p.Invoke()).AsTask();
+            => CoreApplication.MainView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => p.Invoke()).AsTask();
 
         public void ShareItem(Item model)
         {
