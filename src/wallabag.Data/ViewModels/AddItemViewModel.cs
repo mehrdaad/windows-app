@@ -1,8 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using SQLite.Net;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Models;
@@ -18,7 +17,7 @@ namespace wallabag.Data.ViewModels
         private readonly INavigationService _navigationService;
 
         public string UriString { get; set; } = string.Empty;
-        public IEnumerable<Tag> Tags { get; set; } = new ObservableCollection<Tag>();
+        public EditTagsViewModel TagViewModel { get; set; } = SimpleIoc.Default.GetInstanceWithoutCaching<EditTagsViewModel>();
 
         public ICommand AddCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
@@ -38,7 +37,7 @@ namespace wallabag.Data.ViewModels
         {
             _loggingService.WriteLine("Adding item to wallabag.");
             _loggingService.WriteLine($"URL: {UriString}");
-            _loggingService.WriteLine($"Tags: {string.Join(",", Tags)}");
+            _loggingService.WriteLine($"Tags: {string.Join(",", TagViewModel.Tags)}");
 
             if (UriString.IsValidUri())
             {
@@ -54,7 +53,7 @@ namespace wallabag.Data.ViewModels
                     Hostname = uri.Host
                 });
 
-                _offlineTaskService.Add(UriString, Tags.ToStringArray());
+                _offlineTaskService.Add(UriString, TagViewModel.Tags.ToStringArray());
                 _navigationService.GoBack();
             }
         }

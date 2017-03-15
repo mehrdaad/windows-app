@@ -50,7 +50,7 @@
                 IsReadOnly="True"
                 PlaceholderText="https://"
                 Text="{x:Bind ViewModel.UriString, Mode=OneWay}" />
-            <controls:TagsControl Margin="0,12,0,0" />
+            <controls:TagsControl Margin="0,12,0,0" DataContext="{x:Bind ViewModel.TagViewModel}" />
             <StackPanel
                 Margin="0,24,0,0"
                 HorizontalAlignment="Center"
