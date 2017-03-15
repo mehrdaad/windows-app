@@ -126,10 +126,16 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine($"The number of offline tasks changed. {e.NewItems?.Count ?? 0} new items, {e.OldItems?.Count ?? 0} old items.");
 
-                RaisePropertyChanged(nameof(OfflineTaskCount));
+                if (e.NewItems != null)
+                {
+                    var firstItem = e.NewItems[0] as OfflineTask;
 
-                if (e.NewItems != null && e.NewItems.Count > 0)
-                    await ApplyUIChangesForOfflineTaskAsync(e.NewItems[0] as OfflineTask);
+                    await _device.RunOnUIThreadAsync(async () =>
+                    {
+                        RaisePropertyChanged(nameof(OfflineTaskCount));
+                        await ApplyUIChangesForOfflineTaskAsync(firstItem);
+                    });
+                }
             };
         }
 
