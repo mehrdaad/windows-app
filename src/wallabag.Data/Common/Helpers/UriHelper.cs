@@ -24,14 +24,7 @@ namespace wallabag.Data.Common.Helpers
         }
 
         public static bool IsValidUri(this string uriString)
-        {
-            try
-            {
-                var x = new Uri(uriString);
-                return true;
-            }
-            catch { return false; }
-        }
+            => Uri.IsWellFormedUriString(uriString, UriKind.RelativeOrAbsolute);
     }
 }
 
