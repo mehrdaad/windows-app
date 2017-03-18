@@ -17,7 +17,7 @@ namespace wallabag.Data.ViewModels
         private readonly INavigationService _navigationService;
 
         public string UriString { get; set; } = string.Empty;
-        public EditTagsViewModel TagViewModel { get; set; } = SimpleIoc.Default.GetInstanceWithoutCaching<EditTagsViewModel>();
+        public EditTagsViewModel TagViewModel { get; private set; }
 
         public ICommand AddCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
@@ -31,6 +31,8 @@ namespace wallabag.Data.ViewModels
             _database = database;
             _navigationService = navigationService;
 
+            TagViewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
+
             AddCommand = new RelayCommand(() => Add());
             CancelCommand = new RelayCommand(() => Cancel());
         }
@@ -41,10 +43,10 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLine($"URL: {UriString}");
             _loggingService.WriteLine($"Tags: {string.Join(",", TagViewModel.Tags)}");
 
-            if (UriString.IsValidUri())
+            if (UriString.IsValidUri() &&
+                Uri.TryCreate(UriString, UriKind.Absolute, out var uri))
             {
                 _loggingService.WriteLine("URL is valid.");
-                var uri = new Uri(UriString);
 
                 _loggingService.WriteLine("Inserting new placeholder item into the database.");
                 _database.Insert(new Item()

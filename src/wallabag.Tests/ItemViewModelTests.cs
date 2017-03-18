@@ -41,37 +41,6 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void WhenTagsAreAddedOrRemovedTheTagRelatedPropertiesAreGettingUpdated()
-        {
-            var item = A.Fake<Item>();
-            var offlineTaskService = A.Fake<IOfflineTaskService>();
-            var navigation = A.Fake<INavigationService>();
-            var logging = A.Fake<ILoggingService>();
-            var device = A.Fake<IPlatformSpecific>();
-            var database = TestsHelper.CreateFakeDatabase();
-
-            var viewModel = new ItemViewModel(item,
-                offlineTaskService,
-                navigation,
-                logging,
-                device,
-                database);
-
-            int eventCounter = 0;
-            viewModel.PropertyChanged += (s, e) =>
-            {
-                eventCounter++;
-                Assert.True((e.PropertyName == nameof(ItemViewModel.TagsString)) || (e.PropertyName == nameof(ItemViewModel.TagsAreExisting)));
-            };
-
-            viewModel.Model.Tags.Add(new Tag() { Label = "test" });
-
-            Assert.Equal(2, eventCounter);
-            Assert.True(viewModel.TagsAreExisting);
-            Assert.Equal("test", viewModel.TagsString);
-        }
-
-        [Fact]
         public void MarkingAnItemAsReadInvokesProperActions()
         {
             var item = new Item()

@@ -37,8 +37,8 @@ namespace wallabag.Tests
         [InlineData("http://localhost:test/", false)]
         [InlineData("localhost:test", true)]
         [InlineData("http:///", false)]
-        [InlineData("localhost", false)]
-        public void UriStringReturnsX(string uriString, bool expectedResult)
+        [InlineData("localhost", true)]
+        public void UriStringReturnsExpectedResult(string uriString, bool expectedResult)
         {
             Assert.Equal(expectedResult, uriString.IsValidUri());
         }
