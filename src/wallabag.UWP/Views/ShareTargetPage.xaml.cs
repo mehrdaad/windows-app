@@ -19,6 +19,7 @@ namespace wallabag.Views
         public ShareTargetPage()
         {
             InitializeComponent();
+            ViewModel.OnAddingCompleted += (s, e) => _shareOperation.ReportCompleted();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)

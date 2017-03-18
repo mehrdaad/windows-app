@@ -22,7 +22,9 @@ namespace wallabag.Data.ViewModels
         public ICommand AddCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 
-        public AddItemViewModel(IOfflineTaskService offlineTaskService, ILoggingService loggingService, SQLiteConnection database, INavigationService navigationService) 
+        public event EventHandler<EventArgs> OnAddingCompleted;
+
+        public AddItemViewModel(IOfflineTaskService offlineTaskService, ILoggingService loggingService, SQLiteConnection database, INavigationService navigationService)
         {
             _offlineTaskService = offlineTaskService;
             _loggingService = loggingService;
@@ -55,6 +57,8 @@ namespace wallabag.Data.ViewModels
 
                 _offlineTaskService.Add(UriString, TagViewModel.Tags.ToStringArray());
                 _navigationService.GoBack();
+
+                OnAddingCompleted?.Invoke(this, null);
             }
         }
 
