@@ -92,9 +92,7 @@ namespace wallabag.Data.Models
         }
         public int CompareTo(object obj)
         {
-            var objectToCompare = obj as Item;
-
-            if (objectToCompare != null)
+            if (obj is Item objectToCompare)
             {
                 int creationDateComparison = CreationDate.CompareTo(objectToCompare.CreationDate);
                 if (creationDateComparison == 0)
@@ -108,9 +106,8 @@ namespace wallabag.Data.Models
         public override string ToString() => Title ?? string.Empty;
         public override bool Equals(object obj)
         {
-            if (obj != null && obj.GetType().Equals(typeof(Item)))
+            if (obj is Item comparedItem)
             {
-                var comparedItem = obj as Item;
                 bool idEquals = Id.Equals(comparedItem.Id);
                 bool modificationDateEquals = LastModificationDate.Equals(comparedItem.LastModificationDate);
 
