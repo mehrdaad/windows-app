@@ -507,4 +507,13 @@
   <data name="UrlDoesNotLeadToValidInstanceMessage" xml:space="preserve">
     <value>Die eingegebene URL führt nicht zu einer unterstützten wallabag-Instanz.</value>
   </data>
+  <data name="LoginDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="LoginDialog.Title" xml:space="preserve">
+    <value>ERNEUT ANMELDEN</value>
+  </data>
+  <data name="ReLoginErrorMessageTextBlock.Text" xml:space="preserve">
+    <value>Da ist etwas schiefgelaufen. Um wallabag weiter benutzen zu können, melde dich bitte erneut an.</value>
+  </data>
 </root>
