@@ -131,6 +131,7 @@
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\SettingsService.cs" />
+    <Compile Include="ViewModels\LoginDialogViewModel.cs" />
     <Compile Include="Views\ItemPage.xaml.cs">
       <DependentUpon>ItemPage.xaml</DependentUpon>
     </Compile>
