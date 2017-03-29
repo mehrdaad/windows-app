@@ -514,6 +514,6 @@
     <value>RE-LOGIN TO WALLABAG</value>
   </data>
   <data name="ReLoginErrorMessageTextBlock.Text" xml:space="preserve">
-    <value>Sorry, something went wrong. To continue using this app, please login again.</value>
+    <value>Sorry, something went wrong. To continue using this app, please login again. If the credentials are correct, this dialog will close itself automatically.</value>
   </data>
 </root>

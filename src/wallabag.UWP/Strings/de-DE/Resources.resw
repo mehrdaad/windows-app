@@ -514,6 +514,6 @@
     <value>ERNEUT ANMELDEN</value>
   </data>
   <data name="ReLoginErrorMessageTextBlock.Text" xml:space="preserve">
-    <value>Da ist etwas schiefgelaufen. Um wallabag weiter benutzen zu können, melde dich bitte erneut an.</value>
+    <value>Da ist etwas schiefgelaufen. Um wallabag weiter benutzen zu können, melde dich bitte erneut an. Wenn die Anmeldedaten korrekt sind, schließt sich dieser Dialog automatisch.</value>
   </data>
 </root>
