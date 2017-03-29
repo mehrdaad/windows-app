@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
@@ -87,7 +88,7 @@ namespace wallabag.Data.ViewModels
             });
         }
 
-        public override Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
+        public override Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
         {
             if (parameter is int itemId)
             {

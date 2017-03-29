@@ -350,7 +350,7 @@ namespace wallabag.Data.ViewModels
             });
         }
 
-        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
+        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
         {
             CameraIsSupported = await _device.GetHasCameraAsync();
             _loggingService.WriteLine($"Camera is supported: {CameraIsSupported}");

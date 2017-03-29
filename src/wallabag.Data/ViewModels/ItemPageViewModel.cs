@@ -278,7 +278,7 @@ namespace wallabag.Data.ViewModels
                 Item.MarkAsStarredCommand.Execute();
         }
 
-        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state)
+        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
         {
             _loggingService.WriteLine($"Navigation parameter: {parameter}");
             Item = ItemViewModel.FromId(
