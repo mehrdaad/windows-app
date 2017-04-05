@@ -42,6 +42,11 @@ namespace wallabag.Data.Common
 
         public class General
         {
+            public static string AppVersion
+            {
+                get { return SettingsService.GetValueOrDefault(nameof(AppVersion), string.Empty, containerName: nameof(General)); }
+                set { SettingsService.AddOrUpdateValue(nameof(AppVersion), value, containerName: nameof(General)); }
+            }
             public static bool SyncOnStartup
             {
                 get { return SettingsService.GetValueOrDefault(nameof(SyncOnStartup), true, containerName: nameof(General)); }

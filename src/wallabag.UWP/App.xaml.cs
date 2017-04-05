@@ -44,6 +44,8 @@ namespace wallabag
         {
             RegisterServices();
 
+            Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
+
             if (!Settings.SettingsService.Contains(m_MIGRATED))
             {
                 var device = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
