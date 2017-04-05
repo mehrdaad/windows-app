@@ -27,7 +27,6 @@ namespace wallabag
     public sealed partial class App : Application
     {
         private bool _firstActivationExecuted;
-        private const string m_MIGRATED = "MigratedToSeparatedPlatform";
 
         private IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
         private SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
@@ -44,9 +43,10 @@ namespace wallabag
         {
             RegisterServices();
 
-            Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
+            // Run possible migrations here
 
-            if (!Settings.SettingsService.Contains(m_MIGRATED))
+            // Reset the application after update to separated app model
+            if (string.IsNullOrEmpty(Settings.General.AppVersion))
             {
                 var device = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
                 await device.DeleteDatabaseAsync();
@@ -54,9 +54,11 @@ namespace wallabag
                 Settings.Authentication.AccessToken = string.Empty;
                 Settings.Authentication.RefreshToken = string.Empty;
 
-                Settings.SettingsService.AddOrUpdateValue(m_MIGRATED, true);
+                Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
                 device.CloseApplication();
             }
+
+            Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
 
             if (!System.Diagnostics.Debugger.IsAttached && Settings.General.AllowCollectionOfTelemetryData)
                 HockeyClient.Current
