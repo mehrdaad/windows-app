@@ -1,9 +1,12 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 using SQLite.Net;
+using System;
 using System.Collections.Generic;
 using wallabag.Api;
 using wallabag.Data.Common;
+using wallabag.Data.Common.Messages;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
 
@@ -39,6 +42,20 @@ namespace wallabag.Data.ViewModels
                         Settings.Authentication.AccessToken = client.AccessToken;
                         Settings.Authentication.RefreshToken = client.RefreshToken;
                         Settings.Authentication.LastTokenRefreshDateTime = client.LastTokenRefreshDateTime;
+                    };
+
+                    client.AfterRequestExecution += (s, e) =>
+                    {
+                        var logging = SimpleIoc.Default.GetInstance<ILoggingService>();
+
+                        logging.WriteLine($"AfterRequestExecution: {e.RequestUriSubString}");
+                        if (e.RequestUriSubString.Contains("oauth") &&
+                            e.Parameters["grant_type"].ToString() == "refresh_token" &&
+                            e.Response?.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                        {
+                            logging.WriteLine("App tried to refresh the tokens but failed. Informing the user.");
+                            Messenger.Default.Send(new ShowLoginMessage());
+                        }
                     };
 
                     return client;

@@ -1,10 +1,12 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
+using System;
 using System.Linq;
 using wallabag.Controls;
 using wallabag.Data.Common.Messages;
 using wallabag.Data.ViewModels;
+using wallabag.Dialogs;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -23,6 +25,8 @@ namespace wallabag.Views
     [ImplementPropertyChanged]
     public sealed partial class MainPage : Page
     {
+        private ContentDialog _loginDialog;
+        private bool _loginDialogIsOpen = false;
         public MainViewModel ViewModel => DataContext as MainViewModel;
 
         public MainPage()
@@ -59,6 +63,18 @@ namespace wallabag.Views
         {
             await Common.Helpers.TitleBarHelper.ResetToDefaultAsync();
             Messenger.Default.Register<CompleteMultipleSelectionMessage>(this, message => DisableMultipleSelection(true));
+            Messenger.Default.Register<ShowLoginMessage>(this, async message =>
+            {
+                if (_loginDialog == null)
+                {
+                    _loginDialog = new LoginDialog();
+                    _loginDialog.Opened += (s, args) => _loginDialogIsOpen = true;
+                    _loginDialog.Closed += (s, args) => _loginDialogIsOpen = false;
+                }
+
+                if (!_loginDialogIsOpen)
+                    await _loginDialog.ShowAsync();
+            });
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
