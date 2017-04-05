@@ -113,7 +113,12 @@ namespace wallabag.Services
 
             _currentParameter = parameter;
 
-            return viewModel.OnNavigatedToAsync(parameter, GetSuspensionStateForPage(viewModelName), navigationMode);
+            var suspensionState = GetSuspensionStateForPage(viewModelName);
+
+            if (navigationMode == NavigationMode.New)
+                suspensionState.Clear();
+
+            return viewModel.OnNavigatedToAsync(parameter, suspensionState, navigationMode);
         }
 
         private async Task HandleOnNavigatedFromAsync(INavigable viewModel)
