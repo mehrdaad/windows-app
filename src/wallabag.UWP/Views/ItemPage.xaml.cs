@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using GalaSoft.MvvmLight.Messaging;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -70,6 +71,11 @@ namespace wallabag.Views
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            Messenger.Default.Register<wallabag.Data.Common.Messages.LoadContentMessage>(this, message =>
+            {
+                HtmlViewer.NavigateToString(ViewModel.FormattedHtml);
+            });
+
             var titleBarBackgroundRectangle = FindName(nameof(TitleBarBackgroundRectangle)) as Rectangle;
 
             if (Settings.CustomSettings.WhiteOverlayForTitleBar &&
@@ -78,7 +84,11 @@ namespace wallabag.Views
             else
                 titleBarBackgroundRectangle.Visibility = Visibility.Collapsed;
         }
-        protected override void OnNavigatedFrom(NavigationEventArgs e) => HtmlViewer.NavigateToString("<p></p>");
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            HtmlViewer.NavigateToString("<p></p>");
+            Messenger.Default.Unregister(this);
+        }
 
         private MenuFlyout _rightClickMenuFlyout;
         private Grid _rightClickMenuGrid;
