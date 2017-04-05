@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -280,58 +281,78 @@ namespace wallabag.Data.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
         {
-            _loggingService.WriteLine($"Navigation parameter: {parameter}");
-            Item = ItemViewModel.FromId(
-                (int)parameter,
-                _loggingService,
-                _database,
-                _offlineTaskService,
-                _navigationService,
-                _device);
-
-            _loggingService.WriteLineIf(Item == null, "Item is null.", LoggingCategory.Warning);
-            _loggingService.WriteLine($"Item title: {Item?.Model?.Title}");
-
-            if ((Item == null || string.IsNullOrEmpty(Item?.Model?.Content)) && _device.InternetConnectionIsAvailable)
+            if (state.Count > 0)
             {
-                _loggingService.WriteLine("Fetching item from server.");
-                var item = await _client.GetItemAsync(Item.Model.Id);
-                if (item != null)
+                _loggingService.WriteLine("Restoring from page state.");
+
+                Item = ItemViewModel.FromId(
+                    (int)state.TryGetValue(nameof(Item.Model.Id)),
+                    _loggingService,
+                    _database,
+                    _offlineTaskService,
+                    _navigationService,
+                    _device);
+                ErrorDuringInitialization = (bool)state.TryGetValue(nameof(ErrorDuringInitialization));
+                ErrorDescription = (string)state.TryGetValue(nameof(ErrorDescription));
+
+                return;
+            }
+            else if (parameter != null)
+            {
+                _loggingService.WriteLine($"Navigation parameter: {parameter}");
+                Item = ItemViewModel.FromId(
+                    (int)parameter,
+                    _loggingService,
+                    _database,
+                    _offlineTaskService,
+                    _navigationService,
+                    _device);
+
+                _loggingService.WriteLineIf(Item == null, "Item is null.", LoggingCategory.Warning);
+                _loggingService.WriteLine($"Item title: {Item?.Model?.Title}");
+
+                if ((Item == null || string.IsNullOrEmpty(Item?.Model?.Content)) && _device.InternetConnectionIsAvailable)
                 {
-                    Item = new ItemViewModel(item, _offlineTaskService, _navigationService, _loggingService, _device, _database);
+                    _loggingService.WriteLine("Fetching item from server.");
+                    var item = await _client.GetItemAsync(Item.Model.Id);
+                    if (item != null)
+                    {
+                        Item = new ItemViewModel(item, _offlineTaskService, _navigationService, _loggingService, _device, _database);
+                    }
+
+                    _loggingService.WriteLine($"Success: {item != null}");
+                    _loggingService.WriteObject(item);
                 }
 
-                _loggingService.WriteLine($"Success: {item != null}");
-                _loggingService.WriteObject(item);
+                if (string.IsNullOrEmpty(Item?.Model?.Content))
+                {
+                    _loggingService.WriteLine("No content available.", LoggingCategory.Warning);
+                    ErrorDuringInitialization = true;
+                    ErrorDescription = _device.GetLocalizedResource("NoContentAvailableErrorMessage");
+                }
+                else if (Item?.Model?.Content?.Contains("wallabag can't retrieve contents for this article.") == true)
+                {
+                    _loggingService.WriteLine("wallabag can't retrieve content.", LoggingCategory.Warning);
+                    ErrorDuringInitialization = true;
+                    ErrorDescription = _device.GetLocalizedResource("CantRetrieveContentsErrorMessage");
+                }
+
+                if (ErrorDuringInitialization)
+                    return;
+
+                if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
+                {
+                    _loggingService.WriteLine("Fetching reading progress from roaming settings.");
+
+                    if (Settings.SettingsService.Contains(Item.Model.Id.ToString(), SettingStrategy.Roaming, ReadingProgressContainerName))
+                        Item.Model.ReadingProgress = Settings.SettingsService.GetValueOrDefault<double>(Item.Model.Id.ToString(), strategy: SettingStrategy.Roaming, containerName: ReadingProgressContainerName);
+
+                    _loggingService.WriteLine($"Reading progress: {Item.Model.ReadingProgress}");
+                }
+
+                await GenerateFormattedHtmlAsync();
+                Messenger.Default.Send(new Common.Messages.LoadContentMessage());
             }
-
-            if (string.IsNullOrEmpty(Item?.Model?.Content))
-            {
-                _loggingService.WriteLine("No content available.", LoggingCategory.Warning);
-                ErrorDuringInitialization = true;
-                ErrorDescription = _device.GetLocalizedResource("NoContentAvailableErrorMessage");
-            }
-            else if (Item?.Model?.Content?.Contains("wallabag can't retrieve contents for this article.") == true)
-            {
-                _loggingService.WriteLine("wallabag can't retrieve content.", LoggingCategory.Warning);
-                ErrorDuringInitialization = true;
-                ErrorDescription = _device.GetLocalizedResource("CantRetrieveContentsErrorMessage");
-            }
-
-            if (ErrorDuringInitialization)
-                return;
-
-            if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
-            {
-                _loggingService.WriteLine("Fetching reading progress from roaming settings.");
-
-                if (Settings.SettingsService.Contains(Item.Model.Id.ToString(), SettingStrategy.Roaming, ReadingProgressContainerName))
-                    Item.Model.ReadingProgress = Settings.SettingsService.GetValueOrDefault<double>(Item.Model.Id.ToString(), strategy: SettingStrategy.Roaming, containerName: ReadingProgressContainerName);
-
-                _loggingService.WriteLine($"Reading progress: {Item.Model.ReadingProgress}");
-            }
-
-            await GenerateFormattedHtmlAsync();
         }
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
@@ -339,6 +360,10 @@ namespace wallabag.Data.ViewModels
             Settings.Appereance.FontFamily = FontFamily;
             Settings.Appereance.ColorScheme = ColorScheme;
             Settings.Appereance.TextAlignment = TextAlignment;
+
+            pageState.Add(nameof(Item.Model.Id), Item.Model.Id);
+            pageState.Add(nameof(ErrorDuringInitialization), ErrorDuringInitialization);
+            pageState.Add(nameof(ErrorDescription), ErrorDescription);
 
             _loggingService.WriteLine("Updating item in database.");
             _database.Update(Item.Model);
