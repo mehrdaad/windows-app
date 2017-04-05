@@ -379,7 +379,7 @@
     <value>Downloading items… ({0}/{1})</value>
   </data>
   <data name="FirstStartContinueDescriptionTextBlock.Text" xml:space="preserve">
-    <value>Now we continue with the configuration. In the simplest case you just need to enter your usename and your password.</value>
+    <value>Now we continue with the configuration. In the simplest case you just need to enter your username and your password.</value>
   </data>
   <data name="FirstStartContinueTextBlock.Text" xml:space="preserve">
     <value>Let's continue!</value>
