@@ -209,7 +209,7 @@ namespace wallabag.Tests
             database.Insert(item);
 
             var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
-            await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>());
+            await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
 
             Assert.Equal(3, viewModel.Tags.Count);
             Assert.False(viewModel.TagsCountIsZero);
@@ -261,7 +261,7 @@ namespace wallabag.Tests
             database.Insert(item);
 
             var viewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
-            await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>());
+            await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
 
             Assert.Equal(3, viewModel.Tags.Count);
 
