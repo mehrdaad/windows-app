@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding AddItem, Source={StaticResource Locator}}"
-    RequestedTheme="Dark"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -76,5 +75,17 @@
             IsActive="True"
             Opacity="0"
             Visibility="Collapsed" />
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="500" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="stackPanel.HorizontalAlignment" Value="Center" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>
