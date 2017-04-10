@@ -240,6 +240,9 @@ namespace wallabag.Views
                 BackgroundBrush = new SolidColorBrush(Colors.Black);
                 ColorApplicationTheme = ElementTheme.Dark;
             }
+
+           (FindName(nameof(commandsGrid)) as Grid).RequestedTheme = ColorApplicationTheme;
+            TitleBarHelper.SetButtonForegroundColor(this, ForegroundBrush.Color);
         }
 
         private async void ChangeFontFamilyAsync(object sender, RoutedEventArgs e)
