@@ -34,7 +34,6 @@ namespace wallabag.Data.ViewModels
         public ObservableCollection<ItemViewModel> Items { get; set; }
 
         // General
-        [AlsoNotifyFor(nameof(OfflineTaskIndicatorIsVisible))]
         public int OfflineTaskCount => _database.ExecuteScalar<int>("select count(*) from OfflineTask");
         public bool OfflineTaskIndicatorIsVisible => OfflineTaskCount > 0;
         public bool ItemsCountIsZero => Items.Count == 0;
@@ -133,6 +132,7 @@ namespace wallabag.Data.ViewModels
                     await _device.RunOnUIThreadAsync(async () =>
                     {
                         RaisePropertyChanged(nameof(OfflineTaskCount));
+                        RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
                         await ApplyUIChangesForOfflineTaskAsync(firstItem);
                     });
                 }
