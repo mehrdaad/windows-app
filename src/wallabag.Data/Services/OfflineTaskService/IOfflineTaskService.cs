@@ -13,7 +13,7 @@ namespace wallabag.Data.Services.OfflineTaskService
         void Add(string url, IEnumerable<string> newTags);
         void Add(int itemId, OfflineTask.OfflineTaskAction action, List<Tag> addedTags = null, List<Tag> removedTags = null);
 
-        event EventHandler<OfflineTask> TaskAdded;
+        event EventHandler<OfflineTaskAddedEventArgs> TaskAdded;
         event EventHandler<OfflineTaskExecutedEventArgs> TaskExecuted;
     }
 }

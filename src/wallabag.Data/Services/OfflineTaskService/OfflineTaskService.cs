@@ -24,7 +24,7 @@ namespace wallabag.Data.Services.OfflineTaskService
 
         public const string m_PLACEHOLDER_PREFIX = "//wallabag-placeholder-";
         public int Count => _tasks.Count;
-        public event EventHandler<OfflineTask> TaskAdded;
+        public event EventHandler<OfflineTaskAddedEventArgs> TaskAdded;
         public event EventHandler<OfflineTaskExecutedEventArgs> TaskExecuted;
 
         public OfflineTaskService(IWallabagClient client, SQLiteConnection database, ILoggingService loggingService, IPlatformSpecific platform)
@@ -35,7 +35,7 @@ namespace wallabag.Data.Services.OfflineTaskService
             _platform = platform;
 
             _tasks = new List<OfflineTask>(_database.Table<OfflineTask>());
-            this.TaskAdded += async (s, e) => await ExecuteAsync(e);
+            this.TaskAdded += async (s, e) => await ExecuteAsync(e.Task);
         }
 
         public async Task ExecuteAllAsync()
@@ -194,7 +194,7 @@ namespace wallabag.Data.Services.OfflineTaskService
             _tasks.Add(newTask);
             _database.Insert(newTask);
 
-            TaskAdded?.Invoke(this, newTask);
+            TaskAdded?.Invoke(this, new OfflineTaskAddedEventArgs(newTask));
         }
     }
 }
