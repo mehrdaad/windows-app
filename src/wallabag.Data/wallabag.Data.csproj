@@ -65,9 +65,9 @@
     <Compile Include="Services\IBackgroundTaskService.cs" />
     <Compile Include="Services\ILoggingService.cs" />
     <Compile Include="Services\INavigationService.cs" />
-    <Compile Include="Services\IOfflineTaskService.cs" />
+    <Compile Include="Services\OfflineTaskService\IOfflineTaskService.cs" />
     <Compile Include="Services\ISettingsService.cs" />
-    <Compile Include="Services\OfflineTaskService.cs" />
+    <Compile Include="Services\OfflineTaskService\OfflineTaskService.cs" />
     <Compile Include="ViewModels\AddItemViewModel.cs" />
     <Compile Include="ViewModels\EditTagsViewModel.cs" />
     <Compile Include="ViewModels\ItemPageViewModel.cs" />

@@ -6,6 +6,7 @@ using System.Windows.Input;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
+using wallabag.Data.Services.OfflineTaskService;
 using static wallabag.Data.Common.Navigation;
 
 namespace wallabag.Data.ViewModels

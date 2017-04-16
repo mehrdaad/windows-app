@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using wallabag.Data.Models;
 
-namespace wallabag.Data.Services
+namespace wallabag.Data.Services.OfflineTaskService
 {
     public interface IOfflineTaskService
     {

@@ -14,7 +14,7 @@ using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using static wallabag.Data.Models.OfflineTask;
 
-namespace wallabag.Data.Services
+namespace wallabag.Data.Services.OfflineTaskService
 {
     public class OfflineTaskService : IOfflineTaskService
     {

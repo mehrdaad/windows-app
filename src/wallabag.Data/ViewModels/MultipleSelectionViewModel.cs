@@ -9,6 +9,7 @@ using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Common.Messages;
 using wallabag.Data.Services;
+using wallabag.Data.Services.OfflineTaskService;
 
 namespace wallabag.Data.ViewModels
 {

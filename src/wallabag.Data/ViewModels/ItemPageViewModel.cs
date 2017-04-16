@@ -13,6 +13,7 @@ using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Services;
+using wallabag.Data.Services.OfflineTaskService;
 
 namespace wallabag.Data.ViewModels
 {
