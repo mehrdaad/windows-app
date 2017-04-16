@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using System.Collections.Generic;
 using wallabag.Data.Services;
+using wallabag.Data.Services.OfflineTaskService;
 using wallabag.Data.ViewModels;
 using Xunit;
 

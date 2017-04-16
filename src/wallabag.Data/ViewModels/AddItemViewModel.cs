@@ -49,15 +49,6 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine("URL is valid.");
 
-                _loggingService.WriteLine("Inserting new placeholder item into the database.");
-                _database.Insert(new Item()
-                {
-                    Id = _offlineTaskService.LastItemId + 1,
-                    Title = uri.Host,
-                    Url = UriString,
-                    Hostname = uri.Host
-                });
-
                 _offlineTaskService.Add(UriString, TagViewModel.Tags.ToStringArray());
                 _navigationService.GoBack();
 

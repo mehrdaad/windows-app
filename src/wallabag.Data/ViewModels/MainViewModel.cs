@@ -122,21 +122,16 @@ namespace wallabag.Data.ViewModels
             Items = new ObservableCollection<ItemViewModel>();
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
 
-            _offlineTaskService.Tasks.CollectionChanged += async (s, e) =>
+            _offlineTaskService.TaskAdded += async (s, e) =>
             {
-                _loggingService.WriteLine($"The number of offline tasks changed. {e.NewItems?.Count ?? 0} new items, {e.OldItems?.Count ?? 0} old items.");
+                _loggingService.WriteLine($"A new offline task was added. ID: {e.Task.Id}");
 
-                if (e.NewItems != null)
+                await _device.RunOnUIThreadAsync(async () =>
                 {
-                    var firstItem = e.NewItems[0] as OfflineTask;
-
-                    await _device.RunOnUIThreadAsync(async () =>
-                    {
-                        RaisePropertyChanged(nameof(OfflineTaskCount));
-                        RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
-                        await ApplyUIChangesForOfflineTaskAsync(firstItem);
-                    });
-                }
+                    RaisePropertyChanged(nameof(OfflineTaskCount));
+                    RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
+                    await ApplyUIChangesForOfflineTaskAsync(e.Task);
+                });
             };
         }
 

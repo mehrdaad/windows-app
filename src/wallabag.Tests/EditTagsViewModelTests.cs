@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
+using wallabag.Data.Services.OfflineTaskService;
 using wallabag.Data.ViewModels;
 using Xunit;
 

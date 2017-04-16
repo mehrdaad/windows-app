@@ -11,6 +11,7 @@ using wallabag.Data.Common.Helpers;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
+using wallabag.Data.Services.OfflineTaskService;
 using wallabag.Services;
 using wallabag.Views;
 using Windows.ApplicationModel;
