@@ -8,6 +8,7 @@ using wallabag.Api.Models;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
+using wallabag.Data.Services.OfflineTaskService;
 using Xunit;
 
 namespace wallabag.Tests
@@ -69,15 +70,7 @@ namespace wallabag.Tests
             var taskService = new OfflineTaskService(client, database, loggingService, platform);
 
             for (int i = 0; i < 10; i++)
-            {
-                taskService.Tasks.Add(new OfflineTask()
-                {
-                    Id = i,
-                    ItemId = i,
-                    Action = OfflineTask.OfflineTaskAction.AddItem,
-                    Url = "https://wallabag.it"
-                });
-            }
+                taskService.Add($"https://test-{i}.de", Array.Empty<string>());
 
             A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(true);
             A.CallTo(() => client.AddAsync(A<Uri>.Ignored, A<IEnumerable<string>>.Ignored, A<string>.Ignored, A<CancellationToken>.Ignored)).Returns(new WallabagItem()
@@ -106,11 +99,11 @@ namespace wallabag.Tests
 
             var taskService = new OfflineTaskService(client, database, loggingService, platform);
 
-            Assert.Equal(database.ExecuteScalar<int>("select count(*) from OfflineTask"), taskService.Tasks.Count);
+            Assert.Equal(database.ExecuteScalar<int>("select count(*) from OfflineTask"), taskService.Count);
         }
 
         [Fact]
-        public void ExecutingATaskWithFalseAPIEndpointDoesNotRemoveThemFromTheDatabase()
+        public void ExecutingATaskWithFalseAPIResultDoesNotRemoveThemFromTheDatabase()
         {
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
@@ -120,19 +113,67 @@ namespace wallabag.Tests
             A.CallTo(() => client.ArchiveAsync(A<WallabagItem>.Ignored, A<CancellationToken>.Ignored)).Returns(false);
 
             var taskService = new OfflineTaskService(client, database, loggingService, platform);
-            int count = taskService.Tasks.Count;
-            var task = new OfflineTask()
+            int count = taskService.Count;
+
+            taskService.Add(0, OfflineTask.OfflineTaskAction.MarkAsRead);
+
+            Assert.Equal(count + 1, taskService.Count);
+        }
+
+        [Fact]
+        public void AddingANewTaskForNewUrlFiresTheTaskAddedEvent()
+        {
+            var client = A.Fake<IWallabagClient>();
+            var platform = A.Fake<IPlatformSpecific>();
+            var loggingService = A.Fake<ILoggingService>();
+            var database = TestsHelper.CreateFakeDatabase();
+
+            var taskService = new OfflineTaskService(client, database, loggingService, platform);
+
+            Assert.Raises<OfflineTaskAddedEventArgs>(
+              x => taskService.TaskAdded += x,
+              x => taskService.TaskAdded -= x,
+             () => taskService.Add("https://test.de", Array.Empty<string>()));
+        }
+
+        [Fact]
+        public void AddingANewTaskForExistingArticleFiresTheTaskAddedEvent()
+        {
+            var client = A.Fake<IWallabagClient>();
+            var platform = A.Fake<IPlatformSpecific>();
+            var loggingService = A.Fake<ILoggingService>();
+            var database = TestsHelper.CreateFakeDatabase();
+
+            var taskService = new OfflineTaskService(client, database, loggingService, platform);
+
+            Assert.Raises<OfflineTaskAddedEventArgs>(
+              x => taskService.TaskAdded += x,
+              x => taskService.TaskAdded -= x,
+             () => taskService.Add(0, OfflineTask.OfflineTaskAction.MarkAsRead));
+        }
+
+        [Fact]
+        public void ExecutionOfTaskFiresTheTaskExecutedEvent()
+        {
+            var client = A.Fake<IWallabagClient>();
+            var platform = A.Fake<IPlatformSpecific>();
+            var loggingService = A.Fake<ILoggingService>();
+            var database = TestsHelper.CreateFakeDatabase();
+
+            database.Insert(new OfflineTask()
             {
-                Action = OfflineTask.OfflineTaskAction.MarkAsRead,
-                ItemId = 0,
-                Id = 0
-            };
-            taskService.Tasks.Add(task);
+                Id = 1,
+                Action = OfflineTask.OfflineTaskAction.AddItem,
+                ItemId = 0
+            });
+            var taskService = new OfflineTaskService(client, database, loggingService, platform);
 
-            Assert.Equal(count + 1, taskService.Tasks.Count);
+            A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(false);
 
-            //TODO: Abstract the API layer of the database, so that even database interactions can be faked
-            //A.CallTo(() => database.Delete<OfflineTask>(A<object>.Ignored)).MustNotHaveHappened();
+            Assert.RaisesAsync<OfflineTaskExecutedEventArgs>(
+                x => taskService.TaskExecuted += x,
+                x => taskService.TaskExecuted -= x,
+               () => taskService.ExecuteAllAsync());
         }
     }
 }
