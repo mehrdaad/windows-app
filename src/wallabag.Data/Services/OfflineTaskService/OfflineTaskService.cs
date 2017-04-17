@@ -172,7 +172,8 @@ namespace wallabag.Data.Services.OfflineTaskService
 
             _tasks.Add(newTask);
 
-            TaskAdded?.Invoke(this, new OfflineTaskAddedEventArgs(newTask));
+            int placeholderItemId = _database.FindWithQuery<Item>("select Id from Item where Content=?", m_PLACEHOLDER_PREFIX + newTask.Id).Id;
+            TaskAdded?.Invoke(this, new OfflineTaskAddedEventArgs(newTask, placeholderItemId));
         }
         public void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
