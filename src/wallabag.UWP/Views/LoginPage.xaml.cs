@@ -1,5 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using wallabag.Common.Helpers;
 using wallabag.Data.ViewModels;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -34,9 +36,13 @@ namespace wallabag.Views
         private void IgnorePointerWheel(object sender, PointerRoutedEventArgs e) => e.Handled = true;
         private void IgnoreTouchManipulation(object sender, ManipulationStartingRoutedEventArgs e) => e.Handled = true;
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            await TitleBarHelper.SetVisibilityAsync(Windows.UI.Xaml.Visibility.Collapsed);
+            TitleBarHelper.SetButtonBackgroundColor(Colors.Transparent);
+            TitleBarHelper.SetButtonForegroundColor(Colors.White);
 
             var snm = SystemNavigationManager.GetForCurrentView();
             snm.BackRequested -= App.GlobalBackRequested;

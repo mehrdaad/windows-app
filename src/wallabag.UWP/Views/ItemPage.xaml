@@ -4,9 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="using:wallabag.Converters"
     xmlns:helpers="using:wallabag.Common.Helpers"
-    helpers:TitleBarHelper.ButtonBackgroundColor="Transparent"
-    helpers:TitleBarHelper.ButtonForegroundColor="{x:Bind ForegroundBrush.Color, Mode=OneWay}"
-    helpers:TitleBarHelper.IsVisible="false"
     DataContext="{Binding ItemView, Source={StaticResource Locator}}">
 
     <Page.Resources>

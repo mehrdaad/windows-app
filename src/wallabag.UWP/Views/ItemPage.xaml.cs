@@ -69,8 +69,12 @@ namespace wallabag.Views
             UpdateBrushesAndTheme();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            await TitleBarHelper.SetVisibilityAsync(Visibility.Collapsed);
+            TitleBarHelper.SetButtonBackgroundColor(Colors.Transparent);
+            TitleBarHelper.SetButtonForegroundColor(ForegroundBrush.Color);
+
             Messenger.Default.Register<wallabag.Data.Common.Messages.LoadContentMessage>(this, message =>
             {
                 HtmlViewer.NavigateToString(ViewModel.FormattedHtml);
@@ -241,8 +245,8 @@ namespace wallabag.Views
                 ColorApplicationTheme = ElementTheme.Dark;
             }
 
-           (FindName(nameof(commandsGrid)) as Grid).RequestedTheme = ColorApplicationTheme;
-            TitleBarHelper.SetButtonForegroundColor(this, ForegroundBrush.Color);
+            (FindName(nameof(commandsGrid)) as Grid).RequestedTheme = ColorApplicationTheme;
+            TitleBarHelper.SetButtonForegroundColor(ForegroundBrush.Color);
         }
 
         private async void ChangeFontFamilyAsync(object sender, RoutedEventArgs e)

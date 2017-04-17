@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Messaging;
 using PropertyChanged;
 using System;
 using System.Linq;
+using wallabag.Common.Helpers;
 using wallabag.Controls;
 using wallabag.Data.Common.Messages;
 using wallabag.Data.ViewModels;
@@ -61,7 +62,12 @@ namespace wallabag.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            await Common.Helpers.TitleBarHelper.ResetToDefaultAsync();
+            await TitleBarHelper.ResetToDefaultsAsync();
+
+            var titleBarColor = (App.Current.Resources["SystemControlBackgroundChromeMediumBrush"] as SolidColorBrush).Color;
+            TitleBarHelper.SetBackgroundColor(titleBarColor);
+            TitleBarHelper.SetButtonBackgroundColor(titleBarColor);
+
             Messenger.Default.Register<CompleteMultipleSelectionMessage>(this, message => DisableMultipleSelection(true));
             Messenger.Default.Register<ShowLoginMessage>(this, async message =>
             {
