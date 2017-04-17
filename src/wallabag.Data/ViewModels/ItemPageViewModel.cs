@@ -74,7 +74,7 @@ namespace wallabag.Data.ViewModels
                 _navigationService.GoBack();
             });
 
-            SaveRightClickLinkCommand = new RelayCommand(() => _offlineTaskService.Add(RightClickUri.ToString(), new List<string>()));
+            SaveRightClickLinkCommand = new RelayCommand(() => _offlineTaskService.AddAsync(RightClickUri.ToString(), new List<string>()));
             OpenRightClickLinkInBrowserCommand = new RelayCommand(() => _device.LaunchUri(RightClickUri));
         }
 

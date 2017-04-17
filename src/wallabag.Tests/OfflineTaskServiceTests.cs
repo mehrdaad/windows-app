@@ -16,7 +16,7 @@ namespace wallabag.Tests
     public class OfflineTaskServiceTests
     {
         [Fact]
-        public void AddingATaskExecutesItDirectly()
+        public async Task AddingATaskExecutesItDirectly()
         {
             string uriString = "https://wallabag.org";
             var uriToTest = new Uri(uriString);
@@ -36,13 +36,13 @@ namespace wallabag.Tests
             });
 
             var taskService = new OfflineTaskService(client, database, loggingService, platform);
-            taskService.Add(uriString, new List<string>());
+            await taskService.AddAsync(uriString, new List<string>());
 
             A.CallTo(() => client.AddAsync(uriToTest, A<IEnumerable<string>>.Ignored, A<string>.Ignored, A<CancellationToken>.Ignored)).MustHaveHappened();
         }
 
         [Fact]
-        public void ExecutingAnOfflineTaskWithoutInternetConnectionDoesNotCallTheAPI()
+        public async Task ExecutingAnOfflineTaskWithoutInternetConnectionDoesNotCallTheAPI()
         {
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
@@ -52,7 +52,7 @@ namespace wallabag.Tests
             A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(false);
 
             var taskService = new OfflineTaskService(client, database, loggingService, platform);
-            taskService.Add("http://test.de", new List<string>());
+            await taskService.AddAsync("http://test.de", new List<string>());
 
             A.CallTo(() => client.AddAsync(A<Uri>.Ignored, A<IEnumerable<string>>.Ignored, A<string>.Ignored, A<CancellationToken>.Ignored)).MustNotHaveHappened();
         }
@@ -70,7 +70,7 @@ namespace wallabag.Tests
             var taskService = new OfflineTaskService(client, database, loggingService, platform);
 
             for (int i = 0; i < 10; i++)
-                taskService.Add($"https://test-{i}.de", Array.Empty<string>());
+                await taskService.AddAsync($"https://test-{i}.de", Array.Empty<string>());
 
             A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(true);
             A.CallTo(() => client.AddAsync(A<Uri>.Ignored, A<IEnumerable<string>>.Ignored, A<string>.Ignored, A<CancellationToken>.Ignored)).Returns(new WallabagItem()
@@ -103,7 +103,7 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void ExecutingATaskWithFalseAPIResultDoesNotRemoveThemFromTheDatabase()
+        public async Task ExecutingATaskWithFalseAPIResultDoesNotRemoveThemFromTheDatabase()
         {
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
@@ -115,13 +115,13 @@ namespace wallabag.Tests
             var taskService = new OfflineTaskService(client, database, loggingService, platform);
             int count = taskService.Count;
 
-            taskService.Add(0, OfflineTask.OfflineTaskAction.MarkAsRead);
+            await taskService.AddAsync(0, OfflineTask.OfflineTaskAction.MarkAsRead);
 
             Assert.Equal(count + 1, taskService.Count);
         }
 
         [Fact]
-        public void AddingANewTaskForNewUrlFiresTheTaskAddedEvent()
+        public async Task AddingANewTaskForNewUrlFiresTheTaskAddedEvent()
         {
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
@@ -130,14 +130,14 @@ namespace wallabag.Tests
 
             var taskService = new OfflineTaskService(client, database, loggingService, platform);
 
-            Assert.Raises<OfflineTaskAddedEventArgs>(
-              x => taskService.TaskAdded += x,
-              x => taskService.TaskAdded -= x,
-             () => taskService.Add("https://test.de", Array.Empty<string>()));
+            await Assert.RaisesAsync<OfflineTaskAddedEventArgs>(
+                 x => taskService.TaskAdded += x,
+                 x => taskService.TaskAdded -= x,
+                () => taskService.AddAsync("https://test.de", Array.Empty<string>()));
         }
 
         [Fact]
-        public void AddingANewTaskForExistingArticleFiresTheTaskAddedEvent()
+        public async Task AddingANewTaskForExistingArticleFiresTheTaskAddedEvent()
         {
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
@@ -146,14 +146,14 @@ namespace wallabag.Tests
 
             var taskService = new OfflineTaskService(client, database, loggingService, platform);
 
-            Assert.Raises<OfflineTaskAddedEventArgs>(
+            await Assert.RaisesAsync<OfflineTaskAddedEventArgs>(
               x => taskService.TaskAdded += x,
               x => taskService.TaskAdded -= x,
-             () => taskService.Add(0, OfflineTask.OfflineTaskAction.MarkAsRead));
+             () => taskService.AddAsync(0, OfflineTask.OfflineTaskAction.MarkAsRead));
         }
 
         [Fact]
-        public void ExecutionOfTaskFiresTheTaskExecutedEvent()
+        public async Task ExecutionOfTaskFiresTheTaskExecutedEvent()
         {
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
@@ -170,10 +170,10 @@ namespace wallabag.Tests
 
             A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(false);
 
-            Assert.RaisesAsync<OfflineTaskExecutedEventArgs>(
-                x => taskService.TaskExecuted += x,
-                x => taskService.TaskExecuted -= x,
-               () => taskService.ExecuteAllAsync());
+            await Assert.RaisesAsync<OfflineTaskExecutedEventArgs>(
+                 x => taskService.TaskExecuted += x,
+                 x => taskService.TaskExecuted -= x,
+                () => taskService.ExecuteAllAsync());
         }
     }
 }

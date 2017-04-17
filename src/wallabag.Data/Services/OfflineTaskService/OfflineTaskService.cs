@@ -143,7 +143,7 @@ namespace wallabag.Data.Services.OfflineTaskService
             TaskExecuted?.Invoke(this, new OfflineTaskExecutedEventArgs(task, placeholderId, executionIsSuccessful));
         }
 
-        public void Add(string url, IEnumerable<string> newTags)
+        public Task AddAsync(string url, IEnumerable<string> newTags)
         {
             _loggingService.WriteLine($"Adding task for URL '{url}' with {newTags.Count()} tags: {string.Join(",", newTags)}");
             Uri.TryCreate(url, UriKind.Absolute, out var uri);
@@ -174,8 +174,10 @@ namespace wallabag.Data.Services.OfflineTaskService
 
             int placeholderItemId = _database.FindWithQuery<Item>("select Id from Item where Content=?", m_PLACEHOLDER_PREFIX + newTask.Id).Id;
             TaskAdded?.Invoke(this, new OfflineTaskAddedEventArgs(newTask, placeholderItemId));
+
+            return Task.FromResult(true);
         }
-        public void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
+        public Task AddAsync(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
             _loggingService.WriteLine($"Adding task for item {itemId} with action {action}. {addTagsList?.Count} new tags, {removeTagsList?.Count} removed tags.");
 
@@ -187,6 +189,8 @@ namespace wallabag.Data.Services.OfflineTaskService
                 RemovedTags = removeTagsList
             };
             InsertTask(newTask);
+
+            return Task.FromResult(true);
         }
         private void InsertTask(OfflineTask newTask)
         {

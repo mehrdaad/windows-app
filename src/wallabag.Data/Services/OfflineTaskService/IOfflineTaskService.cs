@@ -10,8 +10,8 @@ namespace wallabag.Data.Services.OfflineTaskService
         int Count { get; }
 
         Task ExecuteAllAsync();
-        void Add(string url, IEnumerable<string> newTags);
-        void Add(int itemId, OfflineTask.OfflineTaskAction action, List<Tag> addedTags = null, List<Tag> removedTags = null);
+        Task AddAsync(string url, IEnumerable<string> newTags);
+        Task AddAsync(int itemId, OfflineTask.OfflineTaskAction action, List<Tag> addedTags = null, List<Tag> removedTags = null);
 
         event EventHandler<OfflineTaskAddedEventArgs> TaskAdded;
         event EventHandler<OfflineTaskExecutedEventArgs> TaskExecuted;

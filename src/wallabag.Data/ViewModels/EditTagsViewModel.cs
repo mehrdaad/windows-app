@@ -42,7 +42,7 @@ namespace wallabag.Data.ViewModels
 
             _loggingService.WriteLine("Creating new instance of EditTagsViewModel.");
 
-            FinishCommand = new RelayCommand(() => Finish());
+            FinishCommand = new RelayCommand(async () => await FinishAsync());
             CancelCommand = new RelayCommand(() => Cancel());
 
             TagQueryChangedCommand = new RelayCommand(() =>
@@ -105,7 +105,7 @@ namespace wallabag.Data.ViewModels
             return Task.FromResult(true);
         }
 
-        private void Finish()
+        private async Task FinishAsync()
         {
             _loggingService.WriteLine($"Editing tags for {Items.Count} items.");
 
@@ -113,7 +113,7 @@ namespace wallabag.Data.ViewModels
             {
                 foreach (var item in Items)
                 {
-                    _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
+                   await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
 
                     foreach (var tag in Tags)
                         item.Tags.Add(tag);
@@ -133,7 +133,7 @@ namespace wallabag.Data.ViewModels
                 Items.First().Tags.Replace(Tags);
                 _database.Update(Items.First());
 
-                _offlineTaskService.Add(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags);
+                await _offlineTaskService.AddAsync(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags);
             }
 
             _navigationService.GoBack();

@@ -69,7 +69,7 @@ namespace wallabag.Tests
 
             viewModel.MarkAsReadCommand.Execute(null);
 
-            A.CallTo(() => offlineTaskService.Add(
+            A.CallTo(() => offlineTaskService.AddAsync(
                 10,
                 A<OfflineTask.OfflineTaskAction>.That.IsEqualTo(OfflineTask.OfflineTaskAction.MarkAsRead),
                 A<List<Tag>>.Ignored,
@@ -106,7 +106,7 @@ namespace wallabag.Tests
 
             viewModel.UnmarkAsReadCommand.Execute(null);
 
-            A.CallTo(() => offlineTaskService.Add(
+            A.CallTo(() => offlineTaskService.AddAsync(
                 10,
                 A<OfflineTask.OfflineTaskAction>.That.IsEqualTo(OfflineTask.OfflineTaskAction.UnmarkAsRead),
                 A<List<Tag>>.Ignored,
@@ -143,7 +143,7 @@ namespace wallabag.Tests
 
             viewModel.MarkAsStarredCommand.Execute(null);
 
-            A.CallTo(() => offlineTaskService.Add(
+            A.CallTo(() => offlineTaskService.AddAsync(
                 10,
                 A<OfflineTask.OfflineTaskAction>.That.IsEqualTo(OfflineTask.OfflineTaskAction.MarkAsStarred),
                 A<List<Tag>>.Ignored,
@@ -180,7 +180,7 @@ namespace wallabag.Tests
 
             viewModel.UnmarkAsStarredCommand.Execute(null);
 
-            A.CallTo(() => offlineTaskService.Add(
+            A.CallTo(() => offlineTaskService.AddAsync(
                 10,
                 A<OfflineTask.OfflineTaskAction>.That.IsEqualTo(OfflineTask.OfflineTaskAction.UnmarkAsStarred),
                 A<List<Tag>>.Ignored,
@@ -210,7 +210,7 @@ namespace wallabag.Tests
 
             viewModel.DeleteCommand.Execute(null);
 
-            A.CallTo(() => offlineTaskService.Add(
+            A.CallTo(() => offlineTaskService.AddAsync(
                 10,
                 A<OfflineTask.OfflineTaskAction>.That.IsEqualTo(OfflineTask.OfflineTaskAction.Delete),
                 A<List<Tag>>.Ignored,

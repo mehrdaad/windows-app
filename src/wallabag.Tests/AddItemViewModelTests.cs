@@ -39,7 +39,7 @@ namespace wallabag.Tests
             viewModel.AddCommand.Execute(null);
 
             A.CallTo(() => navigationService.GoBack()).MustHaveHappened();
-            A.CallTo(() => offlineTaskService.Add(A<string>.Ignored, A<IEnumerable<string>>.Ignored)).MustHaveHappened();
+            A.CallTo(() => offlineTaskService.AddAsync(A<string>.Ignored, A<IEnumerable<string>>.Ignored)).MustHaveHappened();
             // TODO: Add database check
         }
 
@@ -58,7 +58,7 @@ namespace wallabag.Tests
             viewModel.AddCommand.Execute(null);
 
             A.CallTo(() => navigationService.GoBack()).MustNotHaveHappened();
-            A.CallTo(() => offlineTaskService.Add(A<string>.Ignored, A<IEnumerable<string>>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => offlineTaskService.AddAsync(A<string>.Ignored, A<IEnumerable<string>>.Ignored)).MustNotHaveHappened();
             // TODO: Add database check
         }
     }

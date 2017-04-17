@@ -49,7 +49,7 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine("URL is valid.");
 
-                _offlineTaskService.Add(UriString, TagViewModel.Tags.ToStringArray());
+                _offlineTaskService.AddAsync(UriString, TagViewModel.Tags.ToStringArray());
                 _navigationService.GoBack();
 
                 OnAddingCompleted?.Invoke(this, null);

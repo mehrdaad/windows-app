@@ -236,7 +236,7 @@ namespace wallabag.Tests
             viewModel.Tags.Add(new Tag() { Id = 1, Label = "test" });
             viewModel.FinishCommand.Execute(null);
 
-            A.CallTo(() => offlineTaskService.Add(A<int>.Ignored, OfflineTask.OfflineTaskAction.EditTags, A<List<Tag>>.Ignored, A<List<Tag>>.Ignored)).MustHaveHappened(Repeated.Exactly.Twice);
+            A.CallTo(() => offlineTaskService.AddAsync(A<int>.Ignored, OfflineTask.OfflineTaskAction.EditTags, A<List<Tag>>.Ignored, A<List<Tag>>.Ignored)).MustHaveHappened(Repeated.Exactly.Twice);
         }
 
         [Fact]
@@ -273,7 +273,7 @@ namespace wallabag.Tests
 
             viewModel.FinishCommand.Execute(null);
 
-            A.CallTo(() => offlineTaskService.Add(A<int>.Ignored, OfflineTask.OfflineTaskAction.EditTags, A<List<Tag>>.That.Contains(tagToAdd), A<List<Tag>>.That.Contains(tagToRemove))).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => offlineTaskService.AddAsync(A<int>.Ignored, OfflineTask.OfflineTaskAction.EditTags, A<List<Tag>>.That.Contains(tagToAdd), A<List<Tag>>.That.Contains(tagToRemove))).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => navigationService.GoBack()).MustHaveHappened();
         }
 
