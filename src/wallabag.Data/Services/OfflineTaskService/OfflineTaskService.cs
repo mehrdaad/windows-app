@@ -48,7 +48,7 @@ namespace wallabag.Data.Services.OfflineTaskService
 
             _loggingService.WriteLine($"Execution finished. Number of failed tasks: {_tasks.Count}");
         }
-        private async Task ExecuteAsync(OfflineTask task)
+        private async Task<bool> ExecuteAsync(OfflineTask task)
         {
             _loggingService.WriteLine($"Executing task {task.Id} with action {task.Action} for item {task.ItemId}.");
             int placeholderId = -1;
@@ -56,7 +56,7 @@ namespace wallabag.Data.Services.OfflineTaskService
             if (_platform.InternetConnectionIsAvailable == false)
             {
                 _loggingService.WriteLine("No internet connection available. Cancelled.");
-                return;
+                return false;
             }
 
             bool executionIsSuccessful = false;
@@ -141,6 +141,8 @@ namespace wallabag.Data.Services.OfflineTaskService
             _loggingService.WriteLineIf(!executionIsSuccessful, "Execution was not successful.", LoggingCategory.Warning);
 
             TaskExecuted?.Invoke(this, new OfflineTaskExecutedEventArgs(task, placeholderId, executionIsSuccessful));
+
+            return executionIsSuccessful;
         }
 
         public Task AddAsync(string url, IEnumerable<string> newTags)
@@ -155,6 +157,9 @@ namespace wallabag.Data.Services.OfflineTaskService
                 Url = url,
                 Tags = newTags.ToList()
             };
+
+        
+
             _database.Insert(newTask);
 
             // Fetch task ID from database
