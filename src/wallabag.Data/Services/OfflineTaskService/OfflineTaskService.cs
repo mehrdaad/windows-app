@@ -19,11 +19,10 @@ namespace wallabag.Data.Services.OfflineTaskService
         private readonly SQLiteConnection _database;
         private readonly ILoggingService _loggingService;
         private readonly IPlatformSpecific _platform;
-        private readonly List<OfflineTask> _tasks;
         private int _lastItemId => _database.ExecuteScalar<int>("select Max(ID) from 'Item'");
 
         public const string m_PLACEHOLDER_PREFIX = "//wallabag-placeholder-";
-        public int Count => _tasks.Count;
+        public int Count => _database.ExecuteScalar<int>("select count(*) from OfflineTask");
         public event EventHandler<OfflineTaskAddedEventArgs> TaskAdded;
         public event EventHandler<OfflineTaskExecutedEventArgs> TaskExecuted;
 
@@ -34,19 +33,18 @@ namespace wallabag.Data.Services.OfflineTaskService
             _loggingService = loggingService;
             _platform = platform;
 
-            _tasks = new List<OfflineTask>(_database.Table<OfflineTask>());
             this.TaskAdded += async (s, e) => await ExecuteAsync(e.Task);
         }
 
         public async Task ExecuteAllAsync()
         {
-            _loggingService.WriteLine($"Executing all offline tasks. Number of tasks: {_tasks.Count}");
+            _loggingService.WriteLine($"Executing all offline tasks. Number of tasks: {Count}");
 
-            var tasks = _tasks.ToList();
+            var tasks = _database.Table<OfflineTask>();
             foreach (var task in tasks)
                 await ExecuteAsync(task);
 
-            _loggingService.WriteLine($"Execution finished. Number of failed tasks: {_tasks.Count}");
+            _loggingService.WriteLine($"Execution finished. Number of failed tasks: {Count}");
         }
         private async Task<bool> ExecuteAsync(OfflineTask task)
         {
@@ -135,7 +133,6 @@ namespace wallabag.Data.Services.OfflineTaskService
             if (executionIsSuccessful)
             {
                 _loggingService.WriteLine($"Execution of task {task.Id} was successful.");
-                _tasks.Remove(task);
                 _database.Delete(task);
             }
             _loggingService.WriteLineIf(!executionIsSuccessful, "Execution was not successful.", LoggingCategory.Warning);
@@ -200,8 +197,6 @@ namespace wallabag.Data.Services.OfflineTaskService
         private void InsertTask(OfflineTask newTask)
         {
             _loggingService.WriteLine("Inserting task into database.");
-
-            _tasks.Add(newTask);
             _database.Insert(newTask);
 
             TaskAdded?.Invoke(this, new OfflineTaskAddedEventArgs(newTask));
