@@ -46,7 +46,7 @@ namespace wallabag.Data.Services.OfflineTaskService
 
             _loggingService.WriteLine($"Execution finished. Number of failed tasks: {Count}");
         }
-        private async Task<bool> ExecuteAsync(OfflineTask task)
+        public async Task<bool> ExecuteAsync(OfflineTask task)
         {
             _loggingService.WriteLine($"Executing task {task.Id} with action {task.Action} for item {task.ItemId}.");
             int placeholderId = -1;

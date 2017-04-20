@@ -13,6 +13,8 @@ namespace wallabag.Data.Services.OfflineTaskService
         Task AddAsync(string url, IEnumerable<string> newTags);
         Task AddAsync(int itemId, OfflineTask.OfflineTaskAction action, List<Tag> addedTags = null, List<Tag> removedTags = null);
 
+        Task<bool> ExecuteAsync(OfflineTask task);
+
         event EventHandler<OfflineTaskAddedEventArgs> TaskAdded;
         event EventHandler<OfflineTaskExecutedEventArgs> TaskExecuted;
     }
