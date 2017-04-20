@@ -113,7 +113,7 @@ namespace wallabag.Data.Services.OfflineTaskService
                     placeholderId = _database.FindWithQuery<Item>("select Id from Item where Content=?", m_PLACEHOLDER_PREFIX + task.Id)?.Id ?? -1;
 
                     if (placeholderId >= 0)
-                        _database.Delete<OfflineTask>(placeholderId);
+                        _database.Delete<Item>(placeholderId);
 
                     var newItem = await _client.AddAsync(new Uri(task.Url), task.Tags);
                     if (newItem != null)
