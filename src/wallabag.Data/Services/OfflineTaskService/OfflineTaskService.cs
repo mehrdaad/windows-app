@@ -119,6 +119,8 @@ namespace wallabag.Data.Services.OfflineTaskService
                     if (newItem != null)
                         _database.InsertOrReplace((Item)newItem);
 
+                    task.ItemId = newItem.Id;
+
                     executionIsSuccessful = newItem != null;
                     break;
                 case OfflineTaskAction.Delete:

@@ -175,5 +175,33 @@ namespace wallabag.Tests
                  x => taskService.TaskExecuted -= x,
                 () => taskService.ExecuteAllAsync());
         }
+
+        [Fact]
+        public async Task ExecutingAnAddItemOfflineTaskReplacesTheItemIdOfTheTask()
+        {
+            var client = A.Fake<IWallabagClient>();
+            var platform = A.Fake<IPlatformSpecific>();
+            var loggingService = A.Fake<ILoggingService>();
+            var database = TestsHelper.CreateFakeDatabase();
+
+            var taskService = new OfflineTaskService(client, database, loggingService, platform);
+
+            A.CallTo(() => client.AddAsync(A<Uri>.Ignored, A<IEnumerable<string>>.Ignored, A<string>.Ignored, A<CancellationToken>.Ignored)).Returns(new WallabagItem() { Id = 123 });
+            A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(true);
+
+            int itemId = 0;
+            taskService.TaskExecuted += (s, e) => itemId = e.Task.ItemId;
+
+            await taskService.ExecuteAsync(new OfflineTask()
+            {
+                Id = 0,
+                ItemId = 0,
+                Action = OfflineTask.OfflineTaskAction.AddItem,
+                Url = "https://test.de",
+                Tags = new List<string>()
+            });
+
+            Assert.Equal(123, itemId);
+        }
     }
 }
