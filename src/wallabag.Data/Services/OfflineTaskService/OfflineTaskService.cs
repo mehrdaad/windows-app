@@ -32,8 +32,6 @@ namespace wallabag.Data.Services.OfflineTaskService
             _database = database;
             _loggingService = loggingService;
             _platform = platform;
-
-            this.TaskAdded += async (s, e) => await ExecuteAsync(e.Task);
         }
 
         public async Task ExecuteAllAsync()
@@ -155,8 +153,6 @@ namespace wallabag.Data.Services.OfflineTaskService
                 Tags = newTags.ToList()
             };
 
-        
-
             _database.Insert(newTask);
 
             // Fetch task ID from database
@@ -172,12 +168,10 @@ namespace wallabag.Data.Services.OfflineTaskService
                 Content = m_PLACEHOLDER_PREFIX + newTask.Id
             });
 
-            _tasks.Add(newTask);
-
             int placeholderItemId = _database.FindWithQuery<Item>("select Id from Item where Content=?", m_PLACEHOLDER_PREFIX + newTask.Id).Id;
             TaskAdded?.Invoke(this, new OfflineTaskAddedEventArgs(newTask, placeholderItemId));
 
-            return Task.FromResult(true);
+            return ExecuteAsync(newTask);
         }
         public Task AddAsync(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
@@ -192,7 +186,7 @@ namespace wallabag.Data.Services.OfflineTaskService
             };
             InsertTask(newTask);
 
-            return Task.FromResult(true);
+            return ExecuteAsync(newTask);
         }
         private void InsertTask(OfflineTask newTask)
         {
