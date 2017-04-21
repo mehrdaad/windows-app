@@ -126,12 +126,12 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine($"A new OfflineTask was added. ID: {e.Task.Id}");
 
-                await _device.RunOnUIThreadAsync(() =>
+                await _device.RunOnUIThreadAsync(async () =>
                 {
                     if (e.PlaceholderItemId >= 0)
                     {
                         var placeholder = ItemViewModel.FromId(
-                            e.Task.Id,
+                            e.PlaceholderItemId,
                             _loggingService,
                             _database,
                             _offlineTaskService,
@@ -144,6 +144,8 @@ namespace wallabag.Data.ViewModels
 
                     RaisePropertyChanged(nameof(OfflineTaskCount));
                     RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
+
+                    await ApplyUIChangesForOfflineTaskAsync(e.Task, e.PlaceholderItemId);
                 });
             };
             _offlineTaskService.TaskExecuted += async (s, e) =>
