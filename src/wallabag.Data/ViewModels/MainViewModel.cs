@@ -284,7 +284,7 @@ namespace wallabag.Data.ViewModels
             });
             await GetMetadataForItemsAsync(Items);
         }
-        private Task ApplyUIChangesForOfflineTaskAsync(OfflineTask task)
+        private Task ApplyUIChangesForOfflineTaskAsync(OfflineTask task, int placeholderItemId = -1)
         {
             _loggingService.WriteLine("Executing UI changes for offline task.");
             _loggingService.WriteObject(task);
@@ -337,7 +337,15 @@ namespace wallabag.Data.ViewModels
                         break;
                     case OfflineTask.OfflineTaskAction.AddItem:
                         if (CurrentSearchProperties.ItemTypeIndex == 0)
-                            Items.AddSorted(item, sortAscending: orderAscending);
+                        {
+                            var placeholder = ItemViewModel.FromId(placeholderItemId,
+                                _loggingService,
+                                _database,
+                                _offlineTaskService,
+                                _navigationService,
+                                _device);
+                            Items.AddSorted(placeholder, sortAscending: orderAscending);
+                        }
                         break;
                     case OfflineTask.OfflineTaskAction.Delete:
                         Items.Remove(Items.Where(i => i.Model.Id.Equals(task.ItemId)).First());
