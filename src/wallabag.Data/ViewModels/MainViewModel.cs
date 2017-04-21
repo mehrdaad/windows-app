@@ -152,12 +152,34 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine($"An OfflineTask was executed. ID: {e.Task.Id}");
 
-                await _device.RunOnUIThreadAsync(async () =>
+                if (e.Task.Action == OfflineTask.OfflineTaskAction.AddItem && e.Success)
                 {
-                    RaisePropertyChanged(nameof(OfflineTaskCount));
-                    RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
-                    await ApplyUIChangesForOfflineTaskAsync(e.Task);
-                });
+                    await _device.RunOnUIThreadAsync(() =>
+                    {
+                        // Yes, items can be null if they are added to a list very quickly (as a placeholder?)
+                        bool containsNull = Items.Contains(null);
+
+                        var placeholder = Items.FirstOrDefault(x => x == null || x.Model.Id == e.PlaceholderItemId);
+
+                        if (containsNull || placeholder != null)
+                            Items.Remove(placeholder);
+
+                        if (CurrentSearchProperties.ItemTypeIndex == 0)
+                        {
+                            var newItem = ItemViewModel.FromId(
+                                e.Task.ItemId,
+                                _loggingService,
+                                _database,
+                                _offlineTaskService,
+                                _navigationService,
+                                _device);
+                            Items.AddSorted(newItem, sortAscending: CurrentSearchProperties.OrderAscending == true);
+                        }
+                    });
+                }
+
+                RaisePropertyChanged(nameof(OfflineTaskCount));
+                RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
             };
         }
 
@@ -170,30 +192,11 @@ namespace wallabag.Data.ViewModels
                 CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
             }
 
-            await ReloadViewAsync();
+            if (mode == NavigationMode.New)
+                await ReloadViewAsync();
 
             if (Settings.General.SyncOnStartup)
                 await SyncAsync();
-
-            Messenger.Default.Register<UpdateItemMessage>(this, message =>
-            {
-                var viewModel = ItemViewModel.FromId(
-                    message.ItemId,
-                    _loggingService,
-                    _database,
-                    _offlineTaskService,
-                    _navigationService,
-                    _device);
-
-                _loggingService.WriteLine($"Updating item with ID {message.ItemId}.");
-                _loggingService.WriteLineIf(viewModel == null, "Item does not exist in the database!", LoggingCategory.Warning);
-
-                if (viewModel != null && Items.Contains(viewModel))
-                {
-                    Items.Remove(viewModel); // This is only working because the app is just comparing the ID's
-                    Items.AddSorted(viewModel, sortAscending: CurrentSearchProperties.OrderAscending == true);
-                }
-            });
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
@@ -247,7 +250,7 @@ namespace wallabag.Data.ViewModels
                     _database.InsertOrReplaceAll(itemList);
                 });
 
-                if (Items.Count == 0 || databaseList[0].Equals(Items[0].Model) == false)
+                if (Items.Count == 0 /*|| databaseList[0].Equals(Items[0].Model) == false*/)
                     await ReloadViewAsync();
 
                 Settings.General.LastSuccessfulSyncDateTime = DateTime.Now;
