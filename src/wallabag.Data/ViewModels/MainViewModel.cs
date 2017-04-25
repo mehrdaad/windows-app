@@ -156,12 +156,9 @@ namespace wallabag.Data.ViewModels
                 {
                     await _device.RunOnUIThreadAsync(() =>
                     {
-                        // Yes, items can be null if they are added to a list very quickly (as a placeholder?)
-                        bool containsNull = Items.Contains(null);
+                        var placeholder = Items.FirstOrDefault(x => x.Model.Id == e.PlaceholderItemId);
 
-                        var placeholder = Items.FirstOrDefault(x => x == null || x.Model.Id == e.PlaceholderItemId);
-
-                        if (containsNull || placeholder != null)
+                        if (placeholder != null)
                             Items.Remove(placeholder);
 
                         if (CurrentSearchProperties.ItemTypeIndex == 0)
@@ -175,11 +172,11 @@ namespace wallabag.Data.ViewModels
                                 _device);
                             Items.AddSorted(newItem, sortAscending: CurrentSearchProperties.OrderAscending == true);
                         }
+
+                        RaisePropertyChanged(nameof(OfflineTaskCount));
+                        RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
                     });
                 }
-
-                RaisePropertyChanged(nameof(OfflineTaskCount));
-                RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
             };
         }
 
@@ -349,7 +346,9 @@ namespace wallabag.Data.ViewModels
                                 _offlineTaskService,
                                 _navigationService,
                                 _device);
-                            Items.AddSorted(placeholder, sortAscending: orderAscending);
+
+                            if (placeholder != null)
+                                Items.AddSorted(placeholder, sortAscending: orderAscending);
                         }
                         break;
                     case OfflineTask.OfflineTaskAction.Delete:
