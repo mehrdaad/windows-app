@@ -153,19 +153,45 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public async Task ExecutionOfTaskFiresTheTaskExecutedEvent()
+        public async Task ExecutionOfTaskFiresTheTaskExecutedEventWithInternetConnection()
         {
             var client = A.Fake<IWallabagClient>();
             var platform = A.Fake<IPlatformSpecific>();
             var loggingService = A.Fake<ILoggingService>();
             var database = TestsHelper.CreateFakeDatabase();
 
-            database.Insert(new OfflineTask()
+            var task = new OfflineTask()
             {
                 Id = 1,
                 Action = OfflineTask.OfflineTaskAction.AddItem,
-                ItemId = 0
-            });
+                ItemId = 0,
+                Url = "https://test.de"
+            };
+            var taskService = new OfflineTaskService(client, database, loggingService, platform);
+
+            A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(true);
+
+            await Assert.RaisesAsync<OfflineTaskExecutedEventArgs>(
+                 x => taskService.TaskExecuted += x,
+                 x => taskService.TaskExecuted -= x,
+                () => taskService.ExecuteAsync(task));
+        }
+
+        [Fact]
+        public async Task ExecutionOfTaskFiresTheTaskExecutedEventWithoutInternetConnection()
+        {
+            var client = A.Fake<IWallabagClient>();
+            var platform = A.Fake<IPlatformSpecific>();
+            var loggingService = A.Fake<ILoggingService>();
+            var database = TestsHelper.CreateFakeDatabase();
+
+            var task = new OfflineTask()
+            {
+                Id = 1,
+                Action = OfflineTask.OfflineTaskAction.AddItem,
+                ItemId = 0,
+                Url = "https://test.de"
+            };
             var taskService = new OfflineTaskService(client, database, loggingService, platform);
 
             A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(false);
@@ -173,7 +199,7 @@ namespace wallabag.Tests
             await Assert.RaisesAsync<OfflineTaskExecutedEventArgs>(
                  x => taskService.TaskExecuted += x,
                  x => taskService.TaskExecuted -= x,
-                () => taskService.ExecuteAllAsync());
+                () => taskService.ExecuteAsync(task));
         }
 
         [Fact]

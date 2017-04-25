@@ -52,6 +52,7 @@ namespace wallabag.Data.Services.OfflineTaskService
             if (_platform.InternetConnectionIsAvailable == false)
             {
                 _loggingService.WriteLine("No internet connection available. Cancelled.");
+                TaskExecuted?.Invoke(this, new OfflineTaskExecutedEventArgs(task, -1, false));
                 return false;
             }
 
