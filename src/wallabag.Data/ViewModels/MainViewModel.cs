@@ -173,10 +173,14 @@ namespace wallabag.Data.ViewModels
                             Items.AddSorted(newItem, sortAscending: CurrentSearchProperties.OrderAscending == true);
                         }
 
-                        RaisePropertyChanged(nameof(OfflineTaskCount));
-                        RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
                     });
                 }
+
+                await _device.RunOnUIThreadAsync(() =>
+                {
+                    RaisePropertyChanged(nameof(OfflineTaskCount));
+                    RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
+                });
             };
         }
 
