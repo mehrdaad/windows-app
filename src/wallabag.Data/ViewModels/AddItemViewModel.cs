@@ -1,10 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
 using SQLite.Net;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
-using wallabag.Data.Models;
 using wallabag.Data.Services;
 using wallabag.Data.Services.OfflineTaskService;
 
@@ -23,7 +23,7 @@ namespace wallabag.Data.ViewModels
         public ICommand AddCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 
-        public event EventHandler<EventArgs> OnAddingCompleted;
+        public INotifyTaskCompletion AddingTask { get; private set; }
 
         public AddItemViewModel(IOfflineTaskService offlineTaskService, ILoggingService loggingService, SQLiteConnection database, INavigationService navigationService)
         {
@@ -34,11 +34,11 @@ namespace wallabag.Data.ViewModels
 
             TagViewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
 
-            AddCommand = new RelayCommand(() => Add());
+            AddCommand = new RelayCommand(() => AddingTask = NotifyTaskCompletion.Create(AddAsync));
             CancelCommand = new RelayCommand(() => Cancel());
         }
 
-        private void Add()
+        private async Task AddAsync()
         {
             _loggingService.WriteLine("Adding item to wallabag.");
             _loggingService.WriteLine($"URL: {UriString}");
@@ -49,10 +49,8 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine("URL is valid.");
 
-                _offlineTaskService.AddAsync(UriString, TagViewModel.Tags.ToStringArray());
+                await _offlineTaskService.AddAsync(UriString, TagViewModel.Tags.ToStringArray());
                 _navigationService.GoBack();
-
-                OnAddingCompleted?.Invoke(this, null);
             }
         }
 
