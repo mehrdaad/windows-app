@@ -300,17 +300,11 @@ namespace wallabag.Data.ViewModels
 
             if (task.Action != OfflineTask.OfflineTaskAction.Delete)
             {
-                item = ItemViewModel.FromId(
-                    task.ItemId,
-                    _loggingService,
-                    _database,
-                    _offlineTaskService,
-                    _navigationService,
-                    _device);
+                item = Items.FirstOrDefault(i => i.Model.Id == task.ItemId);
 
                 if (item == null)
                 {
-                    _loggingService.WriteLine("The item doesn't seem to be longer existing in the database. Existing.");
+                    _loggingService.WriteLine("The item doesn't exist in the collection.");
                     return Task.FromResult(true);
                 }
             }
