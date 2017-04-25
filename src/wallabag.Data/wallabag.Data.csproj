@@ -44,6 +44,7 @@
     <Compile Include="Common\Helpers\UriHelper.cs" />
     <Compile Include="Common\Messages\CompleteMultipleSelectionMessage.cs" />
     <Compile Include="Common\Messages\LoadContentMessage.cs" />
+    <Compile Include="Common\NotifyTaskCompletion.cs" />
     <Compile Include="Services\OfflineTaskService\OfflineTaskAddedEventArgs.cs" />
     <Compile Include="Services\OfflineTaskService\OfflineTaskExecutedEventArgs.cs" />
     <Compile Include="Common\Messages\ShowLoginMessage.cs" />
