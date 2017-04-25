@@ -19,7 +19,21 @@ namespace wallabag.Views
         public ShareTargetPage()
         {
             InitializeComponent();
-            ViewModel.OnAddingCompleted += (s, e) => _shareOperation.ReportCompleted();
+            ViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(ViewModel.AddingTask))
+                {
+                    AddStoryboard.Begin();
+
+                    ViewModel.AddingTask.PropertyChanged += (sender, args) =>
+                    {
+                        if (args.PropertyName == "IsCompleted")
+                            CompletedStoryboard.Begin();
+                    };
+                }
+            };
+
+            CompletedStoryboard.Completed += (s, e) => _shareOperation.ReportCompleted();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
