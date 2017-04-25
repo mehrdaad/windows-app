@@ -13,6 +13,7 @@ using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Services;
+using wallabag.Data.Services.OfflineTaskService;
 
 namespace wallabag.Data.ViewModels
 {
@@ -73,7 +74,7 @@ namespace wallabag.Data.ViewModels
                 _navigationService.GoBack();
             });
 
-            SaveRightClickLinkCommand = new RelayCommand(() => _offlineTaskService.Add(RightClickUri.ToString(), new List<string>()));
+            SaveRightClickLinkCommand = new RelayCommand(() => _offlineTaskService.AddAsync(RightClickUri.ToString(), new List<string>()));
             OpenRightClickLinkInBrowserCommand = new RelayCommand(() => _device.LaunchUri(RightClickUri));
         }
 

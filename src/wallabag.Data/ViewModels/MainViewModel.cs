@@ -17,6 +17,7 @@ using wallabag.Data.Common.Messages;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
+using wallabag.Data.Services.OfflineTaskService;
 
 namespace wallabag.Data.ViewModels
 {
@@ -34,7 +35,6 @@ namespace wallabag.Data.ViewModels
         public ObservableCollection<ItemViewModel> Items { get; set; }
 
         // General
-        [AlsoNotifyFor(nameof(OfflineTaskIndicatorIsVisible))]
         public int OfflineTaskCount => _database.ExecuteScalar<int>("select count(*) from OfflineTask");
         public bool OfflineTaskIndicatorIsVisible => OfflineTaskCount > 0;
         public bool ItemsCountIsZero => Items.Count == 0;
@@ -122,20 +122,65 @@ namespace wallabag.Data.ViewModels
             Items = new ObservableCollection<ItemViewModel>();
             Items.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(ItemsCountIsZero));
 
-            _offlineTaskService.Tasks.CollectionChanged += async (s, e) =>
+            _offlineTaskService.TaskAdded += async (s, e) =>
             {
-                _loggingService.WriteLine($"The number of offline tasks changed. {e.NewItems?.Count ?? 0} new items, {e.OldItems?.Count ?? 0} old items.");
+                _loggingService.WriteLine($"A new OfflineTask was added. ID: {e.Task.Id}");
 
-                if (e.NewItems != null)
+                await _device.RunOnUIThreadAsync(async () =>
                 {
-                    var firstItem = e.NewItems[0] as OfflineTask;
-
-                    await _device.RunOnUIThreadAsync(async () =>
+                    if (e.PlaceholderItemId >= 0)
                     {
-                        RaisePropertyChanged(nameof(OfflineTaskCount));
-                        await ApplyUIChangesForOfflineTaskAsync(firstItem);
+                        var placeholder = ItemViewModel.FromId(
+                            e.PlaceholderItemId,
+                            _loggingService,
+                            _database,
+                            _offlineTaskService,
+                            _navigationService,
+                            _device);
+
+                        if (placeholder != null)
+                            Items.AddSorted(placeholder, sortAscending: CurrentSearchProperties.OrderAscending == true);
+                    }
+
+                    RaisePropertyChanged(nameof(OfflineTaskCount));
+                    RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
+
+                    await ApplyUIChangesForOfflineTaskAsync(e.Task, e.PlaceholderItemId);
+                });
+            };
+            _offlineTaskService.TaskExecuted += async (s, e) =>
+            {
+                _loggingService.WriteLine($"An OfflineTask was executed. ID: {e.Task.Id}");
+
+                if (e.Task.Action == OfflineTask.OfflineTaskAction.AddItem && e.Success)
+                {
+                    await _device.RunOnUIThreadAsync(() =>
+                    {
+                        var placeholder = Items.FirstOrDefault(x => x.Model.Id == e.PlaceholderItemId);
+
+                        if (placeholder != null)
+                            Items.Remove(placeholder);
+
+                        if (CurrentSearchProperties.ItemTypeIndex == 0)
+                        {
+                            var newItem = ItemViewModel.FromId(
+                                e.Task.ItemId,
+                                _loggingService,
+                                _database,
+                                _offlineTaskService,
+                                _navigationService,
+                                _device);
+                            Items.AddSorted(newItem, sortAscending: CurrentSearchProperties.OrderAscending == true);
+                        }
+
                     });
                 }
+
+                await _device.RunOnUIThreadAsync(() =>
+                {
+                    RaisePropertyChanged(nameof(OfflineTaskCount));
+                    RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
+                });
             };
         }
 
@@ -148,30 +193,11 @@ namespace wallabag.Data.ViewModels
                 CurrentSearchProperties.Replace(await Task.Run(() => JsonConvert.DeserializeObject<SearchProperties>(stateValue)));
             }
 
-            await ReloadViewAsync();
+            if (mode == NavigationMode.New)
+                await ReloadViewAsync();
 
             if (Settings.General.SyncOnStartup)
                 await SyncAsync();
-
-            Messenger.Default.Register<UpdateItemMessage>(this, message =>
-            {
-                var viewModel = ItemViewModel.FromId(
-                    message.ItemId,
-                    _loggingService,
-                    _database,
-                    _offlineTaskService,
-                    _navigationService,
-                    _device);
-
-                _loggingService.WriteLine($"Updating item with ID {message.ItemId}.");
-                _loggingService.WriteLineIf(viewModel == null, "Item does not exist in the database!", LoggingCategory.Warning);
-
-                if (viewModel != null && Items.Contains(viewModel))
-                {
-                    Items.Remove(viewModel); // This is only working because the app is just comparing the ID's
-                    Items.AddSorted(viewModel, sortAscending: CurrentSearchProperties.OrderAscending == true);
-                }
-            });
         }
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
         {
@@ -225,7 +251,7 @@ namespace wallabag.Data.ViewModels
                     _database.InsertOrReplaceAll(itemList);
                 });
 
-                if (Items.Count == 0 || databaseList[0].Equals(Items[0].Model) == false)
+                if (Items.Count == 0 /*|| databaseList[0].Equals(Items[0].Model) == false*/)
                     await ReloadViewAsync();
 
                 Settings.General.LastSuccessfulSyncDateTime = DateTime.Now;
@@ -264,7 +290,7 @@ namespace wallabag.Data.ViewModels
             });
             await GetMetadataForItemsAsync(Items);
         }
-        private Task ApplyUIChangesForOfflineTaskAsync(OfflineTask task)
+        private Task ApplyUIChangesForOfflineTaskAsync(OfflineTask task, int placeholderItemId = -1)
         {
             _loggingService.WriteLine("Executing UI changes for offline task.");
             _loggingService.WriteObject(task);
@@ -274,17 +300,11 @@ namespace wallabag.Data.ViewModels
 
             if (task.Action != OfflineTask.OfflineTaskAction.Delete)
             {
-                item = ItemViewModel.FromId(
-                    task.ItemId,
-                    _loggingService,
-                    _database,
-                    _offlineTaskService,
-                    _navigationService,
-                    _device);
+                item = Items.FirstOrDefault(i => i.Model.Id == task.ItemId);
 
                 if (item == null)
                 {
-                    _loggingService.WriteLine("The item doesn't seem to be longer existing in the database. Existing.");
+                    _loggingService.WriteLine("The item doesn't exist in the collection.");
                     return Task.FromResult(true);
                 }
             }
@@ -317,7 +337,17 @@ namespace wallabag.Data.ViewModels
                         break;
                     case OfflineTask.OfflineTaskAction.AddItem:
                         if (CurrentSearchProperties.ItemTypeIndex == 0)
-                            Items.AddSorted(item, sortAscending: orderAscending);
+                        {
+                            var placeholder = ItemViewModel.FromId(placeholderItemId,
+                                _loggingService,
+                                _database,
+                                _offlineTaskService,
+                                _navigationService,
+                                _device);
+
+                            if (placeholder != null)
+                                Items.AddSorted(placeholder, sortAscending: orderAscending);
+                        }
                         break;
                     case OfflineTask.OfflineTaskAction.Delete:
                         Items.Remove(Items.Where(i => i.Model.Id.Equals(task.ItemId)).First());

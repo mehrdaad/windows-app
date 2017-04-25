@@ -6,6 +6,7 @@ using System.Windows.Input;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
+using wallabag.Data.Services.OfflineTaskService;
 using static wallabag.Data.Common.Navigation;
 
 namespace wallabag.Data.ViewModels
@@ -52,39 +53,39 @@ namespace wallabag.Data.ViewModels
                 RaisePropertyChanged(nameof(item));
             };
 
-            MarkAsReadCommand = new RelayCommand(() =>
+            MarkAsReadCommand = new RelayCommand(async () =>
             {
                 _loggingService.WriteLine($"Marking item {item.Id} as read.");
                 item.IsRead = true;
                 UpdateItem();
-                _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
+                await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.MarkAsRead);
             });
-            UnmarkAsReadCommand = new RelayCommand(() =>
+            UnmarkAsReadCommand = new RelayCommand(async () =>
             {
                 _loggingService.WriteLine($"Marking item {item.Id} as unread.");
                 item.IsRead = false;
                 UpdateItem();
-                _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
+                await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.UnmarkAsRead);
             });
-            MarkAsStarredCommand = new RelayCommand(() =>
+            MarkAsStarredCommand = new RelayCommand(async () =>
             {
                 _loggingService.WriteLine($"Marking item {item.Id} as favorite.");
                 item.IsStarred = true;
                 UpdateItem();
-                _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
+                await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.MarkAsStarred);
             });
-            UnmarkAsStarredCommand = new RelayCommand(() =>
+            UnmarkAsStarredCommand = new RelayCommand(async () =>
             {
                 _loggingService.WriteLine($"Marking item {item.Id} as unfavorite.");
                 item.IsStarred = false;
                 UpdateItem();
-                _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
+                await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.UnmarkAsStarred);
             });
-            DeleteCommand = new RelayCommand(() =>
+            DeleteCommand = new RelayCommand(async () =>
             {
                 _loggingService.WriteLine($"Deleting item {item.Id}.");
                 _database.Delete(item);
-                _offlineTaskService.Add(item.Id, OfflineTask.OfflineTaskAction.Delete);
+                await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.Delete);
             });
             ShareCommand = new RelayCommand(() =>
             {

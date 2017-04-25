@@ -1,6 +1,4 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Messaging;
-using SQLite.Net;
+﻿using SQLite.Net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,12 +7,11 @@ using System.Threading.Tasks;
 using wallabag.Api;
 using wallabag.Api.Models;
 using wallabag.Data.Common.Helpers;
-using wallabag.Data.Common.Messages;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using static wallabag.Data.Models.OfflineTask;
 
-namespace wallabag.Data.Services
+namespace wallabag.Data.Services.OfflineTaskService
 {
     public class OfflineTaskService : IOfflineTaskService
     {
@@ -22,8 +19,12 @@ namespace wallabag.Data.Services
         private readonly SQLiteConnection _database;
         private readonly ILoggingService _loggingService;
         private readonly IPlatformSpecific _platform;
+        private int _lastItemId => _database.ExecuteScalar<int>("select Max(ID) from 'Item'");
 
-        public ObservableCollection<OfflineTask> Tasks { get; private set; }
+        public const string m_PLACEHOLDER_PREFIX = "//wallabag-placeholder-";
+        public int Count => _database.ExecuteScalar<int>("select count(*) from OfflineTask");
+        public event EventHandler<OfflineTaskAddedEventArgs> TaskAdded;
+        public event EventHandler<OfflineTaskExecutedEventArgs> TaskExecuted;
 
         public OfflineTaskService(IWallabagClient client, SQLiteConnection database, ILoggingService loggingService, IPlatformSpecific platform)
         {
@@ -31,33 +32,28 @@ namespace wallabag.Data.Services
             _database = database;
             _loggingService = loggingService;
             _platform = platform;
-
-            Tasks = new ObservableCollection<OfflineTask>(_database.Table<OfflineTask>());
-            Tasks.CollectionChanged += async (s, e) =>
-            {
-                if (e.NewItems != null && e.NewItems.Count > 0)
-                    await ExecuteAsync(e.NewItems[0] as OfflineTask);
-            };
         }
 
         public async Task ExecuteAllAsync()
         {
-            _loggingService.WriteLine($"Executing all offline tasks. Number of tasks: {Tasks.Count}");
+            _loggingService.WriteLine($"Executing all offline tasks. Number of tasks: {Count}");
 
-            var tasks = Tasks.ToList();
+            var tasks = _database.Table<OfflineTask>();
             foreach (var task in tasks)
                 await ExecuteAsync(task);
 
-            _loggingService.WriteLine($"Execution finished. Number of failed tasks: {Tasks.Count}");
+            _loggingService.WriteLine($"Execution finished. Number of failed tasks: {Count}");
         }
-        private async Task ExecuteAsync(OfflineTask task)
+        public async Task<bool> ExecuteAsync(OfflineTask task)
         {
             _loggingService.WriteLine($"Executing task {task.Id} with action {task.Action} for item {task.ItemId}.");
+            int placeholderId = -1;
 
             if (_platform.InternetConnectionIsAvailable == false)
             {
                 _loggingService.WriteLine("No internet connection available. Cancelled.");
-                return;
+                TaskExecuted?.Invoke(this, new OfflineTaskExecutedEventArgs(task, -1, false));
+                return false;
             }
 
             bool executionIsSuccessful = false;
@@ -115,13 +111,16 @@ namespace wallabag.Data.Services
                     executionIsSuccessful = _database.Update(item) == 1;
                     break;
                 case OfflineTaskAction.AddItem:
-                    var newItem = await _client.AddAsync(new Uri(task.Url), task.Tags);
+                    placeholderId = _database.FindWithQuery<Item>("select Id from Item where Content=?", m_PLACEHOLDER_PREFIX + task.Id)?.Id ?? -1;
 
+                    if (placeholderId >= 0)
+                        _database.Delete<Item>(placeholderId);
+
+                    var newItem = await _client.AddAsync(new Uri(task.Url), task.Tags);
                     if (newItem != null)
-                    {
                         _database.InsertOrReplace((Item)newItem);
-                        Messenger.Default.Send(new UpdateItemMessage(newItem.Id));
-                    }
+
+                    task.ItemId = newItem.Id;
 
                     executionIsSuccessful = newItem != null;
                     break;
@@ -134,28 +133,50 @@ namespace wallabag.Data.Services
 
             if (executionIsSuccessful)
             {
-                _loggingService.WriteLine("Execution was successful.");
-                Tasks.Remove(task);
+                _loggingService.WriteLine($"Execution of task {task.Id} was successful.");
                 _database.Delete(task);
             }
-
             _loggingService.WriteLineIf(!executionIsSuccessful, "Execution was not successful.", LoggingCategory.Warning);
+
+            TaskExecuted?.Invoke(this, new OfflineTaskExecutedEventArgs(task, placeholderId, executionIsSuccessful));
+
+            return executionIsSuccessful;
         }
 
-        public void Add(string url, IEnumerable<string> newTags)
+        public Task AddAsync(string url, IEnumerable<string> newTags)
         {
             _loggingService.WriteLine($"Adding task for URL '{url}' with {newTags.Count()} tags: {string.Join(",", newTags)}");
+            Uri.TryCreate(url, UriKind.Absolute, out var uri);
 
             var newTask = new OfflineTask()
             {
-                ItemId = LastItemId,
+                ItemId = _lastItemId,
                 Action = OfflineTaskAction.AddItem,
                 Url = url,
                 Tags = newTags.ToList()
             };
-            InsertTask(newTask);
+
+            _database.Insert(newTask);
+
+            // Fetch task ID from database
+            newTask.Id = _database.FindWithQuery<OfflineTask>("select Id from OfflineTask where ItemId=? and Action=?", newTask.ItemId, newTask.Action).Id;
+
+            _loggingService.WriteLine($"Inserting new placeholder item for task {newTask.Id} into the database.");
+            _database.Insert(new Item()
+            {
+                Id = _lastItemId + 1,
+                Title = uri.Host,
+                Url = url,
+                Hostname = uri.Host,
+                Content = m_PLACEHOLDER_PREFIX + newTask.Id
+            });
+
+            int placeholderItemId = _database.FindWithQuery<Item>("select Id from Item where Content=?", m_PLACEHOLDER_PREFIX + newTask.Id).Id;
+            TaskAdded?.Invoke(this, new OfflineTaskAddedEventArgs(newTask, placeholderItemId));
+
+            return ExecuteAsync(newTask);
         }
-        public void Add(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
+        public Task AddAsync(int itemId, OfflineTaskAction action, List<Tag> addTagsList = null, List<Tag> removeTagsList = null)
         {
             _loggingService.WriteLine($"Adding task for item {itemId} with action {action}. {addTagsList?.Count} new tags, {removeTagsList?.Count} removed tags.");
 
@@ -167,15 +188,15 @@ namespace wallabag.Data.Services
                 RemovedTags = removeTagsList
             };
             InsertTask(newTask);
+
+            return ExecuteAsync(newTask);
         }
         private void InsertTask(OfflineTask newTask)
         {
             _loggingService.WriteLine("Inserting task into database.");
-
-            Tasks.Add(newTask);
             _database.Insert(newTask);
-        }
 
-        public int LastItemId => _database.ExecuteScalar<int>("select Max(ID) from 'Item'");
+            TaskAdded?.Invoke(this, new OfflineTaskAddedEventArgs(newTask));
+        }
     }
 }
