@@ -296,44 +296,50 @@ namespace wallabag.Views
         }
         private void InitializeFrostedGlass(Border blurHost)
         {
-            var compositor = ElementCompositionPreview.GetElementVisual(blurHost).Compositor;
-
-            // Create a frosty glass effect
-            var frostEffect = new GaussianBlurEffect
+            var color = (Color)blurHost.Resources["SystemChromeMediumColor"];
+            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionBackdropBrush"))
             {
-                BlurAmount = 5.0f,
-                BorderMode = EffectBorderMode.Hard,
-                Source = new ArithmeticCompositeEffect
+                var compositor = ElementCompositionPreview.GetElementVisual(blurHost).Compositor;
+
+                // Create a frosty glass effect
+                var frostEffect = new GaussianBlurEffect
                 {
-                    MultiplyAmount = 0,
-                    Source1Amount = 0.2f,
-                    Source2Amount = 0.8f,
-                    Source1 = new CompositionEffectSourceParameter("backdropBrush"),
-                    Source2 = new ColorSourceEffect
+                    BlurAmount = 5.0f,
+                    BorderMode = EffectBorderMode.Hard,
+                    Source = new ArithmeticCompositeEffect
                     {
-                        Color = (Color)blurHost.Resources["SystemChromeMediumColor"]
+                        MultiplyAmount = 0,
+                        Source1Amount = 0.2f,
+                        Source2Amount = 0.8f,
+                        Source1 = new CompositionEffectSourceParameter("backdropBrush"),
+                        Source2 = new ColorSourceEffect
+                        {
+                            Color = color
+                        }
                     }
-                }
-            };
+                };
 
-            // Create an instance of the effect and set its source to a CompositionBackdropBrush
-            var effectFactory = compositor.CreateEffectFactory(frostEffect);
-            var backdropBrush = compositor.CreateBackdropBrush();
-            var effectBrush = effectFactory.CreateBrush();
+                // Create an instance of the effect and set its source to a CompositionBackdropBrush
+                var effectFactory = compositor.CreateEffectFactory(frostEffect);
+                var backdropBrush = compositor.CreateBackdropBrush();
+                var effectBrush = effectFactory.CreateBrush();
 
-            effectBrush.SetSourceParameter("backdropBrush", backdropBrush);
+                effectBrush.SetSourceParameter("backdropBrush", backdropBrush);
 
-            var frostVisual = compositor.CreateSpriteVisual();
-            frostVisual.Brush = effectBrush;
+                var frostVisual = compositor.CreateSpriteVisual();
+                frostVisual.Brush = effectBrush;
 
-            // Add the blur as a child of the host in the visual tree
-            ElementCompositionPreview.SetElementChildVisual(blurHost, frostVisual);
+                // Add the blur as a child of the host in the visual tree
+                ElementCompositionPreview.SetElementChildVisual(blurHost, frostVisual);
 
-            // Make sure size of frost host and frost visual always stay in sync
-            var bindSizeAnimation = compositor.CreateExpressionAnimation("hostVisual.Size");
-            bindSizeAnimation.SetReferenceParameter("hostVisual", ElementCompositionPreview.GetElementVisual(blurHost));
+                // Make sure size of frost host and frost visual always stay in sync
+                var bindSizeAnimation = compositor.CreateExpressionAnimation("hostVisual.Size");
+                bindSizeAnimation.SetReferenceParameter("hostVisual", ElementCompositionPreview.GetElementVisual(blurHost));
 
-            frostVisual.StartAnimation("Size", bindSizeAnimation);
+                frostVisual.StartAnimation("Size", bindSizeAnimation);
+            }
+            else
+                blurHost.Background = new SolidColorBrush(color);
         }
     }
 }
