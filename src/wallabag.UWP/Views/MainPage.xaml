@@ -230,6 +230,13 @@
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+
+        <ItemsPanelTemplate x:Name="GridTemplate">
+            <ItemsWrapGrid Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+        <ItemsPanelTemplate x:Name="StackTemplate">
+            <ItemsStackPanel Orientation="Vertical" />
+        </ItemsPanelTemplate>
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -639,6 +646,7 @@
                 <VisualState x:Name="Narrow">
                     <VisualState.Setters>
                         <Setter Target="ItemGridView.MinItemHeight" Value="75" />
+                        <Setter Target="ItemGridView.ItemsPanel" Value="{StaticResource StackTemplate}" />
                         <Setter Target="filterStackPanel.VerticalAlignment" Value="Bottom" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
@@ -649,12 +657,13 @@
                     <VisualState.Setters>
                         <Setter Target="searchBox.HorizontalAlignment" Value="Right" />
                         <Setter Target="searchBox.MinWidth" Value="300" />
+                        <Setter Target="ItemGridView.ItemsPanel" Value="{StaticResource GridTemplate}" />
                         <Setter Target="filterStackPanel.HorizontalAlignment" Value="Right" />
                         <Setter Target="filterStackPanel.VerticalAlignment" Value="Bottom" />
                         <Setter Target="filterStackPanel.MinWidth" Value="300" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="607" />
+                        <AdaptiveTrigger MinWindowWidth="680" />
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
