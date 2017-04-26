@@ -237,6 +237,95 @@
         <ItemsPanelTemplate x:Name="StackTemplate">
             <ItemsStackPanel Orientation="Vertical" />
         </ItemsPanelTemplate>
+
+        <DataTemplate x:Name="GridItemTemplate" x:DataType="vm:ItemViewModel">
+            <Grid x:Name="RootPanel" Loaded="RootPanel_Loaded">
+                <Image x:Name="image" Stretch="UniformToFill">
+                    <Image.Source>
+                        <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />
+                    </Image.Source>
+                </Image>
+                <Grid VerticalAlignment="Bottom">
+                    <Border x:Name="blurHost" />
+                    <StackPanel Padding="16">
+                        <TextBlock
+                            x:Name="Title"
+                            FontWeight="SemiBold"
+                            MaxLines="2"
+                            Text="{x:Bind Model.Title}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="Wrap" />
+                        <StackPanel
+                            Margin="0,8,0,0"
+                            Opacity=".7"
+                            Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.Hostname}" />
+                            <TextBlock
+                                Margin="8,0,4,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="&#xE2AD;" />
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.EstimatedReadingTime}" />
+                        </StackPanel>
+                        <StackPanel
+                            x:Name="tagsIndicator"
+                            Margin="0,16,0,8"
+                            Orientation="Horizontal"
+                            Visibility="{x:Bind TagsAreExisting, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock
+                                Margin="0,0,4,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="&#xE1CB;" />
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind TagsString, Mode=OneWay}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Name="StackItemTemplate" x:DataType="vm:ItemViewModel">
+            <Grid x:Name="RootPanel">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Image
+                    x:Name="image"
+                    Grid.Column="1"
+                    MaxWidth="70"
+                    Stretch="UniformToFill">
+                    <Image.Source>
+                        <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />
+                    </Image.Source>
+                </Image>
+                <Grid VerticalAlignment="Bottom">
+                    <StackPanel Padding="16">
+                        <TextBlock
+                            x:Name="Title"
+                            FontWeight="SemiBold"
+                            MaxLines="2"
+                            Text="{x:Bind Model.Title}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="Wrap" />
+                        <StackPanel
+                            Margin="0,8,0,0"
+                            Opacity=".7"
+                            Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.Hostname}" />
+                            <TextBlock
+                                Margin="8,0,4,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="&#xE2AD;" />
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.EstimatedReadingTime}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </DataTemplate>
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -268,59 +357,10 @@
                     Padding="4"
                     IsItemClickEnabled="True"
                     ItemClick="ItemGridView_ItemClick"
+                    ItemTemplate="{StaticResource GridItemTemplate}"
                     ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
                     MinItemHeight="220"
-                    MinItemWidth="300">
-                    <controls:AdaptiveGridView.ItemTemplate>
-                        <DataTemplate x:DataType="vm:ItemViewModel">
-                            <Grid x:Name="RootPanel" Loaded="RootPanel_Loaded">
-                                <Image x:Name="image" Stretch="UniformToFill">
-                                    <Image.Source>
-                                        <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />
-                                    </Image.Source>
-                                </Image>
-                                <Grid VerticalAlignment="Bottom">
-                                    <Border x:Name="blurHost" />
-                                    <StackPanel Padding="16">
-                                        <TextBlock
-                                            x:Name="Title"
-                                            FontWeight="SemiBold"
-                                            MaxLines="2"
-                                            Text="{x:Bind Model.Title}"
-                                            TextTrimming="CharacterEllipsis"
-                                            TextWrapping="Wrap" />
-                                        <StackPanel
-                                            Margin="0,8,0,0"
-                                            Opacity=".7"
-                                            Orientation="Horizontal">
-                                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.Hostname}" />
-                                            <TextBlock
-                                                Margin="8,0,4,0"
-                                                VerticalAlignment="Center"
-                                                FontFamily="Segoe MDL2 Assets"
-                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                                Text="&#xE2AD;" />
-                                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Model.EstimatedReadingTime}" />
-                                        </StackPanel>
-                                        <StackPanel
-                                            x:Name="tagsIndicator"
-                                            Margin="0,16,0,8"
-                                            Orientation="Horizontal"
-                                            Visibility="{x:Bind TagsAreExisting, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                            <TextBlock
-                                                Margin="0,0,4,0"
-                                                VerticalAlignment="Center"
-                                                FontFamily="Segoe MDL2 Assets"
-                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                                Text="&#xE1CB;" />
-                                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind TagsString, Mode=OneWay}" />
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Grid>
-                            </Grid>
-                        </DataTemplate>
-                    </controls:AdaptiveGridView.ItemTemplate>
-                </controls:AdaptiveGridView>
+                    MinItemWidth="300" />
             </PivotItem>
             <PivotItem x:Uid="FavoritesPivotItem" Header="FAVORITES" />
             <PivotItem x:Uid="ArchivedPivotItem" Header="ARCHIVED" />
@@ -647,6 +687,7 @@
                     <VisualState.Setters>
                         <Setter Target="ItemGridView.MinItemHeight" Value="75" />
                         <Setter Target="ItemGridView.ItemsPanel" Value="{StaticResource StackTemplate}" />
+                        <Setter Target="ItemGridView.ItemTemplate" Value="{StaticResource StackItemTemplate}" />
                         <Setter Target="filterStackPanel.VerticalAlignment" Value="Bottom" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
@@ -658,6 +699,7 @@
                         <Setter Target="searchBox.HorizontalAlignment" Value="Right" />
                         <Setter Target="searchBox.MinWidth" Value="300" />
                         <Setter Target="ItemGridView.ItemsPanel" Value="{StaticResource GridTemplate}" />
+                        <Setter Target="ItemGridView.ItemTemplate" Value="{StaticResource GridItemTemplate}" />
                         <Setter Target="filterStackPanel.HorizontalAlignment" Value="Right" />
                         <Setter Target="filterStackPanel.VerticalAlignment" Value="Bottom" />
                         <Setter Target="filterStackPanel.MinWidth" Value="300" />
