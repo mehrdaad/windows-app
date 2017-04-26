@@ -1,17 +1,23 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Graphics.Canvas.Effects;
 using PropertyChanged;
 using System;
 using System.Linq;
+using System.Numerics;
 using wallabag.Common.Helpers;
 using wallabag.Controls;
 using wallabag.Data.Common.Messages;
 using wallabag.Data.ViewModels;
 using wallabag.Dialogs;
 using Windows.Foundation;
+using Windows.Graphics.Effects;
 using Windows.System;
+using Windows.UI;
+using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -226,6 +232,108 @@ namespace wallabag.Views
         {
             if (e.ClickedItem != null)
                 ViewModel.ItemClickCommand.Execute(e.ClickedItem);
+        }
+
+        private void RootPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            var panel = sender as Grid;
+            var compositor = ElementCompositionPreview.GetElementVisual(panel).Compositor;
+
+            var blurHost = panel.FindName("blurHost") as Border;
+            var image = panel.FindName("image") as Image;
+
+            InitializeFrostedGlass(blurHost);
+            InitializeImageZoomAnimation(panel, image);
+        }
+
+        private void InitializeImageZoomAnimation(Grid root, Image image)
+        {
+            root.Clip = new RectangleGeometry()
+            {
+                Rect = new Rect(0, 0, root.ActualWidth, root.ActualHeight)
+            };
+
+            var imageVisual = ElementCompositionPreview.GetElementVisual(image);
+            var compositor = imageVisual.Compositor;
+
+            if (imageVisual.CenterPoint.X == 0 && imageVisual.CenterPoint.Y == 0)
+                imageVisual.CenterPoint = new Vector3((float)root.ActualWidth / 2, (float)root.ActualHeight / 2, 0f);
+
+            root.PointerEntered += (s, e) =>
+            {
+                if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
+                {
+                    var animation = CreateScaleAnimation(true);
+                    imageVisual.StartAnimation("Scale.X", animation);
+                    imageVisual.StartAnimation("Scale.Y", animation);
+                }
+            };
+            root.PointerExited += (s, e) =>
+            {
+                if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
+                {
+                    var animation = CreateScaleAnimation(false);
+                    imageVisual.StartAnimation("Scale.X", animation);
+                    imageVisual.StartAnimation("Scale.Y", animation);
+                }
+            };
+            root.SizeChanged += (s, e) =>
+        {
+            root.Clip = new RectangleGeometry()
+            {
+                Rect = new Rect(0, 0, root.ActualWidth, root.ActualHeight)
+            };
+        };
+
+            ScalarKeyFrameAnimation CreateScaleAnimation(bool show)
+            {
+                var scaleAnimation = compositor.CreateScalarKeyFrameAnimation();
+                scaleAnimation.InsertKeyFrame(1f, show ? 1.1f : 1f);
+                scaleAnimation.Duration = TimeSpan.FromMilliseconds(700);
+                scaleAnimation.StopBehavior = AnimationStopBehavior.LeaveCurrentValue;
+                return scaleAnimation;
+            }
+        }
+        private void InitializeFrostedGlass(Border blurHost)
+        {
+            var compositor = ElementCompositionPreview.GetElementVisual(blurHost).Compositor;
+
+            // Create a frosty glass effect
+            var frostEffect = new GaussianBlurEffect
+            {
+                BlurAmount = 5.0f,
+                BorderMode = EffectBorderMode.Hard,
+                Source = new ArithmeticCompositeEffect
+                {
+                    MultiplyAmount = 0,
+                    Source1Amount = 0.2f,
+                    Source2Amount = 0.8f,
+                    Source1 = new CompositionEffectSourceParameter("backdropBrush"),
+                    Source2 = new ColorSourceEffect
+                    {
+                        Color = (Color)blurHost.Resources["SystemChromeMediumColor"]
+                    }
+                }
+            };
+
+            // Create an instance of the effect and set its source to a CompositionBackdropBrush
+            var effectFactory = compositor.CreateEffectFactory(frostEffect);
+            var backdropBrush = compositor.CreateBackdropBrush();
+            var effectBrush = effectFactory.CreateBrush();
+
+            effectBrush.SetSourceParameter("backdropBrush", backdropBrush);
+
+            var frostVisual = compositor.CreateSpriteVisual();
+            frostVisual.Brush = effectBrush;
+
+            // Add the blur as a child of the host in the visual tree
+            ElementCompositionPreview.SetElementChildVisual(blurHost, frostVisual);
+
+            // Make sure size of frost host and frost visual always stay in sync
+            var bindSizeAnimation = compositor.CreateExpressionAnimation("hostVisual.Size");
+            bindSizeAnimation.SetReferenceParameter("hostVisual", ElementCompositionPreview.GetElementVisual(blurHost));
+
+            frostVisual.StartAnimation("Size", bindSizeAnimation);
         }
     }
 }
