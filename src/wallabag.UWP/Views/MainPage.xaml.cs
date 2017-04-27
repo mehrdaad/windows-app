@@ -11,7 +11,6 @@ using wallabag.Data.Common.Messages;
 using wallabag.Data.ViewModels;
 using wallabag.Dialogs;
 using Windows.Foundation;
-using Windows.Graphics.Effects;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Composition;
@@ -34,11 +33,13 @@ namespace wallabag.Views
     {
         private ContentDialog _loginDialog;
         private bool _loginDialogIsOpen = false;
+        private Compositor _compositor;
         public MainViewModel ViewModel => DataContext as MainViewModel;
 
         public MainPage()
         {
             InitializeComponent();
+            _compositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
             ItemGridView.SelectionChanged += (s, e) =>
@@ -237,7 +238,6 @@ namespace wallabag.Views
         private void RootPanel_Loaded(object sender, RoutedEventArgs e)
         {
             var panel = sender as Grid;
-            var compositor = ElementCompositionPreview.GetElementVisual(panel).Compositor;
 
             var blurHost = panel.FindName("blurHost") as Border;
             var image = panel.FindName("image") as Image;
@@ -254,7 +254,6 @@ namespace wallabag.Views
             };
 
             var imageVisual = ElementCompositionPreview.GetElementVisual(image);
-            var compositor = imageVisual.Compositor;
 
             if (imageVisual.CenterPoint.X == 0 && imageVisual.CenterPoint.Y == 0)
                 imageVisual.CenterPoint = new Vector3((float)root.ActualWidth / 2, (float)root.ActualHeight / 2, 0f);
@@ -287,7 +286,7 @@ namespace wallabag.Views
 
             ScalarKeyFrameAnimation CreateScaleAnimation(bool show)
             {
-                var scaleAnimation = compositor.CreateScalarKeyFrameAnimation();
+                var scaleAnimation = _compositor.CreateScalarKeyFrameAnimation();
                 scaleAnimation.InsertKeyFrame(1f, show ? 1.1f : 1f);
                 scaleAnimation.Duration = TimeSpan.FromMilliseconds(700);
                 scaleAnimation.StopBehavior = AnimationStopBehavior.LeaveCurrentValue;
@@ -299,8 +298,6 @@ namespace wallabag.Views
             var color = (Color)blurHost.Resources["SystemChromeMediumColor"];
             if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionBackdropBrush"))
             {
-                var compositor = ElementCompositionPreview.GetElementVisual(blurHost).Compositor;
-
                 // Create a frosty glass effect
                 var frostEffect = new GaussianBlurEffect
                 {
@@ -320,20 +317,20 @@ namespace wallabag.Views
                 };
 
                 // Create an instance of the effect and set its source to a CompositionBackdropBrush
-                var effectFactory = compositor.CreateEffectFactory(frostEffect);
-                var backdropBrush = compositor.CreateBackdropBrush();
+                var effectFactory = _compositor.CreateEffectFactory(frostEffect);
+                var backdropBrush = _compositor.CreateBackdropBrush();
                 var effectBrush = effectFactory.CreateBrush();
 
                 effectBrush.SetSourceParameter("backdropBrush", backdropBrush);
 
-                var frostVisual = compositor.CreateSpriteVisual();
+                var frostVisual = _compositor.CreateSpriteVisual();
                 frostVisual.Brush = effectBrush;
 
                 // Add the blur as a child of the host in the visual tree
                 ElementCompositionPreview.SetElementChildVisual(blurHost, frostVisual);
 
                 // Make sure size of frost host and frost visual always stay in sync
-                var bindSizeAnimation = compositor.CreateExpressionAnimation("hostVisual.Size");
+                var bindSizeAnimation = _compositor.CreateExpressionAnimation("hostVisual.Size");
                 bindSizeAnimation.SetReferenceParameter("hostVisual", ElementCompositionPreview.GetElementVisual(blurHost));
 
                 frostVisual.StartAnimation("Size", bindSizeAnimation);
