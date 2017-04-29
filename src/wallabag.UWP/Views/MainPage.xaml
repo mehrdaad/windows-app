@@ -239,7 +239,10 @@
         </ItemsPanelTemplate>
 
         <DataTemplate x:Name="GridItemTemplate" x:DataType="vm:ItemViewModel">
-            <Grid x:Name="RootPanel" Loaded="RootPanel_Loaded">
+            <Grid
+                x:Name="RootPanel"
+                Loaded="RootPanel_Loaded"
+                Unloaded="RootPanel_Unloaded">
                 <Image x:Name="image" Stretch="UniformToFill">
                     <Image.Source>
                         <BitmapImage x:Name="RootImageSource" UriSource="{x:Bind Model.PreviewImageUri}" />

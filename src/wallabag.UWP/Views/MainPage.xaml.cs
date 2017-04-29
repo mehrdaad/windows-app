@@ -235,6 +235,8 @@ namespace wallabag.Views
                 ViewModel.ItemClickCommand.Execute(e.ClickedItem);
         }
 
+        #region UI & Blur
+
         private void RootPanel_Loaded(object sender, RoutedEventArgs e)
         {
             var panel = sender as Grid;
@@ -243,56 +245,66 @@ namespace wallabag.Views
             var image = panel.FindName("image") as Image;
 
             InitializeFrostedGlass(blurHost);
-            InitializeImageZoomAnimation(panel, image);
-        }
-
-        private void InitializeImageZoomAnimation(Grid root, Image image)
-        {
-            root.Clip = new RectangleGeometry()
-            {
-                Rect = new Rect(0, 0, root.ActualWidth, root.ActualHeight)
-            };
 
             var imageVisual = ElementCompositionPreview.GetElementVisual(image);
 
             if (imageVisual.CenterPoint.X == 0 && imageVisual.CenterPoint.Y == 0)
-                imageVisual.CenterPoint = new Vector3((float)root.ActualWidth / 2, (float)root.ActualHeight / 2, 0f);
+                imageVisual.CenterPoint = new Vector3((float)panel.ActualWidth / 2, (float)panel.ActualHeight / 2, 0f);
 
-            root.PointerEntered += (s, e) =>
+            panel.PointerEntered += ZoomInToImage;
+            panel.PointerExited += ZoomOutOfImage;
+
+            panel.Clip = new RectangleGeometry()
             {
-                if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
-                {
-                    var animation = CreateScaleAnimation(true);
-                    imageVisual.StartAnimation("Scale.X", animation);
-                    imageVisual.StartAnimation("Scale.Y", animation);
-                }
+                Rect = new Rect(0, 0, panel.ActualWidth, panel.ActualHeight)
             };
-            root.PointerExited += (s, e) =>
+            panel.SizeChanged += (s, args) =>
             {
-                if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
+                panel.Clip = new RectangleGeometry()
                 {
-                    var animation = CreateScaleAnimation(false);
-                    imageVisual.StartAnimation("Scale.X", animation);
-                    imageVisual.StartAnimation("Scale.Y", animation);
-                }
+                    Rect = new Rect(0, 0, panel.ActualWidth, panel.ActualHeight)
+                };
             };
-            root.SizeChanged += (s, e) =>
+        }
+        private void RootPanel_Unloaded(object sender, RoutedEventArgs e)
         {
-            root.Clip = new RectangleGeometry()
-            {
-                Rect = new Rect(0, 0, root.ActualWidth, root.ActualHeight)
-            };
-        };
+            var panel = sender as Grid;
 
-            ScalarKeyFrameAnimation CreateScaleAnimation(bool show)
+            panel.PointerEntered -= ZoomInToImage;
+            panel.PointerExited -= ZoomOutOfImage;
+        }
+        private ScalarKeyFrameAnimation CreateScaleAnimation(bool show)
+        {
+            var scaleAnimation = _compositor.CreateScalarKeyFrameAnimation();
+            scaleAnimation.InsertKeyFrame(1f, show ? 1.1f : 1f);
+            scaleAnimation.Duration = TimeSpan.FromMilliseconds(700);
+            scaleAnimation.StopBehavior = AnimationStopBehavior.LeaveCurrentValue;
+            return scaleAnimation;
+        }
+
+        private void ZoomInToImage(object sender, PointerRoutedEventArgs e)
+        {
+            var imageVisual = ElementCompositionPreview.GetElementVisual((sender as Grid).FindName("image") as Image);
+
+            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
             {
-                var scaleAnimation = _compositor.CreateScalarKeyFrameAnimation();
-                scaleAnimation.InsertKeyFrame(1f, show ? 1.1f : 1f);
-                scaleAnimation.Duration = TimeSpan.FromMilliseconds(700);
-                scaleAnimation.StopBehavior = AnimationStopBehavior.LeaveCurrentValue;
-                return scaleAnimation;
+                var scaleAnimation = CreateScaleAnimation(true);
+                imageVisual.StartAnimation("Scale.X", scaleAnimation);
+                imageVisual.StartAnimation("Scale.Y", scaleAnimation);
             }
         }
+        private void ZoomOutOfImage(object sender, PointerRoutedEventArgs e)
+        {
+            var imageVisual = ElementCompositionPreview.GetElementVisual((sender as Grid).FindName("image") as Image);
+
+            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
+            {
+                var scaleAnimation = CreateScaleAnimation(false);
+                imageVisual.StartAnimation("Scale.X", scaleAnimation);
+                imageVisual.StartAnimation("Scale.Y", scaleAnimation);
+            }
+        }
+
         private void InitializeFrostedGlass(Border blurHost)
         {
             var color = (Color)blurHost.Resources["SystemChromeMediumColor"];
@@ -338,5 +350,7 @@ namespace wallabag.Views
             else
                 blurHost.Background = new SolidColorBrush(color);
         }
+
+        #endregion
     }
 }
