@@ -89,7 +89,10 @@ namespace wallabag.Views
                     }
 
                     if (!_loginDialogIsOpen)
+                    {
+                        _loginDialogIsOpen = true;
                         await _loginDialog.ShowAsync();
+                    }
                 }
             });
         }
