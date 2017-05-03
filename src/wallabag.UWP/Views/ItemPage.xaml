@@ -128,7 +128,7 @@
         </MenuFlyout>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="{x:Bind ColorApplicationTheme, Mode=OneWay}">
+    <Grid Background="{x:Bind BackgroundBrush, Mode=OneWay}" RequestedTheme="{x:Bind ColorApplicationTheme, Mode=OneWay}">
         <WebView
             x:Name="HtmlViewer"
             NavigationCompleted="HtmlViewer_NavigationCompleted"
