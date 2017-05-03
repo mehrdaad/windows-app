@@ -516,4 +516,7 @@
   <data name="ReLoginErrorMessageTextBlock.Text" xml:space="preserve">
     <value>Da ist etwas schiefgelaufen. Um wallabag weiter benutzen zu können, melde dich bitte erneut an. Wenn die Anmeldedaten korrekt sind, schließt sich dieser Dialog automatisch.</value>
   </data>
+  <data name="LoginDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
 </root>

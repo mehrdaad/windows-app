@@ -18,10 +18,17 @@ namespace wallabag.Dialogs
 
             this.Closing += (s, e) => e.Cancel = _blockClosing;
 
-            ViewModel.ReloginCompleted += (s, e) => {
+            ViewModel.ReloginCompleted += (s, e) =>
+            {
                 _blockClosing = false;
                 Hide();
             };
+        }
+
+        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            _blockClosing = false;
+            Hide();
         }
     }
 }

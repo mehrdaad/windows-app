@@ -9,6 +9,8 @@
     DataContext="{Binding Login, Source={StaticResource Locator}}"
     PrimaryButtonCommand="{x:Bind ViewModel.ReLoginCommand}"
     PrimaryButtonText="Login"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    SecondaryButtonText="Close"
     TitleTemplate="{StaticResource ContentDialogTitleDataTemplate}"
     mc:Ignorable="d">
 
