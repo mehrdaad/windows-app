@@ -8,6 +8,7 @@ using System.Numerics;
 using wallabag.Common.Helpers;
 using wallabag.Controls;
 using wallabag.Data.Common.Messages;
+using wallabag.Data.Interfaces;
 using wallabag.Data.ViewModels;
 using wallabag.Dialogs;
 using Windows.Foundation;
@@ -78,15 +79,18 @@ namespace wallabag.Views
             Messenger.Default.Register<CompleteMultipleSelectionMessage>(this, message => DisableMultipleSelection(true));
             Messenger.Default.Register<ShowLoginMessage>(this, async message =>
             {
-                if (_loginDialog == null)
+                if (SimpleIoc.Default.GetInstance<IPlatformSpecific>().InternetConnectionIsAvailable)
                 {
-                    _loginDialog = new LoginDialog();
-                    _loginDialog.Opened += (s, args) => _loginDialogIsOpen = true;
-                    _loginDialog.Closed += (s, args) => _loginDialogIsOpen = false;
-                }
+                    if (_loginDialog == null)
+                    {
+                        _loginDialog = new LoginDialog();
+                        _loginDialog.Opened += (s, args) => _loginDialogIsOpen = true;
+                        _loginDialog.Closed += (s, args) => _loginDialogIsOpen = false;
+                    }
 
-                if (!_loginDialogIsOpen)
-                    await _loginDialog.ShowAsync();
+                    if (!_loginDialogIsOpen)
+                        await _loginDialog.ShowAsync();
+                }
             });
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
