@@ -45,6 +45,9 @@
     <Compile Include="Common\Messages\CompleteMultipleSelectionMessage.cs" />
     <Compile Include="Common\Messages\LoadContentMessage.cs" />
     <Compile Include="Common\NotifyTaskCompletion.cs" />
+    <Compile Include="Models\ChangelogEntry.cs" />
+    <Compile Include="Services\MigrationService\IMigrationService.cs" />
+    <Compile Include="Services\MigrationService\MigrationService.cs" />
     <Compile Include="Services\OfflineTaskService\OfflineTaskAddedEventArgs.cs" />
     <Compile Include="Services\OfflineTaskService\OfflineTaskExecutedEventArgs.cs" />
     <Compile Include="Common\Messages\ShowLoginMessage.cs" />
