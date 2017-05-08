@@ -2,17 +2,20 @@
 {
     public class ChangelogEntry
     {
-        public string Label { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         public ChangelogType Type { get; set; }
 
         public ChangelogEntry()
         {
-            Label = string.Empty;
+            Title = string.Empty;
+            Description = string.Empty;
             Type = ChangelogType.Fix;
         }
-        public ChangelogEntry(string label, ChangelogType type)
+        public ChangelogEntry(string title, string description, ChangelogType type)
         {
-            Label = label;
+            Title = title;
+            Description = description;
             Type = type;
         }
 

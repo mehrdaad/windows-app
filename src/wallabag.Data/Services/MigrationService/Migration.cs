@@ -28,19 +28,19 @@ namespace wallabag.Data.Services.MigrationService
         }
         public static void Complete(this Migration m, IMigrationService service) => service?.Add(m);
 
-        public static Migration AddBugfix(this Migration m, string description)
+        public static Migration AddBugfix(this Migration m, string title, string description = "")
         {
-            m.ChangelogEntries.Add(new ChangelogEntry(description, ChangelogEntry.ChangelogType.Fix));
+            m.ChangelogEntries.Add(new ChangelogEntry(title, description, ChangelogEntry.ChangelogType.Fix));
             return m;
         }
-        public static Migration AddFeature(this Migration m, string description)
+        public static Migration AddFeature(this Migration m, string title, string description = "")
         {
-            m.ChangelogEntries.Add(new ChangelogEntry(description, ChangelogEntry.ChangelogType.Feature));
+            m.ChangelogEntries.Add(new ChangelogEntry(title, description, ChangelogEntry.ChangelogType.Feature));
             return m;
         }
-        public static Migration AddEnhancement(this Migration m, string description)
+        public static Migration AddEnhancement(this Migration m, string title, string description = "")
         {
-            m.ChangelogEntries.Add(new ChangelogEntry(description, ChangelogEntry.ChangelogType.Enhancement));
+            m.ChangelogEntries.Add(new ChangelogEntry(title, description, ChangelogEntry.ChangelogType.Enhancement));
             return m;
         }
     }
