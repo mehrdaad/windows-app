@@ -47,6 +47,7 @@
     <Compile Include="Common\NotifyTaskCompletion.cs" />
     <Compile Include="Models\ChangelogEntry.cs" />
     <Compile Include="Services\MigrationService\IMigrationService.cs" />
+    <Compile Include="Services\MigrationService\Migration.cs" />
     <Compile Include="Services\MigrationService\MigrationService.cs" />
     <Compile Include="Services\OfflineTaskService\OfflineTaskAddedEventArgs.cs" />
     <Compile Include="Services\OfflineTaskService\OfflineTaskExecutedEventArgs.cs" />

@@ -10,7 +10,7 @@
             Label = string.Empty;
             Type = ChangelogType.Fix;
         }
-        public ChangelogEntry(ChangelogType type, string label)
+        public ChangelogEntry(string label, ChangelogType type)
         {
             Label = label;
             Type = type;

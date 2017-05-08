@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
+using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 
 namespace wallabag.Data.Services.MigrationService
@@ -9,8 +10,7 @@ namespace wallabag.Data.Services.MigrationService
     {
         private ILoggingService _logging;
         private IPlatformSpecific _device;
-        private Dictionary<Version, Action> _migrations;
-        private Dictionary<Version, List<ChangelogEntry>> _changelogs;
+        private List<Migration> _migrations;
 
         public MigrationService(
             ILoggingService loggingService,
@@ -18,23 +18,13 @@ namespace wallabag.Data.Services.MigrationService
         {
             _logging = loggingService;
             _device = device;
-            _migrations = new Dictionary<Version, Action>();
-            _changelogs = new Dictionary<Version, List<ChangelogEntry>>();
+            _migrations = new List<Migration>();
         }
-
-        public void Add(string version, Action migrationAction, List<ChangelogEntry> changelog)
+        public void Add(Migration m)
         {
-            _logging.WriteLine($"Add migration for version '{version}'. Number of changelog entries: {changelog?.Count}.");
-            if (Version.TryParse(version, out var parsedVersion))
-            {
-                _migrations.Add(parsedVersion, migrationAction);
-                _changelogs.Add(parsedVersion, changelog);
-            }
-            else
-                throw new FormatException($"{nameof(version)} must be a valid version of type Major.Minor.Build.Revision.");
+            _logging.WriteLine($"Adding migration for version {m.Version} with {m.ChangelogEntries.Count} changelog entries.");
+            _migrations.Add(m);
         }
-        public void Add(string version, Action migrationAction, params ChangelogEntry[] changelogEntries)
-            => Add(version, migrationAction, changelogEntries.ToList());
 
         public void ExecuteAll(Version oldVersion)
         {
@@ -51,17 +41,17 @@ namespace wallabag.Data.Services.MigrationService
             }
 
             var migrations = _migrations
-                .Where(v => v.Key > oldVersion)
-                .Where(v => v.Key <= newVersion)
-                .OrderBy(v => v.Key)
+                .Where(v => v.Version > oldVersion)
+                .Where(v => v.Version <= newVersion)
+                .OrderBy(v => v.Version)
                 .ToList();
 
             _logging.WriteLine($"Number of migrations: {migrations.Count}");
 
             foreach (var migration in migrations)
             {
-                _logging.WriteLine($"Executing migration for version {migration.Key}.");
-                migration.Value?.Invoke();
+                _logging.WriteLine($"Executing migration for version {migration.Version}.");
+                migration.Action?.Invoke();
             }
         }
         public List<ChangelogEntry> GetChangelog(Version oldVersion)
@@ -69,15 +59,14 @@ namespace wallabag.Data.Services.MigrationService
             Version.TryParse(_device.AppVersion, out var newVersion);
             _logging.WriteLine($"Returning changelog from {oldVersion} to {newVersion}");
 
-            var changelog = _changelogs
-                .Where(v => v.Key > oldVersion)
-                .Where(v => v.Key <= newVersion)
-                .Select(x => x.Value);
+            var changelog = _migrations
+                .Where(v => v.Version > oldVersion)
+                .Where(v => v.Version <= newVersion);
 
             var result = new List<ChangelogEntry>();
 
             foreach (var list in changelog)
-                result.AddRange(list);
+                result.AddRange(list.ChangelogEntries);
 
             return result;
         }

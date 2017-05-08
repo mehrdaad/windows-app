@@ -9,7 +9,6 @@ namespace wallabag.Data.Services.MigrationService
         List<ChangelogEntry> GetChangelog(Version oldVersion);
 
         void ExecuteAll(Version oldVersion);
-        void Add(string targetVersion, Action migrationAction, List<ChangelogEntry> changelog);
-        void Add(string targetVersion, Action migrationAction, params ChangelogEntry[] changelogEntries);
+        void Add(Migration m);
     }
 }
