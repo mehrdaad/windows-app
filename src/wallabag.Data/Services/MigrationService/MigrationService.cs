@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 
 namespace wallabag.Data.Services.MigrationService
@@ -24,19 +22,19 @@ namespace wallabag.Data.Services.MigrationService
             _changelogs = new Dictionary<Version, List<ChangelogEntry>>();
         }
 
-        public void Add(string targetVersion, Action migrationAction, List<ChangelogEntry> changelog)
+        public void Add(string version, Action migrationAction, List<ChangelogEntry> changelog)
         {
-            _logging.WriteLine($"Add migration for version '{targetVersion}'. Number of changelog entries: {changelog?.Count}.");
-            if (Version.TryParse(targetVersion, out var parsedVersion))
+            _logging.WriteLine($"Add migration for version '{version}'. Number of changelog entries: {changelog?.Count}.");
+            if (Version.TryParse(version, out var parsedVersion))
             {
                 _migrations.Add(parsedVersion, migrationAction);
                 _changelogs.Add(parsedVersion, changelog);
             }
             else
-                throw new FormatException($"{nameof(targetVersion)} must be a valid version of type Major.Minor.Build.Revision.");
+                throw new FormatException($"{nameof(version)} must be a valid version of type Major.Minor.Build.Revision.");
         }
-        public void Add(string targetVersion, Action migrationAction, params ChangelogEntry[] changelogEntries)
-            => Add(targetVersion, migrationAction, changelogEntries.ToList());
+        public void Add(string version, Action migrationAction, params ChangelogEntry[] changelogEntries)
+            => Add(version, migrationAction, changelogEntries.ToList());
 
         public void ExecuteAll(Version oldVersion)
         {
