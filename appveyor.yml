@@ -1,4 +1,4 @@
-version: 2.1.{build}
+version: 2.2.{build}
 configuration: Release
 branches:
   only:
@@ -21,8 +21,7 @@ environment:
 build_script:
   - ps: .\appveyor\build\IncreaseVersionInManifest.ps1
   - ps: .\appveyor\build\InstallSQLite.ps1
-  - cmd: nuget restore
-  - ps: msbuild wallabag.sln /p:Configuration=Release /p:UapAppxPackageBuildMode=StoreUpload /p:AppxBundlePlatforms="x86|x64|ARM" /p:AppxBundle=Always /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - ps: msbuild wallabag.sln /p:Configuration=Release /p:UapAppxPackageBuildMode=StoreUpload /p:AppxBundlePlatforms="x86|x64|ARM" /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - ps : .\appveyor\build\CreateSymbolZipFiles.ps1
 deploy_script:
   - ps: >-
