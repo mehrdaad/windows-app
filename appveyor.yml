@@ -19,6 +19,7 @@ environment:
   store_flight_id:
     secure: Q5+mkXNdZwnzhyPwRkxKrUQ01v1prWOwzSMvPMS1c0G+4mVdQRcLTfguqkIw9MmE
 build_script:
+  - ps: .\appveyor\build\RestoreNugetPackages.ps1
   - ps: .\appveyor\build\IncreaseVersionInManifest.ps1
   - ps: .\appveyor\build\InstallSQLite.ps1
   - ps: msbuild wallabag.sln /p:Configuration=Release /p:UapAppxPackageBuildMode=StoreUpload /p:AppxBundlePlatforms="x86|x64|ARM" /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
