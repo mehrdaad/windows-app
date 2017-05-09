@@ -11,6 +11,7 @@ using wallabag.Data.Common.Helpers;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
+using wallabag.Data.Services.MigrationService;
 using wallabag.Data.Services.OfflineTaskService;
 using wallabag.Services;
 using wallabag.Views;
@@ -43,24 +44,18 @@ namespace wallabag
         public async Task OnInitializeAsync(IActivatedEventArgs args)
         {
             RegisterServices();
+            SetupMigrationService();
 
             // Run possible migrations here
+            Version.TryParse(Settings.General.AppVersion, out var oldVersion);
 
-            // Reset the application after update to separated app model
-            if (string.IsNullOrEmpty(Settings.General.AppVersion))
-            {
-                var device = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
-                await device.DeleteDatabaseAsync();
+            if (oldVersion == null)
+                oldVersion = new Version("1.0.0");
 
-                Settings.Authentication.AccessToken = string.Empty;
-                Settings.Authentication.RefreshToken = string.Empty;
-
-                Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
-                device.CloseApplication();
-            }
-
+            SimpleIoc.Default.GetInstance<IMigrationService>().ExecuteAll(oldVersion);
             Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
 
+            // Configure HockeyApp
             if (!System.Diagnostics.Debugger.IsAttached && Settings.General.AllowCollectionOfTelemetryData)
                 HockeyClient.Current
                     .Configure("842955f8fd3b4191972db776265d81c4")
@@ -78,6 +73,42 @@ namespace wallabag
 
             await EnsureRegistrationOfBackgroundTaskAsync();
         }
+
+        private void SetupMigrationService()
+        {
+            var ms = SimpleIoc.Default.GetInstance<IMigrationService>();
+
+            Migration.Create("2.2.0")
+                .SetMigrationAction(async () =>
+                {
+                    var device = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
+                    await device.DeleteDatabaseAsync();
+
+                    Settings.Authentication.AccessToken = string.Empty;
+                    Settings.Authentication.RefreshToken = string.Empty;
+
+                    Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
+                    device.CloseApplication();
+                })
+                .AddFeature("Changelog notification",
+                    "If this app gets an update, you don't need to rely anymore on the Windows Store to update the changelog." +
+                    "The app itself will notify you (at the moment only in English).")
+                .AddFeature("New share experience",
+                    "The new share experience works better with the Windows 10 Creators Update." +
+                    "And with smmoth animations, it looks even better than before.")
+                .AddEnhancement("Completely refactored!", "Expect less bugs and crashes in the future!")
+                .AddEnhancement("Login popup",
+                    "Some of you reported an error to me, that they couldn't sync anymore." +
+                    "This is actual a bug of wallabag itself, and is going to be fixed with wallabag 2.3." +
+                    "Until then, the app asks to re-login to continue the usage." +
+                    "An application reset is not longer needed.")
+                .AddBugfix("Placeholders removal improved", "They shouldn't longer be a problem or annoying.")
+                .AddBugfix("Duplicated items should not appear anymore")
+                .AddBugfix("Sorting on main page fixed")
+                .AddBugfix("And many, many more fixes.", "Seriously, I can't even count them anymore.")
+                .Complete(ms);
+        }
+
         public Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
             if (args.Kind == ActivationKind.ShareTarget)
@@ -151,6 +182,7 @@ namespace wallabag
 
                     return ns;
                 });
+                SimpleIoc.Default.Register<IMigrationService, MigrationService>();
                 SimpleIoc.Default.Register<IPlatformSpecific, Common.PlatformSpecific>();
                 SimpleIoc.Default.Register<IApiClientCreationService, Services.ApiClientCreationService>();
             }
