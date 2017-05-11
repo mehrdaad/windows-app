@@ -320,7 +320,7 @@ namespace wallabag.Views
                 // Create a frosty glass effect
                 var frostEffect = new GaussianBlurEffect
                 {
-                    BlurAmount = 5.0f,
+                    BlurAmount = 10f,
                     BorderMode = EffectBorderMode.Hard,
                     Source = new ArithmeticCompositeEffect
                     {
