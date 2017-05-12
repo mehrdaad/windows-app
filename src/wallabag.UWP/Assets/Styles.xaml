@@ -6,7 +6,6 @@
 
     <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:BooleanNegationConverter x:Key="BooleanNegationConverter" />
-    <localConverters:ExplicitTypeConverter x:Key="ExplicitTypeConverter" />
 
     <DataTemplate x:Key="ContentDialogTitleDataTemplate">
         <TextBlock

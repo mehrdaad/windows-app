@@ -114,7 +114,6 @@
     <Compile Include="Converters\BooleanNegationConverter.cs" />
     <Compile Include="Converters\BooleanToIconConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Converters\ExplicitTypeConverter.cs" />
     <Compile Include="Dialogs\EditTagsDialog.xaml.cs">
       <DependentUpon>EditTagsDialog.xaml</DependentUpon>
     </Compile>
