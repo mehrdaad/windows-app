@@ -148,7 +148,7 @@
                         <ListView
                             Margin="0,0,0,16"
                             ItemsSource="{x:Bind ViewModel.Providers}"
-                            SelectedItem="{x:Bind ViewModel.SelectedProvider, Mode=TwoWay, Converter={StaticResource ExplicitTypeConverter}}">
+                            SelectedItem="{x:Bind ViewModel.SelectedProvider, Mode=TwoWay}">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="m:WallabagProvider">
                                     <StackPanel Margin="8">
@@ -162,7 +162,7 @@
                             x:Uid="ScanQRCodeButton"
                             Command="{x:Bind ViewModel.ScanQRCodeCommand}"
                             Content="Scan QR code for configuration"
-                            Visibility="{x:Bind ViewModel.CameraIsSupported, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            Visibility="{x:Bind ViewModel.CameraIsSupported}" />
                         <Button
                             x:Uid="RegisterButton"
                             Command="{x:Bind ViewModel.RegisterCommand, Mode=OneWay}"
@@ -204,7 +204,7 @@
                                 InputScope="Url"
                                 PlaceholderText="https://"
                                 Text="{x:Bind ViewModel.Url, Mode=TwoWay}"
-                                Visibility="{x:Bind ViewModel.UrlFieldIsVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{x:Bind ViewModel.UrlFieldIsVisible, Mode=OneWay}" />
                             <TextBox
                                 x:Uid="UsernameTextBox"
                                 Header="Username"
@@ -226,19 +226,19 @@
                                 Opacity="0.8"
                                 Text="A usage of the same ID/secret combination on multiple devices isn't recommended and could cause (a lot of) frustration."
                                 TextWrapping="Wrap"
-                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay}" />
                             <TextBox
                                 x:Uid="ClientIdTextBox"
                                 Header="Client Id"
                                 IsSpellCheckEnabled="False"
                                 Text="{x:Bind ViewModel.ClientId, Mode=TwoWay}"
-                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay}" />
                             <TextBox
                                 x:Uid="ClientSecretTextBox"
                                 Header="Client Secret"
                                 IsSpellCheckEnabled="False"
                                 Text="{x:Bind ViewModel.ClientSecret, Mode=TwoWay}"
-                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{x:Bind ViewModel.UseCustomSettings, Mode=OneWay}" />
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>

@@ -318,7 +318,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             x:DeferLoadStrategy="Lazy"
-            Visibility="{x:Bind ViewModel.ErrorDuringInitialization, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Visible}">
+            Visibility="{x:Bind ViewModel.ErrorDuringInitialization, Mode=OneWay, FallbackValue=Visible}">
             <TextBlock
                 Margin="-8,0,0,0"
                 FontSize="42"

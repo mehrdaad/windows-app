@@ -275,7 +275,7 @@
                             x:Name="tagsIndicator"
                             Margin="0,16,0,8"
                             Orientation="Horizontal"
-                            Visibility="{x:Bind TagsAreExisting, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            Visibility="{x:Bind TagsAreExisting, Mode=OneWay}">
                             <TextBlock
                                 Margin="0,0,4,0"
                                 VerticalAlignment="Center"
@@ -419,7 +419,7 @@
             x:Name="noItemsOverlay"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Visibility="{x:Bind ViewModel.ItemsCountIsZero, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+            Visibility="{x:Bind ViewModel.ItemsCountIsZero, Mode=OneWay}">
             <TextBlock
                 FontSize="60"
                 Text="😔"
@@ -481,7 +481,7 @@
                         Command="{x:Bind ViewModel.SetSortTypeCommand}"
                         CommandParameter="date"
                         Content="by date"
-                        IsChecked="{x:Bind ViewModel.SortByCreationDate, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}"
+                        IsChecked="{x:Bind ViewModel.SortByCreationDate, Mode=OneWay}"
                         Style="{StaticResource ExpandableIconRadioButtonStyle}"
                         Tag="&#xE163;" />
                     <RadioButton
@@ -489,7 +489,7 @@
                         Command="{x:Bind ViewModel.SetSortTypeCommand}"
                         CommandParameter="time"
                         Content="by reading time"
-                        IsChecked="{x:Bind ViewModel.SortByReadingTime, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}"
+                        IsChecked="{x:Bind ViewModel.SortByReadingTime, Mode=OneWay}"
                         Style="{StaticResource ExpandableIconRadioButtonStyle}"
                         Tag="&#xE2AD;" />
                 </StackPanel>
@@ -527,7 +527,7 @@
                     x:Uid="LanguageComboBox"
                     ItemsSource="{x:Bind ViewModel.LanguageSuggestions, Mode=OneWay}"
                     PlaceholderText="select language…"
-                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=TwoWay, Converter={StaticResource ExplicitTypeConverter}}" />
+                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Language, Mode=TwoWay}" />
                 <Button
                     Grid.Column="1"
                     Command="{x:Bind ViewModel.ResetLanguageFilterCommand}"
@@ -546,7 +546,7 @@
                     x:Uid="TagComboBox"
                     ItemsSource="{x:Bind ViewModel.TagSuggestions, Mode=OneWay}"
                     PlaceholderText="select tag…"
-                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=TwoWay, Converter={StaticResource ExplicitTypeConverter}}" />
+                    SelectedItem="{x:Bind ViewModel.CurrentSearchProperties.Tag, Mode=TwoWay}" />
                 <Button
                     Grid.Column="1"
                     Command="{x:Bind ViewModel.ResetTagFilterCommand}"
@@ -611,7 +611,7 @@
             Background="{ThemeResource SystemControlBackgroundAccentBrush}"
             CornerRadius="8"
             RequestedTheme="Dark"
-            Visibility="{x:Bind ViewModel.OfflineTaskIndicatorIsVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+            Visibility="{x:Bind ViewModel.OfflineTaskIndicatorIsVisible, Mode=OneWay}">
             <TextBlock
                 VerticalAlignment="Center"
                 FontSize="10"

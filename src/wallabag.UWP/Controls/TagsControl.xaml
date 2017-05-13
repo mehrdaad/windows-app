@@ -13,7 +13,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Orientation="Horizontal"
-            Visibility="{x:Bind ViewModel.TagsCountIsZero, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+            Visibility="{x:Bind ViewModel.TagsCountIsZero, Mode=OneWay, FallbackValue=Collapsed}">
             <TextBlock
                 Margin="0,0,4,0"
                 FontSize="20"

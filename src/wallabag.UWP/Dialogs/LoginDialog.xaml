@@ -39,6 +39,6 @@
             x:Name="Progress"
             Margin="0,8,0,0"
             IsIndeterminate="True"
-            Visibility="{x:Bind ViewModel.IsActive, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            Visibility="{x:Bind ViewModel.IsActive, Mode=OneWay}" />
     </StackPanel>
 </ContentDialog>

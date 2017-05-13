@@ -121,19 +121,19 @@
                             x:Name="InlineVideoOpenModeRadioButton"
                             Click="VideoOpenModeRadioButton_Click"
                             Content="Inline"
-                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsInline, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}" />
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsInline, Mode=OneWay}" />
                         <RadioButton
                             x:Name="AppVideoOpenModeRadioButton"
                             Grid.Column="1"
                             Click="VideoOpenModeRadioButton_Click"
                             Content="App"
-                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsApp, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}" />
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsApp, Mode=OneWay}" />
                         <RadioButton
                             x:Name="BrowserVideoOpenModeRadioButton"
                             Grid.Column="2"
                             Click="VideoOpenModeRadioButton_Click"
                             Content="Browser"
-                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsBrowser, Mode=OneWay, Converter={StaticResource ExplicitTypeConverter}}" />
+                            IsChecked="{x:Bind ViewModel.VideoOpenModeIsBrowser, Mode=OneWay}" />
                         <TextBlock
                             Grid.Row="1"
                             Grid.ColumnSpan="3"
@@ -160,7 +160,7 @@
                         Padding="8"
                         BorderBrush="#FFFFA200"
                         BorderThickness="1"
-                        Visibility="{x:Bind ViewModel.BackgroundTaskIsNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        Visibility="{x:Bind ViewModel.BackgroundTaskIsNotSupported}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition />
@@ -187,8 +187,8 @@
                         Margin="0,0,0,32"
                         Style="{StaticResource InfoTextBlockStyle}"
                         Text="{x:Bind ViewModel.BackgroundTaskLastExecutionDescription, Mode=OneWay}"
-                        Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <RelativePanel Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay}" />
+                    <RelativePanel Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay}">
                         <Slider
                             x:Name="BackgroundTaskExecutionIntervalSlider"
                             x:Uid="BackgroundTaskExecutionIntervalSlider"
@@ -215,13 +215,13 @@
                         x:Uid="BackgroundTaskDownloadNewItemsToggleSwitch"
                         Header="Download new items"
                         IsOn="{x:Bind ViewModel.DownloadNewItemsDuringExecutionOfBackgroundTask, Mode=TwoWay}"
-                        Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay}" />
                     <TextBlock
                         x:Uid="BackgroundTaskDownloadNewItemsDescriptionTextBlock"
                         Margin="0"
                         Style="{StaticResource InfoTextBlockStyle}"
                         Text="Setting the above value to On will download new items from the server. Otherwise the app will only sync local changes to the server."
-                        Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay}" />
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="InfoPivotItem" Header="Info">
