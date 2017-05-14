@@ -34,8 +34,6 @@ namespace wallabag
         private SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
         private INavigationService _navigation => SimpleIoc.Default.GetInstance<INavigationService>();
 
-        public Dictionary<string, object> SessionState => SimpleIoc.Default.GetInstance<Dictionary<string, object>>("SessionState");
-
         public App() => InitializeComponent();
 
         public enum StartKind { Launch, Activate }
@@ -48,11 +46,7 @@ namespace wallabag
 
             // Run possible migrations here
             Version.TryParse(Settings.General.AppVersion, out var oldVersion);
-
-            if (oldVersion == null)
-                oldVersion = new Version("1.0.0");
-
-            SimpleIoc.Default.GetInstance<IMigrationService>().ExecuteAll(oldVersion);
+            SimpleIoc.Default.GetInstance<IMigrationService>().ExecuteAll(oldVersion ?? new Version("1.0.0"));
             Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
 
             // Configure HockeyApp
@@ -87,20 +81,19 @@ namespace wallabag
                     Settings.Authentication.AccessToken = string.Empty;
                     Settings.Authentication.RefreshToken = string.Empty;
 
-                    Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
                     device.CloseApplication();
                 })
                 .AddFeature("Changelog notification",
-                    "If this app gets an update, you don't need to rely anymore on the Windows Store to update the changelog." +
+                    "If this app gets an update, you don't need to rely anymore on the Windows Store for updating the changelog. " +
                     "The app itself will notify you (at the moment only in English).")
                 .AddFeature("New share experience",
-                    "The new share experience works better with the Windows 10 Creators Update." +
+                    "The new share experience works better with the Windows 10 Creators Update. " +
                     "And with smmoth animations, it looks even better than before.")
                 .AddEnhancement("Completely refactored!", "Expect less bugs and crashes in the future!")
                 .AddEnhancement("Login popup",
-                    "Some of you reported an error to me, that they couldn't sync anymore." +
-                    "This is actual a bug of wallabag itself, and is going to be fixed with wallabag 2.3." +
-                    "Until then, the app asks to re-login to continue the usage." +
+                    "Some of you reported an error to me, that they couldn't sync anymore. " +
+                    "This is actual a bug of wallabag itself, and is going to be fixed with wallabag 2.3. " +
+                    "Until then, the app asks to re-login to continue the usage. " +
                     "An application reset is not longer needed.")
                 .AddBugfix("Placeholders removal improved", "They shouldn't longer be a problem or annoying.")
                 .AddBugfix("Duplicated items should not appear anymore")
