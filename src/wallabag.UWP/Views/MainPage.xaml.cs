@@ -193,6 +193,9 @@ namespace wallabag.Views
 
         private void EnableMultipleSelection()
         {
+            // Hide the filter before enabling the selection
+            filterButton.IsChecked = false;
+
             _isMultipleSelectionEnabled = true;
             VisualStateManager.GoToState(this, nameof(MultipleSelectionEnabled), false);
         }
