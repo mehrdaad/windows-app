@@ -71,9 +71,8 @@ namespace wallabag.Data.ViewModels
 
             Providers = new List<WallabagProvider>()
             {
-                //new WallabagProvider(new Uri("https://framabag.org"), "framabag", Device.GetLocalizedResource("FramabagProviderDescription")),
+                new WallabagProvider(new Uri("https://framabag.org"), "framabag", _device.GetLocalizedResource("FramabagProviderDescription")),
                 new WallabagProvider(new Uri("https://app.wallabag.it"), "wallabag.it", _device.GetLocalizedResource("WallabagItProviderDescription")),
-                new WallabagProvider(new Uri("http://v2.wallabag.org"), "v2.wallabag.org", _device.GetLocalizedResource("V2WallabagOrgProviderDescription")),
                 WallabagProvider.GetOther(_device)
             };
 
