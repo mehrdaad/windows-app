@@ -13,7 +13,6 @@ using System.Windows.Input;
 using wallabag.Api;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
-using wallabag.Data.Common.Messages;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
@@ -182,6 +181,7 @@ namespace wallabag.Data.ViewModels
                     RaisePropertyChanged(nameof(OfflineTaskIndicatorIsVisible));
                 });
             };
+            UpdatePageHeader();
         }
 
         public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
