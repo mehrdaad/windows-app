@@ -78,10 +78,57 @@ namespace wallabag
                     var device = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
                     await device.DeleteDatabaseAsync();
 
-                    Settings.Authentication.AccessToken = string.Empty;
-                    Settings.Authentication.RefreshToken = string.Empty;
+                    #region Setting migration
+                    Settings.Authentication.AccessToken = GetOldOption<string>("AccessToken");
+                    Settings.Authentication.RefreshToken = GetOldOption<string>("RefreshToken");
+                    Settings.Authentication.LastTokenRefreshDateTime = GetOldOption<DateTime>("LastTokenRefreshDateTime");
+                    Settings.Authentication.ClientId = GetOldOption<string>("ClientId");
+                    Settings.Authentication.ClientSecret = GetOldOption<string>("ClientSecret");
+                    Settings.Authentication.WallabagUri = GetOldOption<Uri>("WallabagUrl");
+                    Settings.Appereance.ColorScheme = GetOldOption<string>("ColorScheme");
+                    Settings.Appereance.FontFamily = GetOldOption<string>("FontFamily");
+                    Settings.Appereance.FontSize = GetOldOption<int>("FontSize");
+                    Settings.Appereance.TextAlignment = GetOldOption<string>("TextAlignment");
+                    Settings.BackgroundTask.DownloadNewItemsDuringExecution = GetOldOption<bool>("DownloadNewItemsDuringExecutionOfBackgroundTask");
+                    Settings.BackgroundTask.ExecutionInterval = GetOldOption<TimeSpan>("BackgroundTaskExecutionInterval");
+                    Settings.BackgroundTask.IsEnabled = GetOldOption<bool>("BackgroundTaskIsEnabled");
+                    Settings.General.SyncOnStartup = GetOldOption<bool>("SyncOnStartup");
+                    Settings.Reading.NavigateBackAfterReadingAnArticle = GetOldOption<bool>("NavigateBackAfterReadingAnArticle");
+                    Settings.Reading.SyncReadingProgress = GetOldOption<bool>("SyncReadingProgress");
+                    Settings.Reading.VideoOpenMode = GetOldOption<Settings.Reading.WallabagVideoOpenMode>("VideoOpenMode");
+                    #endregion
 
                     device.CloseApplication();
+
+                    T GetOldOption<T>(string optionName)
+                    {
+                        var oldSettingsDictionary = ApplicationData.Current.LocalSettings.Values;
+
+                        if (oldSettingsDictionary.ContainsKey(optionName))
+                        {
+                            object value = (oldSettingsDictionary[optionName] as ApplicationDataCompositeValue)["Value"];
+                            value = (value as string).TrimStart('"').TrimEnd('"');
+
+                            if (typeof(T) == typeof(DateTime))
+                                value = DateTime.Parse(value as string);
+                            else if (typeof(T) == typeof(Uri))
+                            {
+                                Uri.TryCreate(value as string, UriKind.Absolute, out var result);
+                                value = result;
+                            }
+                            else if (typeof(T) == typeof(int))
+                                value = int.Parse(value as string);
+                            else if (typeof(T) == typeof(bool))
+                                value = bool.Parse(value as string);
+                            else if (typeof(T) == typeof(TimeSpan))
+                                value = new TimeSpan(0, int.Parse(value as string), 0);
+                            else if (typeof(T) == typeof(Settings.Reading.WallabagVideoOpenMode))
+                                value = int.Parse(value as string);
+
+                            return (T)value;
+                        }
+                        return default(T);
+                    }
                 })
                 .AddFeature("Changelog notification",
                     "If this app gets an update, you don't need to rely anymore on the Windows Store for updating the changelog. " +
