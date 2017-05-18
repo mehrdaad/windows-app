@@ -132,6 +132,8 @@ namespace wallabag.Data.ViewModels
             _database.Update(Model);
         }
 
+        public void RefetchModelFromDatabase(SQLiteConnection database) => Model = database.Get<Item>(Model.Id);
+
         public int CompareTo(object obj) => ((IComparable)Model).CompareTo((obj as ItemViewModel).Model);
         public override bool Equals(object obj) => Model.Equals((obj as ItemViewModel).Model);
         public override int GetHashCode() => Model.GetHashCode();

@@ -217,5 +217,41 @@ namespace wallabag.Tests
                 A<List<Tag>>.Ignored)).MustHaveHappened();
             Assert.Null(database.Find<Item>(10));
         }
+
+        [Fact]
+        public void RefetchingFromDatabaseUpdatesModel()
+        {
+            var item = new Item() { Id = 10, IsRead = false };
+            var offlineTaskService = A.Fake<IOfflineTaskService>();
+            var navigation = A.Fake<INavigationService>();
+            var logging = A.Fake<ILoggingService>();
+            var device = A.Fake<IPlatformSpecific>();
+            var database = TestsHelper.CreateFakeDatabase();
+
+            database.Insert(item);
+
+            var viewModel = new ItemViewModel(item,
+                offlineTaskService,
+                navigation,
+                logging,
+                device,
+                database);
+
+            Assert.False(viewModel.Model.IsRead);
+
+            var duplicateFakeItemWithSameId = new Item() { Id = 10, IsRead = true };
+            database.Update(duplicateFakeItemWithSameId);
+
+            Assert.True(database.Get<Item>(item.Id).IsRead);
+            Assert.False(viewModel.Model.IsRead);
+
+            Assert.PropertyChanged(
+                viewModel,
+                "Model",
+                () => viewModel.RefetchModelFromDatabase(database)
+            );
+
+            Assert.True(viewModel.Model.IsRead);
+        }
     }
 }

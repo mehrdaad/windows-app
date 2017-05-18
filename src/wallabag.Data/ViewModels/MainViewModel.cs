@@ -312,6 +312,8 @@ namespace wallabag.Data.ViewModels
             return _device.RunOnUIThreadAsync(() =>
             {
                 _loggingService.WriteLine("Running dispatcher to apply the changes...");
+
+                item?.RefetchModelFromDatabase(_database);
                 switch (task.Action)
                 {
                     case OfflineTask.OfflineTaskAction.MarkAsRead:
