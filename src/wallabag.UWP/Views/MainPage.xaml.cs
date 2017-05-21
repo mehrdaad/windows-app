@@ -49,8 +49,6 @@ namespace wallabag.Views
                     SelectionViewModel.Items.Add(item as ItemViewModel);
                 foreach (object item in e.RemovedItems)
                     SelectionViewModel.Items.Remove(item as ItemViewModel);
-
-                if (ItemGridView.SelectedItems.Count == 0) DisableMultipleSelection();
             };
 
             ShowSearchStoryboard.Completed += (s, e) =>
@@ -76,7 +74,7 @@ namespace wallabag.Views
             TitleBarHelper.SetBackgroundColor(titleBarColor);
             TitleBarHelper.SetButtonBackgroundColor(titleBarColor);
 
-            Messenger.Default.Register<CompleteMultipleSelectionMessage>(this, message => DisableMultipleSelection(true));
+            Messenger.Default.Register<CompleteMultipleSelectionMessage>(this, message => DisableMultipleSelection());
             Messenger.Default.Register<ShowLoginMessage>(this, async message =>
             {
                 if (SimpleIoc.Default.GetInstance<IPlatformSpecific>().InternetConnectionIsAvailable)
@@ -199,17 +197,15 @@ namespace wallabag.Views
             _isMultipleSelectionEnabled = true;
             VisualStateManager.GoToState(this, nameof(MultipleSelectionEnabled), false);
         }
-        private void DisableMultipleSelection(bool forceDisable = false)
+        private void DisableMultipleSelection()
         {
-            if (ItemGridView.SelectedItems.Count == 0 || forceDisable)
-            {
-                _isMultipleSelectionEnabled = false;
-                VisualStateManager.GoToState(this, nameof(MultipleSelectionDisabled), false);
-            }
+            _isMultipleSelectionEnabled = false;
+            VisualStateManager.GoToState(this, nameof(MultipleSelectionDisabled), false);
+
         }
 
         private void EnableMultipleSelectionButtonClick(object sender, RoutedEventArgs e) => EnableMultipleSelection();
-        private void DisableMultipleSelectionButtonClick(object sender, RoutedEventArgs e) => DisableMultipleSelection(true);
+        private void DisableMultipleSelectionButtonClick(object sender, RoutedEventArgs e) => DisableMultipleSelection();
         #endregion
 
         #region Search & Filter
