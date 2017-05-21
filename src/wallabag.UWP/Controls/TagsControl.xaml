@@ -1,7 +1,8 @@
 ﻿<UserControl
     x:Class="wallabag.Controls.TagsControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:wallabag.Data.Models">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -40,17 +41,10 @@
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid BorderBrush="{ThemeResource SystemControlBackgroundAccentBrush}" BorderThickness="2">
-                        <StackPanel Padding="10,6" Orientation="Horizontal">
-                            <TextBlock
-                                Margin="0,0,8,0"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                Text="&#xE1CB;" />
-                            <TextBlock Text="{Binding}" />
-                        </StackPanel>
-                    </Grid>
+                <DataTemplate x:DataType="models:Tag">
+                    <Border Background="{ThemeResource SystemControlBackgroundAccentBrush}" RequestedTheme="Dark">
+                        <TextBlock Margin="12,8" Text="{x:Bind Label}" />
+                    </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemContainerStyle>
