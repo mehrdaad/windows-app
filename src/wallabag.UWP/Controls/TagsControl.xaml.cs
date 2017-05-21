@@ -20,16 +20,13 @@ namespace wallabag.Controls
         private void AutoSuggestBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             // Checks if the comma key was pressed (code 188)
-            if ((int)e.Key == 188)
+            if ((int)e.Key == 188 || e.Key == Windows.System.VirtualKey.Enter)
             {
                 e.Handled = true;
-                var textBox = e.OriginalSource as TextBox;
 
-                string label = textBox.Text.Replace(",", string.Empty);
-                if (!string.IsNullOrWhiteSpace(label))
-                    ViewModel.Tags.Add(new Tag() { Label = label });
+                ViewModel.TagSubmittedCommand.Execute(null);
 
-                textBox.Text = string.Empty;
+                (sender as TextBox).Text = string.Empty;
             }
         }
 
