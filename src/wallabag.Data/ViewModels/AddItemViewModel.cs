@@ -33,7 +33,7 @@ namespace wallabag.Data.ViewModels
             _navigationService = navigationService;
 
             TagViewModel = new EditTagsViewModel(offlineTaskService, loggingService, database, navigationService);
-            NotifyTaskCompletion.Create(() => TagViewModel.OnNavigatedToAsync(null, null, NavigationMode.New));
+            NotifyTaskCompletion.Create(() => TagViewModel.ActivateAsync(null, null, NavigationMode.New));
 
             AddCommand = new RelayCommand(() => AddingTask = NotifyTaskCompletion.Create(AddAsync));
             CancelCommand = new RelayCommand(() => Cancel());

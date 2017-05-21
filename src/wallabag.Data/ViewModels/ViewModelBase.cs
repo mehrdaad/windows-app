@@ -18,11 +18,11 @@ namespace wallabag.Data.ViewModels
             }
         }
 
-        public virtual Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
+        public virtual Task ActivateAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
         {
             return Task.FromResult(true);
         }
-        public virtual Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
+        public virtual Task DeactivateAsync(IDictionary<string, object> pageState)
         {
             base.Cleanup();
             return Task.FromResult(true);

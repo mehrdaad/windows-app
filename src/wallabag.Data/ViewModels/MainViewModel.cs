@@ -184,7 +184,7 @@ namespace wallabag.Data.ViewModels
             UpdatePageHeader();
         }
 
-        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
+        public override async Task ActivateAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
         {
             if (state.ContainsKey(nameof(CurrentSearchProperties)))
             {
@@ -199,7 +199,7 @@ namespace wallabag.Data.ViewModels
             if (Settings.General.SyncOnStartup)
                 await SyncAsync();
         }
-        public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
+        public override async Task DeactivateAsync(IDictionary<string, object> pageState)
         {
             string serializedSearchProperties = await Task.Run(() => JsonConvert.SerializeObject(CurrentSearchProperties));
             pageState[nameof(CurrentSearchProperties)] = serializedSearchProperties;

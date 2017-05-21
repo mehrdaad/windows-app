@@ -165,7 +165,7 @@ namespace wallabag.Data.ViewModels
             DeleteDatabaseCommand = new RelayCommand(() => DeleteDatabase());
         }
 
-        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
+        public override Task DeactivateAsync(IDictionary<string, object> pageState)
         {
             if (_backgroundTaskOptionsChanged)
             {

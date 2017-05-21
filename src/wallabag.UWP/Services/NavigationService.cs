@@ -79,7 +79,7 @@ namespace wallabag.Services
             {
                 _logging.WriteLine($"Opened {s.GetType().Name}.");
                 _dialogIsOpen = true;
-                await HandleOnNavigatedToAsync(dialog.DataContext as INavigable, parameter, NavigationMode.New);
+                await HandleActivationAsync(dialog.DataContext as INavigable, parameter, NavigationMode.New);
             };
             dialog.Closed += (s, e) =>
             {
@@ -96,20 +96,20 @@ namespace wallabag.Services
             navigationAction.Invoke();
 
             if (oldViewModel != null)
-                await HandleOnNavigatedFromAsync(oldViewModel);
+                await HandleDeactivationAsync(oldViewModel);
 
             var newPage = _frame.Content as Page;
 
             if (newPage.DataContext is INavigable newViewModel)
-                await HandleOnNavigatedToAsync(newViewModel, parameter, navigationMode);
+                await HandleActivationAsync(newViewModel, parameter, navigationMode);
 
             UpdateShellBackButtonVisibility();
         }
 
-        private Task HandleOnNavigatedToAsync(INavigable viewModel, object parameter, NavigationMode navigationMode)
+        private Task HandleActivationAsync(INavigable viewModel, object parameter, NavigationMode navigationMode)
         {
             string viewModelName = viewModel.GetType().Name;
-            _logging.WriteLine($"Executing {nameof(INavigable.OnNavigatedToAsync)} from new ViewModel ({viewModelName}) with parameter: {parameter}");
+            _logging.WriteLine($"Executing {nameof(INavigable.ActivateAsync)} from new ViewModel ({viewModelName}) with parameter: {parameter}");
 
             _currentParameter = parameter;
 
@@ -118,16 +118,16 @@ namespace wallabag.Services
             if (navigationMode == NavigationMode.New)
                 suspensionState.Clear();
 
-            return viewModel.OnNavigatedToAsync(parameter, suspensionState, navigationMode);
+            return viewModel.ActivateAsync(parameter, suspensionState, navigationMode);
         }
 
-        private async Task HandleOnNavigatedFromAsync(INavigable viewModel)
+        private async Task HandleDeactivationAsync(INavigable viewModel)
         {
             string viewModelName = viewModel.GetType().Name;
-            _logging.WriteLine($"Executing {nameof(INavigable.OnNavigatedFromAsync)} from new ViewModel ({viewModelName}).");
+            _logging.WriteLine($"Executing {nameof(INavigable.DeactivateAsync)} from new ViewModel ({viewModelName}).");
 
             var suspensionState = GetSuspensionStateForPage(viewModelName);
-            await viewModel.OnNavigatedFromAsync(suspensionState);
+            await viewModel.DeactivateAsync(suspensionState);
 
             SetTimestampForSuspensionState(suspensionState);
         }
@@ -147,7 +147,7 @@ namespace wallabag.Services
             _settingService.AddOrUpdateValue(FrameNavigationState, _frame.GetNavigationState());
             _settingService.AddOrUpdateValue(CurrentParameter, _currentParameter);
 
-            return HandleOnNavigatedFromAsync((_frame.Content as Page).DataContext as INavigable);
+            return HandleDeactivationAsync((_frame.Content as Page).DataContext as INavigable);
         }
         public Task ResumeAsync()
         {
@@ -159,7 +159,7 @@ namespace wallabag.Services
 
             _currentParameter = _settingService.GetValueOrDefault<object>(CurrentParameter);
 
-            return HandleOnNavigatedToAsync((_frame.Content as Page).DataContext as INavigable, _currentParameter, NavigationMode.New);
+            return HandleActivationAsync((_frame.Content as Page).DataContext as INavigable, _currentParameter, NavigationMode.New);
         }
 
         private void SetTimestampForSuspensionState(IDictionary<string, object> suspensionState)

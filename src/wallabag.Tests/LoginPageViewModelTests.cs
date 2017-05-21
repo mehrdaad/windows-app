@@ -201,7 +201,7 @@ namespace wallabag.Tests
 
             var param = new ProtocolSetupNavigationParameter("user", "http://test.de");
 
-            await viewModel.OnNavigatedToAsync(param, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
+            await viewModel.ActivateAsync(param, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
 
             Assert.True(WallabagProvider.GetOther(device).Equals(viewModel.SelectedProvider));
             Assert.Equal("user", viewModel.Username);

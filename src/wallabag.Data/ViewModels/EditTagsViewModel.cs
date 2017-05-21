@@ -83,7 +83,7 @@ namespace wallabag.Data.ViewModels
             });
         }
 
-        public override Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
+        public override Task ActivateAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
         {
             if (parameter is int itemId)
             {

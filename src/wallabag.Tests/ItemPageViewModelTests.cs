@@ -27,7 +27,7 @@ namespace wallabag.Tests
             var database = TestsHelper.CreateFakeDatabase();
 
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database);
-            await viewModel.OnNavigatedToAsync(9999, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
+            await viewModel.ActivateAsync(9999, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
 
             Assert.True(viewModel.ErrorDuringInitialization);
             A.CallTo(() => platform.GetArticleTemplateAsync()).MustNotHaveHappened();
@@ -51,7 +51,7 @@ namespace wallabag.Tests
             database.Insert(item);
 
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database);
-            await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
+            await viewModel.ActivateAsync(item.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
 
             Assert.True(viewModel.ErrorDuringInitialization);
             A.CallTo(() => platform.GetArticleTemplateAsync()).MustNotHaveHappened();
@@ -99,7 +99,7 @@ namespace wallabag.Tests
             });
 
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database);
-            await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
+            await viewModel.ActivateAsync(item.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
 
             // Everything should be fine and our custom template should be applied
             A.CallTo(() => platform.InternetConnectionIsAvailable).MustHaveHappened();
@@ -132,7 +132,7 @@ namespace wallabag.Tests
             A.CallTo(() => platform.InternetConnectionIsAvailable).Returns(false);
 
             var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database);
-            await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
+            await viewModel.ActivateAsync(item.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
 
             A.CallTo(() => platform.InternetConnectionIsAvailable).MustHaveHappened();
             A.CallTo(() => client.GetItemAsync(A<int>.That.IsEqualTo(1), A<CancellationToken>.Ignored)).MustNotHaveHappened();
@@ -293,7 +293,7 @@ namespace wallabag.Tests
                 {
                     Item = fakeItemViewModel
                 };
-                await viewModel.OnNavigatedToAsync(item.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
+                await viewModel.ActivateAsync(item.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
 
                 Assert.False(viewModel.ErrorDuringInitialization);
                 Assert.Equal(string.Empty, viewModel.FormattedHtml);
@@ -404,7 +404,7 @@ namespace wallabag.Tests
             {
                 Item = fakeItemViewModel
             };
-            await viewModel.OnNavigatedToAsync(fakeItem.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
+            await viewModel.ActivateAsync(fakeItem.Id, new Dictionary<string, object>(), Data.Common.NavigationMode.New);
 
             Assert.False(viewModel.ErrorDuringInitialization);
             Assert.Matches(expectedResult, viewModel.FormattedHtml);

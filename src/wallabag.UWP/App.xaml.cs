@@ -41,6 +41,8 @@ namespace wallabag
 
         public async Task OnInitializeAsync(IActivatedEventArgs args)
         {
+            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "de";
+
             RegisterServices();
             SetupMigrationService();
 

@@ -280,7 +280,7 @@ namespace wallabag.Data.ViewModels
                 Item.MarkAsStarredCommand.Execute();
         }
 
-        public override async Task OnNavigatedToAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
+        public override async Task ActivateAsync(object parameter, IDictionary<string, object> state, NavigationMode mode)
         {
             if (state.Count > 0)
             {
@@ -355,7 +355,7 @@ namespace wallabag.Data.ViewModels
                 Messenger.Default.Send(new Common.Messages.LoadContentMessage());
             }
         }
-        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState)
+        public override Task DeactivateAsync(IDictionary<string, object> pageState)
         {
             Settings.Appereance.FontSize = FontSize;
             Settings.Appereance.FontFamily = FontFamily;
