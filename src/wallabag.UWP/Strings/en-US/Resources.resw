@@ -186,8 +186,8 @@
   <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
     <value>Edit tags</value>
   </data>
-  <data name="EnterTagAutoSuggestBox.PlaceholderText" xml:space="preserve">
-    <value>enter a tag…</value>
+  <data name="TagQueryTextBox.PlaceholderText" xml:space="preserve">
+    <value>Enter a tag or select one from the list.</value>
   </data>
   <data name="FollowOnTwitterButton.Content" xml:space="preserve">
     <value>Follow @wallabagapp on Twitter</value>

@@ -186,9 +186,6 @@
   <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
     <value>Schlagwörter bearbeiten</value>
   </data>
-  <data name="EnterTagAutoSuggestBox.PlaceholderText" xml:space="preserve">
-    <value>schlagwort eingeben…</value>
-  </data>
   <data name="FollowOnTwitterButton.Content" xml:space="preserve">
     <value>Folge @wallabagapp auf Twitter</value>
   </data>
@@ -518,5 +515,8 @@
   </data>
   <data name="LoginDialog.SecondaryButtonText" xml:space="preserve">
     <value>Schließen</value>
+  </data>
+  <data name="TagQueryTextBox.PlaceholderText" xml:space="preserve">
+    <value>Schlagwort eingeben oder aus der Liste auswählen.</value>
   </data>
 </root>

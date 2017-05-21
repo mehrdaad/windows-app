@@ -57,7 +57,7 @@
         </ListView>
         <TextBox
             x:Name="TagQueryTextBox"
-            x:Uid="EnterTagAutoSuggestBox"
+            x:Uid="TagQueryTextBox"
             Grid.Row="1"
             Margin="0,12,0,0"
             VerticalAlignment="Bottom"
