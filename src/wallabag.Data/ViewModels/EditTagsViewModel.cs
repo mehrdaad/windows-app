@@ -29,7 +29,7 @@ namespace wallabag.Data.ViewModels
         public ICommand FinishCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 
-        public string TagQuery { get; set; }
+        public string TagQuery { get; set; } = string.Empty;
         public ICommand TagQueryChangedCommand { get; private set; }
         public ICommand TagSubmittedCommand { get; private set; }
 
@@ -66,6 +66,7 @@ namespace wallabag.Data.ViewModels
                 {
                     _loggingService.WriteLine("Tag wasn't in list yet. Added.");
                     Tags.Add(suggestion);
+                    Suggestions.Remove(suggestion);
                 }
                 else if (!string.IsNullOrEmpty(TagQuery))
                 {
@@ -113,7 +114,7 @@ namespace wallabag.Data.ViewModels
             {
                 foreach (var item in Items)
                 {
-                   await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
+                    await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
 
                     foreach (var tag in Tags)
                         item.Tags.Add(tag);

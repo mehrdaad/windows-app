@@ -10,13 +10,7 @@ namespace wallabag.Controls
     {
         public EditTagsViewModel ViewModel => DataContext as EditTagsViewModel;
 
-        public TagsControl()
-        {
-            InitializeComponent();
-
-            autoSuggestBox.KeyDown += AutoSuggestBox_KeyDown;
-        }
-
+        public TagsControl() => InitializeComponent();
         private void TagsListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             ViewModel.Tags.Remove(e.ClickedItem as Tag);
@@ -39,10 +33,13 @@ namespace wallabag.Controls
             }
         }
 
-        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-            => ViewModel.TagQueryChangedCommand.Execute(null);
+        private void autoSuggestBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+            ViewModel.TagQuery = (sender as TextBox).Text;
+            ViewModel.TagQueryChangedCommand.Execute(null);
+        }
 
-        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-            => ViewModel.TagSubmittedCommand.Execute(args.ChosenSuggestion);
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+           => ViewModel.TagSubmittedCommand.Execute(e.ClickedItem);
     }
 }
