@@ -22,6 +22,6 @@
             InputScope="Url"
             PlaceholderText="https://"
             Text="{x:Bind ViewModel.UriString, Mode=TwoWay}" />
-        <controls:TagsControl DataContext="{x:Bind ViewModel.TagViewModel}" Margin="0,16,0,0" />
+        <controls:TagsControl Margin="0,16,0,0" DataContext="{x:Bind ViewModel.TagViewModel}" />
     </StackPanel>
 </ContentDialog>

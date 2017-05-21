@@ -15,6 +15,6 @@
     TitleTemplate="{StaticResource ContentDialogTitleDataTemplate}"
     mc:Ignorable="d">
 
-    <controls:TagsControl />
+    <controls:TagsControl Margin="0,-16,0,0" />
 
 </ContentDialog>
