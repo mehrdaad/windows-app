@@ -24,11 +24,13 @@
                 Text="No tags added, yet." />
         </StackPanel>
         <ListView
+            x:Name="TagsListView"
             Padding="-4,0,0,0"
             VerticalAlignment="Center"
             IsItemClickEnabled="True"
             ItemClick="TagsListView_ItemClick"
             ItemsSource="{x:Bind ViewModel.Tags, Mode=OneWay}"
+            KeyDown="TagsListView_KeyDown"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             ScrollViewer.HorizontalScrollMode="Auto"
             ScrollViewer.VerticalScrollMode="Disabled">
@@ -60,7 +62,7 @@
             </ListView.ItemContainerStyle>
         </ListView>
         <TextBox
-            x:Name="autoSuggestBox"
+            x:Name="TagQueryTextBox"
             x:Uid="EnterTagAutoSuggestBox"
             Grid.Row="1"
             VerticalAlignment="Bottom"
@@ -68,11 +70,13 @@
             KeyDown="AutoSuggestBox_KeyDown"
             PlaceholderText="enter a tag…"
             Text="{x:Bind ViewModel.TagQuery, Mode=TwoWay}"
-            TextChanged="autoSuggestBox_TextChanged_1" />
+            TextChanged="TagQueryTextBox_TextChanged" />
         <ListView
+            x:Name="SuggestionListView"
             Grid.Row="2"
             IsItemClickEnabled="True"
             ItemClick="ListView_ItemClick"
-            ItemsSource="{x:Bind ViewModel.Suggestions, Mode=OneWay}" />
+            ItemsSource="{x:Bind ViewModel.Suggestions, Mode=OneWay}"
+            KeyDown="SuggestionListView_KeyDown" />
     </Grid>
 </UserControl>

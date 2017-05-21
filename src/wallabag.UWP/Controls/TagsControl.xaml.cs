@@ -2,8 +2,6 @@
 using wallabag.Data.ViewModels;
 using Windows.UI.Xaml.Controls;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace wallabag.Controls
 {
     public sealed partial class TagsControl : UserControl
@@ -11,12 +9,26 @@ namespace wallabag.Controls
         public EditTagsViewModel ViewModel => DataContext as EditTagsViewModel;
 
         public TagsControl() => InitializeComponent();
+
         private void TagsListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             ViewModel.Tags.Remove(e.ClickedItem as Tag);
             ViewModel.RaisePropertyChanged(nameof(ViewModel.TagsCountIsZero));
         }
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            ViewModel.TagSubmittedCommand.Execute(e.ClickedItem);
+            TagQueryTextBox.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+        }
 
+        private void TagQueryTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ViewModel.TagQuery = (sender as TextBox).Text;
+            ViewModel.TagQueryChangedCommand.Execute(null);
+        }
+
+        private void TagsListView_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+            => TagQueryTextBox.Focus(Windows.UI.Xaml.FocusState.Programmatic);
         private void AutoSuggestBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             // Checks if the comma key was pressed (code 188)
@@ -28,15 +40,18 @@ namespace wallabag.Controls
 
                 (sender as TextBox).Text = string.Empty;
             }
+            else if (e.Key == Windows.System.VirtualKey.Up &&
+                ViewModel.Tags.Count > 0)
+                TagsListView.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+            else if (e.Key == Windows.System.VirtualKey.Down &&
+                ViewModel.Suggestions.Count > 0)
+                SuggestionListView.Focus(Windows.UI.Xaml.FocusState.Programmatic);
         }
-
-        private void autoSuggestBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        private void SuggestionListView_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
-            ViewModel.TagQuery = (sender as TextBox).Text;
-            ViewModel.TagQueryChangedCommand.Execute(null);
+            var listView = sender as ListView;
+            if (e.Key == Windows.System.VirtualKey.Up && listView.SelectedIndex <= 0)
+                TagQueryTextBox.Focus(Windows.UI.Xaml.FocusState.Programmatic);
         }
-
-        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
-           => ViewModel.TagSubmittedCommand.Execute(e.ClickedItem);
     }
 }
