@@ -48,15 +48,7 @@ namespace wallabag.Data.ViewModels
             TagQueryChangedCommand = new RelayCommand(() =>
             {
                 _loggingService.WriteLine($"Tag query changed: {TagQuery}");
-
-                string suggestionString = TagQuery.ToLower().Split(',').Last();
-                _loggingService.WriteLine($"Searching for tags beginning with '{suggestionString}' in the database.");
-                Suggestions.Replace(
-                    _database.Table<Tag>()
-                        .Where(t => t.Label.ToLower().StartsWith(suggestionString))
-                        .Except(Tags)
-                        .Take(3)
-                        .ToList());
+                UpdateSuggestions();
             });
             TagSubmittedCommand = new RelayCommand<Tag>(suggestion =>
             {
@@ -66,7 +58,8 @@ namespace wallabag.Data.ViewModels
                 {
                     _loggingService.WriteLine("Tag wasn't in list yet. Added.");
                     Tags.Add(suggestion);
-                    Suggestions.Remove(suggestion);
+
+                    UpdateSuggestions();
                 }
                 else if (!string.IsNullOrEmpty(TagQuery))
                 {
@@ -102,6 +95,8 @@ namespace wallabag.Data.ViewModels
             }
             else if (parameter is List<Item> itemList)
                 Items.AddRange(itemList);
+
+            UpdateSuggestions();
 
             return Task.FromResult(true);
         }
@@ -143,6 +138,32 @@ namespace wallabag.Data.ViewModels
         {
             _loggingService.WriteLine("Cancelling the editing of tags.");
             _navigationService.GoBack();
+        }
+
+        public void UpdateSuggestions()
+        {
+            _loggingService.WriteLine("Building SQL query for suggestions.");
+
+            if (!string.IsNullOrWhiteSpace(TagQuery))
+            {
+                string suggestionString = TagQuery.ToLower().Split(',').Last();
+                _loggingService.WriteLine($"Searching for tags beginning with '{suggestionString}' in the database.");
+                Suggestions.Replace(
+                    _database.Table<Tag>()
+                        .Where(t => t.Label.ToLower().StartsWith(suggestionString))
+                        .Except(Tags)
+                        .Take(3)
+                        .ToList(), true);
+            }
+            else
+            {
+                Suggestions.Replace(
+                    _database.Table<Tag>()
+                        .Except(Tags)
+                        .Take(3)
+                        .ToList(), true);
+            }
+
         }
     }
 }
