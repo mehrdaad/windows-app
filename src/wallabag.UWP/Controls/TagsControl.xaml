@@ -59,6 +59,7 @@
             x:Name="TagQueryTextBox"
             x:Uid="EnterTagAutoSuggestBox"
             Grid.Row="1"
+            Margin="0,12,0,0"
             VerticalAlignment="Bottom"
             BorderThickness="0,0,0,1"
             KeyDown="AutoSuggestBox_KeyDown"

@@ -14,6 +14,7 @@ namespace wallabag.Controls
         {
             ViewModel.Tags.Remove(e.ClickedItem as Tag);
             ViewModel.RaisePropertyChanged(nameof(ViewModel.TagsCountIsZero));
+            ViewModel.UpdateSuggestions();
         }
         private void ListView_ItemClick(object sender, ItemClickEventArgs e)
         {
