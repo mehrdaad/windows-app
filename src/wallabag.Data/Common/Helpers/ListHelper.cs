@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace wallabag.Data.Common.Helpers
 {
@@ -24,11 +25,25 @@ namespace wallabag.Data.Common.Helpers
             list.Insert(i, item);
         }
 
-        public static void Replace<T>(this IList<T> oldList, IList<T> newList)
+        public static void Replace<T>(this IList<T> oldList, IList<T> newList, bool withAnimations = false)
         {
-            oldList.Clear();
-            foreach (var item in newList)
-                oldList.Add(item);
+            if (!withAnimations)
+            {
+                oldList.Clear();
+                foreach (var item in newList)
+                    oldList.Add(item);
+            }
+            else
+            {
+                var addedItems = newList.Except(oldList).ToList();
+                var deletedItems = oldList.Except(newList).ToList();
+
+                foreach (var item in addedItems)
+                    oldList.AddSorted(item, sortAscending: true);
+
+                foreach (var item in deletedItems.ToList())
+                    oldList.Remove(item);
+            }
         }
 
         public static string[] ToStringArray<T>(this IEnumerable<T> list) => string.Join(",", list).Split(","[0]);
