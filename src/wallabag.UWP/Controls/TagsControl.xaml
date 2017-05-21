@@ -6,24 +6,10 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition Height="auto" />
             <RowDefinition />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <StackPanel
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-            Visibility="{x:Bind ViewModel.TagsCountIsZero, Mode=OneWay, FallbackValue=Collapsed}">
-            <TextBlock
-                Margin="0,0,4,0"
-                FontSize="20"
-                Text="😞" />
-            <TextBlock
-                x:Uid="NoTagsInfoTextBlock"
-                VerticalAlignment="Center"
-                Text="No tags added, yet." />
-        </StackPanel>
         <ListView
             x:Name="TagsListView"
             Padding="-4,0,0,0"
