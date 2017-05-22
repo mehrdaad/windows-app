@@ -295,14 +295,22 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLine("Executing UI changes for offline task.");
             _loggingService.WriteObject(task);
 
-            var item = default(ItemViewModel);
+            var oldItem = default(ItemViewModel);
+            var newItem = ItemViewModel.FromId(
+                task.ItemId,
+                _loggingService,
+                _database,
+                _offlineTaskService,
+                _navigationService,
+                _device);
+
             bool orderAscending = CurrentSearchProperties.OrderAscending ?? false;
 
             if (task.Action != OfflineTask.OfflineTaskAction.Delete)
             {
-                item = Items.FirstOrDefault(i => i.Model.Id == task.ItemId);
+                oldItem = Items.FirstOrDefault(i => i.Model.Id == task.ItemId);
 
-                if (item == null)
+                if (oldItem == null)
                 {
                     _loggingService.WriteLine("The item doesn't exist in the collection.");
                     return Task.FromResult(true);
@@ -313,29 +321,30 @@ namespace wallabag.Data.ViewModels
             {
                 _loggingService.WriteLine("Running dispatcher to apply the changes...");
 
-                item?.RefetchModelFromDatabase(_database);
                 switch (task.Action)
                 {
                     case OfflineTask.OfflineTaskAction.MarkAsRead:
                         if (CurrentSearchProperties.ItemTypeIndex == 2)
-                            Items.AddSorted(item, sortAscending: orderAscending);
+                            Items.AddSorted(newItem, sortAscending: orderAscending);
                         else if (CurrentSearchProperties.ItemTypeIndex == 0)
-                            Items.Remove(item);
+                            Items.Remove(oldItem);
                         break;
                     case OfflineTask.OfflineTaskAction.UnmarkAsRead:
                         if (CurrentSearchProperties.ItemTypeIndex == 2)
-                            Items.Remove(item);
+                            Items.Remove(oldItem);
                         else if (CurrentSearchProperties.ItemTypeIndex == 0)
-                            Items.AddSorted(item, sortAscending: orderAscending);
+                            Items.AddSorted(newItem, sortAscending: orderAscending);
                         break;
                     case OfflineTask.OfflineTaskAction.MarkAsStarred: break;
                     case OfflineTask.OfflineTaskAction.UnmarkAsStarred:
                         if (CurrentSearchProperties.ItemTypeIndex == 1)
-                            Items.Remove(item);
+                            Items.Remove(oldItem);
                         break;
                     case OfflineTask.OfflineTaskAction.EditTags:
-                        Items.Remove(item);
-                        Items.AddSorted(item, sortAscending: orderAscending);
+                        Items.Remove(oldItem);
+                        if (CurrentSearchProperties.Tag == null ||
+                            (CurrentSearchProperties.Tag != null && newItem.Model.Tags.Contains(CurrentSearchProperties.Tag)))
+                            Items.AddSorted(newItem, sortAscending: orderAscending);
                         break;
                     case OfflineTask.OfflineTaskAction.AddItem:
                         if (CurrentSearchProperties.ItemTypeIndex == 0)
