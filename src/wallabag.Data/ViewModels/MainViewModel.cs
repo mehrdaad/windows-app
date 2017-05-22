@@ -364,6 +364,8 @@ namespace wallabag.Data.ViewModels
                         Items.Remove(Items.Where(i => i.Model.Id.Equals(task.ItemId)).First());
                         break;
                 }
+
+                GetMetadataForItemsAsync(Items);
             });
         }
         private async Task<List<ItemViewModel>> LoadMoreItemsAsync(int count)
