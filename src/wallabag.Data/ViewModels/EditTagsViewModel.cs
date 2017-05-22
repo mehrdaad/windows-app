@@ -109,12 +109,13 @@ namespace wallabag.Data.ViewModels
             {
                 foreach (var item in Items)
                 {
-                    await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
-
                     foreach (var tag in Tags)
                         item.Tags.Add(tag);
+
+                    _database.Update(item);
+
+                    await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
                 }
-                _database.UpdateAll(Items);
             }
             else
             {
