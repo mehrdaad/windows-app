@@ -1,5 +1,7 @@
 ﻿using Xunit;
 using wallabag.Data.Models;
+using FakeItEasy;
+using wallabag.Data.Interfaces;
 
 namespace wallabag.Tests
 {
@@ -43,11 +45,12 @@ namespace wallabag.Tests
         [Fact]
         public void ReplacingOneSearchPropertyWithAnotherActuallyReplacesAllProperties()
         {
+            var fakePlatform = A.Fake<IPlatformSpecific>();
             var firstProperty = new SearchProperties()
             {
                 Query = "My first query",
                 ItemTypeIndex = 0,
-                Language = Language.Unknown,
+                Language = Language.GetUnknown(fakePlatform),
                 OrderAscending = true,
                 SortType = SearchProperties.SearchPropertiesSortType.ByCreationDate,
                 Tag = default(Tag)

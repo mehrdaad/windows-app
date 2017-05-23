@@ -406,9 +406,9 @@ namespace wallabag.Data.ViewModels
                     }
                     else
                     {
-                        if (!LanguageSuggestions.Contains(Language.Unknown))
+                        if (!LanguageSuggestions.Contains(Language.GetUnknown(_device)))
                         {
-                            LanguageSuggestions.AddSorted(Language.Unknown, sortAscending: true);
+                            LanguageSuggestions.AddSorted(Language.GetUnknown(_device), sortAscending: true);
                             _loggingService.WriteLine("Added Language.Unknown to the list.");
                         }
                     }
@@ -423,8 +423,8 @@ namespace wallabag.Data.ViewModels
                     }
                 }
 
-                if (LanguageSuggestions.Contains(Language.Unknown))
-                    LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.Unknown), 0);
+                if (LanguageSuggestions.Contains(Language.GetUnknown(_device)))
+                    LanguageSuggestions.Move(LanguageSuggestions.IndexOf(Language.GetUnknown(_device)), 0);
             });
         }
 

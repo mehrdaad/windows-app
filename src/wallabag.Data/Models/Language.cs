@@ -22,17 +22,13 @@ namespace wallabag.Data.Models
             }
         }
 
-        public static Language Unknown
-        {
-            get
+        public static Language GetUnknown(Interfaces.IPlatformSpecific platform)
+            => new Language("en")
             {
-                return new Language("en")
-                {
-                    InternalLanguageCode = null,
-                    LanguageCode = null
-                };
-            }
-        }
+                InternalLanguageCode = null,
+                LanguageCode = null,
+                DisplayName = platform.GetLocalizedResource("UnknownLanguageDisplayName")
+            };
 
         public override string ToString() => DisplayName;
         public override bool Equals(object obj)
