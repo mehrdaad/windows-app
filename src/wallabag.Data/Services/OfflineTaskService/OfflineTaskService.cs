@@ -118,9 +118,10 @@ namespace wallabag.Data.Services.OfflineTaskService
 
                     var newItem = await _client.AddAsync(new Uri(task.Url), task.Tags);
                     if (newItem != null)
+                    {
                         _database.InsertOrReplace((Item)newItem);
-
-                    task.ItemId = newItem.Id;
+                        task.ItemId = newItem.Id;
+                    }
 
                     executionIsSuccessful = newItem != null;
                     break;
