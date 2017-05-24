@@ -45,6 +45,10 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLine($"URL: {UriString}");
             _loggingService.WriteLine($"Tags: {string.Join(",", TagViewModel.Tags)}");
 
+            // Remove the protocol used by the reading mode of Microsoft Edge
+            if (UriString.StartsWith("read:"))
+                UriString = UriString.Remove(0, 5);
+
             if (UriString.IsValidUri() &&
                 Uri.TryCreate(UriString, UriKind.Absolute, out var uri))
             {
