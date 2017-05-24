@@ -133,12 +133,14 @@ namespace wallabag.Data.ViewModels
                 await _offlineTaskService.AddAsync(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags);
             }
 
-            _navigationService.GoBack();
+            // TODO: Find a workaround so that the ViewModel can navigate back without relying on the UI.
+            //_navigationService.GoBack();
         }
         private void Cancel()
         {
             _loggingService.WriteLine("Cancelling the editing of tags.");
-            _navigationService.GoBack();
+            // TODO: Find a workaround so that the ViewModel can navigate back without relying on the UI.
+            //_navigationService.GoBack();
         }
 
         public void UpdateSuggestions()
