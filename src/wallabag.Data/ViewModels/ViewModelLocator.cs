@@ -57,6 +57,15 @@ namespace wallabag.Data.ViewModels
                             logging.WriteLine("App tried to refresh the tokens but failed. Informing the user.");
                             Messenger.Default.Send(new ShowLoginMessage());
                         }
+                        else if (!e.Response.IsSuccessStatusCode)
+                        {
+                            logging.WriteLine("HTTP request to server failed.");
+                            logging.WriteLine($"{e.RequestMethod.ToString().ToUpper()} {e.RequestUriSubString} with {e.Parameters.Count} parameters.");
+
+                            if (e.Parameters.Count > 0)
+                                foreach (var param in e.Parameters)
+                                    logging.WriteLine($"param '{param.Key}': {param.Value}");
+                        }
                     };
 
                     return client;
