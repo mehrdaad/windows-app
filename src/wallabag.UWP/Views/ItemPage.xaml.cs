@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Globalization;
 using wallabag.Common;
 using wallabag.Common.Helpers;
+using wallabag.Data.Common;
 using wallabag.Data.ViewModels;
 using Windows.Foundation;
 using Windows.System;
@@ -78,15 +79,7 @@ namespace wallabag.Views
             Messenger.Default.Register<wallabag.Data.Common.Messages.LoadContentMessage>(this, message =>
             {
                 HtmlViewer.NavigateToString(ViewModel.FormattedHtml);
-            });
-
-            var titleBarBackgroundRectangle = FindName(nameof(TitleBarBackgroundRectangle)) as Rectangle;
-
-            if (Settings.CustomSettings.WhiteOverlayForTitleBar &&
-                GeneralHelper.DeviceFamilyOfCurrentDevice == WindowsStateTriggers.DeviceFamily.Desktop)
-                titleBarBackgroundRectangle.Visibility = Visibility.Visible;
-            else
-                titleBarBackgroundRectangle.Visibility = Visibility.Collapsed;
+            });          
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
@@ -247,6 +240,14 @@ namespace wallabag.Views
 
             (FindName(nameof(commandsGrid)) as Grid).RequestedTheme = ColorApplicationTheme;
             TitleBarHelper.SetButtonForegroundColor(ForegroundBrush.Color);
+
+            var gradientStops = (TitleBarBackgroundRectangle.Fill as LinearGradientBrush).GradientStops;
+            gradientStops[0].Color = BackgroundBrush.Color;
+
+            if (ColorApplicationTheme == ElementTheme.Dark)
+                gradientStops[1].Color = Color.FromArgb(1, 0, 0, 0);
+            else
+                gradientStops[1].Color = Colors.Transparent;
         }
 
         private async void ChangeFontFamilyAsync(object sender, RoutedEventArgs e)

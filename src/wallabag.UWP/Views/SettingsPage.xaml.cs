@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using wallabag.Common;
 using wallabag.Data.ViewModels;
 using Windows.ApplicationModel;
 using Windows.Storage;
@@ -20,16 +19,7 @@ namespace wallabag.Views
     {
         public SettingsPageViewModel ViewModel => DataContext as SettingsPageViewModel;
 
-        public bool WhiteOverlayForTitleBar
-        {
-            get { return Settings.CustomSettings.WhiteOverlayForTitleBar; }
-            set { Settings.CustomSettings.WhiteOverlayForTitleBar = value; }
-        }
-
-        public SettingsPage()
-        {
-            InitializeComponent();
-        }
+        public SettingsPage() => InitializeComponent();
 
         private void VideoOpenModeRadioButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {

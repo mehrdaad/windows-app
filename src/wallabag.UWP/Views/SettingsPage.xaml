@@ -141,16 +141,6 @@
                             Style="{StaticResource InfoTextBlockStyle}"
                             Text="{x:Bind ViewModel.VideoOpenModeDescription, Mode=OneWay}" />
                     </Grid>
-                    <ToggleSwitch
-                        x:Name="TitleBarVisibilityToggleSwitch"
-                        x:Uid="TitleBarVisibilityToggleSwitch"
-                        Margin="0,32,0,0"
-                        x:DeferLoadStrategy="Lazy"
-                        Header="Visibility of the title bar"
-                        IsOn="{x:Bind WhiteOverlayForTitleBar, Mode=TwoWay}"
-                        OffContent="Hidden"
-                        OnContent="Visible"
-                        Visibility="Collapsed" />
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="BackgroundTaskPivotItem" Header="Background task">
