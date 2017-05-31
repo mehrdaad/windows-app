@@ -1,8 +1,10 @@
-﻿using SQLite.Net.Interop;
+﻿using GalaSoft.MvvmLight.Ioc;
+using SQLite.Net.Interop;
 using System;
 using System.Threading.Tasks;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
+using wallabag.Data.Services;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
@@ -85,6 +87,21 @@ namespace wallabag.Common
                 e.Request.Data.Properties.Title = model.Title;
             };
             DataTransferManager.ShowShareUI();
+        }
+
+        public void SetClipboardUri(Uri rightClickUri)
+        {
+            SimpleIoc.Default.GetInstance<ILoggingService>().WriteLine($"Set clipboard uri to: {rightClickUri}");
+
+            var datapackage = new DataPackage()
+            {
+                RequestedOperation = DataPackageOperation.Copy
+            };
+            datapackage.SetWebLink(rightClickUri);
+            datapackage.SetText(rightClickUri.OriginalString);
+
+            Clipboard.SetContent(datapackage);
+            Clipboard.Flush();
         }
     }
 }

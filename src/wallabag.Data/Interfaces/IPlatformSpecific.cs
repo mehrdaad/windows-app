@@ -25,5 +25,6 @@ namespace wallabag.Data.Interfaces
         string GetDatabasePath();
         Task DeleteDatabaseAsync();
         ISQLitePlatform GetSQLitePlatform();
+        void SetClipboardUri(Uri rightClickUri);
     }
 }

@@ -516,4 +516,7 @@
   <data name="LoginDialog.SecondaryButtonText" xml:space="preserve">
     <value>Close</value>
   </data>
+  <data name="CopyLinkMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
 </root>

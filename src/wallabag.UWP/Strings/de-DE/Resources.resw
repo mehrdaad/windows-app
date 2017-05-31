@@ -519,4 +519,7 @@
   <data name="TagQueryTextBox.PlaceholderText" xml:space="preserve">
     <value>Schlagwort eingeben oder aus der Liste auswählen.</value>
   </data>
+  <data name="CopyLinkMenuFlyoutItem.Text" xml:space="preserve">
+    <value>In Zwischenablage kopieren</value>
+  </data>
 </root>

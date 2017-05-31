@@ -409,5 +409,48 @@ namespace wallabag.Tests
             Assert.False(viewModel.ErrorDuringInitialization);
             Assert.Matches(expectedResult, viewModel.FormattedHtml);
         }
+
+        [Fact]
+        public void CopyingAccessDeviceFunctions()
+        {
+            var offlineTaskService = A.Fake<IOfflineTaskService>();
+            var loggingService = A.Fake<ILoggingService>();
+            var platform = A.Fake<IPlatformSpecific>();
+            var navigationService = A.Fake<INavigationService>();
+            var client = A.Fake<IWallabagClient>();
+            var database = TestsHelper.CreateFakeDatabase();
+
+            var fakeItem = new Item()
+            {
+                Id = 1,
+                Hostname = "wallabag.it",
+                Content = string.Empty,
+                CreationDate = DateTime.Now,
+                LastModificationDate = DateTime.Now,
+                EstimatedReadingTime = 10,
+                IsRead = false,
+                IsStarred = false,
+                Language = "de-DE",
+                Mimetype = "text/html",
+                ReadingProgress = 0,
+                Title = "My title",
+                Url = "https://wallabag.it",
+                PreviewImageUri = new Uri("https://test.de")
+            };
+            database.Insert(fakeItem);
+
+            var testUri = new Uri("https://framabag.org");
+
+            var fakeItemViewModel = new ItemViewModel(fakeItem, offlineTaskService, navigationService, loggingService, platform, database);
+            var viewModel = new ItemPageViewModel(offlineTaskService, loggingService, platform, navigationService, client, database)
+            {
+                Item = fakeItemViewModel,
+                RightClickUri = testUri
+            };
+
+            viewModel.CopyLinkToClipboardCommand.Execute(null);
+
+            A.CallTo(() => platform.SetClipboardUri(A<Uri>.That.IsEqualTo(testUri))).MustHaveHappened();
+        }
     }
 }

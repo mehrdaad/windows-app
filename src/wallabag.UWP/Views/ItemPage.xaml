@@ -119,12 +119,17 @@
         <MenuFlyout x:Name="RightClickMenuFlyout">
             <MenuFlyoutItem
                 x:Uid="SaveInWallabagMenuFlyoutItem"
-                Command="{Binding SaveRightClickLinkCommand}"
+                Command="{x:Bind ViewModel.SaveRightClickLinkCommand}"
                 Text="Save in wallabag" />
+            <MenuFlyoutSeparator />
             <MenuFlyoutItem
                 x:Uid="OpenInBrowserMenuFlyoutItem"
-                Command="{Binding OpenRightClickLinkInBrowserCommand}"
+                Command="{x:Bind ViewModel.OpenRightClickLinkInBrowserCommand}"
                 Text="Open in browser" />
+            <MenuFlyoutItem
+                x:Uid="CopyLinkMenuFlyoutItem"
+                Command="{x:Bind ViewModel.CopyLinkToClipboardCommand}"
+                Text="Copy link" />
         </MenuFlyout>
     </Page.Resources>
 

@@ -45,6 +45,7 @@ namespace wallabag.Data.ViewModels
         public Uri RightClickUri { get; set; }
         public ICommand SaveRightClickLinkCommand { get; private set; }
         public ICommand OpenRightClickLinkInBrowserCommand { get; private set; }
+        public ICommand CopyLinkToClipboardCommand { get; private set; }
         public string ReadingProgressContainerName => $"ReadingProgressContainer-{Settings.Authentication.ClientId}";
 
         public ItemPageViewModel(
@@ -76,6 +77,7 @@ namespace wallabag.Data.ViewModels
 
             SaveRightClickLinkCommand = new RelayCommand(() => _offlineTaskService.AddAsync(RightClickUri.ToString(), new List<string>()));
             OpenRightClickLinkInBrowserCommand = new RelayCommand(() => _device.LaunchUri(RightClickUri));
+            CopyLinkToClipboardCommand = new RelayCommand(() => _device.SetClipboardUri(RightClickUri));
         }
 
         private async Task GenerateFormattedHtmlAsync()
