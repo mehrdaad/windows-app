@@ -83,9 +83,10 @@ namespace wallabag.Services
             subgroup.Children.Add(tileTitle);
 
             // Add the reading time
+            string resourceName = size == TileSize.Medium ? "LiveTileReadingTimeShort" : "LiveTileReadingTime";
             subgroup.Children.Add(new AdaptiveText()
             {
-                Text = $"Lesezeit: drei Minuten",
+                Text = string.Format(_device.GetLocalizedResource(resourceName), readingTime),
                 HintStyle = AdaptiveTextStyle.CaptionSubtle
             });
 

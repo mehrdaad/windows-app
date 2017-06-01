@@ -519,4 +519,10 @@
   <data name="CopyLinkMenuFlyoutItem.Text" xml:space="preserve">
     <value>Copy to clipboard</value>
   </data>
+  <data name="LiveTileReadingTime" xml:space="preserve">
+    <value>Reading time: {0} minute(s)</value>
+  </data>
+  <data name="LiveTileReadingTimeShort" xml:space="preserve">
+    <value>Reading time: {0} min</value>
+  </data>
 </root>
