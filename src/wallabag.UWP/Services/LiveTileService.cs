@@ -28,6 +28,11 @@ namespace wallabag.Services
         {
             _logging.WriteLine("Updating live tile.");
 
+
+            _logging.WriteLine("Clearing existing tiles.");
+            var tileManager = TileUpdateManager.CreateTileUpdaterForApplication();
+            tileManager.Clear();
+
             _logging.WriteLine("Fetching unread items from the database.");
             var items = _database.Query<Item>("select Title,PreviewImageUri,EstimatedReadingTime from Item where IsRead=0 ORDER BY CreationDate DESC");
             int maxPossibleTiles = Math.Min(5, items.Count);
@@ -53,9 +58,8 @@ namespace wallabag.Services
                 var tileNotification = new TileNotification(tileContent.GetXml()) { Tag = $"item-{i}" };
 
                 // And send the notification to the primary tile
-                var tu = TileUpdateManager.CreateTileUpdaterForApplication();
-                tu.EnableNotificationQueue(true);
-                tu.Update(tileNotification);
+                tileManager.EnableNotificationQueue(true);
+                tileManager.Update(tileNotification);
             }
         }
 
