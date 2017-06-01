@@ -525,4 +525,22 @@
   <data name="LiveTileReadingTimeShort" xml:space="preserve">
     <value>Reading time: {0} min</value>
   </data>
+  <data name="ArchivedItemTypeComboBoxItem.Content" xml:space="preserve">
+    <value>Archived</value>
+  </data>
+  <data name="EnableLiveTileToggleSwitch.Header" xml:space="preserve">
+    <value>Enable live tile</value>
+  </data>
+  <data name="LiveTileDisplayedItemsComboBox.Header" xml:space="preserve">
+    <value>Displayed items</value>
+  </data>
+  <data name="LiveTileSettingsPivotItem.Header" xml:space="preserve">
+    <value>Live tile</value>
+  </data>
+  <data name="StarredItemTypeComboBoxItem.Content" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
+  <data name="UnreadItemTypeComboBoxItem.Content" xml:space="preserve">
+    <value>Unread</value>
+  </data>
 </root>

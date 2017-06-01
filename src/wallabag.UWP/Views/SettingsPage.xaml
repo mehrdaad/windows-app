@@ -143,6 +143,23 @@
                     </Grid>
                 </StackPanel>
             </PivotItem>
+            <PivotItem x:Uid="LiveTileSettingsPivotItem" Header="Live tile">
+                <StackPanel>
+                    <ToggleSwitch
+                        x:Uid="EnableLiveTileToggleSwitch"
+                        Header="Enable live tile"
+                        IsOn="{x:Bind LiveTileIsEnabled, Mode=TwoWay}" />
+                    <ComboBox
+                        x:Uid="LiveTileDisplayedItemsComboBox"
+                        Header="Displayed items"
+                        SelectedIndex="{x:Bind DisplayedLiveTileItemsSelectedIndex, Mode=TwoWay}"
+                        Visibility="{x:Bind LiveTileIsEnabled, Mode=OneWay}">
+                        <ComboBoxItem x:Uid="UnreadItemTypeComboBoxItem" Content="Unread" />
+                        <ComboBoxItem x:Uid="StarredItemTypeComboBoxItem" Content="Favorites" />
+                        <ComboBoxItem x:Uid="ArchivedItemTypeComboBoxItem" Content="Archived" />
+                    </ComboBox>
+                </StackPanel>
+            </PivotItem>
             <PivotItem x:Uid="BackgroundTaskPivotItem" Header="Background task">
                 <StackPanel>
                     <Grid
