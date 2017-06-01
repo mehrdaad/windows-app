@@ -204,7 +204,7 @@
   <data name="LanguageComboBox.PlaceholderText" xml:space="preserve">
     <value>sélectionnez une langue…</value>
   </data>
-  <data name="LanguageFilterTitleTextBlock" xml:space="preserve">
+  <data name="LanguageFilterTitleTextBlock.Text" xml:space="preserve">
     <value>LANGUE</value>
   </data>
   <data name="lightThemeButton.Label" xml:space="preserve">
