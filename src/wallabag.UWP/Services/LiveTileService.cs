@@ -92,14 +92,19 @@ namespace wallabag.Services
                                 }
                             }
                         }
-                    },
-                    BackgroundImage = new TileBackgroundImage()
-                    {
-                        Source = imageSource,
-                        HintOverlay = 40
                     }
                 }
             };
+
+            if (!string.IsNullOrEmpty(imageSource))
+            {
+                (binding.Content as TileBindingContentAdaptive).BackgroundImage = new TileBackgroundImage()
+                {
+                    Source = imageSource,
+                    HintOverlay = 40
+                };
+            }
+
             return binding;
         }
     }
