@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using SQLite.Net;
 using System;
+using wallabag.Common;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
@@ -32,8 +33,22 @@ namespace wallabag.Services
             var tileManager = TileUpdateManager.CreateTileUpdaterForApplication();
             tileManager.Clear();
 
-            _logging.WriteLine("Fetching unread items from the database.");
-            var items = _database.Query<Item>("select Title,PreviewImageUri,EstimatedReadingTime from Item where IsRead=0 ORDER BY CreationDate DESC");
+            if (!Settings.LiveTile.IsEnabled)
+            {
+                _logging.WriteLine("Live tiles are not enabled. Cancelling.");
+                return;
+            }
+
+            var itemType = Settings.LiveTile.DisplayedItemType;
+            _logging.WriteLine($"Fetching {itemType} items from the database.");
+
+            string queryPart = "IsRead=0";
+            if (itemType == Settings.LiveTile.ItemType.Starred)
+                queryPart = "IsStarred=1";
+            else if (itemType == Settings.LiveTile.ItemType.Archived)
+                queryPart = "IsRead=1";
+
+            var items = _database.Query<Item>($"select Title,PreviewImageUri,EstimatedReadingTime from Item where {queryPart} ORDER BY CreationDate DESC");
             int maxPossibleTiles = Math.Min(5, items.Count);
 
             for (int i = 0; i < maxPossibleTiles; i++)
