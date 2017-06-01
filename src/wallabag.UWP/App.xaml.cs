@@ -227,6 +227,7 @@ namespace wallabag
                 SimpleIoc.Default.Register<IMigrationService, MigrationService>();
                 SimpleIoc.Default.Register<IPlatformSpecific, Common.PlatformSpecific>();
                 SimpleIoc.Default.Register<IApiClientCreationService, Services.ApiClientCreationService>();
+                SimpleIoc.Default.Register<LiveTileService>();
             }
         }
 
