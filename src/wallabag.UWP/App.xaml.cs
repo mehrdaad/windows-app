@@ -153,6 +153,8 @@ namespace wallabag
 
         public Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
+            SimpleIoc.Default.GetInstance<LiveTileService>().Update();
+
             if (args.Kind == ActivationKind.ShareTarget)
             {
                 var frame = new Frame();
@@ -183,6 +185,8 @@ namespace wallabag
         public async Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
+
+            SimpleIoc.Default.GetInstance<LiveTileService>().Update();
 
             await _navigation?.SaveAsync();
             await SaveLogsToFile();
@@ -375,6 +379,9 @@ namespace wallabag
             }
 
             Settings.BackgroundTask.LastExecution = DateTime.Now;
+
+            SimpleIoc.Default.GetInstance<LiveTileService>().Update();
+
             deferral.Complete();
         }
         private Task EnsureRegistrationOfBackgroundTaskAsync()

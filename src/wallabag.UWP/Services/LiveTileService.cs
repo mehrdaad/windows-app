@@ -28,7 +28,6 @@ namespace wallabag.Services
         {
             _logging.WriteLine("Updating live tile.");
 
-
             _logging.WriteLine("Clearing existing tiles.");
             var tileManager = TileUpdateManager.CreateTileUpdaterForApplication();
             tileManager.Clear();
