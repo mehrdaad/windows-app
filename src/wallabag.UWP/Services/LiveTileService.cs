@@ -77,6 +77,18 @@ namespace wallabag.Services
             }
         }
 
+        public void UpdateBadge(int count = 0)
+        {
+            if (!Settings.LiveTile.BadgeIsEnabled)
+                count = 0;
+
+            _logging.WriteLine($"Updating badge with number {count}.");
+            var badgeManager = BadgeUpdateManager.CreateBadgeUpdaterForApplication();
+            var content = new BadgeNumericContent((uint)count);
+
+            badgeManager.Update(new BadgeNotification(content.GetXml()));
+        }
+
         private TileBinding CreateTileBinding(TileSize size, string title, int readingTime, string imageSource)
         {
             var binding = new TileBinding()
