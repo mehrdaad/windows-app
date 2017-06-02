@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using SQLite.Net;
 using System;
+using System.Collections.Generic;
 using wallabag.Common;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
@@ -25,7 +26,13 @@ namespace wallabag.Services
             _device = platform;
         }
 
-        public void Update()
+        public void UpdateAll()
+        {
+            UpdateTile();
+            UpdateBadge();
+        }
+
+        public void UpdateTile()
         {
             _logging.WriteLine("Updating live tile.");
 
@@ -39,16 +46,7 @@ namespace wallabag.Services
                 return;
             }
 
-            var itemType = Settings.LiveTile.DisplayedItemType;
-            _logging.WriteLine($"Fetching {itemType} items from the database.");
-
-            string queryPart = "IsRead=0";
-            if (itemType == Settings.LiveTile.ItemType.Starred)
-                queryPart = "IsStarred=1";
-            else if (itemType == Settings.LiveTile.ItemType.Archived)
-                queryPart = "IsRead=1";
-
-            var items = _database.Query<Item>($"select Title,PreviewImageUri,EstimatedReadingTime from Item where {queryPart} ORDER BY CreationDate DESC");
+            var items = GetItemsForCurrentSettings();
             int maxPossibleTiles = Math.Min(5, items.Count);
 
             for (int i = 0; i < maxPossibleTiles; i++)
@@ -76,9 +74,10 @@ namespace wallabag.Services
                 tileManager.Update(tileNotification);
             }
         }
-
-        public void UpdateBadge(int count = 0)
+        public void UpdateBadge()
         {
+            int count = GetItemsForCurrentSettings().Count;
+
             if (!Settings.LiveTile.BadgeIsEnabled)
                 count = 0;
 
@@ -89,6 +88,19 @@ namespace wallabag.Services
             badgeManager.Update(new BadgeNotification(content.GetXml()));
         }
 
+        private List<Item> GetItemsForCurrentSettings()
+        {
+            var itemType = Settings.LiveTile.DisplayedItemType;
+            _logging.WriteLine($"Fetching {itemType} items from the database.");
+
+            string queryPart = "IsRead=0";
+            if (itemType == Settings.LiveTile.ItemType.Starred)
+                queryPart = "IsStarred=1";
+            else if (itemType == Settings.LiveTile.ItemType.Archived)
+                queryPart = "IsRead=1";
+
+            return _database.Query<Item>($"select Title,PreviewImageUri,EstimatedReadingTime from Item where {queryPart} ORDER BY CreationDate DESC");
+        }
         private TileBinding CreateTileBinding(TileSize size, string title, int readingTime, string imageSource)
         {
             var binding = new TileBinding()

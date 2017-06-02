@@ -153,7 +153,7 @@ namespace wallabag
 
         public Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
-            SimpleIoc.Default.GetInstance<LiveTileService>().Update();
+            SimpleIoc.Default.GetInstance<LiveTileService>().UpdateAll();
 
             if (args.Kind == ActivationKind.ShareTarget)
             {
@@ -186,7 +186,7 @@ namespace wallabag
         {
             var deferral = e.SuspendingOperation.GetDeferral();
 
-            SimpleIoc.Default.GetInstance<LiveTileService>().Update();
+            SimpleIoc.Default.GetInstance<LiveTileService>().UpdateAll();
 
             await _navigation?.SaveAsync();
             await SaveLogsToFile();
@@ -380,7 +380,7 @@ namespace wallabag
 
             Settings.BackgroundTask.LastExecution = DateTime.Now;
 
-            SimpleIoc.Default.GetInstance<LiveTileService>().Update();
+            SimpleIoc.Default.GetInstance<LiveTileService>().UpdateAll();
 
             deferral.Complete();
         }
