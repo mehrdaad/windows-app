@@ -34,7 +34,7 @@ namespace wallabag.Common
                 set
                 {
                     SettingsService.AddOrUpdateValue(nameof(DisplayedItemType), value, containerName: nameof(LiveTile));
-                    _liveTileService.UpdateTile();
+                    _liveTileService.UpdateAll();
                 }
             }
 
