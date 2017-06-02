@@ -365,16 +365,6 @@
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
-            <VisualStateGroup>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        <wst:DeviceFamilyStateTrigger DeviceFamily="Desktop" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="TitleBarVisibilityToggleSwitch.Visibility" Value="Visible" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>
