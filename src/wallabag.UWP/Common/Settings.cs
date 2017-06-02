@@ -7,15 +7,24 @@ namespace wallabag.Common
     {
         public class LiveTile
         {
-            private static void UpdateLiveTile() => SimpleIoc.Default.GetInstance<LiveTileService>().Update();
-
+            private static LiveTileService _liveTileService => SimpleIoc.Default.GetInstance<LiveTileService>();
             public static bool IsEnabled
             {
                 get => SettingsService.GetValueOrDefault(nameof(IsEnabled), true, containerName: nameof(LiveTile));
                 set
                 {
                     SettingsService.AddOrUpdateValue(nameof(IsEnabled), value, containerName: nameof(LiveTile));
-                    UpdateLiveTile();
+                    _liveTileService.UpdateTile();
+                }
+            }
+
+            public static bool BadgeIsEnabled
+            {
+                get => SettingsService.GetValueOrDefault(nameof(BadgeIsEnabled), false, containerName: nameof(LiveTile));
+                set
+                {
+                    SettingsService.AddOrUpdateValue(nameof(BadgeIsEnabled), value, containerName: nameof(LiveTile));
+                    _liveTileService.UpdateBadge();
                 }
             }
 
@@ -25,7 +34,7 @@ namespace wallabag.Common
                 set
                 {
                     SettingsService.AddOrUpdateValue(nameof(DisplayedItemType), value, containerName: nameof(LiveTile));
-                    UpdateLiveTile();
+                    _liveTileService.UpdateTile();
                 }
             }
 
