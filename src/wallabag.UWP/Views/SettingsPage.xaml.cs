@@ -27,6 +27,11 @@ namespace wallabag.Views
             get => Settings.LiveTile.IsEnabled;
             set => Settings.LiveTile.IsEnabled = value;
         }
+        public bool BadgeIsEnabled
+        {
+            get => Settings.LiveTile.BadgeIsEnabled;
+            set => Settings.LiveTile.BadgeIsEnabled = value;
+        }
         public int DisplayedLiveTileItemsSelectedIndex
         {
             get => (int)Settings.LiveTile.DisplayedItemType;
