@@ -79,7 +79,7 @@ namespace wallabag.Views
             Messenger.Default.Register<wallabag.Data.Common.Messages.LoadContentMessage>(this, message =>
             {
                 HtmlViewer.NavigateToString(ViewModel.FormattedHtml);
-            });          
+            });
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
@@ -142,15 +142,15 @@ namespace wallabag.Views
         private Uri GetVideoUri(string provider, string videoId, bool returnFallbackUri = false)
         {
             string uriString = string.Empty;
-            var openMode = Settings.Reading.VideoOpenMode;
+            var openMode = Common.Settings.Reading.VideoOpenMode;
 
             if (provider == "youtube")
-                if (openMode == Settings.Reading.WallabagVideoOpenMode.App && returnFallbackUri == false)
+                if (openMode == Common.Settings.Reading.WallabagVideoOpenMode.App && returnFallbackUri == false)
                     uriString = $"vnd.youtube:{videoId}";
                 else
                     uriString = $"https://youtu.be/{videoId}";
             else if (provider == "vimeo")
-                if (openMode == Settings.Reading.WallabagVideoOpenMode.App && returnFallbackUri == false)
+                if (openMode == Common.Settings.Reading.WallabagVideoOpenMode.App && returnFallbackUri == false)
                     uriString = $"vimeo://v/{videoId}";
                 else
                     uriString = $"https://vimeo.com/{videoId}";

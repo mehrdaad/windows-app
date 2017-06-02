@@ -522,4 +522,31 @@
   <data name="CopyLinkMenuFlyoutItem.Text" xml:space="preserve">
     <value>In Zwischenablage kopieren</value>
   </data>
+  <data name="LiveTileReadingTime" xml:space="preserve">
+    <value>Lesezeit: {0} Minute(n)</value>
+  </data>
+  <data name="LiveTileReadingTimeShort" xml:space="preserve">
+    <value>Lesezeit: {0} min</value>
+  </data>
+  <data name="ArchivedItemTypeComboBoxItem.Content" xml:space="preserve">
+    <value>Archiv</value>
+  </data>
+  <data name="EnableLiveTileToggleSwitch.Header" xml:space="preserve">
+    <value>Live-Kachel aktivieren</value>
+  </data>
+  <data name="LiveTileDisplayedItemsComboBox.Header" xml:space="preserve">
+    <value>Angezeigte Einträge</value>
+  </data>
+  <data name="LiveTileSettingsPivotItem.Header" xml:space="preserve">
+    <value>Live-Kachel</value>
+  </data>
+  <data name="StarredItemTypeComboBoxItem.Content" xml:space="preserve">
+    <value>Favoriten</value>
+  </data>
+  <data name="UnreadItemTypeComboBoxItem.Content" xml:space="preserve">
+    <value>Ungelesen</value>
+  </data>
+  <data name="ShowNumeralBadgeOnTileToggleSwitch.Header" xml:space="preserve">
+    <value>Indikator auf Kachel anzeigen</value>
+  </data>
 </root>

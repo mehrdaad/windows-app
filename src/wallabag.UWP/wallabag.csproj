@@ -106,6 +106,7 @@
     <Compile Include="Common\Helpers\TitleBarHelper.cs" />
     <Compile Include="Common\Helpers\WebViewHelper.cs" />
     <Compile Include="Common\PlatformSpecific.cs" />
+    <Compile Include="Common\Settings.cs" />
     <Compile Include="Controls\AdaptiveGridView.cs" />
     <Compile Include="Controls\TagsControl.xaml.cs">
       <DependentUpon>TagsControl.xaml</DependentUpon>
@@ -126,6 +127,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ApiClientCreationService.cs" />
     <Compile Include="Services\BackgroundTaskService.cs" />
+    <Compile Include="Services\LiveTileService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\SettingsService.cs" />
@@ -288,6 +290,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>5.3.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
+      <Version>1.4.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.0</Version>
