@@ -2,6 +2,7 @@
 using SQLite.Net;
 using SQLite.Net.Interop;
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
@@ -69,7 +70,30 @@ namespace wallabag.Common
         public async Task<string> GetArticleTemplateAsync()
         {
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Article/article.html"));
-            return await FileIO.ReadTextAsync(file);
+            string content = await FileIO.ReadTextAsync(file);
+
+            var javaScriptRegex = new Regex("<script src=\"(?<uri>ms-appx-web://[\\w./-]*(?!.js))\" type=\"text/javascript\"></script>");
+            var cssRegex = new Regex("<link rel=\"stylesheet\" href=\"(?<uri>ms-appx-web://[\\w./-]*(?!.css))\" type=\"text/css\" media=\"screen\" />");
+
+            var jsMatches = javaScriptRegex.Matches(content);
+            foreach (Match match in jsMatches)
+            {
+                string uri = match.Groups["uri"].Value.Replace("appx-web", "appx");
+                var replacementFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(uri));
+
+                content = content.Replace(match.Value, $"<script>{await FileIO.ReadTextAsync(replacementFile)}</script>");
+            }
+
+            var cssMatches = cssRegex.Matches(content);
+            foreach (Match match in cssMatches)
+            {
+                string uri = match.Groups["uri"].Value.Replace("appx-web", "appx");
+                var replacementFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(uri));
+
+                content = content.Replace(match.Value, $"<style>{await FileIO.ReadTextAsync(replacementFile)}</style>");
+            }
+
+            return content;
         }
 
         public string GetLocalizedResource(string resourceName)
