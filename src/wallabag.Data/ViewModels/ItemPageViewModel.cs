@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Api;
@@ -130,6 +131,11 @@ namespace wallabag.Data.ViewModels
         private async Task<string> SetupArticleForHtmlViewerAsync()
         {
             _loggingService.WriteLine("Preparing HTML.");
+
+            // Remove inline styles
+            var inlineStyleRegex = new Regex("style=\".*?\"");
+            Item.Model.Content = inlineStyleRegex.Replace(Item.Model.Content, string.Empty);
+
             var document = new HtmlDocument();
             document.LoadHtml(Item.Model.Content);
             document.OptionCheckSyntax = false;
