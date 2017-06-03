@@ -360,6 +360,7 @@
   <ProductReservedInfo>
     <MainPackageIdentityName>36523JulianOster.wallabag.Beta</MainPackageIdentityName>
     <ReservedNames>
+      <ReservedName>wallabag.Beta</ReservedName>
       <ReservedName>wallabag</ReservedName>
     </ReservedNames>
   </ProductReservedInfo>
