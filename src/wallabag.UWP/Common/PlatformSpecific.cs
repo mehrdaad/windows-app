@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using SQLite.Net;
 using SQLite.Net.Interop;
 using System;
 using System.Threading.Tasks;
@@ -56,9 +57,12 @@ namespace wallabag.Common
 
         public void CloseApplication() => Application.Current.Exit();
 
-        public async Task DeleteDatabaseAsync()
+        public async Task DeleteDatabaseAsync(SQLiteConnection connection)
         {
-            var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("wallabag.db", CreationCollisionOption.OpenIfExists);
+            connection.CreateDatabaseBackup(GetSQLitePlatform());
+            connection.Close();
+
+            var file = await StorageFile.GetFileFromPathAsync(connection.DatabasePath);
             await file.DeleteAsync();
         }
 

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using SQLite.Net.Interop;
 using wallabag.Data.Models;
+using SQLite.Net;
 
 namespace wallabag.Data.Interfaces
 {
@@ -23,7 +24,7 @@ namespace wallabag.Data.Interfaces
         void CloseApplication();
 
         string GetDatabasePath();
-        Task DeleteDatabaseAsync();
+        Task DeleteDatabaseAsync(SQLiteConnection connection);
         ISQLitePlatform GetSQLitePlatform();
         void SetClipboardUri(Uri rightClickUri);
     }
