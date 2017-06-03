@@ -91,16 +91,27 @@ function rightClickInitialize() {
         if (e.type === "click" && e.button !== 0) {
             return;
         }
-        
+
+        // Thank you, brianvaughn: https://stackoverflow.com/a/29223563
+        var target = e.target || event.srcElement;
+
+        while (target) {
+            if (target instanceof HTMLAnchorElement) {
+                console.log(target.getAttribute('href'));
+                break;
+            }
+            target = target.parentNode;
+        }
+
         if (e.button === 2) {
-            window.external.notify("RC|" + e.srcElement.href + "|" + x + "|" + y);
+            window.external.notify("RC|" + target.href + "|" + x + "|" + y);
             return;
         }
 
         longpress = false;
 
         presstimer = setTimeout(function () {
-            window.external.notify("LC|" + e.srcElement.href + "|" + x + "|" + y);
+            window.external.notify("LC|" + target.href + "|" + x + "|" + y);
             longpress = true;
         }, 500);
 
