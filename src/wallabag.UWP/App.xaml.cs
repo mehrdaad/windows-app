@@ -77,30 +77,34 @@ namespace wallabag
             Migration.Create("2.2.0")
                 .SetMigrationAction(async () =>
                 {
-                    var device = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
-                    await device.DeleteDatabaseAsync();
+                    if (_database.ExecuteScalar<int>(BuildCountQuery(nameof(Item))) > 0 &&
+                        _database.ExecuteScalar<int>(BuildCountQuery(nameof(Tag))) > 0)
+                    {
+                        #region Setting migration
+                        Settings.Authentication.AccessToken = GetOldOption<string>("AccessToken");
+                        Settings.Authentication.RefreshToken = GetOldOption<string>("RefreshToken");
+                        Settings.Authentication.LastTokenRefreshDateTime = GetOldOption<DateTime>("LastTokenRefreshDateTime");
+                        Settings.Authentication.ClientId = GetOldOption<string>("ClientId");
+                        Settings.Authentication.ClientSecret = GetOldOption<string>("ClientSecret");
+                        Settings.Authentication.WallabagUri = GetOldOption<Uri>("WallabagUrl");
+                        Settings.Appereance.ColorScheme = GetOldOption<string>("ColorScheme");
+                        Settings.Appereance.FontFamily = GetOldOption<string>("FontFamily");
+                        Settings.Appereance.FontSize = GetOldOption<int>("FontSize");
+                        Settings.Appereance.TextAlignment = GetOldOption<string>("TextAlignment");
+                        Settings.BackgroundTask.DownloadNewItemsDuringExecution = GetOldOption<bool>("DownloadNewItemsDuringExecutionOfBackgroundTask");
+                        Settings.BackgroundTask.ExecutionInterval = GetOldOption<TimeSpan>("BackgroundTaskExecutionInterval");
+                        Settings.BackgroundTask.IsEnabled = GetOldOption<bool>("BackgroundTaskIsEnabled");
+                        Settings.General.SyncOnStartup = GetOldOption<bool>("SyncOnStartup");
+                        Settings.Reading.NavigateBackAfterReadingAnArticle = GetOldOption<bool>("NavigateBackAfterReadingAnArticle");
+                        Settings.Reading.SyncReadingProgress = GetOldOption<bool>("SyncReadingProgress");
+                        Settings.Reading.VideoOpenMode = GetOldOption<Settings.Reading.WallabagVideoOpenMode>("VideoOpenMode");
+                        #endregion
 
-                    #region Setting migration
-                    Settings.Authentication.AccessToken = GetOldOption<string>("AccessToken");
-                    Settings.Authentication.RefreshToken = GetOldOption<string>("RefreshToken");
-                    Settings.Authentication.LastTokenRefreshDateTime = GetOldOption<DateTime>("LastTokenRefreshDateTime");
-                    Settings.Authentication.ClientId = GetOldOption<string>("ClientId");
-                    Settings.Authentication.ClientSecret = GetOldOption<string>("ClientSecret");
-                    Settings.Authentication.WallabagUri = GetOldOption<Uri>("WallabagUrl");
-                    Settings.Appereance.ColorScheme = GetOldOption<string>("ColorScheme");
-                    Settings.Appereance.FontFamily = GetOldOption<string>("FontFamily");
-                    Settings.Appereance.FontSize = GetOldOption<int>("FontSize");
-                    Settings.Appereance.TextAlignment = GetOldOption<string>("TextAlignment");
-                    Settings.BackgroundTask.DownloadNewItemsDuringExecution = GetOldOption<bool>("DownloadNewItemsDuringExecutionOfBackgroundTask");
-                    Settings.BackgroundTask.ExecutionInterval = GetOldOption<TimeSpan>("BackgroundTaskExecutionInterval");
-                    Settings.BackgroundTask.IsEnabled = GetOldOption<bool>("BackgroundTaskIsEnabled");
-                    Settings.General.SyncOnStartup = GetOldOption<bool>("SyncOnStartup");
-                    Settings.Reading.NavigateBackAfterReadingAnArticle = GetOldOption<bool>("NavigateBackAfterReadingAnArticle");
-                    Settings.Reading.SyncReadingProgress = GetOldOption<bool>("SyncReadingProgress");
-                    Settings.Reading.VideoOpenMode = GetOldOption<Settings.Reading.WallabagVideoOpenMode>("VideoOpenMode");
-                    #endregion
+                        var device = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
 
-                    device.CloseApplication();
+                        await device.DeleteDatabaseAsync(_database);
+                        device.CloseApplication();
+                    }
 
                     T GetOldOption<T>(string optionName)
                     {
@@ -131,6 +135,7 @@ namespace wallabag
                         }
                         return default(T);
                     }
+                    string BuildCountQuery(string tableName) => $"select count(*) from {tableName}";
                 })
                 .AddFeature("Changelog notification",
                     "If this app gets an update, you don't need to rely anymore on the Windows Store for updating the changelog. " +

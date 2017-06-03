@@ -196,10 +196,8 @@ namespace wallabag.Data.ViewModels
         private void DeleteDatabase()
         {
             _loggingService.WriteLine("Deleting the database.");
-            string path = _database.DatabasePath;
-            _database.Close();
 
-            _device.DeleteDatabaseAsync();
+            _device.DeleteDatabaseAsync(_database);
             _device.CloseApplication();
         }
     }
