@@ -120,7 +120,7 @@ namespace wallabag.Data.ViewModels
                 hostname = Item.Model.Hostname,
                 color = ColorScheme,
                 font = FontFamily,
-                progress = Item.Model.ReadingProgress.ToString().Replace(",", "."),
+                progress = GetReadingProgress().ToString().Replace(",", "."),
                 publishDate = string.Format("{0:d}", Item.Model.CreationDate),
                 stylesheet = styleSheetBuilder.ToString(),
                 imageHeader = imageHeader
@@ -266,11 +266,7 @@ namespace wallabag.Data.ViewModels
                     _navigationService.GoBack();
                 }
 
-                if (Settings.Reading.SyncReadingProgress)
-                {
-                    _loggingService.WriteLine($"Deleting reading progress.");
-                    Settings.SettingsService.Remove(Item.Model.Id.ToString(), SettingStrategy.Roaming, ReadingProgressContainerName);
-                }
+                SetReadingProgress(true);
             }
         }
         private void ChangeFavoriteStatus()
@@ -343,15 +339,7 @@ namespace wallabag.Data.ViewModels
                 if (ErrorDuringInitialization)
                     return;
 
-                if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
-                {
-                    _loggingService.WriteLine("Fetching reading progress from roaming settings.");
-
-                    if (Settings.SettingsService.Contains(Item.Model.Id.ToString(), SettingStrategy.Roaming, ReadingProgressContainerName))
-                        Item.Model.ReadingProgress = Settings.SettingsService.GetValueOrDefault<double>(Item.Model.Id.ToString(), strategy: SettingStrategy.Roaming, containerName: ReadingProgressContainerName);
-
-                    _loggingService.WriteLine($"Reading progress: {Item.Model.ReadingProgress}");
-                }
+                Item.Model.ReadingProgress = GetReadingProgress();
 
                 await GenerateFormattedHtmlAsync();
                 Messenger.Default.Send(new Common.Messages.LoadContentMessage());
@@ -371,13 +359,44 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLine("Updating item in database.");
             _database.Update(Item.Model);
 
+            SetReadingProgress();
+
+            return Task.FromResult(true);
+        }
+
+        private double GetReadingProgress()
+        {
+            _loggingService.WriteLine("Fetching reading progress.");
+            double result = 0.0;
+            string key = Item.Model.Id.ToString();
+
+            if (Settings.Reading.SyncReadingProgress)
+            {
+                Settings.SettingsService.GetContainer(ReadingProgressContainerName, SettingStrategy.Roaming).TryGetValue(key, out var roamingReadingProgress);
+
+                if (roamingReadingProgress != null)
+                {
+                    _loggingService.WriteLine($"The roamed reading progress has the value: {roamingReadingProgress}");
+                    result = Math.Max(Item.Model.ReadingProgress, (double)roamingReadingProgress);
+                }
+            }
+            else
+                result = Item.Model.ReadingProgress;
+
+            return result;
+        }
+        private void SetReadingProgress(bool clearValue = false)
+        {
+            if (clearValue)
+                Item.Model.ReadingProgress = 0;
+
             if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
             {
                 _loggingService.WriteLine("Setting reading progress in RoamingSettings.");
                 Settings.SettingsService.AddOrUpdateValue(Item.Model.Id.ToString(), Item.Model.ReadingProgress, SettingStrategy.Roaming, ReadingProgressContainerName);
             }
 
-            return Task.FromResult(true);
+            _database.Update(Item.Model);
         }
     }
 }
