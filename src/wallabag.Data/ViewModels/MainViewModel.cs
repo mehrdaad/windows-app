@@ -237,18 +237,18 @@ namespace wallabag.Data.ViewModels
                     itemList.Add(item);
 
                 _loggingService.WriteLine("Fetching items from the database to compare the new list with current items.");
-                var databaseList = _database.Query<Item>($"SELECT Id FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{syncLimit}", new object[0]);
-                var deletedItems = databaseList.Except(itemList);
+                var databaseList = _database.Query<Item>($"SELECT Id,LastModificationDate FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{syncLimit}", new object[0]);
+                var updatedOrDeletedItems = databaseList.Except(itemList);
 
-                _loggingService.WriteLine($"Number of deleted items: {deletedItems.Count()}");
+                _loggingService.WriteLine($"Number of deleted items: {updatedOrDeletedItems.Count()}");
 
                 _loggingService.WriteLine("Updating the database.");
                 _database.RunInTransaction(() =>
                 {
-                    foreach (var item in deletedItems)
+                    foreach (var item in updatedOrDeletedItems)
                         _database.Delete(item);
 
-                    _database.InsertOrReplaceAll(itemList);
+                    _database.InsertOrIgnoreAll(itemList);
                 });
 
                 if (Items.Count == 0 /*|| databaseList[0].Equals(Items[0].Model) == false*/)
