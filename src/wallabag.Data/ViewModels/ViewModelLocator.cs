@@ -60,7 +60,7 @@ namespace wallabag.Data.ViewModels
                         else if (!e.Response.IsSuccessStatusCode)
                         {
                             logging.WriteLine("HTTP request to server failed.");
-                            logging.WriteLine($"{e.RequestMethod.ToString().ToUpper()} {e.RequestUriSubString} with {e.Parameters.Count} parameters.");
+                            logging.WriteLine($"{e.RequestMethod.ToString().ToUpper()} {e.RequestUriSubString} with {e.Parameters?.Count} parameters.");
 
                             if (e.Parameters.Count > 0)
                                 foreach (var param in e.Parameters)
