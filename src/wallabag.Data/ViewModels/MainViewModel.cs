@@ -231,28 +231,72 @@ namespace wallabag.Data.ViewModels
 
             if (items != null)
             {
-                var itemList = new List<Item>();
-
+                var serverList = new List<Item>();
                 foreach (var item in items)
-                    itemList.Add(item);
+                    serverList.Add(item);
 
                 _loggingService.WriteLine("Fetching items from the database to compare the new list with current items.");
                 var databaseList = _database.Query<Item>($"SELECT Id,LastModificationDate FROM Item ORDER BY LastModificationDate DESC LIMIT 0,{syncLimit}", new object[0]);
-                var updatedOrDeletedItems = databaseList.Except(itemList);
 
-                _loggingService.WriteLine($"Number of deleted items: {updatedOrDeletedItems.Count()}");
+                var newItems = serverList.Except(databaseList, new ItemIDComparer()).ToList();
+                var deletedItems = databaseList.Except(serverList, new ItemIDComparer()).ToList();
+                var updatedItems = serverList.Except(databaseList).Except(deletedItems).Except(newItems).ToList();
 
                 _loggingService.WriteLine("Updating the database.");
                 _database.RunInTransaction(() =>
                 {
-                    foreach (var item in updatedOrDeletedItems)
+                    foreach (var item in deletedItems)
                         _database.Delete(item);
 
-                    _database.InsertOrIgnoreAll(itemList);
+                    _database.UpdateAll(updatedItems);
+                    _database.InsertOrReplaceAll(newItems);
                 });
 
-                if (Items.Count == 0 /*|| databaseList[0].Equals(Items[0].Model) == false*/)
-                    await ReloadViewAsync();
+                foreach (var item in newItems)
+                {
+                    if (item.MatchesSearchProperties(CurrentSearchProperties))
+                    {
+                        Items.AddSorted(
+                        ItemViewModel.FromId(
+                            item.Id,
+                            _loggingService,
+                            _database,
+                            _offlineTaskService,
+                            _navigationService,
+                            _device),
+                        sortAscending: CurrentSearchProperties.OrderAscending == true);
+                    }
+                }
+
+                foreach (var item in updatedItems)
+                {
+                    var itemInList = Items.Where(i => i.Model.Id == item.Id).FirstOrDefault();
+
+                    if (itemInList != null)
+                        Items.Remove(itemInList);
+
+                    if (item.MatchesSearchProperties(CurrentSearchProperties))
+                    {
+                        Items.AddSorted(
+                        ItemViewModel.FromId(
+                            item.Id,
+                            _loggingService,
+                            _database,
+                            _offlineTaskService,
+                            _navigationService,
+                            _device),
+                        sortAscending: CurrentSearchProperties.OrderAscending == true);
+                    }
+                }
+
+                foreach (var item in deletedItems)
+                {
+                    // Check if it's truly deleted or if it's a false flag
+                    var itemFromServer = await _client.GetItemAsync(item.Id);
+
+                    if (itemFromServer == null)
+                        Items.Remove(Items.Where(i => i.Model.Id == item.Id).First());
+                }
 
                 Settings.General.LastSuccessfulSyncDateTime = DateTime.Now;
             }

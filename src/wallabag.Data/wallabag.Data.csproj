@@ -42,6 +42,7 @@
     <Compile Include="Common\Helpers\ProtocolHelper.cs" />
     <Compile Include="Common\Helpers\StringHelper.cs" />
     <Compile Include="Common\Helpers\UriHelper.cs" />
+    <Compile Include="Common\ItemIDComparer.cs" />
     <Compile Include="Common\Messages\CompleteMultipleSelectionMessage.cs" />
     <Compile Include="Common\Messages\LoadContentMessage.cs" />
     <Compile Include="Common\NotifyTaskCompletion.cs" />

@@ -116,5 +116,30 @@ namespace wallabag.Data.Models
             return false;
         }
         public override int GetHashCode() => Id;
+        internal bool MatchesSearchProperties(SearchProperties currentSearchProperties)
+        {
+            if (currentSearchProperties.ItemTypeIndex == 0 && IsRead)
+                return false;
+
+            if (currentSearchProperties.ItemTypeIndex == 1 && !IsStarred)
+                return false;
+
+            if (currentSearchProperties.ItemTypeIndex == 2 && !IsRead)
+                return false;
+
+            if (currentSearchProperties.Language != null)
+                if (currentSearchProperties.Language != new Language(Language))
+                    return false;
+
+            if (currentSearchProperties.Tag != null)
+                if (!Tags.Contains(currentSearchProperties.Tag))
+                    return false;
+
+            if (!string.IsNullOrEmpty(currentSearchProperties.Query))
+                if (!Title.Contains(currentSearchProperties.Query))
+                    return false;
+
+            return true;
+        }
     }
 }
