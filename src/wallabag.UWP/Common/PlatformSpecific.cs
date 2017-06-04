@@ -112,6 +112,7 @@ namespace wallabag.Common
             DataTransferManager.GetForCurrentView().DataRequested += (s, e) =>
             {
                 e.Request.Data.SetWebLink(new Uri(model.Url));
+                e.Request.Data.SetText(model.Title);
                 e.Request.Data.Properties.Title = model.Title;
             };
             DataTransferManager.ShowShareUI();
