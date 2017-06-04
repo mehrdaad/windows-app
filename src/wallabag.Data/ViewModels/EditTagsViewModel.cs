@@ -70,7 +70,13 @@ namespace wallabag.Data.ViewModels
                     {
                         if (!string.IsNullOrWhiteSpace(item))
                         {
-                            var newTag = new Tag() { Label = item, Id = Tags.Count + 1 };
+                            var existingTag = _database.FindWithQuery<Tag>("select * from Tag where Label=?", item);
+                            Tag newTag = null;
+
+                            if (existingTag != null)
+                                newTag = existingTag;
+                            else
+                                newTag = new Tag() { Label = item, Id = Tags.Count + 1 };
 
                             if (Tags.Contains(newTag) == false)
                                 Tags.Add(newTag);
