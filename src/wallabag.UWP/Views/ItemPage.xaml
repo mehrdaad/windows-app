@@ -136,7 +136,7 @@
     <Grid Background="{x:Bind BackgroundBrush, Mode=OneWay}" RequestedTheme="{x:Bind ColorApplicationTheme, Mode=OneWay}">
         <WebView
             x:Name="HtmlViewer"
-            NavigationCompleted="HtmlViewer_NavigationCompleted"
+            DOMContentLoaded="HtmlViewer_DOMContentLoaded"
             Opacity="0"
             RenderTransformOrigin="0.5,0.5">
             <WebView.RenderTransform>

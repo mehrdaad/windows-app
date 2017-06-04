@@ -306,10 +306,7 @@ namespace wallabag.Views
             }
         }
 
-        private void HtmlViewer_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
-        {
-            if (args.IsSuccess)
-                ShowHtmlViewerStoryboard.Begin();
-        }
+        private void HtmlViewer_DOMContentLoaded(WebView sender, WebViewDOMContentLoadedEventArgs args)
+            => ShowHtmlViewerStoryboard.Begin();
     }
 }
