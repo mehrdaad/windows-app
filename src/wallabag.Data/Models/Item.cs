@@ -33,8 +33,6 @@ namespace wallabag.Data.Models
         public string Language { get; set; }
         public string Mimetype { get; set; }
         public Uri PreviewImageUri { get; set; }
-        [Indexed]
-        public double ReadingProgress { get; set; }
 
         public static implicit operator WallabagItem(Item i)
         {

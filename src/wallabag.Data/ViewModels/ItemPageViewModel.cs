@@ -47,7 +47,6 @@ namespace wallabag.Data.ViewModels
         public ICommand SaveRightClickLinkCommand { get; private set; }
         public ICommand OpenRightClickLinkInBrowserCommand { get; private set; }
         public ICommand CopyLinkToClipboardCommand { get; private set; }
-        public string ReadingProgressContainerName => $"ReadingProgressContainer-{Settings.Authentication.ClientId}";
 
         public ItemPageViewModel(
             IOfflineTaskService offlineTaskService,
@@ -272,7 +271,7 @@ namespace wallabag.Data.ViewModels
                     _navigationService.GoBack();
                 }
 
-                SetReadingProgress(true);
+                SetReadingProgress(0, true);
             }
         }
         private void ChangeFavoriteStatus()
@@ -345,8 +344,6 @@ namespace wallabag.Data.ViewModels
                 if (ErrorDuringInitialization)
                     return;
 
-                Item.Model.ReadingProgress = GetReadingProgress();
-
                 await GenerateFormattedHtmlAsync();
                 Messenger.Default.Send(new Common.Messages.LoadContentMessage());
             }
@@ -365,44 +362,68 @@ namespace wallabag.Data.ViewModels
             _loggingService.WriteLine("Updating item in database.");
             _database.Update(Item.Model);
 
-            SetReadingProgress();
-
             return Task.FromResult(true);
         }
 
-        private double GetReadingProgress()
+        public double GetReadingProgress()
         {
             _loggingService.WriteLine("Fetching reading progress.");
             double result = 0.0;
             string key = Item.Model.Id.ToString();
 
+            GetReadingProgressContainer(SettingStrategy.Local).TryGetValue(key, out var localReadingProgress);
+
             if (Settings.Reading.SyncReadingProgress)
             {
-                Settings.SettingsService.GetContainer(ReadingProgressContainerName, SettingStrategy.Roaming).TryGetValue(key, out var roamingReadingProgress);
+                GetReadingProgressContainer(SettingStrategy.Roaming).TryGetValue(key, out var roamingReadingProgress);
 
                 if (roamingReadingProgress != null)
                 {
                     _loggingService.WriteLine($"The roamed reading progress has the value: {roamingReadingProgress}");
-                    result = Math.Max(Item.Model.ReadingProgress, (double)roamingReadingProgress);
+                    result = Math.Max((double)localReadingProgress, (double)roamingReadingProgress);
                 }
             }
-            else
-                result = Item.Model.ReadingProgress;
+            else if (localReadingProgress != null)
+                result = (double)localReadingProgress;
+
+            _loggingService.WriteLine($"Returning reading progress of {result}.");
 
             return result;
         }
-        private void SetReadingProgress(bool clearValue = false)
+        public void SetReadingProgress(double newValue, bool clearValue = false)
         {
-            if (clearValue)
-                Item.Model.ReadingProgress = 0;
+            string key = Item.Model.Id.ToString();
 
-            if (Settings.Reading.SyncReadingProgress && Item.Model.ReadingProgress < 100)
+            if (clearValue)
             {
-                _loggingService.WriteLine("Setting reading progress in RoamingSettings.");
-                Settings.SettingsService.AddOrUpdateValue(Item.Model.Id.ToString(), Item.Model.ReadingProgress, SettingStrategy.Roaming, ReadingProgressContainerName);
+                var localContainer = GetReadingProgressContainer(SettingStrategy.Local);
+
+                if (localContainer.ContainsKey(key))
+                    localContainer.Remove(key);
+
+                if (Settings.Reading.SyncReadingProgress)
+                {
+                    var roamingContainer = GetReadingProgressContainer(SettingStrategy.Roaming);
+
+                    if (roamingContainer.ContainsKey(key))
+                        roamingContainer.Remove(key);
+                }
+
+                return;
             }
 
-            _database.Update(Item.Model);
+            _loggingService.WriteLine($"Set reading progress to {newValue}.");
+
+            if (newValue < 100)
+            {
+                GetReadingProgressContainer(SettingStrategy.Local)[key] = newValue;
+
+                if (Settings.Reading.SyncReadingProgress)
+                    GetReadingProgressContainer(SettingStrategy.Roaming)[key] = newValue;
+            }
         }
+        public IDictionary<string, object> GetReadingProgressContainer(SettingStrategy strategy)
+            => Settings.SettingsService.GetContainer($"ReadingProgressContainer-{Settings.Authentication.ClientId}", strategy);
+
     }
 }

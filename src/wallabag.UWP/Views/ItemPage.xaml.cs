@@ -103,8 +103,10 @@ namespace wallabag.Views
                 switch (notify[0])
                 {
                     case "S":
-                        ViewModel.Item.Model.ReadingProgress = double.Parse(notify[1], NumberStyles.AllowDecimalPoint, NumberFormatInfo.InvariantInfo);
-                        if (_isCommandBarCompact && ViewModel.Item.Model.ReadingProgress < 99)
+                        double newReadingProgress = double.Parse(notify[1], NumberStyles.AllowDecimalPoint, NumberFormatInfo.InvariantInfo);
+
+                        ViewModel.SetReadingProgress(newReadingProgress);
+                        if (_isCommandBarCompact && newReadingProgress < 99)
                         {
                             _isCommandBarCompact = false;
                             HideCommandBarStoryboard.Begin();
