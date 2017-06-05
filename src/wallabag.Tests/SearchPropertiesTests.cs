@@ -25,24 +25,6 @@ namespace wallabag.Tests
         }
 
         [Fact]
-        public void ChangingTheQueryFromSomethingToEmptyFiresSearchCanceledEvent()
-        {
-            var sp = new SearchProperties();
-            bool searchCanceled = false;
-
-            sp.Query = "test";
-
-            sp.SearchCanceled += (s, e) =>
-            {
-                searchCanceled = true;
-                Assert.Equal(string.Empty, e.Query);
-            };
-
-            sp.Query = string.Empty;
-            Assert.True(searchCanceled);
-        }
-
-        [Fact]
         public void ReplacingOneSearchPropertyWithAnotherActuallyReplacesAllProperties()
         {
             var fakePlatform = A.Fake<IPlatformSpecific>();

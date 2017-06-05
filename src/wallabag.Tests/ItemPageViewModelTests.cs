@@ -389,7 +389,6 @@ namespace wallabag.Tests
                 IsStarred = false,
                 Language = "de-DE",
                 Mimetype = "text/html",
-                ReadingProgress = 0,
                 Title = "My title",
                 Url = "https://wallabag.it",
                 PreviewImageUri = new Uri("https://test.de")
@@ -432,7 +431,6 @@ namespace wallabag.Tests
                 IsStarred = false,
                 Language = "de-DE",
                 Mimetype = "text/html",
-                ReadingProgress = 0,
                 Title = "My title",
                 Url = "https://wallabag.it",
                 PreviewImageUri = new Uri("https://test.de")
