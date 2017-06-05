@@ -29,7 +29,18 @@ namespace wallabag
 #if DEBUG == false
             if (Settings.AllowCollectionOfTelemetryData)
                 HockeyClient.Current.Configure("842955f8fd3b4191972db776265d81c4");
-#endif          
+#endif
+
+            Settings.Version = GetVersionNumber();
+
+            string GetVersionNumber()
+            {
+                var package = Package.Current;
+                var packageId = package.Id;
+                var version = packageId.Version;
+
+                return string.Format($"{version.Major}.{version.Minor}.{version.Build}");
+            }
 
             CreateClientAndDatabase();
 

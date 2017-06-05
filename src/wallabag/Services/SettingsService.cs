@@ -73,6 +73,12 @@ namespace wallabag.Services
             set { _helper.Write(nameof(LastSuccessfulSyncDateTime), value); }
         }
 
+        public string Version
+        {
+            get { return _helper.Read(nameof(Version), "1.0.0."); }
+            set { _helper.Write(nameof(Version), value); }
+        }
+
         #endregion
 
         #region Reading
