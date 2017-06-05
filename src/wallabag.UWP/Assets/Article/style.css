@@ -233,7 +233,7 @@ mark {
 
 table {
     border-collapse: collapse;
-    margin-bottom: 1.5em;
+    margin-bottom: 2em;
     width: 100%;
 }
 
@@ -301,9 +301,9 @@ article {
         }
 
 .wallabag-preview-image {
-    max-height: 50vh;
+    max-height: 70vh;
     overflow: hidden;
-    margin-bottom: 1em;
+    margin-bottom: 1.5em;
     display: flex;
     justify-content: center;
 }
