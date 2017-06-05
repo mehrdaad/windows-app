@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using wallabag.Common;
 using wallabag.Common.Helpers;
-using wallabag.Data.Common;
+using wallabag.Data.Common.Messages;
 using wallabag.Data.ViewModels;
 using Windows.Foundation;
 using Windows.System;
@@ -16,7 +15,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Shapes;
 
 // Die Elementvorlage "Leere Seite" ist unter http://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
@@ -76,9 +74,15 @@ namespace wallabag.Views
             TitleBarHelper.SetButtonBackgroundColor(Colors.Transparent);
             TitleBarHelper.SetButtonForegroundColor(ForegroundBrush.Color);
 
-            Messenger.Default.Register<wallabag.Data.Common.Messages.LoadContentMessage>(this, message =>
+            Messenger.Default.Register<LoadContentMessage>(this, message =>
             {
                 HtmlViewer.NavigateToString(ViewModel.FormattedHtml);
+            });
+
+            Messenger.Default.Register<TagsEditedMessage>(this, async message =>
+            {
+                if (message.Item.Id == ViewModel.Item.Model.Id)
+                    await HtmlViewer.InvokeScriptAsync("updateTagsElement", new List<string>() { ViewModel.BuildTagsHtml(message.Item) });
             });
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
