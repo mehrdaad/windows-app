@@ -13,6 +13,7 @@ using wallabag.Api;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Interfaces;
+using wallabag.Data.Models;
 using wallabag.Data.Services;
 using wallabag.Data.Services.OfflineTaskService;
 
@@ -124,15 +125,15 @@ namespace wallabag.Data.ViewModels
                 publishDate = string.Format("{0:d}", Item.Model.CreationDate),
                 stylesheet = styleSheetBuilder.ToString(),
                 imageHeader = imageHeader,
-                tags = BuildTagsHtml()
+                tags = BuildTagsHtml(Item.Model)
             });
-        } 
+        }
 
-        public string BuildTagsHtml()
+        public string BuildTagsHtml(Item item)
         {
             string result = "<ul id=\"wallabag-tag-list\">";
 
-            foreach (var tag in Item.Model.Tags)
+            foreach (var tag in item.Tags)
                 result += $"<li>{tag.Label}</li>";
 
             result += "</ul>";
