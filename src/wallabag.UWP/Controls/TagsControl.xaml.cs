@@ -29,7 +29,10 @@ namespace wallabag.Controls
         }
 
         private void TagsListView_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
-            => TagQueryTextBox.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+        {
+            if (e.Key == Windows.System.VirtualKey.Down)
+                TagQueryTextBox.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+        }
         private void AutoSuggestBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             // Checks if the comma key was pressed (code 188)
