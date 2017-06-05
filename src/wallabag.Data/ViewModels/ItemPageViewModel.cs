@@ -123,8 +123,20 @@ namespace wallabag.Data.ViewModels
                 progress = GetReadingProgress().ToString().Replace(",", "."),
                 publishDate = string.Format("{0:d}", Item.Model.CreationDate),
                 stylesheet = styleSheetBuilder.ToString(),
-                imageHeader = imageHeader
+                imageHeader = imageHeader,
+                tags = BuildTagsHtml()
             });
+        } 
+
+        public string BuildTagsHtml()
+        {
+            string result = "<ul id=\"wallabag-tag-list\">";
+
+            foreach (var tag in Item.Model.Tags)
+                result += $"<li>{tag.Label}</li>";
+
+            result += "</ul>";
+            return result;
         }
 
         private async Task<string> SetupArticleForHtmlViewerAsync()
