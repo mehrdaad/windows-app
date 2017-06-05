@@ -264,6 +264,7 @@
                         Text="One last question." />
                     <TextBlock
                         x:Uid="TelemetryCollectionInfoTextBlock"
+                        TextAlignment="Left"
                         Style="{StaticResource CustomSubTitleTextBlockStyle}"
                         Text="Do you allow this app to send anonymous usage and crash reports? Don't worry, you can disable it at any time. And no, it's not necessary for the app." />
 
