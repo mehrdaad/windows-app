@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
+using wallabag.Data.Common.Messages;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
 using wallabag.Data.Services.OfflineTaskService;
@@ -120,6 +122,8 @@ namespace wallabag.Data.ViewModels
 
                     _database.Update(item);
 
+                    Messenger.Default.Send(new TagsEditedMessage(item));
+
                     await _offlineTaskService.AddAsync(item.Id, OfflineTask.OfflineTaskAction.EditTags, Tags.ToList());
                 }
             }
@@ -135,6 +139,8 @@ namespace wallabag.Data.ViewModels
 
                 Items.First().Tags.Replace(Tags);
                 _database.Update(Items.First());
+
+                Messenger.Default.Send(new TagsEditedMessage(Items.First()));
 
                 await _offlineTaskService.AddAsync(Items.First().Id, OfflineTask.OfflineTaskAction.EditTags, newTags, deletedTags);
             }

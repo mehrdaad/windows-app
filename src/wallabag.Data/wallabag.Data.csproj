@@ -45,6 +45,7 @@
     <Compile Include="Common\ItemIDComparer.cs" />
     <Compile Include="Common\Messages\CompleteMultipleSelectionMessage.cs" />
     <Compile Include="Common\Messages\LoadContentMessage.cs" />
+    <Compile Include="Common\Messages\TagsEditedMessage.cs" />
     <Compile Include="Common\NotifyTaskCompletion.cs" />
     <Compile Include="Models\ChangelogEntry.cs" />
     <Compile Include="Services\MigrationService\IMigrationService.cs" />
