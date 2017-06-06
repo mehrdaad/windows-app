@@ -127,10 +127,12 @@ namespace wallabag.Data.ViewModels
 
             if (CurrentStep == 0)
             {
-                if (Url.IsValidUri() == false)
-                    Url = selectedProvider?.Url == null ? "https://" : selectedProvider.Url.ToString();
+                Url = selectedProvider?.Url == null ? "https://" : selectedProvider.Url.ToString();
 
                 RaisePropertyChanged(nameof(UrlFieldIsVisible));
+
+                Username = string.Empty;
+                Password = string.Empty;
 
                 CurrentStep += 1;
                 return;
