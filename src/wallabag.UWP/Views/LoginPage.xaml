@@ -53,8 +53,8 @@
         <Image
             Grid.RowSpan="2"
             d:IsLocked="True"
-            Opacity="0.15"
-            Source="ms-appx:///Assets/books.jpg"
+            Opacity="0.2"
+            Source="ms-appx:///Assets/aleksi-tappura-669.jpg"
             Stretch="UniformToFill" />
         <FlipView
             MaxWidth="500"

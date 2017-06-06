@@ -159,6 +159,7 @@
     <PRIResource Include="Strings\fr-FR\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\aleksi-tappura-669.jpg" />
     <Content Include="Assets\Article\article.html" />
     <Content Include="Assets\Article\js\jquery-2.1.4.min.js" />
     <Content Include="Assets\Article\js\jquery.fitvids.js" />
@@ -166,7 +167,6 @@
     <Content Include="Assets\Article\js\scripts.js" />
     <Content Include="Assets\Article\reset.css" />
     <Content Include="Assets\Article\style.css" />
-    <Content Include="Assets\books.jpg" />
     <Content Include="Assets\SplashScreen\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen\SplashScreen.scale-125.png" />
     <Content Include="Assets\SplashScreen\SplashScreen.scale-150.png" />
