@@ -11,7 +11,7 @@
     PrimaryButtonText="Login"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
     SecondaryButtonText="Close"
-    TitleTemplate="{StaticResource ContentDialogTitleDataTemplate}"
+    Style="{StaticResource CustomDialogStyle}"
     mc:Ignorable="d">
 
     <StackPanel>

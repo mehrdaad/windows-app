@@ -12,9 +12,9 @@
     PrimaryButtonText="Finish"
     SecondaryButtonCommand="{x:Bind ViewModel.CancelCommand}"
     SecondaryButtonText="Cancel"
-    TitleTemplate="{StaticResource ContentDialogTitleDataTemplate}"
+    Style="{StaticResource CustomDialogStyle}"
     mc:Ignorable="d">
 
-    <controls:TagsControl Margin="0,-16,0,0" />
+    <controls:TagsControl />
 
 </ContentDialog>
