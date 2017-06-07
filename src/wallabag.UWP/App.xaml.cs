@@ -65,7 +65,8 @@ namespace wallabag
                        return string.Join("\r\n", lines.Skip(Math.Max(0, lines.Count - numberOfLogEntries)));
                    });
 
-            App.Current.UnhandledException += async (s, e) => await SaveLogsToFile();
+            Current.UnhandledException += (s, e) 
+                => SimpleIoc.Default.GetInstance<ILoggingService>().TrackException(e.Exception);
 
             await EnsureRegistrationOfBackgroundTaskAsync();
         }
@@ -194,7 +195,6 @@ namespace wallabag
             SimpleIoc.Default.GetInstance<LiveTileService>().UpdateAll();
 
             await _navigation?.SaveAsync();
-            await SaveLogsToFile();
 
             deferral.Complete();
         }
@@ -202,14 +202,6 @@ namespace wallabag
         {
             if (previousExecutionState == AppExecutionState.Suspended)
                 await _navigation.ResumeAsync();
-        }
-
-        public async Task SaveLogsToFile()
-        {
-            string log = SimpleIoc.Default.GetInstance<ILoggingService>().Log;
-            var file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists);
-
-            await FileIO.WriteTextAsync(file, log);
         }
 
         #region Application setup

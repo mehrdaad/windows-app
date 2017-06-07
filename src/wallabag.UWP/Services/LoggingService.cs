@@ -2,16 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using wallabag.Data.Common;
 using wallabag.Data.Services;
+using Windows.Storage;
 
 namespace wallabag.Services
 {
     class LoggingService : ILoggingService
     {
         private const string m_SCHEMA = "[{0}] [{1}] {2}";
-        private List<string> _lines = new List<string>();
+        private StorageFile _logFile;
 
-        public string Log => string.Join("\r\n", _lines);
+        public string Log => string.Empty;
 
         public void TrackException(Exception e, LoggingCategory category = LoggingCategory.Critical, [CallerMemberName] string member = "", [CallerLineNumber] int lineNumber = 0)
             => Write(e.Message, category, member, lineNumber);
@@ -38,7 +40,10 @@ namespace wallabag.Services
             if (System.Diagnostics.Debugger.IsAttached)
                 System.Diagnostics.Debug.WriteLine(line, category.ToString());
 
-            _lines.Add(line);
+            if (_logFile == null)
+                _logFile = ApplicationData.Current.TemporaryFolder.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists).AsTask().Result;
+
+            NotifyTaskCompletion.Create(FileIO.AppendTextAsync(_logFile, line + "\r\n").AsTask());
         }
     }
 }
