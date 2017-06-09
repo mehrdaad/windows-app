@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using wallabag.Api;
+using wallabag.Api.Models;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
 using wallabag.Data.Interfaces;
@@ -46,7 +47,25 @@ namespace wallabag
 
             // Run possible migrations here
             Version.TryParse(Settings.General.AppVersion, out var oldVersion);
-            SimpleIoc.Default.GetInstance<IMigrationService>().ExecuteAll(oldVersion ?? new Version("1.0.0"));
+
+            // If the version is null, the application can be
+            // either updated from version 2.1.40 or it can be
+            // a complete re-install.
+            if (oldVersion == null)
+            {
+                // Try to get the version from app version 2.1.40
+                var oldSettings = ApplicationData.Current.LocalSettings.Values;
+                if (oldSettings.ContainsKey("Version"))
+                {
+                    var oldValue = oldSettings["Version"] as ApplicationDataCompositeValue;
+                    var oldValue1 = oldValue as ApplicationDataCompositeValue;
+                    oldVersion = new Version((oldValue1["Value"] as string).TrimStart('"').TrimEnd('"'));
+                }
+            }
+
+            if (oldVersion != null)
+                SimpleIoc.Default.GetInstance<IMigrationService>().ExecuteAll(oldVersion);
+
             Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
 
             // Configure HockeyApp
@@ -76,34 +95,42 @@ namespace wallabag
             Migration.Create("2.2.0")
                 .SetMigrationAction(async () =>
                 {
-                    if (_database.ExecuteScalar<int>(BuildCountQuery(nameof(Item))) > 0 &&
-                        _database.ExecuteScalar<int>(BuildCountQuery(nameof(Tag))) > 0)
+                    #region Setting migration
+                    Settings.Authentication.AccessToken = GetOldOption<string>("AccessToken");
+                    Settings.Authentication.RefreshToken = GetOldOption<string>("RefreshToken");
+                    Settings.Authentication.LastTokenRefreshDateTime = GetOldOption<DateTime>("LastTokenRefreshDateTime");
+                    Settings.Authentication.ClientId = GetOldOption<string>("ClientId");
+                    Settings.Authentication.ClientSecret = GetOldOption<string>("ClientSecret");
+                    Settings.Authentication.WallabagUri = GetOldOption<Uri>("WallabagUrl");
+                    Settings.Appereance.ColorScheme = GetOldOption<string>("ColorScheme");
+                    Settings.Appereance.FontFamily = GetOldOption<string>("FontFamily");
+                    Settings.Appereance.FontSize = GetOldOption<int>("FontSize");
+                    Settings.Appereance.TextAlignment = GetOldOption<string>("TextAlignment");
+                    Settings.BackgroundTask.DownloadNewItemsDuringExecution = GetOldOption<bool>("DownloadNewItemsDuringExecutionOfBackgroundTask");
+                    Settings.BackgroundTask.ExecutionInterval = GetOldOption<TimeSpan>("BackgroundTaskExecutionInterval");
+                    Settings.BackgroundTask.IsEnabled = GetOldOption<bool>("BackgroundTaskIsEnabled");
+                    Settings.General.SyncOnStartup = GetOldOption<bool>("SyncOnStartup");
+                    Settings.Reading.NavigateBackAfterReadingAnArticle = GetOldOption<bool>("NavigateBackAfterReadingAnArticle");
+                    Settings.Reading.SyncReadingProgress = GetOldOption<bool>("SyncReadingProgress");
+                    Settings.Reading.VideoOpenMode = GetOldOption<Settings.Reading.WallabagVideoOpenMode>("VideoOpenMode");
+                    #endregion
+
+                    // Clear the old tags values due to a new saving mechanism
+                    _database.Execute("UPDATE Item SET Tags=NULL", Array.Empty<object>());
+
+                    var client = SimpleIoc.Default.GetInstance<IWallabagClient>();
+                    var items = await client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: 100);
+                    var itemList = items.Items as List<WallabagItem>;
+
+                    if (items.Pages > 1)
                     {
-                        #region Setting migration
-                        Settings.Authentication.AccessToken = GetOldOption<string>("AccessToken");
-                        Settings.Authentication.RefreshToken = GetOldOption<string>("RefreshToken");
-                        Settings.Authentication.LastTokenRefreshDateTime = GetOldOption<DateTime>("LastTokenRefreshDateTime");
-                        Settings.Authentication.ClientId = GetOldOption<string>("ClientId");
-                        Settings.Authentication.ClientSecret = GetOldOption<string>("ClientSecret");
-                        Settings.Authentication.WallabagUri = GetOldOption<Uri>("WallabagUrl");
-                        Settings.Appereance.ColorScheme = GetOldOption<string>("ColorScheme");
-                        Settings.Appereance.FontFamily = GetOldOption<string>("FontFamily");
-                        Settings.Appereance.FontSize = GetOldOption<int>("FontSize");
-                        Settings.Appereance.TextAlignment = GetOldOption<string>("TextAlignment");
-                        Settings.BackgroundTask.DownloadNewItemsDuringExecution = GetOldOption<bool>("DownloadNewItemsDuringExecutionOfBackgroundTask");
-                        Settings.BackgroundTask.ExecutionInterval = GetOldOption<TimeSpan>("BackgroundTaskExecutionInterval");
-                        Settings.BackgroundTask.IsEnabled = GetOldOption<bool>("BackgroundTaskIsEnabled");
-                        Settings.General.SyncOnStartup = GetOldOption<bool>("SyncOnStartup");
-                        Settings.Reading.NavigateBackAfterReadingAnArticle = GetOldOption<bool>("NavigateBackAfterReadingAnArticle");
-                        Settings.Reading.SyncReadingProgress = GetOldOption<bool>("SyncReadingProgress");
-                        Settings.Reading.VideoOpenMode = GetOldOption<Settings.Reading.WallabagVideoOpenMode>("VideoOpenMode");
-                        #endregion
-
-                        var device = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
-
-                        await device.DeleteDatabaseAsync(_database);
-                        device.CloseApplication();
+                        for (int i = 2; i <= items.Pages; i++)
+                        {
+                            itemList.AddRange(await client.GetItemsAsync(pageNumber: i));
+                        }
                     }
+
+                    _database.InsertOrReplaceAll(itemList);
 
                     T GetOldOption<T>(string optionName)
                     {
@@ -134,7 +161,6 @@ namespace wallabag
                         }
                         return default(T);
                     }
-                    string BuildCountQuery(string tableName) => $"select count(*) from {tableName}";
                 })
                 .AddFeature("Changelog notification",
                     "If this app gets an update, you don't need to rely anymore on the Windows Store for updating the changelog. " +
