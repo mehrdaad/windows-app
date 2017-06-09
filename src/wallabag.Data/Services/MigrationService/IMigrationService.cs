@@ -6,6 +6,7 @@ namespace wallabag.Data.Services.MigrationService
 {
     public interface IMigrationService
     {
+        bool Check(Version oldVersion);
         List<ChangelogEntry> GetChangelog(Version oldVersion);
 
         void ExecuteAll(Version oldVersion);

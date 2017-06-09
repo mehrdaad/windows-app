@@ -12,6 +12,8 @@ namespace wallabag.Data.Services.MigrationService
         private IPlatformSpecific _device;
         private List<Migration> _migrations;
 
+        private Version _newVersion;
+
         public MigrationService(
             ILoggingService loggingService,
             IPlatformSpecific device)
@@ -26,32 +28,39 @@ namespace wallabag.Data.Services.MigrationService
             _migrations.Add(m);
         }
 
+        public bool Check(Version oldVersion)
+        {
+            Version.TryParse(_device.AppVersion, out _newVersion);
+            _logging.WriteLine($"Old app version: {oldVersion}");
+            _logging.WriteLine($"New app version: {_newVersion}");
+
+            if (_newVersion == oldVersion)
+            {
+                _logging.WriteLine("No migrations to execute because the old version and the new one are equal.");
+                return false;
+            }
+            return true;
+        }
+
         public void ExecuteAll(Version oldVersion)
         {
             _logging.WriteLine("Trying to execute all migrations.");
 
-            Version.TryParse(_device.AppVersion, out var newVersion);
-            _logging.WriteLine($"Old app version: {oldVersion}");
-            _logging.WriteLine($"New app version: {newVersion}");
-
-            if (newVersion == oldVersion)
+            if (Check(oldVersion))
             {
-                _logging.WriteLine("No migrations to execute because the old version and the new one are equal.");
-                return;
-            }
+                var migrations = _migrations
+                    .Where(v => v.Version > oldVersion)
+                    .Where(v => v.Version <= _newVersion)
+                    .OrderBy(v => v.Version)
+                    .ToList();
 
-            var migrations = _migrations
-                .Where(v => v.Version > oldVersion)
-                .Where(v => v.Version <= newVersion)
-                .OrderBy(v => v.Version)
-                .ToList();
+                _logging.WriteLine($"Number of migrations: {migrations.Count}");
 
-            _logging.WriteLine($"Number of migrations: {migrations.Count}");
-
-            foreach (var migration in migrations)
-            {
-                _logging.WriteLine($"Executing migration for version {migration.Version}.");
-                migration.Action?.Invoke();
+                foreach (var migration in migrations)
+                {
+                    _logging.WriteLine($"Executing migration for version {migration.Version}.");
+                    migration.Action?.Invoke();
+                }
             }
         }
         public List<ChangelogEntry> GetChangelog(Version oldVersion)
