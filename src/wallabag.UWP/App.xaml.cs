@@ -41,8 +41,6 @@ namespace wallabag
 
         public async Task OnInitializeAsync(IActivatedEventArgs args)
         {
-            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "de";
-
             RegisterServices();
             SetupMigrationService();
 
@@ -65,7 +63,7 @@ namespace wallabag
                        return string.Join("\r\n", lines.Skip(Math.Max(0, lines.Count - numberOfLogEntries)));
                    });
 
-            Current.UnhandledException += (s, e) 
+            Current.UnhandledException += (s, e)
                 => SimpleIoc.Default.GetInstance<ILoggingService>().TrackException(e.Exception);
 
             await EnsureRegistrationOfBackgroundTaskAsync();
