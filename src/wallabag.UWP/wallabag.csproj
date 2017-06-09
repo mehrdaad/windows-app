@@ -17,7 +17,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>wallabag_StoreKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>9F44BDF097840F289FDE0EF80A0D3B378AB49EA3</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>27AE445FB38BC466BD6DE7B5E9568C41AADEA8C3</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
