@@ -29,6 +29,9 @@ namespace wallabag.Data.Services.MigrationService
 
         public bool Check(Version oldVersion)
         {
+            if (oldVersion == null)
+                return false;
+
             Version.TryParse(_device.AppVersion, out _newVersion);
             _logging.WriteLine($"Old app version: {oldVersion}");
             _logging.WriteLine($"New app version: {_newVersion}");
