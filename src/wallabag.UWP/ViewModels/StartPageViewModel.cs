@@ -42,10 +42,7 @@ namespace wallabag.ViewModels
             var param = parameter as StartPageNavigationParameter;
 
             if (_migrationService.Check(param.PreviousVersion))
-            {
-                GenerateChangelog();
                 ExecuteMigrations(param.PreviousVersion);
-            }
 
             if (string.IsNullOrEmpty(Settings.Authentication.AccessToken) ||
                 string.IsNullOrEmpty(Settings.Authentication.RefreshToken))
@@ -66,7 +63,6 @@ namespace wallabag.ViewModels
             }
         }
 
-        private void GenerateChangelog() => throw new NotImplementedException();
         private void ExecuteMigrations(Version oldVersion)
         {
             IsActive = true;

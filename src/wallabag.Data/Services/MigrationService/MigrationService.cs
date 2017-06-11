@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using wallabag.Data.Interfaces;
-using wallabag.Data.Models;
 
 namespace wallabag.Data.Services.MigrationService
 {
@@ -24,7 +23,7 @@ namespace wallabag.Data.Services.MigrationService
         }
         public void Add(Migration m)
         {
-            _logging.WriteLine($"Adding migration for version {m.Version} with {m.ChangelogEntries.Count} changelog entries.");
+            _logging.WriteLine($"Adding migration for version {m.Version}.");
             _migrations.Add(m);
         }
 
@@ -41,6 +40,12 @@ namespace wallabag.Data.Services.MigrationService
             }
             return true;
         }
+
+        public void Create(string version, Action action) => Add(new Migration()
+        {
+            Version = Version.Parse(version),
+            Action = action
+        });
 
         public void ExecuteAll(Version oldVersion)
         {
@@ -62,22 +67,6 @@ namespace wallabag.Data.Services.MigrationService
                     migration.Action?.Invoke();
                 }
             }
-        }
-        public List<ChangelogEntry> GetChangelog(Version oldVersion)
-        {
-            Version.TryParse(_device.AppVersion, out var newVersion);
-            _logging.WriteLine($"Returning changelog from {oldVersion} to {newVersion}");
-
-            var changelog = _migrations
-                .Where(v => v.Version > oldVersion)
-                .Where(v => v.Version <= newVersion);
-
-            var result = new List<ChangelogEntry>();
-
-            foreach (var list in changelog)
-                result.AddRange(list.ChangelogEntries);
-
-            return result;
         }
     }
 }

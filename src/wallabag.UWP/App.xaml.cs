@@ -90,12 +90,11 @@ namespace wallabag
 
         private void SetupMigrationService()
         {
-            var ms = SimpleIoc.Default.GetInstance<IMigrationService>();
+            var migrationService = SimpleIoc.Default.GetInstance<IMigrationService>();
 
-            Migration.Create("2.2.0")
-                .SetMigrationAction(async () =>
-                {
-                    #region Setting migration
+            migrationService.Create("2.2.0", async () =>
+            {
+                #region Setting migration
                     Settings.Authentication.AccessToken = GetOldOption<string>("AccessToken");
                     Settings.Authentication.RefreshToken = GetOldOption<string>("RefreshToken");
                     Settings.Authentication.LastTokenRefreshDateTime = GetOldOption<DateTime>("LastTokenRefreshDateTime");
@@ -115,70 +114,53 @@ namespace wallabag
                     Settings.Reading.VideoOpenMode = GetOldOption<Settings.Reading.WallabagVideoOpenMode>("VideoOpenMode");
                     #endregion
 
-                    // Clear the old tags values due to a new saving mechanism
-                    _database.Execute("UPDATE Item SET Tags=NULL", Array.Empty<object>());
+                // Clear the old tags values due to a new saving mechanism
+                _database.Execute("UPDATE Item SET Tags=NULL", Array.Empty<object>());
 
-                    var client = SimpleIoc.Default.GetInstance<IWallabagClient>();
-                    var items = await client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: 100);
-                    var itemList = items.Items as List<WallabagItem>;
+                var client = SimpleIoc.Default.GetInstance<IWallabagClient>();
+                var items = await client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: 100);
+                var itemList = items.Items as List<WallabagItem>;
 
-                    if (items.Pages > 1)
+                if (items.Pages > 1)
+                {
+                    for (int i = 2; i <= items.Pages; i++)
                     {
-                        for (int i = 2; i <= items.Pages; i++)
-                        {
-                            itemList.AddRange(await client.GetItemsAsync(pageNumber: i));
-                        }
+                        itemList.AddRange(await client.GetItemsAsync(pageNumber: i));
                     }
+                }
 
-                    _database.InsertOrReplaceAll(itemList);
+                _database.InsertOrReplaceAll(itemList);
 
-                    T GetOldOption<T>(string optionName)
+                T GetOldOption<T>(string optionName)
+                {
+                    var oldSettingsDictionary = ApplicationData.Current.LocalSettings.Values;
+
+                    if (oldSettingsDictionary.ContainsKey(optionName))
                     {
-                        var oldSettingsDictionary = ApplicationData.Current.LocalSettings.Values;
+                        object value = (oldSettingsDictionary[optionName] as ApplicationDataCompositeValue)["Value"];
+                        value = (value as string).TrimStart('"').TrimEnd('"');
 
-                        if (oldSettingsDictionary.ContainsKey(optionName))
+                        if (typeof(T) == typeof(DateTime))
+                            value = DateTime.Parse(value as string);
+                        else if (typeof(T) == typeof(Uri))
                         {
-                            object value = (oldSettingsDictionary[optionName] as ApplicationDataCompositeValue)["Value"];
-                            value = (value as string).TrimStart('"').TrimEnd('"');
-
-                            if (typeof(T) == typeof(DateTime))
-                                value = DateTime.Parse(value as string);
-                            else if (typeof(T) == typeof(Uri))
-                            {
-                                Uri.TryCreate(value as string, UriKind.Absolute, out var result);
-                                value = result;
-                            }
-                            else if (typeof(T) == typeof(int))
-                                value = int.Parse(value as string);
-                            else if (typeof(T) == typeof(bool))
-                                value = bool.Parse(value as string);
-                            else if (typeof(T) == typeof(TimeSpan))
-                                value = new TimeSpan(0, int.Parse(value as string), 0);
-                            else if (typeof(T) == typeof(Settings.Reading.WallabagVideoOpenMode))
-                                value = int.Parse(value as string);
-
-                            return (T)value;
+                            Uri.TryCreate(value as string, UriKind.Absolute, out var result);
+                            value = result;
                         }
-                        return default(T);
+                        else if (typeof(T) == typeof(int))
+                            value = int.Parse(value as string);
+                        else if (typeof(T) == typeof(bool))
+                            value = bool.Parse(value as string);
+                        else if (typeof(T) == typeof(TimeSpan))
+                            value = new TimeSpan(0, int.Parse(value as string), 0);
+                        else if (typeof(T) == typeof(Settings.Reading.WallabagVideoOpenMode))
+                            value = int.Parse(value as string);
+
+                        return (T)value;
                     }
-                })
-                .AddFeature("Changelog notification",
-                    "If this app gets an update, you don't need to rely anymore on the Windows Store for updating the changelog. " +
-                    "The app itself will notify you (at the moment only in English).")
-                .AddFeature("New share experience",
-                    "The new share experience works better with the Windows 10 Creators Update. " +
-                    "And with smmoth animations, it looks even better than before.")
-                .AddEnhancement("Completely refactored!", "Expect less bugs and crashes in the future!")
-                .AddEnhancement("Login popup",
-                    "Some of you reported an error to me, that they couldn't sync anymore. " +
-                    "This is actual a bug of wallabag itself, and is going to be fixed with wallabag 2.3. " +
-                    "Until then, the app asks to re-login to continue the usage. " +
-                    "An application reset is not longer needed.")
-                .AddBugfix("Placeholders removal improved", "They shouldn't longer be a problem or annoying.")
-                .AddBugfix("Duplicated items should not appear anymore")
-                .AddBugfix("Sorting on main page fixed")
-                .AddBugfix("And many, many more fixes.", "Seriously, I can't even count them anymore.")
-                .Complete(ms);
+                    return default(T);
+                }
+            });
         }
 
         public Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
