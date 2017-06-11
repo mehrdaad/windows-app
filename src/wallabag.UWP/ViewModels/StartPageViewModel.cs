@@ -44,11 +44,14 @@ namespace wallabag.ViewModels
             if (_migrationService.Check(param.PreviousVersion))
                 ExecuteMigrations(param.PreviousVersion);
 
+            Settings.General.AppVersion = _device.AppVersion;
+
             if (string.IsNullOrEmpty(Settings.Authentication.AccessToken) ||
                 string.IsNullOrEmpty(Settings.Authentication.RefreshToken))
             {
                 _logging.WriteLine($"Credentials not found. Navigating to the {nameof(Navigation.Pages.LoginPage)}.");
                 _navigationService.Navigate(Navigation.Pages.LoginPage);
+                _navigationService.ClearHistory();
             }
             else
             {
