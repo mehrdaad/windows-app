@@ -14,6 +14,7 @@ using wallabag.Data.Models;
 using wallabag.Data.Services;
 using wallabag.Data.Services.MigrationService;
 using wallabag.Data.Services.OfflineTaskService;
+using wallabag.Models;
 using wallabag.Services;
 using wallabag.Views;
 using Windows.ApplicationModel;
@@ -45,31 +46,9 @@ namespace wallabag
             RegisterServices();
             SetupMigrationService();
 
-            // Run possible migrations here
-            Version.TryParse(Settings.General.AppVersion, out var oldVersion);
-
-            // If the version is null, the application can be
-            // either updated from version 2.1.40 or it can be
-            // a complete re-install.
-            if (oldVersion == null)
-            {
-                // Try to get the version from app version 2.1.40
-                var oldSettings = ApplicationData.Current.LocalSettings.Values;
-                if (oldSettings.ContainsKey("Version"))
-                {
-                    var oldValue = oldSettings["Version"] as ApplicationDataCompositeValue;
-                    var oldValue1 = oldValue as ApplicationDataCompositeValue;
-                    oldVersion = new Version((oldValue1["Value"] as string).TrimStart('"').TrimEnd('"'));
-                }
-            }
-
-            if (oldVersion != null)
-                SimpleIoc.Default.GetInstance<IMigrationService>().ExecuteAll(oldVersion);
-
-            Settings.General.AppVersion = SimpleIoc.Default.GetInstance<IPlatformSpecific>().AppVersion;
-
             // Configure HockeyApp
             if (!System.Diagnostics.Debugger.IsAttached && Settings.General.AllowCollectionOfTelemetryData)
+            {
                 HockeyClient.Current
                     .Configure("842955f8fd3b4191972db776265d81c4")
                     .SetExceptionDescriptionLoader(ex =>
@@ -81,6 +60,7 @@ namespace wallabag
 
                        return string.Join("\r\n", lines.Skip(Math.Max(0, lines.Count - numberOfLogEntries)));
                    });
+            }
 
             Current.UnhandledException += (s, e)
                 => SimpleIoc.Default.GetInstance<ILoggingService>().TrackException(e.Exception);
@@ -94,7 +74,9 @@ namespace wallabag
 
             migrationService.Create("2.2.0", async () =>
             {
-                #region Setting migration
+                // Setting migration
+                if (!string.IsNullOrEmpty(GetOldOption<string>("AccessToken")))
+                {
                     Settings.Authentication.AccessToken = GetOldOption<string>("AccessToken");
                     Settings.Authentication.RefreshToken = GetOldOption<string>("RefreshToken");
                     Settings.Authentication.LastTokenRefreshDateTime = GetOldOption<DateTime>("LastTokenRefreshDateTime");
@@ -112,7 +94,7 @@ namespace wallabag
                     Settings.Reading.NavigateBackAfterReadingAnArticle = GetOldOption<bool>("NavigateBackAfterReadingAnArticle");
                     Settings.Reading.SyncReadingProgress = GetOldOption<bool>("SyncReadingProgress");
                     Settings.Reading.VideoOpenMode = GetOldOption<Settings.Reading.WallabagVideoOpenMode>("VideoOpenMode");
-                    #endregion
+                }
 
                 // Clear the old tags values due to a new saving mechanism
                 _database.Execute("UPDATE Item SET Tags=NULL", Array.Empty<object>());
@@ -163,8 +145,11 @@ namespace wallabag
             });
         }
 
-        public Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
+        public async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
+            bool databaseExists = (await ApplicationData.Current.LocalCacheFolder.TryGetItemAsync("wallabag.db")) != null;
+            Version oldVersion = null;
+
             SimpleIoc.Default.GetInstance<LiveTileService>().UpdateAll();
 
             if (args.Kind == ActivationKind.ShareTarget)
@@ -186,12 +171,40 @@ namespace wallabag
             }
             else
             {
-                if (string.IsNullOrEmpty(Settings.Authentication.AccessToken) || string.IsNullOrEmpty(Settings.Authentication.RefreshToken))
-                    _navigation.Navigate(Pages.LoginPage);
-                else
-                    _navigation.Navigate(Pages.MainPage);
+                var ms = SimpleIoc.Default.GetInstance<IMigrationService>();
+                var device = SimpleIoc.Default.GetInstance<IPlatformSpecific>();
+
+                Version.TryParse(Settings.General.AppVersion, out oldVersion);
+
+                // If the version is null, the application could be
+                // either updated from version 2.1.40 or it could be
+                // a complete re-install.
+                if (oldVersion == null)
+                {
+                    // Try to get the version from app version 2.1.40
+                    var oldSettings = ApplicationData.Current.LocalSettings.Values;
+                    if (oldSettings.ContainsKey("Version"))
+                    {
+                        var oldValue = oldSettings["Version"] as ApplicationDataCompositeValue;
+                        oldVersion = new Version((oldValue["Value"] as string).TrimStart('"').TrimEnd('"'));
+                    }
+                }
+
+                NavigateToStartPage(new StartPageNavigationParameter()
+                {
+                    DatabaseExists = databaseExists,
+                    PreviousVersion = oldVersion
+                });
             }
-            return Task.CompletedTask;
+        }
+
+        private void NavigateToStartPage(StartPageNavigationParameter param)
+        {
+            var frame = Window.Current.Content as Frame;
+            frame.Navigate(typeof(StartPage), param);
+            ((frame.Content as Page).DataContext as INavigable).ActivateAsync(param, null, NavigationMode.New);
+
+            _navigation.ClearHistory();
         }
 
         public async Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
