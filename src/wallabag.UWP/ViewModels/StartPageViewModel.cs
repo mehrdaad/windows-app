@@ -66,7 +66,7 @@ namespace wallabag.ViewModels
         private void ExecuteMigrations(Version oldVersion)
         {
             IsActive = true;
-            ProgressDescription = "Executing migrations...";
+            ProgressDescription = _device.GetLocalizedResource("MigratingProgress");
 
             _migrationService.ExecuteAll(oldVersion);
 

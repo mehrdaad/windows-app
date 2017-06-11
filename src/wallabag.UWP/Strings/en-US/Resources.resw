@@ -546,4 +546,7 @@
   <data name="ShowNumeralBadgeOnTileToggleSwitch.Header" xml:space="preserve">
     <value>Show badge on tile</value>
   </data>
+  <data name="MigratingProgress" xml:space="preserve">
+    <value>Migrating to the newest version...</value>
+  </data>
 </root>
