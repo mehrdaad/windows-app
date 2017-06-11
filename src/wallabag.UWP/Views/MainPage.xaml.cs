@@ -8,9 +8,7 @@ using System.Numerics;
 using wallabag.Common.Helpers;
 using wallabag.Controls;
 using wallabag.Data.Common.Messages;
-using wallabag.Data.Interfaces;
 using wallabag.Data.ViewModels;
-using wallabag.Dialogs;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
@@ -32,8 +30,6 @@ namespace wallabag.Views
     [ImplementPropertyChanged]
     public sealed partial class MainPage : Page
     {
-        private ContentDialog _loginDialog;
-        private bool _loginDialogIsOpen = false;
         private Compositor _compositor;
         public MainViewModel ViewModel => DataContext as MainViewModel;
 
@@ -75,24 +71,6 @@ namespace wallabag.Views
             TitleBarHelper.SetButtonBackgroundColor(titleBarColor);
 
             Messenger.Default.Register<CompleteMultipleSelectionMessage>(this, message => DisableMultipleSelection());
-            Messenger.Default.Register<ShowLoginMessage>(this, async message =>
-            {
-                if (SimpleIoc.Default.GetInstance<IPlatformSpecific>().InternetConnectionIsAvailable)
-                {
-                    if (_loginDialog == null)
-                    {
-                        _loginDialog = new LoginDialog();
-                        _loginDialog.Opened += (s, args) => _loginDialogIsOpen = true;
-                        _loginDialog.Closed += (s, args) => _loginDialogIsOpen = false;
-                    }
-
-                    if (!_loginDialogIsOpen)
-                    {
-                        _loginDialogIsOpen = true;
-                        await _loginDialog.ShowAsync();
-                    }
-                }
-            });
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {

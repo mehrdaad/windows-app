@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.HockeyApp;
 using SQLite.Net;
 using System;
@@ -9,11 +10,13 @@ using wallabag.Api;
 using wallabag.Api.Models;
 using wallabag.Data.Common;
 using wallabag.Data.Common.Helpers;
+using wallabag.Data.Common.Messages;
 using wallabag.Data.Interfaces;
 using wallabag.Data.Models;
 using wallabag.Data.Services;
 using wallabag.Data.Services.MigrationService;
 using wallabag.Data.Services.OfflineTaskService;
+using wallabag.Dialogs;
 using wallabag.Models;
 using wallabag.Services;
 using wallabag.Views;
@@ -31,6 +34,8 @@ namespace wallabag
     public sealed partial class App : Application
     {
         private bool _firstActivationExecuted;
+        private LoginDialog _loginDialog;
+        private bool _loginDialogIsOpen;
 
         private IWallabagClient _client => SimpleIoc.Default.GetInstance<IWallabagClient>();
         private SQLiteConnection _database => SimpleIoc.Default.GetInstance<SQLiteConnection>();
@@ -151,6 +156,25 @@ namespace wallabag
             Version oldVersion = null;
 
             SimpleIoc.Default.GetInstance<LiveTileService>().UpdateAll();
+
+            Messenger.Default.Register<ShowLoginMessage>(this, async message =>
+            {
+                if (SimpleIoc.Default.GetInstance<IPlatformSpecific>().InternetConnectionIsAvailable)
+                {
+                    if (_loginDialog == null)
+                    {
+                        _loginDialog = new LoginDialog();
+                        _loginDialog.Opened += (s, e) => _loginDialogIsOpen = true;
+                        _loginDialog.Closed += (s, e) => _loginDialogIsOpen = false;
+                    }
+
+                    if (!_loginDialogIsOpen)
+                    {
+                        _loginDialogIsOpen = true;
+                        await _loginDialog.ShowAsync();
+                    }
+                }
+            });
 
             if (args.Kind == ActivationKind.ShareTarget)
             {
