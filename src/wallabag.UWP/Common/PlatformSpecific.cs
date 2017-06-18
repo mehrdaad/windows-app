@@ -60,11 +60,10 @@ namespace wallabag.Common
 
         public async Task DeleteDatabaseAsync(SQLiteConnection connection)
         {
-            connection.CreateDatabaseBackup(GetSQLitePlatform());
-            connection.Close();
-
             var file = await StorageFile.GetFileFromPathAsync(connection.DatabasePath);
             await file.DeleteAsync();
+
+            CloseApplication();
         }
 
         public async Task<string> GetArticleTemplateAsync()
