@@ -141,7 +141,7 @@ namespace wallabag.Services
                 (binding.Content as TileBindingContentAdaptive).BackgroundImage = new TileBackgroundImage()
                 {
                     Source = imageSource,
-                    HintOverlay = 40
+                    HintOverlay = 60
                 };
             }
 
