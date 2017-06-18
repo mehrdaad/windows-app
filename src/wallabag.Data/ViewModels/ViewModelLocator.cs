@@ -51,18 +51,18 @@ namespace wallabag.Data.ViewModels
 
                         logging.WriteLine($"AfterRequestExecution: {e.RequestUriSubString}");
                         if (e.RequestUriSubString.Contains("oauth") &&
-                            e.Parameters["grant_type"].ToString() == "refresh_token" &&
+                            e.Parameters?["grant_type"].ToString() == "refresh_token" &&
                             e.Response?.StatusCode == System.Net.HttpStatusCode.BadRequest)
                         {
                             logging.WriteLine("App tried to refresh the tokens but failed. Informing the user.");
                             Messenger.Default.Send(new ShowLoginMessage());
                         }
-                        else if (!e.Response.IsSuccessStatusCode)
+                        else if (e.Response?.IsSuccessStatusCode == false)
                         {
                             logging.WriteLine("HTTP request to server failed.");
                             logging.WriteLine($"{e.RequestMethod.ToString().ToUpper()} {e.RequestUriSubString} with {e.Parameters?.Count} parameters.");
 
-                            if (e.Parameters.Count > 0)
+                            if (e.Parameters?.Count > 0)
                                 foreach (var param in e.Parameters)
                                     logging.WriteLine($"param '{param.Key}': {param.Value}");
                         }
