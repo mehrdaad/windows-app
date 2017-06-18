@@ -41,7 +41,10 @@ namespace wallabag.Services
                 System.Diagnostics.Debug.WriteLine(line, category.ToString());
 
             if (_logFile == null)
-                _logFile = ApplicationData.Current.TemporaryFolder.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists).AsTask().Result;
+            {
+                var date = DateTime.Now;
+                _logFile = ApplicationData.Current.TemporaryFolder.CreateFileAsync($"log-{date.ToString("yyyy-MM-dd")}.txt", CreationCollisionOption.OpenIfExists).AsTask().Result;
+            }
 
             NotifyTaskCompletion.Create(FileIO.AppendTextAsync(_logFile, line + "\r\n").AsTask());
         }

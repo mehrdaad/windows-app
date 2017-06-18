@@ -50,6 +50,7 @@ namespace wallabag
         {
             RegisterServices();
             SetupMigrationService();
+            await RotateLogsAsync();
 
             // Configure HockeyApp
             if (!System.Diagnostics.Debugger.IsAttached && Settings.General.AllowCollectionOfTelemetryData)
@@ -71,6 +72,21 @@ namespace wallabag
                 => SimpleIoc.Default.GetInstance<ILoggingService>().TrackException(e.Exception);
 
             await EnsureRegistrationOfBackgroundTaskAsync();
+        }
+
+        /// <summary>
+        /// Deletes log files that are older than seven days.
+        /// </summary>
+        private async Task RotateLogsAsync()
+        {
+            var date = DateTime.Now.Subtract(TimeSpan.FromDays(7));
+            var files = await ApplicationData.Current.TemporaryFolder.GetItemsAsync();
+
+            foreach (var file in files)
+            {
+                if (file.DateCreated < date)
+                    await file.DeleteAsync();
+            }
         }
 
         private void SetupMigrationService()
