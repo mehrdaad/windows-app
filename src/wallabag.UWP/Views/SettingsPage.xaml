@@ -155,8 +155,8 @@
                         IsOn="{x:Bind BadgeIsEnabled, Mode=TwoWay}" />
                     <ComboBox
                         x:Uid="LiveTileDisplayedItemsComboBox"
-                        Header="Displayed items"
                         Margin="0,8,0,0"
+                        Header="Displayed items"
                         SelectedIndex="{x:Bind DisplayedLiveTileItemsSelectedIndex, Mode=TwoWay}"
                         Visibility="{x:Bind LiveTileIsEnabled, Mode=OneWay}">
                         <ComboBoxItem x:Uid="UnreadItemTypeComboBoxItem" Content="Unread" />
@@ -236,134 +236,170 @@
                         Visibility="{x:Bind ViewModel.BackgroundTaskIsEnabled, Mode=OneWay}" />
                 </StackPanel>
             </PivotItem>
-            <PivotItem x:Uid="InfoPivotItem" Header="Info">
+            <PivotItem
+                x:Uid="InfoPivotItem"
+                MaxWidth="900"
+                Header="Info">
                 <ScrollViewer Padding="0,0,0,8" VerticalScrollBarVisibility="Hidden">
-                    <StackPanel>
-                        <TextBlock
-                            x:Uid="VersionHeaderTextBlock"
-                            Margin="0,8,0,4"
-                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
-                            Text="VERSION" />
-                        <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="{x:Bind ViewModel.VersionNumber}" />
-                        <TextBlock
-                            x:Uid="MadeByHeaderTextBlock"
-                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
-                            Text="MADE WITH PASSION BY" />
-                        <TextBlock Style="{ThemeResource InfoTextBlockStyle}" Text="Julian Oster" />
-                        <TextBlock
-                            x:Uid="UsedLibrariesHeaderTextBlock"
-                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
-                            Text="USED LIBRARIES" />
-                        <TextBlock Style="{ThemeResource InfoTextBlockStyle}">
-                            <Hyperlink NavigateUri="http://hockeyapp.net" UnderlineStyle="None">• HockeyApp.UWP</Hyperlink>
-                            <LineBreak />
-                            <Hyperlink NavigateUri="https://htmlagilitypack.codeplex.com/" UnderlineStyle="None">• HtmlAgilityPack</Hyperlink>
-                            <LineBreak />
-                            <Hyperlink NavigateUri="http://www.mvvmlight.net/" UnderlineStyle="None">• MVVM Light</Hyperlink>
-                            <LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/Fody/PropertyChanged" UnderlineStyle="None">• PropertyChanged.Fody</Hyperlink>
-                            <LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/oysteinkrog/SQLite.Net-PCL" UnderlineStyle="None">• SQLite.Net-PCL</Hyperlink>
-                            <LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/jlnostr/wallabag-api" UnderlineStyle="None">• wallabag-api</Hyperlink>
-                            <LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/dotMorten/WindowsStateTriggers" UnderlineStyle="None">• WindowsStateTriggers</Hyperlink>
-                            <LineBreak />
-                            <Hyperlink NavigateUri="https://zxingnet.codeplex.com/" UnderlineStyle="None">• ZXing.Net</Hyperlink>
-                            <LineBreak />
-                            <Hyperlink NavigateUri="http://sixrevisions.com/free-icons/free-windows-10-icons/" UnderlineStyle="None">• Twitter icon by Icons8</Hyperlink>
-                        </TextBlock>
-                        <TextBlock
-                            x:Uid="ThanksToHeaderTextBlock"
-                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
-                            Text="THANKS TO" />
-                        <TextBlock
-                            x:Uid="SpecialThanksInfoTextBlock"
-                            Style="{StaticResource InfoTextBlockStyle}"
-                            Text="Nicolas Lœuillet, Thomas Citharel and Jérémy Benoist for creating such a great software." />
-                        <TextBlock
-                            x:Uid="NeedHelpHeaderTextBlock"
-                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
-                            Text="NEED HELP?" />
-                        <Button
-                            x:Uid="OpenDocumentationButton"
-                            Command="{x:Bind ViewModel.OpenDocumentationCommand}"
-                            Content="Open the documentation"
-                            Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
-                            <Button.Tag>
-                                <SymbolIcon Symbol="Repair" />
-                            </Button.Tag>
-                        </Button>
-                        <Button
-                            x:Uid="FollowOnTwitterButton"
-                            Command="{x:Bind ViewModel.OpenWallabagTwitterAccountCommand}"
-                            Content="Follow @wallabagapp on Twitter"
-                            Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
-                            <Button.Tag>
-                                <PathIcon Width="20" Data="M 20 1.9241667 C 19.264166 2.250833 18.473333 2.4708331 17.643333 2.5700006 18.490833 2.0625005 19.140833 1.2583328 19.4475 0.3 18.655 0.7700002 17.776666 1.1116665 16.841666 1.2958328 16.093333 0.4983326 15.026665 0 13.846665 0 11.580832 0 9.7433308 1.8375005 9.7433308 4.1033335 c 0 0.3216676 0.036658 0.6350002 0.1058375 0.9350002 C 6.4391683 4.8675012 3.4158343 3.2333333 1.391667 0.7508326 1.0391669 1.3566665 0.83666683 2.0616667 0.83666683 2.814167 c 0 1.423334 0.72416687 2.6791669 1.82500047 3.4150008 C 1.9891671 6.2075053 1.356667 6.023334 0.80333358 5.7158339 c 0 0.0175 0 0.034162 0 0.051662 0 1.9883339 1.41416702 3.6466679 3.29166742 4.0233339 -0.3441667 0.09416 -0.7066668 0.144168 -1.0816668 0.144168 -0.2641669 0 -0.5216669 -0.02583 -0.771667 -0.07333 0.5225001 1.6300012 2.0375005 2.8166672 3.8333343 2.8500012 -1.4041669 1.100833 -3.1733342 1.756667 -5.09583467 1.756667 -0.3308333 0 -0.65750012 -0.01916 -0.97916683 -0.0575 1.8158338 1.164167 3.972501 1.843334 6.2900016 1.843334 7.5475014 0 11.6741694 -6.252501 11.6741694 -11.6750027 0 -0.1775001 -0.0042 -0.3550001 -0.01162 -0.5308339 C 18.754166 3.4691671 19.45 2.7466669 20 1.9241667 Z" />
-                            </Button.Tag>
-                        </Button>
-                        <Button
-                            x:Uid="ContactDeveloperButton"
-                            Command="{x:Bind ViewModel.ContactDeveloperCommand}"
-                            Content="Contact me via e-mail"
-                            Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
-                            <Button.Tag>
-                                <SymbolIcon Symbol="Mail" />
-                            </Button.Tag>
-                        </Button>
-                        <Button
-                            x:Uid="CreateIssueButton"
-                            Command="{x:Bind ViewModel.CreateIssueCommand}"
-                            Content="Create an issue on GitHub"
-                            Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
-                            <Button.Tag>
-                                <SymbolIcon Symbol="Remote" />
-                            </Button.Tag>
-                        </Button>
-                        <TextBlock
-                            x:Uid="LikeMyWorkHeaderTextBlock"
-                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
-                            Text="YOU LIKE MY WORK?" />
-                        <Button
-                            x:Uid="RateAppButton"
-                            Command="{x:Bind ViewModel.RateAppCommand}"
-                            Content="Rate and review the app on the store!"
-                            Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
-                            <Button.Tag>
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE19F;" />
-                            </Button.Tag>
-                        </Button>
-                        <TextBlock
-                            x:Uid="MiscHeaderTextBlock"
-                            Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
-                            Text="MISCELLANOUS" />
-                        <TextBlock
-                            x:Uid="ResetWarningTextBlock"
-                            Style="{StaticResource InfoTextBlockStyle}"
-                            Text="Both actions will require a manual restart of this app and are IRREVERSIBLE!" />
-                        <StackPanel Orientation="Horizontal">
+                    <RelativePanel>
+                        <RelativePanel.Resources>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="MaxWidth" Value="400" />
+                                <Setter Property="Padding" Value="8,16,0,12" />
+                            </Style>
+                        </RelativePanel.Resources>
+                        <StackPanel x:Name="InfoStackPanel">
+                            <TextBlock
+                                x:Uid="VersionHeaderTextBlock"
+                                Margin="0,0,0,4"
+                                Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                                Text="VERSION" />
+                            <TextBlock Style="{StaticResource InfoTextBlockStyle}" Text="{x:Bind ViewModel.VersionNumber}" />
+                            <TextBlock
+                                x:Uid="MadeByHeaderTextBlock"
+                                Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                                Text="MADE WITH PASSION BY" />
+                            <TextBlock Style="{ThemeResource InfoTextBlockStyle}" Text="Julian Oster" />
+                            <TextBlock
+                                x:Uid="LikeMyWorkHeaderTextBlock"
+                                Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                                Text="YOU LIKE MY WORK?" />
                             <Button
-                                x:Uid="LogoutButton"
-                                Margin="4,0"
-                                Command="{x:Bind ViewModel.LogoutCommand}"
-                                Content="Logout" />
-                            <Button
-                                x:Uid="DeleteDatabaseButton"
-                                Command="{x:Bind ViewModel.DeleteDatabaseCommand}"
-                                Content="Delete database" />
+                                x:Uid="RateAppButton"
+                                Command="{x:Bind ViewModel.RateAppCommand}"
+                                Content="Rate and review the app on the store!"
+                                Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
+                                <Button.Tag>
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE19F;" />
+                                </Button.Tag>
+                            </Button>
+                            <TextBlock
+                                x:Uid="UsedLibrariesHeaderTextBlock"
+                                Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                                Text="USED LIBRARIES" />
+                            <TextBlock Style="{ThemeResource InfoTextBlockStyle}">
+                                <Hyperlink NavigateUri="http://hockeyapp.net" UnderlineStyle="None">• HockeyApp.UWP</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink NavigateUri="https://htmlagilitypack.codeplex.com/" UnderlineStyle="None">• HtmlAgilityPack</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink NavigateUri="http://www.mvvmlight.net/" UnderlineStyle="None">• MVVM Light</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink NavigateUri="https://github.com/Fody/PropertyChanged" UnderlineStyle="None">• PropertyChanged.Fody</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink NavigateUri="https://github.com/oysteinkrog/SQLite.Net-PCL" UnderlineStyle="None">• SQLite.Net-PCL</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink NavigateUri="https://github.com/jlnostr/wallabag-api" UnderlineStyle="None">• wallabag-api</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink NavigateUri="https://github.com/dotMorten/WindowsStateTriggers" UnderlineStyle="None">• WindowsStateTriggers</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink NavigateUri="https://zxingnet.codeplex.com/" UnderlineStyle="None">• ZXing.Net</Hyperlink>
+                                <LineBreak />
+                                <Hyperlink NavigateUri="http://sixrevisions.com/free-icons/free-windows-10-icons/" UnderlineStyle="None">• Twitter icon by Icons8</Hyperlink>
+                            </TextBlock>
+                            <TextBlock
+                                x:Uid="ThanksToHeaderTextBlock"
+                                Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                                Text="THANKS TO" />
+                            <TextBlock
+                                x:Uid="SpecialThanksInfoTextBlock"
+                                Style="{StaticResource InfoTextBlockStyle}"
+                                Text="Nicolas Lœuillet, Thomas Citharel and Jérémy Benoist for creating such a great software." />
                         </StackPanel>
-                    </StackPanel>
+                        <Rectangle
+                            x:Name="SeparatorRectangle"
+                            Width="1"
+                            Margin="16,64"
+                            x:DeferLoadStrategy="Lazy"
+                            Fill="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                            RelativePanel.AlignBottomWithPanel="True"
+                            RelativePanel.AlignTopWithPanel="True"
+                            RelativePanel.RightOf="InfoStackPanel"
+                            Visibility="Collapsed" />
+                        <StackPanel x:Name="HelpStackPanel">
+                            <TextBlock
+                                x:Uid="NeedHelpHeaderTextBlock"
+                                Margin="0,0,0,4"
+                                Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                                Text="NEED HELP?" />
+                            <Button
+                                x:Uid="OpenDocumentationButton"
+                                Command="{x:Bind ViewModel.OpenDocumentationCommand}"
+                                Content="Open the documentation"
+                                Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
+                                <Button.Tag>
+                                    <SymbolIcon Symbol="Repair" />
+                                </Button.Tag>
+                            </Button>
+                            <Button
+                                x:Uid="FollowOnTwitterButton"
+                                Command="{x:Bind ViewModel.OpenWallabagTwitterAccountCommand}"
+                                Content="Follow @wallabagapp on Twitter"
+                                Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
+                                <Button.Tag>
+                                    <PathIcon Width="20" Data="M 20 1.9241667 C 19.264166 2.250833 18.473333 2.4708331 17.643333 2.5700006 18.490833 2.0625005 19.140833 1.2583328 19.4475 0.3 18.655 0.7700002 17.776666 1.1116665 16.841666 1.2958328 16.093333 0.4983326 15.026665 0 13.846665 0 11.580832 0 9.7433308 1.8375005 9.7433308 4.1033335 c 0 0.3216676 0.036658 0.6350002 0.1058375 0.9350002 C 6.4391683 4.8675012 3.4158343 3.2333333 1.391667 0.7508326 1.0391669 1.3566665 0.83666683 2.0616667 0.83666683 2.814167 c 0 1.423334 0.72416687 2.6791669 1.82500047 3.4150008 C 1.9891671 6.2075053 1.356667 6.023334 0.80333358 5.7158339 c 0 0.0175 0 0.034162 0 0.051662 0 1.9883339 1.41416702 3.6466679 3.29166742 4.0233339 -0.3441667 0.09416 -0.7066668 0.144168 -1.0816668 0.144168 -0.2641669 0 -0.5216669 -0.02583 -0.771667 -0.07333 0.5225001 1.6300012 2.0375005 2.8166672 3.8333343 2.8500012 -1.4041669 1.100833 -3.1733342 1.756667 -5.09583467 1.756667 -0.3308333 0 -0.65750012 -0.01916 -0.97916683 -0.0575 1.8158338 1.164167 3.972501 1.843334 6.2900016 1.843334 7.5475014 0 11.6741694 -6.252501 11.6741694 -11.6750027 0 -0.1775001 -0.0042 -0.3550001 -0.01162 -0.5308339 C 18.754166 3.4691671 19.45 2.7466669 20 1.9241667 Z" />
+                                </Button.Tag>
+                            </Button>
+                            <Button
+                                x:Uid="ContactDeveloperButton"
+                                Command="{x:Bind ViewModel.ContactDeveloperCommand}"
+                                Content="Contact me via e-mail"
+                                Style="{ThemeResource IconAndTextHyperlinkButtonStyle}">
+                                <Button.Tag>
+                                    <SymbolIcon Symbol="Mail" />
+                                </Button.Tag>
+                            </Button>
+                            <Button
+                                x:Uid="CreateIssueButton"
+                                Command="{x:Bind ViewModel.CreateIssueCommand}"
+                                Content="Create an issue on GitHub"
+                                Style="{StaticResource IconAndTextHyperlinkButtonStyle}">
+                                <Button.Tag>
+                                    <SymbolIcon Symbol="Remote" />
+                                </Button.Tag>
+                            </Button>
+                            <TextBlock
+                                x:Uid="MiscHeaderTextBlock"
+                                Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
+                                Text="MISCELLANOUS" />
+                            <TextBlock
+                                x:Uid="ResetWarningTextBlock"
+                                Style="{StaticResource InfoTextBlockStyle}"
+                                Text="Both actions will require a manual restart of this app and are IRREVERSIBLE!" />
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    x:Uid="LogoutButton"
+                                    Margin="4,0"
+                                    Command="{x:Bind ViewModel.LogoutCommand}"
+                                    Content="Logout" />
+                                <Button
+                                    x:Uid="DeleteDatabaseButton"
+                                    Command="{x:Bind ViewModel.DeleteDatabaseCommand}"
+                                    Content="Delete database" />
+                            </StackPanel>
+                        </StackPanel>
+                    </RelativePanel>
                 </ScrollViewer>
             </PivotItem>
         </Pivot>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="AdaptiveStates">
-                <VisualState x:Name="Narrow" />
+                <VisualState x:Name="Narrow">
+                    <VisualState.Setters>
+                        <Setter Target="HelpStackPanel.(RelativePanel.Below)" Value="InfoStackPanel" />
+                        <Setter Target="SeparatorRectangle.Visibility" Value="Collapsed" />
+                        <Setter Target="HelpStackPanel.Padding" Value="8,6,0,6" />
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                </VisualState>
                 <VisualState x:Name="Wide">
                     <VisualState.Setters>
                         <Setter Target="VideoOpenModeGrid.HorizontalAlignment" Value="Left" />
                         <Setter Target="VideoOpenModeGrid.Width" Value="400" />
+                        <Setter Target="HelpStackPanel.(RelativePanel.RightOf)" Value="SeparatorRectangle" />
+                        <Setter Target="HelpStackPanel.Padding" Value="8,16,0,12" />
+                        <Setter Target="SeparatorRectangle.Visibility" Value="Visible" />
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="720" />
