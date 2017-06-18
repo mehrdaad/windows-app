@@ -264,9 +264,6 @@
   <data name="ResetFilterButton.Content" xml:space="preserve">
     <value>Filter zurücksetzen</value>
   </data>
-  <data name="ResetWarningTextBlock.Text" xml:space="preserve">
-    <value>Beide Aktionen erfordern einen manuellen Neustart der App und sind UNWIDERRUFLICH!</value>
-  </data>
   <data name="SaveAppBarButton.Label" xml:space="preserve">
     <value>Speichern</value>
   </data>
@@ -551,5 +548,11 @@
   </data>
   <data name="MigratingProgress" xml:space="preserve">
     <value>Migriere auf die neueste Version...</value>
+  </data>
+  <data name="DeleteDatabaseDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Wenn der App-Inhalt sich zu stark von den Inhalten des Servers unterscheidet, kannst du die lokale Datenbank löschen. Beim nächsten Start werden alle Artikel und Schlagworte erneut heruntergeladen, deine Einstellungen bleiben dabei erhalten.</value>
+  </data>
+  <data name="LogoutDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Wenn du etwa auf eine andere wallabag-Instanz wechseln willst, kannst du dich mit einem Klick aus der App abmelden.</value>
   </data>
 </root>

@@ -264,9 +264,6 @@
   <data name="ResetFilterButton.Content" xml:space="preserve">
     <value>Reset filter</value>
   </data>
-  <data name="ResetWarningTextBlock.Text" xml:space="preserve">
-    <value>Both actions will require a manual restart of this app and are IRREVERSIBLE!</value>
-  </data>
   <data name="SaveAppBarButton.Label" xml:space="preserve">
     <value>Save</value>
   </data>
@@ -548,5 +545,11 @@
   </data>
   <data name="MigratingProgress" xml:space="preserve">
     <value>Migrating to the newest version...</value>
+  </data>
+  <data name="DeleteDatabaseDescriptionTextBlock.Text" xml:space="preserve">
+    <value>If the app content and the one on your wallabag instance differ too much, you can delete the database. On the next start, all articles and tags are downloaded again from the server while keeping your settings.</value>
+  </data>
+  <data name="LogoutDescriptionTextBlock.Text" xml:space="preserve">
+    <value>If you switched to another wallabag instance, you can easily logout with a click.</value>
   </data>
 </root>

@@ -127,7 +127,7 @@
 
     <Style x:Key="InfoTextBlockStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
-        <Setter Property="Margin" Value="8,0" />
+        <Setter Property="Margin" Value="0,0,8,0" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 

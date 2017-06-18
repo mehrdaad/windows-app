@@ -61,7 +61,7 @@
                     x:Key="CustomMenuHeaderTextBlockStyle"
                     BasedOn="{StaticResource MenuHeaderTextBlockStyle}"
                     TargetType="TextBlock">
-                    <Setter Property="Margin" Value="0,16,0,4" />
+                    <Setter Property="Margin" Value="0,16,0,8" />
                 </Style>
             </Pivot.Resources>
             <PivotItem x:Uid="GeneralSettingsPivotItem" Header="General">
@@ -354,20 +354,23 @@
                                 Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
                                 Text="MISCELLANOUS" />
                             <TextBlock
-                                x:Uid="ResetWarningTextBlock"
+                                x:Uid="DeleteDatabaseDescriptionTextBlock"
                                 Style="{StaticResource InfoTextBlockStyle}"
-                                Text="Both actions will require a manual restart of this app and are IRREVERSIBLE!" />
-                            <StackPanel Orientation="Horizontal">
-                                <Button
-                                    x:Uid="LogoutButton"
-                                    Margin="4,0"
-                                    Command="{x:Bind ViewModel.LogoutCommand}"
-                                    Content="Logout" />
-                                <Button
-                                    x:Uid="DeleteDatabaseButton"
-                                    Command="{x:Bind ViewModel.DeleteDatabaseCommand}"
-                                    Content="Delete database" />
-                            </StackPanel>
+                                Text="If the app content and the one on your wallabag instance differ too much, you can delete the database. On the next start, all articles and tags are downloaded again from the server while keeping your settings." />
+                            <Button
+                                x:Uid="DeleteDatabaseButton"
+                                Margin="0,12,0,16"
+                                Command="{x:Bind ViewModel.DeleteDatabaseCommand}"
+                                Content="Delete database" />
+                            <TextBlock
+                                x:Uid="LogoutDescriptionTextBlock"
+                                Style="{StaticResource InfoTextBlockStyle}"
+                                Text="If you switched to another wallabag instance, you can easily logout with a click." />
+                            <Button
+                                x:Uid="LogoutButton"
+                                Margin="0,12,0,16"
+                                Command="{x:Bind ViewModel.LogoutCommand}"
+                                Content="Logout" />
                         </StackPanel>
                     </RelativePanel>
                 </ScrollViewer>
