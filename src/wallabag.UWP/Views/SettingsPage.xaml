@@ -81,14 +81,6 @@
                         x:Uid="TelemetryDataToggleSwitch"
                         Header="Allow collection of telemetry data"
                         IsOn="{x:Bind ViewModel.AllowCollectionOfTelemetryData, Mode=TwoWay}" />
-                    <TextBlock
-                        x:Uid="NeedHelpHeaderTextBlock"
-                        Style="{StaticResource CustomMenuHeaderTextBlockStyle}"
-                        Text="NEED HELP?" />
-                    <Button
-                        x:Uid="ContactDeveloperButton"
-                        Click="ContactDeveloperButton_Click"
-                        Content="Contact developer" />
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Uid="ReadingSettingsPivotItem" Header="Reading">
