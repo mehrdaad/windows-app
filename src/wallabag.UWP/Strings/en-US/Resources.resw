@@ -196,7 +196,7 @@
     <value>General</value>
   </data>
   <data name="InfoPivotItem.Header" xml:space="preserve">
-    <value>Info</value>
+    <value>Info &amp; Help</value>
   </data>
   <data name="ItemTypeFilterTitleTextBlock.Text" xml:space="preserve">
     <value>ITEM TYPE</value>
