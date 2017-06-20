@@ -301,9 +301,9 @@ article {
         }
 
 .wallabag-preview-image {
-    max-height: 70vh;
+    max-height: 55vh;
     overflow: hidden;
-    margin-bottom: 1.5em;
+    margin-bottom: 2em;
     display: flex;
     justify-content: center;
 }
