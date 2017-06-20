@@ -186,9 +186,6 @@
   <data name="EditTagsMenuFlyoutItem.Text" xml:space="preserve">
     <value>Éditer les tags</value>
   </data>
-  <data name="EnterTagAutoSuggestBox.PlaceholderText" xml:space="preserve">
-    <value>entrez un tag…</value>
-  </data>
   <data name="FollowOnTwitterButton.Content" xml:space="preserve">
     <value>Suivre @wallabagapp sur Twitter</value>
   </data>
@@ -199,13 +196,10 @@
     <value>Info</value>
   </data>
   <data name="ItemTypeFilterTitleTextBlock.Text" xml:space="preserve">
-    <value>TYPE DE L'ARTICLE</value>
+    <value>TYPE DE L&apos;ARTICLE</value>
   </data>
   <data name="LanguageComboBox.PlaceholderText" xml:space="preserve">
     <value>sélectionnez une langue…</value>
-  </data>
-  <data name="LanguageFilterTitleTextBlock.Text" xml:space="preserve">
-    <value>LANGUE</value>
   </data>
   <data name="lightThemeButton.Label" xml:space="preserve">
     <value>Clair</value>
@@ -226,7 +220,7 @@
     <value>DIVERS</value>
   </data>
   <data name="MultipleDevicesAlertTextBlock.Text" xml:space="preserve">
-    <value>L'usage de la même combinaison ID/secret sur de multiples appareils n'est pas recommandée et pourrait vous causer (beaucoup) de frustration.</value>
+    <value>L&apos;usage de la même combinaison ID/secret sur de multiples appareils n&apos;est pas recommandée et pourrait vous causer (beaucoup) de frustration.</value>
   </data>
   <data name="MultipleSelectionAppBarButton.Label" xml:space="preserve">
     <value>Sélectionnez</value>
@@ -235,16 +229,13 @@
     <value>Retourner à la page précédente après la fin de la lecture</value>
   </data>
   <data name="NeedHelpHeaderTextBlock.Text" xml:space="preserve">
-    <value>BESOIN D'AIDE ?</value>
+    <value>BESOIN D&apos;AIDE ?</value>
   </data>
   <data name="NoContentAvailableErrorMessage" xml:space="preserve">
-    <value>Il n'y a pas de contenu disponible. Peut-être que l'article n'a pas encore été ajouté.</value>
-  </data>
-  <data name="NoTagsInfoTextBlock.Text" xml:space="preserve">
-    <value>Pas de tags existants, pour le moment.</value>
+    <value>Il n&apos;y a pas de contenu disponible. Peut-être que l&apos;article n&apos;a pas encore été ajouté.</value>
   </data>
   <data name="NothingFoundTextBlock.Text" xml:space="preserve">
-    <value>Nous n'avons rien trouvé pour vous. Désolé.</value>
+    <value>Nous n&apos;avons rien trouvé pour vous. Désolé.</value>
   </data>
   <data name="OpenDocumentationButton.Content" xml:space="preserve">
     <value>Ouvrir la documentation</value>
@@ -259,16 +250,13 @@
     <value>Mot de passe</value>
   </data>
   <data name="RateAppButton.Content" xml:space="preserve">
-    <value>Notez et donnez votre avis sur l'application sur le Windows Store !</value>
+    <value>Notez et donnez votre avis sur l&apos;application sur le Windows Store !</value>
   </data>
   <data name="ReadingSettingsPivotItem.Header" xml:space="preserve">
     <value>Lecture</value>
   </data>
   <data name="ResetFilterButton.Content" xml:space="preserve">
     <value>Remettre à zéro le filtre</value>
-  </data>
-  <data name="ResetWarningTextBlock.Text" xml:space="preserve">
-    <value>Ces deux actions nécessiteront un redémarrage manuel de cette application et sont irréversibles !</value>
   </data>
   <data name="SaveAppBarButton.Label" xml:space="preserve">
     <value>Sauvegarder</value>
@@ -298,7 +286,7 @@
     <value>Synchroniser</value>
   </data>
   <data name="SyncOnStartupToggleSwitch.Header" xml:space="preserve">
-    <value>Synchroniser au démarrage de l'application</value>
+    <value>Synchroniser au démarrage de l&apos;application</value>
   </data>
   <data name="SyncReadingProgressToggleSwitch.Header" xml:space="preserve">
     <value>Synchroniser la progression de lecture</value>
@@ -310,7 +298,7 @@
     <value>TAG</value>
   </data>
   <data name="TelemetryCollectionInfoTextBlock.Text" xml:space="preserve">
-    <value>Afin d'améliorer la stabilité générale de cette application, il est recommandé d'activer la soumission automatique de données de télémétrie anonymes. Toutefois, si vous voulez la désactiver pour des raisons de vie privée, vous pouvez également le faire.
+    <value>Afin d&apos;améliorer la stabilité générale de cette application, il est recommandé d&apos;activer la soumission automatique de données de télémétrie anonymes. Toutefois, si vous voulez la désactiver pour des raisons de vie privée, vous pouvez également le faire.
 Les changements seront appliqués après le prochain redémarrage.</value>
   </data>
   <data name="TelemetryDataToggleSwitch.Header" xml:space="preserve">
@@ -371,16 +359,16 @@ Les changements seront appliqués après le prochain redémarrage.</value>
     <value>Autoriser la collection de données télémétriques</value>
   </data>
   <data name="CreatingClientMessage" xml:space="preserve">
-    <value>Création d'un client…</value>
+    <value>Création d&apos;un client…</value>
   </data>
   <data name="CredentialsWrongMessage" xml:space="preserve">
-    <value>La connexion n'a pas pu être établie. Vérifiez vos informations de connexion.</value>
+    <value>La connexion n&apos;a pas pu être établie. Vérifiez vos informations de connexion.</value>
   </data>
   <data name="DownloadingItemsWithProgress" xml:space="preserve">
     <value>Téléchargement des articles… ({0}/{1})</value>
   </data>
   <data name="FirstStartContinueDescriptionTextBlock.Text" xml:space="preserve">
-    <value>Nous continuons maintenant avec la configuration. Dans le cas le plus simple, vous avez juste besoin de votre nom d'utilisateur et de votre mot de passe.</value>
+    <value>Nous continuons maintenant avec la configuration. Dans le cas le plus simple, vous avez juste besoin de votre nom d&apos;utilisateur et de votre mot de passe.</value>
   </data>
   <data name="FirstStartContinueTextBlock.Text" xml:space="preserve">
     <value>Continuons !</value>
@@ -404,7 +392,7 @@ Les changements seront appliqués après le prochain redémarrage.</value>
     <value>autre</value>
   </data>
   <data name="RegisterButton.Content" xml:space="preserve">
-    <value>Vous n'avez pas encore de compte ? Créez-en un !</value>
+    <value>Vous n&apos;avez pas encore de compte ? Créez-en un !</value>
   </data>
   <data name="SavingItemsInDatabaseMessage" xml:space="preserve">
     <value>Sauvegarde des articles dans la base de données…</value>
@@ -413,13 +401,13 @@ Les changements seront appliqués après le prochain redémarrage.</value>
     <value>Test de la configuration…</value>
   </data>
   <data name="UrlFormatWrongMessage" xml:space="preserve">
-    <value>L'URL n'a pas un format correct.</value>
+    <value>L&apos;URL n&apos;a pas un format correct.</value>
   </data>
   <data name="V2WallabagOrgProviderDescription" xml:space="preserve">
     <value>Vous testez les dernières versions beta ?</value>
   </data>
   <data name="WhatIsWallabagButton.Content" xml:space="preserve">
-    <value>Qu'est-ce que wallabag ?</value>
+    <value>Qu&apos;est-ce que wallabag ?</value>
   </data>
   <data name="VideoOpenModeDescriptionApp" xml:space="preserve">
     <value>La vidéo sera lue dans une application native, si installée. Dans le cas contraire, le navigateur sera utilisé.</value>
@@ -428,7 +416,7 @@ Les changements seront appliqués après le prochain redémarrage.</value>
     <value>La vidéo sera lue dans le navigateur.</value>
   </data>
   <data name="VideoOpenModeDescriptionInline" xml:space="preserve">
-    <value>La vidéo sera lue directement dans l'article.</value>
+    <value>La vidéo sera lue directement dans l&apos;article.</value>
   </data>
   <data name="SaveInWallabagMenuFlyoutItem.Text" xml:space="preserve">
     <value>Sauvegarder dans wallabag</value>
@@ -461,7 +449,7 @@ Les changements seront appliqués après le prochain redémarrage.</value>
     <value>Visible</value>
   </data>
   <data name="BackgroundTaskDownloadNewItemsDescriptionTextBlock.Text" xml:space="preserve">
-    <value>Avec ce paramètre vous pouvez demander à l'application de télécharger les nouveaux articles depuis le serveur. Dans le cas contraire uniquement les changements locaux seront envoyés depuis l'application au serveur.</value>
+    <value>Avec ce paramètre vous pouvez demander à l&apos;application de télécharger les nouveaux articles depuis le serveur. Dans le cas contraire uniquement les changements locaux seront envoyés depuis l&apos;application au serveur.</value>
   </data>
   <data name="BackgroundTaskDownloadNewItemsToggleSwitch.Header" xml:space="preserve">
     <value>Télécharger les nouveaux articles</value>
@@ -470,7 +458,7 @@ Les changements seront appliqués après le prochain redémarrage.</value>
     <value>toutes les {0} minutes</value>
   </data>
   <data name="BackgroundTaskExecutionIntervalSlider.Header" xml:space="preserve">
-    <value>Fréquence d'exécution</value>
+    <value>Fréquence d&apos;exécution</value>
   </data>
   <data name="BackgroundTaskPivotItem.Header" xml:space="preserve">
     <value>Synchronisation en arrière-plan</value>
@@ -500,6 +488,70 @@ Les changements seront appliqués après le prochain redémarrage.</value>
     <value>Cette fonctionnalité n’est pas supporté par votre appareil. Mettez-le à jour avec une version plus récente de Windows pour pouvoir profiter de toutes les fonctionnalités de wallabag.</value>
   </data>
   <data name="WallabagItProviderDescription" xml:space="preserve">
-    <value>Sauvegardez des articles. Lisez-les plus tard. Lisez-les n'importe où.</value>
+    <value>Sauvegardez des articles. Lisez-les plus tard. Lisez-les n&apos;importe où.</value>
   </data>
+  <data name="SomethingWentWrongMessage" xml:space="preserve">
+    <value>Quelque chose s&apos;est mal passé. Essayez à nouveau. Pour continuer à utiliser cette application, merci de vous connecter à nouveau. Si les identifiants sont corrects, ce dialogue se fermera automatiquement.</value>
+  </data>
+  <data name="UrlDoesNotLeadToValidInstanceMessage" xml:space="preserve">
+    <value>L&apos;URL que vous avez entré ne correspond pas à une instance wallabag supportée.</value>
+  </data>
+  <data name="LoginDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Se connecter</value>
+  </data>
+  <data name="LoginDialog.Title" xml:space="preserve">
+    <value>Se reconnecter à wallabag</value>
+  </data>
+  <data name="ReLoginErrorMessageTextBlock.Text" xml:space="preserve">
+    <value>Désolé, quelque chose s&apos;est mal passé. Pour continuer à utiliser cette application, merci de vous reconnecter. Si les identifiants sont corrects, cette fenêtre de dialogue se fermera automatiquement.</value>
+  </data>
+  <data name="LoginDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="TagQueryTextBox.PlaceholderText" xml:space="preserve">
+    <value>Entrez un tag ou choisissez-en un depuis la liste.</value>
+  </data>
+  <data name="LanguageFilterTitleTextBlock.Text" xml:space="preserve">
+    <value>LANGUE</value>
+  </data>
+  <data name="CopyLinkMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Copier dans le presse-papiers</value>
+  </data>
+  <data name="LiveTileReadingTime" xml:space="preserve">
+    <value>Temps de lecture : {0} minutes(s)</value>
+  </data>
+  <data name="LiveTileReadingTimeShort" xml:space="preserve">
+    <value>Temps de lecture : {0} minute</value>
+  </data>
+  <data name="ArchivedItemTypeComboBoxItem.Content" xml:space="preserve">
+    <value>Archivé</value>
+  </data>
+  <data name="EnableLiveTileToggleSwitch.Header" xml:space="preserve">
+    <value>Activer la tuile</value>
+  </data>
+  <data name="LiveTileDisplayedItemsComboBox.Header" xml:space="preserve">
+    <value>Éléments affichés</value>
+  </data>
+  <data name="LiveTileSettingsPivotItem.Header" xml:space="preserve">
+    <value>Tuile</value>
+  </data>
+  <data name="StarredItemTypeComboBoxItem.Content" xml:space="preserve">
+    <value>Favoris</value>
+  </data>
+  <data name="UnreadItemTypeComboBoxItem.Content" xml:space="preserve">
+    <value>Non-lus</value>
+  </data>
+  <data name="ShowNumeralBadgeOnTileToggleSwitch.Header" xml:space="preserve">
+    <value>Afficher un badge sur la tuile</value>
+  </data>
+  <data name="MigratingProgress" xml:space="preserve">
+    <value>Migration vers la dernière version en cours...</value>
+  </data>
+  <data name="DeleteDatabaseDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Si le contenu de l&apos;application et celui de l&apos;instance wallabag diffèrent trop, vous pouvez supprimer la base de données. Lors du prochain démarrage de l&apos;application, tous les articles et tags seront téléchargés à nouveau depuis le serveur tout en gardant vos paramètres.</value>
+  </data>
+  <data name="LogoutDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Si vous avez migré depuis une autre instance, vous pouvez facilement vous déconnecter en un clic.</value>
+  </data>
+
 </root>
