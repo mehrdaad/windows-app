@@ -118,7 +118,7 @@ namespace wallabag
                 }
 
                 // Clear the old tags values due to a new saving mechanism
-                _database.Execute("UPDATE Item SET Tags=NULL", Array.Empty<object>());
+                _database.Execute("UPDATE Item SET Tags='[]'", Array.Empty<object>());
 
                 var client = SimpleIoc.Default.GetInstance<IWallabagClient>();
                 var items = await client.GetItemsWithEnhancedMetadataAsync(itemsPerPage: 100);
