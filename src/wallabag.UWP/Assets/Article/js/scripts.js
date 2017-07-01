@@ -26,7 +26,7 @@ function getSelectionText() {
     var text = "";
     if (window.getSelection) {
         text = window.getSelection().toString();
-    } else if (document.selection && document.selection.type != "Control") {
+    } else if (document.selection && document.selection.type !== "Control") {
         text = document.selection.createRange().text;
     }
     return text;
@@ -45,20 +45,20 @@ function setupVideoLazyLoading() {
 
                 var openMode = this.getAttribute("data-open-mode");
 
-                if (openMode == "browser" || openMode == "app")
+                if (openMode === "browser" || openMode === "app")
                     window.external.notify("video-" + openMode + "|" + provider + "|" + videoId);
                 else {
                     this.setAttribute("data-transformed", "true");
-                    if (provider == "youtube") {
+                    if (provider === "youtube") {
                         this.innerHTML = "<div class='wallabag-video-container'><iframe type='text/html' src='https://www.youtube-nocookie.com/embed/" + videoId + "?rel=0&showinfo=0&color=white' frameborder='0' allowfullscreen></iframe></div>";
                     }
-                    else if (provider == "vimeo") {
+                    else if (provider === "vimeo") {
                         this.innerHTML = "<div class='wallabag-video-container'><iframe type='text/html' src='http://player.vimeo.com/video/" + videoId + "?portrait=0' frameborder='0' allowfullscreen></iframe></div>";
                     }
                     else
                         this.innerHTML = "<video src='" + videoId + "' preload controls></video>";
                 }
-            })
+            });
         }
 }
 
@@ -79,7 +79,7 @@ function rightClickInitialize() {
         var x = 0;
         var y = 0;
 
-        if (e.touches == null) {
+        if (e.touches === null) {
             x = e.x;
             y = e.y;
         }
