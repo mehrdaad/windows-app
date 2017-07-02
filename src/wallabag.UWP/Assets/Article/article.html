@@ -37,6 +37,8 @@
         $(document).ready(function () {
             rightClickInitialize();
             setupVideoLazyLoading();
+            initializeAnnotationSupport();
+
             $("img").unveil(400, function () {
                 $(this).load(function () {
                     this.style.opacity = 1;

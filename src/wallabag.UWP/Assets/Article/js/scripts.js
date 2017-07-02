@@ -127,3 +127,35 @@ function rightClickInitialize() {
         nodes[i].addEventListener("touchcancel", cancel);
     }
 }
+
+function initializeAnnotationSupport() {
+    if (!window.x) {
+        x = {};
+    }
+
+    x.Selector = {};
+    x.Selector.getSelected = function () {
+        var t = '';
+        if (window.getSelection) {
+            t = window.getSelection();
+        } else if (document.getSelection) {
+            t = document.getSelection();
+        } else if (document.selection) {
+            t = document.selection.createRange().text;
+        }
+        
+        if (t.type == "Range")
+            return t;
+        else
+            return '';
+    }
+
+    $(document).ready(function () {
+        $(document).bind("mouseup", function (e) {
+            var selected = x.Selector.getSelected();
+            if (selected != '' && getSelectionText() != '') {
+                window.external.notify("A|" + e.clientX + "|" + e.clientY);
+            }
+        });
+    });
+}
