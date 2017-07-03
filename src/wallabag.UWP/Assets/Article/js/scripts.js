@@ -143,7 +143,7 @@ function initializeAnnotationSupport() {
         } else if (document.selection) {
             t = document.selection.createRange().text;
         }
-        
+               
         if (t.type == "Range")
             return t;
         else
@@ -151,11 +151,32 @@ function initializeAnnotationSupport() {
     }
 
     $(document).ready(function () {
+
+        var start = '';
+        var end = '';
+
+        $(document).bind("mousedown", function (e) {
+            start = createXPathFromElement(e.target);
+        });
+
         $(document).bind("mouseup", function (e) {
+            end = createXPathFromElement(e.target);
+
             var selected = x.Selector.getSelected();
             if (selected != '' && getSelectionText() != '') {
-                window.external.notify("A|" + e.clientX + "|" + e.clientY);
+                window.external.notify("A|" + e.clientX + "|" + e.clientY + "|" + start + "|" + end);
             }
         });
     });
 }
+
+function createXPathFromElement(elm) {
+    var allNodes = document.getElementsByTagName('*');
+    for (var segs = []; elm && elm.nodeType == 1; elm = elm.parentNode) {       
+        for (i = 1, sib = elm.previousSibling; sib; sib = sib.previousSibling) {
+            if (sib.localName == elm.localName) i++;
+        };
+        segs.unshift(elm.localName.toLowerCase() + '[' + i + ']');
+    };
+    return segs.length ? '/' + segs.join('/') : null;
+}; 
