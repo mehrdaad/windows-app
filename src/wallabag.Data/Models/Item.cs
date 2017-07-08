@@ -34,6 +34,8 @@ namespace wallabag.Data.Models
         public string Mimetype { get; set; }
         public Uri PreviewImageUri { get; set; }
 
+        public List<WallabagAnnotation> Annotations { get; set; }
+
         public static implicit operator WallabagItem(Item i)
         {
             var convertedTags = new List<WallabagTag>();
@@ -57,7 +59,8 @@ namespace wallabag.Data.Models
                 Language = i.Language,
                 Mimetype = i.Mimetype,
                 PreviewImageUri = i.PreviewImageUri,
-                Tags = convertedTags
+                Tags = convertedTags,
+                Annotations = i.Annotations
             };
         }
         public static implicit operator Item(WallabagItem i)
@@ -85,7 +88,8 @@ namespace wallabag.Data.Models
                 Language = i.Language,
                 Mimetype = i.Mimetype,
                 PreviewImageUri = i.PreviewImageUri,
-                Tags = convertedTags
+                Tags = convertedTags,
+                Annotations = i.Annotations
             };
         }
         public int CompareTo(object obj)
