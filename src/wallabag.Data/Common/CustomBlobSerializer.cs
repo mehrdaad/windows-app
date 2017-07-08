@@ -2,6 +2,7 @@
 using SQLite.Net;
 using System;
 using System.Collections.Generic;
+using wallabag.Data.Common.JsonConverters;
 
 namespace wallabag.Data.Common
 {

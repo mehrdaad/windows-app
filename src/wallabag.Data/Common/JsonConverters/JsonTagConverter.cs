@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using wallabag.Data.Models;
 
-namespace wallabag.Data.Common
+namespace wallabag.Data.Common.JsonConverters
 {
     public class JsonTagConverter : JsonConverter
     {
