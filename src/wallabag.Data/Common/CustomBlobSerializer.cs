@@ -10,7 +10,11 @@ namespace wallabag.Data.Common
     {
         private JsonSerializerSettings _serializerSettings = new JsonSerializerSettings()
         {
-            Converters = new List<JsonConverter>() { new JsonTagConverter() }
+            Converters = new List<JsonConverter>()
+            {
+                new JsonTagConverter(),
+                new JsonAnnotationConverter()
+            }
         };
 
         public bool CanDeserialize(Type type) => true;
