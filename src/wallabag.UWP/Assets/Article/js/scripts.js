@@ -164,7 +164,17 @@ function initializeAnnotationSupport() {
 
             var selected = x.Selector.getSelected();
             if (selected != '' && getSelectionText() != '') {
-                window.external.notify("A|" + e.clientX + "|" + e.clientY + "|" + start + "|" + end);
+
+                var result = [
+                    "A",
+                    e.clientX,
+                    e.clientY,
+                    start,
+                    end,
+                    selected.anchorOffset,
+                    selected.focusOffset
+                ];
+                window.external.notify(result.join('|'));
             }
         });
     });
