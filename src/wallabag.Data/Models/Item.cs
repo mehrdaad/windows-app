@@ -34,7 +34,7 @@ namespace wallabag.Data.Models
         public string Mimetype { get; set; }
         public Uri PreviewImageUri { get; set; }
 
-        public List<WallabagAnnotation> Annotations { get; set; }
+        public List<WallabagAnnotation> Annotations { get; set; } = new List<WallabagAnnotation>();
 
         public static implicit operator WallabagItem(Item i)
         {
