@@ -79,6 +79,7 @@
     <Compile Include="Services\ISettingsService.cs" />
     <Compile Include="Services\OfflineTaskService\OfflineTaskService.cs" />
     <Compile Include="ViewModels\AddItemViewModel.cs" />
+    <Compile Include="ViewModels\AnnotationViewModel.cs" />
     <Compile Include="ViewModels\EditTagsViewModel.cs" />
     <Compile Include="ViewModels\ItemPageViewModel.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
