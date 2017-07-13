@@ -235,8 +235,50 @@ namespace wallabag.Data.ViewModels
                 }
             }
 
+            _loggingService.WriteLine("Inserting annotations...");
+            foreach (var annotation in Item.Model.Annotations)
+            {
+                string startHtml = $"<mark data-annotation-id='{annotation.Id}'>";
+                string endHtml = "</mark>";
+
+                var startNode = GetHtmlNodeForXPath(document, annotation.Range.Start);
+
+                if (startNode == null)
+                {
+                    _loggingService.WriteLine($"Skipping annotation {annotation.Id} because the {nameof(annotation.Range.Start)} can't be found.");
+                    continue;
+                }
+
+                _loggingService.WriteLine($"Inserting annotation {annotation.Id}.");
+
+                string startNodeHtml = startNode.InnerHtml;
+                startNodeHtml = startNodeHtml.Insert(annotation.Range.StartOffset, startHtml);
+
+                if (annotation.Range.Start == annotation.Range.End)
+                {
+                    _loggingService.WriteLine("Annotation start and end are equal.");
+                    startNodeHtml = startNodeHtml.Insert(annotation.Range.EndOffset + startHtml.Length, endHtml);
+
+                    var newNode = HtmlNode.CreateNode(startNode.OuterHtml.Replace(startNode.InnerHtml, startNodeHtml));
+                    startNode.ParentNode.ReplaceChild(newNode, startNode);
+                }
+                else
+                {
+                    _loggingService.WriteLine("Annotation start and end aren't equal. Searching for HTML node for end.");
+
+                    var endNode = GetHtmlNodeForXPath(document, annotation.Range.End);
+                    string endNodeHtml = endNode.InnerHtml;
+                    endNodeHtml = endNodeHtml.Insert(annotation.Range.EndOffset, endHtml);
+
+                    var newNode = HtmlNode.CreateNode(endNode.OuterHtml.Replace(endNode.InnerHtml, endNodeHtml));
+                    endNode.ParentNode.ReplaceChild(newNode, endNode);
+                }
+            }
+
             return document.DocumentNode.OuterHtml;
         }
+        public HtmlNode GetHtmlNodeForXPath(HtmlDocument html, string xpath)
+            => html.DocumentNode.Descendants().FirstOrDefault(i => i.XPath == xpath);
 
         public async Task<string> GetPreviewImageForVideoAsync(string videoProvider, string videoId)
         {
