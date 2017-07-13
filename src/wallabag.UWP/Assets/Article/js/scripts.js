@@ -177,7 +177,20 @@ function initializeAnnotationSupport() {
                 window.external.notify(result.join('|'));
             }
         });
+        $("mark").bind("mouseover", function (e) {
+            var result = [
+                "AS",
+                e.target.getAttribute("data-annotation-id"),
+                e.clientX,
+                e.clientY
+            ];
+            window.external.notify(result.join('|'));
+        });
+        $("mark").bind("mouseleave", function (e) {
+            window.external.notify("AH")
+        })
     });
+
 }
 
 function createXPathFromElement(elm) {
