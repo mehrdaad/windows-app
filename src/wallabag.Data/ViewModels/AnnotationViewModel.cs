@@ -18,6 +18,8 @@ namespace wallabag.Data.ViewModels
         public WallabagAnnotation Annotation { get; set; }
         public string Text { get; set; }
 
+        public bool IsReadOnly { get; private set; }
+
         public RelayCommand SaveCommand { get; private set; }
         public RelayCommand EditCommand { get; private set; }
         public RelayCommand CancelCommand { get; private set; }
@@ -42,6 +44,7 @@ namespace wallabag.Data.ViewModels
         {
             Annotation = Item.Model.Annotations.FirstOrDefault(x => x.Id == annotationId);
             Text = Annotation.Text;
+            IsReadOnly = true;
         }
 
         public Task SaveAsync() => Task.FromResult(true);
