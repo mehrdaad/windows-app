@@ -139,6 +139,39 @@ namespace wallabag.Views
 
                         await Launcher.LaunchUriAsync(GetVideoUri(provider, videoId), launcherOptions);
                         break;
+                    case "A":
+                        if (notify[1] != "undefined" && notify[2] != "undefined")
+                        {
+                            string xPathToRemove = "/html[1]/body[1]";
+
+                            int annotationX = int.Parse(notify[1]);
+                            int annotationY = int.Parse(notify[2]);
+                            string xPathStart = notify[3].Remove(0, xPathToRemove.Length);
+                            string xPathEnd = notify[4].Remove(0, xPathToRemove.Length);
+                            int startOffset = int.Parse(notify[5]);
+                            int endOffset = int.Parse(notify[6]);
+
+                            string annotationText = await HtmlViewer.InvokeScriptAsync("getSelectionText", Array.Empty<string>());
+
+                            if (!string.IsNullOrEmpty(xPathStart) &&
+                                !string.IsNullOrEmpty(xPathEnd) &&
+                                !string.IsNullOrWhiteSpace(annotationText))
+                            {
+                                // TODO: Show annotation dialog and activate ViewModel with the given parameters.
+                            }
+                        }
+                        break;
+                    case "AS":
+                        ViewModel.CurrentAnnotation.ReplaceAnnotation(int.Parse(notify[1]));
+                        int x11 = int.Parse(notify[2]);
+                        int y11 = int.Parse(notify[3]);
+                        AnnotationPopup.Visibility = Visibility.Visible;
+                        AnnotationPopup.Margin = new Thickness(x11 , Math.Max(0, y11 - AnnotationPopup.ActualHeight), 0, 0);
+                        break;
+                    case "AH":
+                        AnnotationPopup.Visibility = Visibility.Collapsed;
+                        // TODO: Hide AnnotationPopup only if the user isn't hovering the popup itself.
+                        break;
                     default:
                         break;
                 }
