@@ -344,6 +344,38 @@
                 Command="{x:Bind ViewModel.Item.OpenInBrowserCommand, Mode=OneWay}"
                 Content="Open in browser" />
         </StackPanel>
+
+        <Grid
+            x:Name="AnnotationPopup"
+            MinWidth="250"
+            MaxHeight="300"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            x:DeferLoadStrategy="Lazy"
+            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+            Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <TextBox
+                Margin="0,0,0,4"
+                Padding="16,12"
+                Background="Transparent"
+                BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                BorderThickness="0"
+                IsReadOnly="{x:Bind ViewModel.CurrentAnnotation.IsReadOnly, Mode=OneWay}"
+                Text="{x:Bind ViewModel.CurrentAnnotation.Text, Mode=TwoWay}" />
+            <Button
+                Grid.Row="1"
+                Padding="14,4"
+                HorizontalAlignment="Right"
+                BorderThickness="0"
+                Content="&#xE10C;"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="16" />
+        </Grid>
+
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="ErrorState">
