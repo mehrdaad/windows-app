@@ -29,6 +29,7 @@ namespace wallabag.Data.ViewModels
         private readonly SQLite.Net.SQLiteConnection _database;
 
         public ItemViewModel Item { get; set; }
+        public AnnotationViewModel CurrentAnnotation { get; set; }
         public string FormattedHtml { get; set; }
 
         public bool ErrorDuringInitialization { get; set; }
@@ -65,6 +66,8 @@ namespace wallabag.Data.ViewModels
             _database = database;
 
             _loggingService.WriteLine($"Initializing new instance of {nameof(ItemPageViewModel)}.");
+
+            CurrentAnnotation = new AnnotationViewModel(Item, client, loggingService, database);
 
             ChangeReadStatusCommand = new RelayCommand(() => ChangeReadStatus());
             ChangeFavoriteStatusCommand = new RelayCommand(() => ChangeFavoriteStatus());
@@ -399,6 +402,7 @@ namespace wallabag.Data.ViewModels
                 if (ErrorDuringInitialization)
                     return;
 
+                CurrentAnnotation.Item = Item;
                 await GenerateFormattedHtmlAsync();
                 Messenger.Default.Send(new Common.Messages.LoadContentMessage());
             }
